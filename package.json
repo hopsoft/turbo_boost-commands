@@ -1,6 +1,6 @@
 {
   "name": "turbo_reflex",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Future home of TurboReflex",
   "main": "app/assets/builds/turbo_reflex.js",
   "repository": "https://github.com/hopsoft/turbo_reflex",
