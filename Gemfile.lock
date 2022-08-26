@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    turbo_reflex (0.1.0)
+    turbo_reflex (0.0.1)
       rails (>= 7.0)
       turbo-rails (>= 1.1)
 
