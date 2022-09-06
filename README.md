@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-179-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-193-47d299.svg" />
     </a>
   </p>
 </p>
