@@ -10,7 +10,8 @@ function isMatch (eventName, tagName) {
 }
 
 function getFrameId (reflexElement) {
-  const frameId = reflexElement.dataset.turboReflexFrame
+  let frameId = reflexElement.dataset.turboReflexFrame
+  frameId = frameId || reflexElement.closest('turbo-frame').id
   if (!frameId)
     console.error(
       `The reflex element does not specify a frame!`,

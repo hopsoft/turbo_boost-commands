@@ -28,7 +28,6 @@ Only support default behavior of frame (re)render with additional TurboStreams.
 
 ## Todos
 
-- [ ] Make the `data-turbo-reflex-frame` attribute optional i.e. use the closest frame id when not present
 - [ ] Add support for forms
 - [ ] Look into adding a reflex frame to support things like morph or at least document how this can be done
 
