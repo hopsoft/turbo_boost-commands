@@ -10,7 +10,7 @@
     "@hotwired/turbo-rails": ">= 7.1"
   },
   "devDependencies": {
-    "esbuild": "^0.14.48",
+    "esbuild": "^0.15.7",
     "eslint": "^8.19.0",
     "prettier-standard": "^16.4.1"
   },
