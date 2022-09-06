@@ -1,6 +1,3 @@
-require "turbo_reflex/version"
-require "turbo_reflex/railtie"
+# frozen_string_literal: true
 
-module TurboReflex
-  # Your code goes here...
-end
+require "turbo_reflex/engine"
