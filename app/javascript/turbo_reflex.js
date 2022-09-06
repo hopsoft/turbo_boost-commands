@@ -3,9 +3,11 @@ const registeredEvents = {}
 function isMatch (eventName, tagName) {
   tagName = tagName.toLowerCase()
   return (
-    registeredEvents[eventName] === tagName ||
-    (!Object.values(registeredEvents).includes(tagName) &&
-      registeredEvents[eventName] === '*')
+    registeredEvents[eventName].includes(tagName) ||
+    (!Object.values(registeredEvents)
+      .flat()
+      .includes(tagName) &&
+      registeredEvents[eventName].includes('*'))
   )
 }
 
@@ -88,9 +90,7 @@ function invokeReflex (event) {
 }
 
 function registerEvent (eventName, tagNames) {
-  tagNames.forEach(
-    tagName => (registeredEvents[eventName] = tagName.toLowerCase())
-  )
+  registeredEvents[eventName] = tagNames
   document.removeEventListener(eventName, invokeReflex, true)
   document.addEventListener(eventName, invokeReflex, true)
 }

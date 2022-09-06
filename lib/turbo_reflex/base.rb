@@ -23,7 +23,7 @@ module TurboReflex
           values << nil
         end
 
-        Struct.new(keys).new(values)
+        Struct.new(*keys).new(*values)
       end
     end
 

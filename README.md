@@ -8,12 +8,13 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-178-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-179-47d299.svg" />
     </a>
   </p>
 </p>
 
-Future home of TurboReflex... stay tuned. 👀
+**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) and provides RPC features
+that will help you build truly reactive applications with [Hotwire](https://hotwired.dev/).**
 
 ## Helpful Context
 
