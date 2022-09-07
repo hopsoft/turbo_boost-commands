@@ -69,9 +69,6 @@ Import and intialize TurboReflex in your application.
 
 This example illustrates how to use TurboReflex for a simple voting mechanic.
 
-When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically rerender.
-Also, any additional Turbo Streams created in the reflex are appended to the response and then executed on the client.
-
 ```erb
 <!-- app/views/posts/show.html.erb -->
 <%= turbo_frame_tag dom_id(@post) do %>
@@ -79,7 +76,8 @@ Also, any additional Turbo Streams created in the reflex are appended to the res
 <% end %>
 ```
 
-> 📘 **NOTE:** This is a generic reflex that can be used on any controller/model with a `votes` column.
+When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically rerender.
+Also, any additional Turbo Streams created in the reflex are appended to the response and then executed on the client.
 
 ```ruby
 # app/reflexes/votes_reflex.rb
@@ -92,6 +90,8 @@ class VotesReflex < TurboReflex::Base
   end
 end
 ```
+
+> 📘 **NOTE:** This is a generic reflex that can be used on any controller/model with a `votes` column.
 
 ## Requirements
 
