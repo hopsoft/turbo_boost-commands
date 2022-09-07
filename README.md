@@ -6,7 +6,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-193-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-231-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -97,7 +97,7 @@ This means that reactivity runs over HTTP.
 
 ## Installation
 
-Be sure to install the same version for each libary.
+Be sure to install the same version of each libary.
 
 ```sh
 bundle add "turbo_reflex --version VERSION"
@@ -188,7 +188,7 @@ It's possible to override these defaults like so.
 import TurboReflex from 'turbo_reflex'
 
 // restrict `click` monitoring to <a> and <button> elements
-TurboReflex.registerEvent('click', ['a', 'button']) 
+TurboReflex.registerEvent('click', ['a', 'button'])
 ```
 
 You can also register custom events and elements.
@@ -203,8 +203,8 @@ TurboReflex.registerEvent('sl-change', ['sl-switch'])
 By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `turbo-frame` element; however, it's possible to explicitly target other frames.
 
 ```erb
-<input type="checkbox" 
-  data-turbo-reflex="ExampleReflex#work" 
+<input type="checkbox"
+  data-turbo-reflex="ExampleReflex#work"
   data-turbo-reflex-frame="some-frame-id">
 ```
 
@@ -247,7 +247,7 @@ end
 
 ### Appending Turbo Streams
 
-It's possible to append additional Turbo Streams to the response in a reflex. 
+It's possible to append additional Turbo Streams to the response in a reflex.
 This proves incredibly powerful when paired with [TurboReady](https://github.com/hopsoft/turbo_ready).
 
 ```ruby
