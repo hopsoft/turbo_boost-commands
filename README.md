@@ -71,12 +71,12 @@ TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reac
 ## Why TurboReflex?
 
 [Turbo Frames](https://turbo.hotwired.dev/reference/frames) primarily focus on targeted navigation, content loading, and browser history.
-It's a powerful set of tools but can also prove cumbersom when building reactive applications.
+It's a powerful set of tools but can prove cumbersome when building reactive applications.
 
-TurboReady provides a thin layer to extend Turbo Frames with client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call) that run before Turbo Frames execute.
+**TurboReflex** provides a thin layer to extend Turbo Frames with client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call) that run before Turbo Frames execute.
 
-This means that reactivity runs over HTTP,
-**so web sockets are NOT used for the reactive critical path.** 🎉
+This means that reactivity runs over HTTP.
+**Web sockets are NOT used for the reactive critical path!** 🎉
 
 ## Sponsors
 
