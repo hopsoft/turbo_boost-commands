@@ -41,6 +41,10 @@ function getFrameSrc (frameElement) {
   return frameSrc
 }
 
+function getTurboReflexToken () {
+  return document.getElementById('turbo-reflex-token').getAttribute('content')
+}
+
 function getURL (value) {
   const a = document.createElement('a')
   a.href = value
@@ -79,6 +83,7 @@ function invokeReflex (event) {
   if (!frameSrc) return
 
   const reflexPayload = {
+    token: getTurboReflexToken(),
     name: reflexElement.dataset.turboReflex,
     frame: frameId,
     element: getAttributes(reflexElement)

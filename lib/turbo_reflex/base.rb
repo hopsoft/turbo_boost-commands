@@ -26,7 +26,7 @@ class TurboReflex::Base
     end
   end
 
-  def turbo_stream(...)
-    controller.send(:turbo_stream, ...)
+  def turbo_stream
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 end

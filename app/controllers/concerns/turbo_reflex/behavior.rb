@@ -2,11 +2,18 @@
 
 module TurboReflex::Behavior
   extend ActiveSupport::Concern
-  include ActionView::Helpers::SanitizeHelper
 
   included do
     before_action :perform_turbo_reflex, if: -> { turbo_reflex_requested? && turbo_reflex_valid? }
     after_action :append_turbo_reflex_turbo_streams, if: :turbo_reflex_performed?
+    after_action :assign_turbo_reflex_token
+    helper_method :turbo_reflex_meta_tag, :turbo_reflex_performed?, :turbo_reflex_requested?
+  end
+
+  def turbo_reflex_meta_tag
+    masked_token = turbo_reflex_message_verifier.generate(new_turbo_reflex_token)
+    options = {id: "turbo-reflex-token", name: "turbo-reflex-token", content: masked_token}
+    view_context.tag("meta", options).html_safe
   end
 
   def turbo_reflex_params
@@ -51,6 +58,8 @@ module TurboReflex::Behavior
   end
 
   def turbo_reflex_valid?
+    return false unless request.headers["Turbo-Frame"]
+    return false unless valid_turbo_reflex_token?
     return false unless turbo_reflex_instance.is_a?(TurboReflex::Base)
     turbo_reflex_instance.respond_to? turbo_reflex_method_name
   end
@@ -69,9 +78,41 @@ module TurboReflex::Behavior
   def append_turbo_reflex_turbo_streams
     return unless turbo_reflex_performed?
     return unless turbo_reflex_instance&.turbo_streams.present?
+    append_turbo_reflex_content turbo_reflex_instance.turbo_streams.map(&:to_s).join
+  end
 
-    extras = turbo_reflex_instance.turbo_streams.map(&:to_s).join
-    sanitized_extras = TurboReflex::Sanitizer.instance.sanitize(extras)
-    response.body.sub! "</turbo-frame>", "#{sanitized_extras}</turbo-frame>"
+  private
+
+  def turbo_reflex_message_verifier
+    ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
+  end
+
+  def new_turbo_reflex_token
+    @new_turbo_reflex_token ||= SecureRandom.urlsafe_base64(32)
+  end
+
+  def current_turbo_reflex_token
+    session[:turbo_reflex_token]
+  end
+
+  def valid_turbo_reflex_token?
+    return false unless turbo_reflex_message_verifier.valid_message?(turbo_reflex_params[:token].to_s)
+    unmasked_token = turbo_reflex_message_verifier.verify(turbo_reflex_params[:token])
+    unmasked_token == current_turbo_reflex_token
+  end
+
+  def assign_turbo_reflex_token
+    return unless turbo_reflex_performed? || request.headers["Turbo-Frame"].nil?
+    session[:turbo_reflex_token] = new_turbo_reflex_token
+    append_turbo_reflex_content turbo_stream.replace("turbo-reflex-token", turbo_reflex_meta_tag)
+  end
+
+  def append_turbo_reflex_content(content)
+    sanitized_content = TurboReflex::Sanitizer.instance.sanitize(content).html_safe
+    if /<\/turbo-frame>(\s|\n)*\z/i.match? response.body
+      response.body.sub!("</turbo-frame>", "#{sanitized_content}</turbo-frame>")
+    else
+      response.body.sub!("</body>", "#{sanitized_content}</body>")
+    end
   end
 end
