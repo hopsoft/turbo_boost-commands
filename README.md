@@ -77,7 +77,7 @@ This example illustrates how to use TurboReflex for a simple voting mechanic.
 ```
 
 When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically rerender.
-Also, any additional Turbo Streams created in the reflex are appended to the response and then executed on the client.
+Any additional Turbo Streams created in the reflex are appended to the response and then executed on the client.
 
 ```ruby
 # app/reflexes/votes_reflex.rb
