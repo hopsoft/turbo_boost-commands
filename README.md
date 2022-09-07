@@ -13,7 +13,7 @@
   </p>
 </p>
 
-**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) with reflex behaviors to help you build reactive applications.
+**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) with reflex behaviors to help you build reactive applications.**
 
 ## Why TurboReflex?
 
