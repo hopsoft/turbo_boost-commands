@@ -13,9 +13,40 @@
   </p>
 </p>
 
-**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) with reflex behaviors to help you build reactive applications.**
+TurboReflex brings the reactive programming model to [Turbo Frames](https://turbo.hotwired.dev/reference/frames).
+
+1. Design your app using Turbo Frames as you normally would
+2. Invoke reflexes that change state on the server
+3. Frames automatically rerender to reflect the new state
+
+<!-- Tocer[start]: Auto-generated, don't remove. -->
+
+## Table of Contents
+
+  - [Why TurboReflex?](#why-turboreflex)
+  - [Sponsors](#sponsors)
+  - [Dependencies](#dependencies)
+  - [Installation](#installation)
+  - [Setup](#setup)
+  - [Usage](#usage)
+    - [Registering Events](#registering-events)
+    - [Appending Turbo Streams](#appending-turbo-streams)
+    - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
+  - [Requirements](#requirements)
+    - [Scope](#scope)
+    - [Helpful Context](#helpful-context)
+  - [Todos](#todos)
+  - [License](#license)
+
+<!-- Tocer[finish]: Auto-generated, don't remove. -->
 
 ## Why TurboReflex?
+
+Turbo Frames primarily focuses on scoped link navigation and form posts.
+TurboReady extends Turbo Frames to support user triggered RPC calls (reflexes) that run before executing the normal Turbo Frame behavior.
+
+This means that reactivity runs over HTTP.
+**Web sockets are NOT used for the reactive critical path.**
 
 ## Sponsors
 
@@ -67,7 +98,7 @@ Import and intialize TurboReflex in your application.
 
 ## Usage
 
-This example illustrates how to use TurboReflex for a simple voting mechanic.
+This example illustrates how to use TurboReflex to manage upvotes on a Post.
 
 ```erb
 <!-- app/views/posts/show.html.erb -->
@@ -80,16 +111,20 @@ When the user clicks the upvote link, the reflex will be invoked and the Turbo F
 Any additional Turbo Streams created in the reflex are appended to the response and then executed on the client.
 
 ```ruby
-# app/reflexes/votes_reflex.rb
-class VotesReflex < TurboReflex::Base
+# app/reflexes/posts_reflex.rb
+class PostsReflex < TurboReflex::Base
   def upvote
-    model = controller.controller_name.classify.constantize
-    instance = model.find(controller.params[:id])
-    instance.increment! :votes
+    Post.find(controller.params[:id]).increment! :votes
     turbo_streams << turbo_stream.invoke("alert", args: ["Thanks for voting!"])
   end
 end
 ```
+
+### Registering Events
+
+### Appending Turbo Streams
+
+### Broadcasting Turbo Streams
 
 > 📘 **NOTE:** This is a generic reflex that can be used on any controller/model with a `votes` column.
 
