@@ -1,7 +1,7 @@
 <p align="center">
   <img height="200" src="https://ik.imagekit.io/hopsoft/turbo-reflex-logo_dgjKz2_SK.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1661529169962" />
   <h3 align="center">
-    Turbo Frame's Swiss Army Knife ???
+    Turbo Frame's Reactive Toolkit
   </h3>
   <h1 align="center">
     Welcome to TurboReflex 👋
@@ -13,8 +13,7 @@
   </p>
 </p>
 
-**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) and provides RPC features
-that will help you build truly reactive applications with [Hotwire](https://hotwired.dev/).**
+**TurboReflex extends [Turbo Frames](https://turbo.hotwired.dev/reference/frames) with reflex behaviors to help you build reactive applications.
 
 ## Why TurboReflex?
 
