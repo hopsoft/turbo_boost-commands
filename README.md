@@ -54,6 +54,7 @@
     - [Working with Forms](#working-with-forms)
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
+    - [Setting Instance Variables](#setting-instance-variables)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [License](#license)
   - [Contributing](#contributing)
