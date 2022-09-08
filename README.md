@@ -31,6 +31,9 @@
     <a href="https://github.com/sheerun/prettier-standard">
       <img alt="JavaScript Style" src="https://img.shields.io/badge/style-prettier--standard-168AFE?logo=javascript&logoColor=f4e137" />
     </a>
+    <a href="https://github.com/hopsoft/turbo_reflex/actions/workflows/tests.yml">
+      <img alt="Tests" src="https://github.com/hopsoft/turbo_reflex/actions/workflows/tests.yml/badge.svg" />
+    </a>
     <a href="https://twitter.com/hopsoft">
       <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/hopsoft?logo=twitter&style=social">
     </a>
