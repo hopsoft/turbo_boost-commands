@@ -240,25 +240,26 @@ By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-
 
 ### Working with Forms
 
-TurboReflex works great with standard Rails forms too.
+TurboReflex works great with standard Rails forms.
 Simply specify the `data-turbo-reflex` attribute.
 
 ```erb
-<!-- form_with -->
+# app/views/posts/post.html.erb
+<!-- implicit frame targeting using form_with -->
 <%= turbo_frame dom_id(@post) do %>
   <%= form_with model: @post, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
-<!-- form_with -->
+<!-- implicit frame targeting using form_for -->
 <%= turbo_frame dom_id(@post) do %>
   <%= form_for @post, remote: true, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
-<!-- target a frame explicity -->
+<!-- explicit frame targeting using form_with -->
 <%= form_with model: @post,
   html: { turbo_frame: dom_id(@post), turbo_reflex: "ExampleReflex#work" } do |form| %>
   ...
