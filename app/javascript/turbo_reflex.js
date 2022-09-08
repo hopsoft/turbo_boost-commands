@@ -1,4 +1,18 @@
 const registeredEvents = {}
+const turboFrameSources = {}
+
+addEventListener('turbo:frame-render', event => {
+  const frameId = event.target.id
+  const { location } = event.detail.fetchResponse
+  if (frameId && location) turboFrameSources[frameId] = location.href
+})
+
+addEventListener('turbo:frame-load', event => {
+  const frame = event.target
+  const src = event.target.src || turboFrameSources[frame.id]
+  frame.dataset.turboReflexFrameSrc = src
+  delete turboFrameSources[frame.id]
+})
 
 function isMatch (eventName, tagName) {
   tagName = tagName.toLowerCase()
@@ -12,12 +26,16 @@ function isMatch (eventName, tagName) {
 }
 
 function getFrameId (reflexElement) {
-  let frameId = reflexElement.dataset.turboReflexFrame
-  frameId = frameId || reflexElement.closest('turbo-frame').id
+  let frameId =
+    reflexElement.dataset.turboReflexFrame || reflexElement.dataset.turboFrame
+  if (!frameId) {
+    const frame = reflexElement.closest('turbo-frame')
+    if (frame) frameId = frame.id
+  }
   if (!frameId)
     console.error(
       `The reflex element does not specify a frame!`,
-      `Please set the 'data-turbo-reflex-frame' attribute.`,
+      `Please move the reflex element inside a <turbo-frame> or set either the 'data-turbo-reflex-frame' or 'data-turbo-frame' attribute.`,
       reflexElement
     )
   return frameId
@@ -68,10 +86,7 @@ function getAttributes (reflexElement) {
 function invokeReflex (event) {
   const reflexElement = event.target.closest('[data-turbo-reflex]')
   if (!reflexElement) return
-  if (!isMatch(event.type, event.target.tagName)) return
-
-  event.preventDefault()
-  event.stopPropagation()
+  if (!isMatch(event.type, reflexElement.tagName)) return
 
   const frameId = getFrameId(reflexElement)
   if (!frameId) return
@@ -79,7 +94,7 @@ function invokeReflex (event) {
   const frameElement = getFrameElement(frameId)
   if (!frameElement) return
 
-  const frameSrc = frameElement.dataset.turboReflexFrameSrc
+  const frameSrc = getFrameSrc(frameElement)
   if (!frameSrc) return
 
   const reflexPayload = {
@@ -89,9 +104,19 @@ function invokeReflex (event) {
     element: getAttributes(reflexElement)
   }
 
-  const frameURL = getURL(frameSrc)
-  frameURL.searchParams.set('turbo_reflex', JSON.stringify(reflexPayload))
-  frameElement.src = frameURL.toString()
+  if (reflexElement.tagName.toLowerCase() === 'form') {
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = 'turbo_reflex'
+    input.value = JSON.stringify(reflexPayload)
+    reflexElement.appendChild(input)
+  } else {
+    event.preventDefault()
+    event.stopPropagation()
+    const frameURL = getURL(frameSrc)
+    frameURL.searchParams.set('turbo_reflex', JSON.stringify(reflexPayload))
+    frameElement.src = frameURL.toString()
+  }
 }
 
 function registerEvent (eventName, tagNames) {

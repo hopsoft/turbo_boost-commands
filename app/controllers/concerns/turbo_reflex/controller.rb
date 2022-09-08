@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module TurboReflex::Behavior
+module TurboReflex::Controller
   extend ActiveSupport::Concern
 
   included do
@@ -58,7 +58,7 @@ module TurboReflex::Behavior
   end
 
   def turbo_reflex_valid?
-    return false unless request.headers["Turbo-Frame"]
+    return false if request.get? && request.headers["Turbo-Frame"].blank?
     return false unless valid_turbo_reflex_token?
     return false unless turbo_reflex_instance.is_a?(TurboReflex::Base)
     turbo_reflex_instance.respond_to? turbo_reflex_method_name
@@ -102,17 +102,24 @@ module TurboReflex::Behavior
   end
 
   def assign_turbo_reflex_token
-    return unless turbo_reflex_performed? || request.headers["Turbo-Frame"].nil?
+    return unless turbo_reflex_requested? || request.headers["Turbo-Frame"].nil?
     session[:turbo_reflex_token] = new_turbo_reflex_token
     append_turbo_reflex_content turbo_stream.replace("turbo-reflex-token", turbo_reflex_meta_tag)
   end
 
+  def turbo_reflex_response_type
+    body = response.body.to_s.strip
+    return :stream if body.ends_with?("</turbo-stream>")
+    return :frame if body.ends_with?("</turbo-frame>")
+    :default
+  end
+
   def append_turbo_reflex_content(content)
     sanitized_content = TurboReflex::Sanitizer.instance.sanitize(content).html_safe
-    if /<\/turbo-frame>(\s|\n)*\z/i.match? response.body
-      response.body.sub!("</turbo-frame>", "#{sanitized_content}</turbo-frame>")
-    else
-      response.body.sub!("</body>", "#{sanitized_content}</body>")
+    case turbo_reflex_response_type
+    when :stream then response.body << sanitized_content
+    when :frame then response.body.sub!("</turbo-frame>", "#{sanitized_content}</turbo-frame>")
+    when :default then response.body.sub!("</body>", "#{sanitized_content}</body>")
     end
   end
 end
