@@ -51,6 +51,7 @@
   - [Usage](#usage)
     - [Client Side Events](#client-side-events)
     - [Targeting Frames](#targeting-frames)
+    - [Working with Forms](#working-with-forms)
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
@@ -217,9 +218,71 @@ TurboReflex.registerEvent('sl-change', ['sl-switch'])
 By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `turbo-frame` element; however, it's possible to explicitly target other frames.
 
 ```erb
+<!-- 1. TurboReflex first looks for: data-turbo-reflex-frame -->
 <input type="checkbox"
   data-turbo-reflex="ExampleReflex#work"
   data-turbo-reflex-frame="some-frame-id">
+```
+
+```erb
+<!-- 2. TurboReflex then looks for: data-turbo-frame -->
+<input type="checkbox"
+  data-turbo-reflex="ExampleReflex#work"
+  data-turbo-frame="some-frame-id">
+```
+
+```erb
+<!-- 3. TurboReflex uses the closest <turbo-frame> if a frame is not targeted -->
+<turbo-frame id="example-frame">
+  <input type="checkbox" data-turbo-reflex="ExampleReflex#work">
+</turbo-frame>
+```
+
+### Working with Forms
+
+TurboReflex works great with standard Rails forms too.
+Simply specify the `data-turbo-reflex` attribute.
+
+```erb
+<!-- form_with -->
+<%= turbo_frame dom_id(@post) do %>
+  <%= form_with model: @post, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
+    ...
+  <% end %>
+<% end %>
+
+<!-- form_with -->
+<%= turbo_frame dom_id(@post) do %>
+  <%= form_for @post, remote: true, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
+    ...
+  <% end %>
+<% end %>
+
+<!-- target a frame explicity -->
+<%= form_with model: @post,
+  html: { turbo_frame: dom_id(@post), turbo_reflex: "ExampleReflex#work" } do |form| %>
+  ...
+<% end %>
+```
+
+```ruby
+# app/controllers/posts_controller.rb
+class PostsController < ApplicationController
+  def update
+    respond_to do |format|
+      if @post.update post_params
+        format.turbo_stream
+
+        # or render inline...
+        # format.turbo_stream {
+        #   render turbo_stream: turbo_stream.replace("post_#{@post.id}", partial: "posts/post", assigns: {post: @post})
+        # }
+      else
+        ...
+      end
+    end
+  end
+end
 ```
 
 ### Server Side Reflexes
