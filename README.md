@@ -5,7 +5,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-261-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-281-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -72,7 +72,7 @@ discrete isolated content, browser history, and scoped navigation... *with the c
 
 **TurboReflex** extends Turbo Frames and adds support for client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call).
 Reflexes let you *sprinkle* ✨ in functionality that doesn't warrant the ceremony of typical [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) boilerplate *(routes, controllers, actions, etc...)*.
-Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, etc...
+Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, adding filters, etc...
 Basically any feature where you've been tempted to create a non-RESTful action in a controller.
 
 **Reflexes improve the developer experience (DX) of creating modern reactive applications.**
@@ -345,6 +345,42 @@ end
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
+### Setting Instance Variables
+
+It can prove useful to set instance variables for the Rails controller in a reflex.
+
+Here's a contrived example that shows how and why this might prove useful.
+Consider a checkbox that toggles viewing **all** and **unread** posts.
+
+```erb
+<!-- app/views/posts/index.html.erb -->
+<%= turbo_frame dom_id(@posts) do %>
+  <%= check_box_tag :all, :all, @all, data: { turbo_reflex: "PostsReflex#toggle_all" } %>
+  View All
+  ...
+<% end %>
+```
+
+```ruby
+# app/reflexes/posts_reflex.rb
+class PostsReflex < TurboReflex::Reflex
+  def toggle_all
+    posts = element.checked ? Post.all : Post.unread
+    controller.instance_variable_set(:@all, element.checked)
+    controller.instance_variable_set(:@posts, posts)
+  end
+end
+```
+
+```ruby
+# app/controllers/posts_controller.rb
+class PostsController < ApplicationController
+  def index
+    @posts ||= Post.unread
+  end
+end
+```
+
 ### Broadcasting Turbo Streams
 
 This isn't a TurboReflex feature *per se*, but it may prove helpful to illustrate that you can broadcast Turbo Streams to other subscribed users from a reflex.
@@ -372,8 +408,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todos
 
-- [ ] Add support for forms
-- [ ] Add support for setting instance variables on the controller
+- [ ] Add test suite
 - [ ] Look into adding a reflex frame to support things like morph or at least document how this can be done
 
 ### Requirements

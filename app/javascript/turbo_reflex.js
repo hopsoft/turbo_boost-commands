@@ -80,6 +80,29 @@ function getAttributes (reflexElement) {
   )
   reflexElementAttributes.tagName = reflexElement.tagName
   reflexElementAttributes.value = reflexElement.value
+
+  if (reflexElement.tagName.toLowerCase() === 'select') {
+    if (reflexElement.multiple) {
+      reflexElementAttributes.values = Array.from(reflexElement.options).reduce(
+        (memo, option) => {
+          if (option.selected) memo.push(option.value)
+          return memo
+        },
+        []
+      )
+    } else {
+      reflexElementAttributes.value =
+        reflexElement.options[reflexElement.selectedIndex].value
+    }
+  }
+
+  if (
+    reflexElement.tagName.toLowerCase() === 'input' &&
+    reflexElement.type === 'checkbox'
+  ) {
+    reflexElementAttributes.checked = !!reflexElement.checked
+  }
+
   return reflexElementAttributes
 }
 
