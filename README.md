@@ -2,7 +2,6 @@
   <img height="200" src="https://ik.imagekit.io/hopsoft/turbo-reflex-logo_dgjKz2_SK.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1661529169962" />
   <h1 align="center">
     Welcome to TurboReflex 👋<br />
-    <small><small>Turbo Frame's Reactive Toolkit</small></small>
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
@@ -38,11 +37,7 @@
   </p>
 </p>
 
-TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reactive_programming) model to [Turbo Frames](https://turbo.hotwired.dev/reference/frames).
-
-1. Design your app using Turbo Frames as you normally would
-2. Trigger reflexes from the client that change state on the server
-3. Watch frames automatically (re)render to reflect the new state
+#### TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reactive_programming) model to [Turbo Frames](https://turbo.hotwired.dev/reference/frames).
 
 <!-- Tocer[start]: Auto-generated, don't remove. -->
 
