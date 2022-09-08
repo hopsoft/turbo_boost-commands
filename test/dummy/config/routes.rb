@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  resources :articles
+  resources :messages do
+    collection do
+      get :echo
+    end
+  end
+  resources :trays
+  resources :posts
+  namespace :users do
+    resources :profiles
+  end
+  namespace :admin do
+    resources :companies
+  end
 end
