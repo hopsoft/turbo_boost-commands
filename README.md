@@ -42,7 +42,7 @@ TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reac
 
 1. Design your app using Turbo Frames as you normally would
 2. Trigger reflexes from the client that change state on the server
-3. Watch frames automatically rerender to reflect the new state
+3. Watch frames automatically (re)render to reflect the new state
 
 <!-- Tocer[start]: Auto-generated, don't remove. -->
 
@@ -70,12 +70,26 @@ TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reac
 
 ## Why TurboReflex?
 
-[Turbo Frames](https://turbo.hotwired.dev/reference/frames) primarily focus on targeted navigation, content loading, and browser history.
-It's a powerful set of tools but can prove cumbersome when building reactive applications.
+[Turbo Frames](https://turbo.hotwired.dev/reference/frames) are a terrific technology that can help you build modern reactive web applications.
+They are similar to [iframes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) in that they focus on features like
+discrete isolated content, browser history, and scoped navigation... *with the caveat that they share their parent's DOM tree.*
 
-**TurboReflex** provides a thin layer to extend Turbo Frames with client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call) that run before Turbo Frames execute.
+**TurboReflex** extends Turbo Frames and adds support for client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call).
+Reflexes let you *sprinkle* ✨ in functionality that doesn't warrant the ceremony of typical [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) boilerplate *(routes, controllers, actions, etc...)*.
+Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, etc...
+Basically any feature where you've been tempted to create a non-RESTful action in a controller.
 
-This means that reactivity runs over HTTP.
+**Reflexes improve the developer experience (DX) of creating modern reactive applications.**
+They share the same mental model as React and other client side frameworks.
+
+1. **Trigger an event**
+2. **Change state**
+3. **(Re)render to reflect the state change**
+4. *repeat...*
+
+*The primary distinction being that **state** is wholly managed by the server.*
+
+Also, the fact that TurboReflex is a lightweight Turbo Frame extension means that reactivity runs over HTTP.
 **Web sockets are NOT used for the reactive critical path!** 🎉
 
 ## Sponsors
@@ -159,8 +173,7 @@ This example illustrates how to use TurboReflex to manage upvotes on a Post.
 <% end %>
 ```
 
-When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically rerender.
-Any additional Turbo Streams created in the reflex will be appended to the response and then executed on the client.
+When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically (re)render.
 
 ```ruby
 # app/reflexes/posts_reflex.rb
@@ -171,6 +184,12 @@ class PostsReflex < TurboReflex::Base
   end
 end
 ```
+
+Note that you can create additional Turbo Streams in the reflex.
+These additional streams will be appended to the standard Turbo Frame response.
+*This is an exceptionally powerful feature.*
+
+> 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
 ### Client Side Events
 
@@ -192,7 +211,7 @@ TurboReflex.registerEvent('click', ['a', 'button'])
 ```
 
 You can also register custom events and elements.
-Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace](https://shoelace.style/) web component library.
+Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
 ```js
 TurboReflex.registerEvent('sl-change', ['sl-switch'])
@@ -210,13 +229,14 @@ By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-
 
 ### Server Side Reflexes
 
-The attribute `data-turbo-reflex` specifies what Ruby class and method should be invoked. The attribute value uses RDoc notation. i.e. `ClassName#method_name`
+The attribute `data-turbo-reflex` specifies the Ruby class and method to invoke.
+*Set the value with RDoc notation. i.e. `ClassName#method_name`*
 
 ```erb
 <a data-turbo-reflex="DemoReflex#example">
 ```
 
-Reflexes can be defined anywhere in your app; however, we recommend that you define them in the `app` directory.
+Reflexes can live anywhere in your app, but we recommend you keep them in the `app` directory.
 
 ```diff
  |- app
@@ -226,8 +246,10 @@ Reflexes can be defined anywhere in your app; however, we recommend that you def
  |  |- views
 ```
 
-Reflexes define methods that can be invoked by the client.
-They are simple Ruby classes that inherit from `TurboReflex::Base` which exposes the following properties and methods.
+Server side reflexes define methods that can be invoked by the client.
+
+Reflexes are simple Ruby classes that inherit from `TurboReflex::Base`.
+They expose the following instance methods and properties.
 
 - `element` - a struct that represents the DOM element that triggered the reflex
 - `controller` - the Rails controller processing the Turbo Frame request
@@ -237,10 +259,12 @@ They are simple Ruby classes that inherit from `TurboReflex::Base` which exposes
 ```ruby
 # app/reflexes/demo_reflex.rb
 class DemoReflex < TurboReflex::Base
+  # The reflex method is invoked by an ActionController before filter.
+  # Standard Rails behavior takes over after the reflex method completes.
   def example
-    # logic...
-    # update server state...
-    # Normal Rails and Turbo Frame behavior take over after this
+    # - execute business logic
+    # - update state
+    # - append additional Turbo Streams
   end
 end
 ```
@@ -248,7 +272,7 @@ end
 ### Appending Turbo Streams
 
 It's possible to append additional Turbo Streams to the response in a reflex.
-This proves incredibly powerful when paired with [TurboReady](https://github.com/hopsoft/turbo_ready).
+*This proves incredibly powerful when paired with [TurboReady](https://github.com/hopsoft/turbo_ready).*
 
 ```ruby
 # app/reflexes/demo_reflex.rb
@@ -259,6 +283,8 @@ class DemoReflex < TurboReflex::Base
   end
 end
 ```
+
+> 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
 ### Broadcasting Turbo Streams
 
