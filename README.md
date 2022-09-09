@@ -250,14 +250,14 @@ Simply specify the `data-turbo-reflex` attribute.
 ```erb
 # app/views/posts/post.html.erb
 <!-- implicit frame targeting using form_with -->
-<%= turbo_frame dom_id(@post) do %>
+<%= turbo_frame_tag dom_id(@post) do %>
   <%= form_with model: @post, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
 <!-- implicit frame targeting using form_for -->
-<%= turbo_frame dom_id(@post) do %>
+<%= turbo_frame_tag dom_id(@post) do %>
   <%= form_for @post, remote: true, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
@@ -358,7 +358,7 @@ Consider a checkbox that toggles viewing **all** and **unread** posts.
 
 ```erb
 <!-- app/views/posts/index.html.erb -->
-<%= turbo_frame dom_id(@posts) do %>
+<%= turbo_frame_tag dom_id(@posts) do %>
   <%= check_box_tag :all, :all, @all, data: { turbo_reflex: "PostsReflex#toggle_all" } %>
   View All
   ...

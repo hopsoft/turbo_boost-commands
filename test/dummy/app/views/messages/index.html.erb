@@ -1,8 +1,0 @@
-<h1>Messages</h1>
-
-<%= render "template_button", content: "Start listening for broadcasts" do %>
-  <%= turbo_stream_from "messages" %>
-<% end %>
-
-<div id="messages">
-</div>

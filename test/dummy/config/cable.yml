@@ -2,7 +2,7 @@ development:
   adapter: async
 
 test:
-  adapter: inline
+  adapter: test
 
 production:
   adapter: redis

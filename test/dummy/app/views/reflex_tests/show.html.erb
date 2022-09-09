@@ -1,0 +1,9 @@
+<h1>Reflex Tests</h1>
+
+<%= turbo_frame_tag "increment-test" do %>
+  <h2>Increment Test</h2>
+  <p>
+    <h3>Value: <%= @value.to_i %></h3>
+    <button data-turbo-reflex="IncrementReflex#increment" data-value="<%= @value.to_i %>">Increment</button>
+  </p>
+<% end %>

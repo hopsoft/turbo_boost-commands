@@ -15,6 +15,6 @@
     "prettier-standard": "^16.4.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --minify --sourcemap --format=esm --outdir=app/assets/builds"
+    "build": "esbuild app/javascript/turbo_reflex.js --bundle --minify --sourcemap --format=esm --outfile=app/assets/javascripts/turbo_reflex.min.js"
   }
 }

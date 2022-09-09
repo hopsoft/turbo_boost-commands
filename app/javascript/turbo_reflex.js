@@ -51,9 +51,9 @@ function getFrameSrc (frameElement) {
   const frameSrc = frameElement.dataset.turboReflexFrameSrc
   if (!frameSrc)
     console.error(
-      `The 'data-turbo-reflex-frame-src' attribute for the frame '${frameId}' is not set!`,
-      `This attribute is set automatically for frames that load their content after being inserted into the DOM;`,
-      `however, frames that eager load their content server side on initial page render must set this attribute explicitly.`,
+      `The 'data-turbo-reflex-frame-src' attribute for the frame '${frameElement.id}' is not set!`,
+      `This attribute is set automatically for frames that load their content after being inserted into the DOM.`,
+      `Frames that eager load their content server side must set this attribute explicitly.`,
       frameElement
     )
   return frameSrc
