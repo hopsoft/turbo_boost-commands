@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "increment", data: { turbo_reflex_src: reflex_tests_path(test: "increment") } do %>
+  <%= link_to "Increment", reflex_tests_path(test: "increment") %>
+  <h2>Increment Test</h2>
+  <p>
+    <h3>Value: <%= @value.to_i %></h3>
+    <button data-turbo-reflex="IncrementReflex#increment" data-value="<%= @value.to_i %>">Increment</button>
+  </p>
+<% end %>

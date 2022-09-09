@@ -25,7 +25,9 @@ module TurboReflex::Controller
   end
 
   def turbo_reflex_requested?
-    turbo_reflex_params.present?
+    return false unless request.headers["Turbo-Reflex"].present?
+    return false unless turbo_reflex_params.present?
+    true
   end
 
   def turbo_reflex_name

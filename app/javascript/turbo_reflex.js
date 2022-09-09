@@ -1,17 +1,43 @@
 const registeredEvents = {}
-const turboFrameSources = {}
+const frameSources = {}
 
-addEventListener('turbo:frame-render', event => {
-  const frameId = event.target.id
-  const { location } = event.detail.fetchResponse
-  if (frameId && location) turboFrameSources[frameId] = location.href
+// fires before making a turbo HTTP request
+addEventListener('turbo:before-fetch-request', event => {
+  const frame = event.target
+  const { turboReflexActive } = frame.dataset
+  if (turboReflexActive) {
+    const { fetchOptions } = event.detail
+    fetchOptions.headers['Turbo-Reflex'] = event.target.id
+  }
 })
 
+// fires after receiving a turbo HTTP response
+addEventListener('turbo:before-fetch-response', event => {
+  const frame = event.target
+  frameSources[frame.id] = frame.src
+  delete frame.dataset.turboReflexActive
+})
+
+// fires when a frame element is navigated
 addEventListener('turbo:frame-load', event => {
   const frame = event.target
-  const src = event.target.src || turboFrameSources[frame.id]
-  frame.dataset.turboReflexFrameSrc = src
-  delete turboFrameSources[frame.id]
+  frame.dataset.turboReflexSrc =
+    frameSources[frame.id] || frame.src || frame.dataset.turboReflexSrc
+  delete frameSources[frame.id]
+})
+
+// fires before a stream response is rendered
+addEventListener('turbo:before-stream-render', event => {
+  const stream = event.target
+  const frame = stream.templateContent.querySelector('turbo-frame')
+  if (!frame) return
+  const frameId = frame.id
+  setTimeout(() => {
+    const f = document.getElementById(frameId)
+    f.dataset.turboReflexSrc =
+      frameSources[frame.id] || f.src || f.dataset.turboReflexSrc
+    delete frameSources[frameId]
+  }, 100)
 })
 
 function isMatch (eventName, tagName) {
@@ -35,7 +61,7 @@ function getFrameId (reflexElement) {
   if (!frameId)
     console.error(
       `The reflex element does not specify a frame!`,
-      `Please move the reflex element inside a <turbo-frame> or set either the 'data-turbo-reflex-frame' or 'data-turbo-frame' attribute.`,
+      `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-reflex-frame' or 'data-turbo-frame' attribute.`,
       reflexElement
     )
   return frameId
@@ -48,12 +74,12 @@ function getFrameElement (frameId) {
 }
 
 function getFrameSrc (frameElement) {
-  const frameSrc = frameElement.dataset.turboReflexFrameSrc
+  const frameSrc = frameElement.dataset.turboReflexSrc || frameElement.src
   if (!frameSrc)
     console.error(
-      `The 'data-turbo-reflex-frame-src' attribute for the frame '${frameElement.id}' is not set!`,
-      `This attribute is set automatically for frames that load their content after being inserted into the DOM.`,
-      `Frames that eager load their content server side must set this attribute explicitly.`,
+      `The the 'src' for frame '${frameElement.id}' is unknown!`,
+      `TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.`,
+      `Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`,
       frameElement
     )
   return frameSrc
@@ -126,6 +152,8 @@ function invokeReflex (event) {
     frame: frameId,
     element: getAttributes(reflexElement)
   }
+
+  frameElement.dataset.turboReflexActive = true
 
   if (reflexElement.tagName.toLowerCase() === 'form') {
     const input = document.createElement('input')
