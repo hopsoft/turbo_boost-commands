@@ -91,7 +91,7 @@ module TurboReflex::Controller
   end
 
   def client_turbo_reflex_token
-    request.headers["Turbo-Reflex"].to_s
+    (request.headers["Turbo-Reflex"] || turbo_reflex_params[:token]).to_s
   end
 
   def new_turbo_reflex_token

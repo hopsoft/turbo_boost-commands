@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class ReflexTestsControllerTest < ActionDispatch::IntegrationTest
+class TestsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

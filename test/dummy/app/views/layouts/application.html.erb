@@ -1,17 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full bg-gray-100">
   <head>
-    <title>Dummy</title>
+    <title>TurobReflex Demos</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= turbo_reflex_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="h-full">
+    <div class="min-h-full">
+      <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <%= image_tag "turbo-reflex-mark.webp", class: "h-8", alt: "TurboReflex" %>
+              </div>
+              <div class="hidden md:block">
+                <div class="ml-3 flex items-baseline space-x-4">
+                  <span class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">TurboReflex <small class="font-light text-fuchsia-300">demos</small></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main>
+        <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <%= yield %>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

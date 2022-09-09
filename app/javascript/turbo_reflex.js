@@ -45,7 +45,7 @@ function invokeReflex (event) {
   const frameSrc = findFrameSrc(frame)
   if (!frameSrc) return
 
-  const reflexPayload = {
+  const payload = {
     frameId: frameId,
     element: buildAttributePayload(element)
   }
@@ -53,16 +53,17 @@ function invokeReflex (event) {
   frame.dataset.turboReflexActive = true
 
   if (element.tagName.toLowerCase() === 'form') {
+    payload.token = Security.token
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = 'turbo_reflex'
-    input.value = JSON.stringify(reflexPayload)
+    input.value = JSON.stringify(payload)
     element.appendChild(input)
   } else {
     event.preventDefault()
     event.stopPropagation()
     const frameURL = buildURL(frameSrc)
-    frameURL.searchParams.set('turbo_reflex', JSON.stringify(reflexPayload))
+    frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
     frame.src = frameURL.toString()
   }
 }

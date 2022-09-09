@@ -1,15 +1,47 @@
 <%= turbo_frame_tag "increment" do %>
-  <div class="test">
-    <h2>Increment Test: <%= @value.to_i %></h2>
-    <p>
-      <%= link_to "Turbo", test_path("increment") %>
-    </p>
-    <p>
-      <%= link_to "TurboReflex Increment", nil, data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %>
-    </p>
-    <p>
-      <button data-turbo-reflex="IncrementReflex#increment" data-value="<%= @value.to_i %>">TurboReflex Increment</button>
-    </p>
+  <%= render "components/hero", title: "Increment", subtitle: "A simple increment demo",
+    description: "This entire demo is inside of a single Turbo Frame" do %>
+    <%= render "components/stat", label: "Counter", value: @value.to_i, bg: @value.to_i.zero? ? "bg-slate-100" : "bg-gradient-to-r from-lime-200 to-green-500" %>
+
+    <div class="overflow-hidden bg-white shadow sm:rounded-lg mt-2">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">Applicant Information</h3>
+        <p class="mt-1 max-w-2xl text-sm text-zinc-500 font-light">Personal details and application.</p>
+      </div>
+      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+        <dl class="sm:divide-y sm:divide-gray-200">
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              Reflex link
+              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a data-turbo-reflex&gt;</code></small>
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <%= link_to "Increment", nil, class: "underline",
+                data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %>
+            </dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              Reflex button
+              <small class="text-gray-400 block font-light"><em>button tag (not part of a form)</em><br><code>&lt;button data-turbo-reflex&gt;</code></small>
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <%= button_tag "Increment", class: button_css, data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i } %>
+            </dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
+              Basic link
+              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a&gt;</code></small>
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <%= link_to "Reload the frame without triggering a reflex", test_path("increment"), class: "underline" %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
     <%= render "sanity_check" %>
-  </div>
+  <% end %>
 <% end %>
