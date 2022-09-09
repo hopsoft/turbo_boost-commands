@@ -1,0 +1,15 @@
+<%= turbo_frame_tag "increment" do %>
+  <div class="test">
+    <h2>Increment Test: <%= @value.to_i %></h2>
+    <p>
+      <%= link_to "Turbo", test_path("increment") %>
+    </p>
+    <p>
+      <%= link_to "TurboReflex Increment", nil, data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %>
+    </p>
+    <p>
+      <button data-turbo-reflex="IncrementReflex#increment" data-value="<%= @value.to_i %>">TurboReflex Increment</button>
+    </p>
+    <%= render "sanity_check" %>
+  </div>
+<% end %>

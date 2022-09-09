@@ -17,7 +17,7 @@ module TurboReflex::Controller
   end
 
   def turbo_reflex_params
-    return nil if params[:turbo_reflex].nil?
+    return ActionController::Parameters.new if params[:turbo_reflex].nil?
     @turbo_reflex_params ||= begin
       payload = JSON.parse(params[:turbo_reflex]).deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
@@ -25,14 +25,21 @@ module TurboReflex::Controller
   end
 
   def turbo_reflex_requested?
-    return false unless request.headers["Turbo-Reflex"].present?
+    return false unless client_turbo_reflex_token.present?
     return false unless turbo_reflex_params.present?
     true
   end
 
+  def turbo_reflex_element
+    return nil if turbo_reflex_params.blank?
+    @turbo_reflex_element ||= Struct
+      .new(*turbo_reflex_params[:element].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
+      .new(*turbo_reflex_params[:element].values)
+  end
+
   def turbo_reflex_name
     return nil unless turbo_reflex_requested?
-    turbo_reflex_params.require(:name)
+    turbo_reflex_element.data_turbo_reflex
   end
 
   def turbo_reflex_class_name
@@ -53,14 +60,8 @@ module TurboReflex::Controller
     @turbo_reflex_instance ||= turbo_reflex_class&.new(self)
   end
 
-  def turbo_reflex_element
-    return nil if turbo_reflex_params.nil?
-    @turbo_reflex_element ||= Struct.new(*turbo_reflex_params[:element].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
-      .new(*turbo_reflex_params[:element].values)
-  end
-
   def turbo_reflex_valid?
-    return false if request.get? && request.headers["Turbo-Frame"].blank?
+    return false if request.get? && client_turbo_reflex_token.blank?
     return false unless valid_turbo_reflex_token?
     return false unless turbo_reflex_instance.is_a?(TurboReflex::Base)
     turbo_reflex_instance.respond_to? turbo_reflex_method_name
@@ -89,6 +90,10 @@ module TurboReflex::Controller
     ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
   end
 
+  def client_turbo_reflex_token
+    request.headers["Turbo-Reflex"].to_s
+  end
+
   def new_turbo_reflex_token
     @new_turbo_reflex_token ||= SecureRandom.urlsafe_base64(32)
   end
@@ -98,13 +103,13 @@ module TurboReflex::Controller
   end
 
   def valid_turbo_reflex_token?
-    return false unless turbo_reflex_message_verifier.valid_message?(turbo_reflex_params[:token].to_s)
-    unmasked_token = turbo_reflex_message_verifier.verify(turbo_reflex_params[:token])
+    return false unless turbo_reflex_message_verifier.valid_message?(client_turbo_reflex_token)
+    unmasked_token = turbo_reflex_message_verifier.verify(client_turbo_reflex_token)
     unmasked_token == current_turbo_reflex_token
   end
 
   def assign_turbo_reflex_token
-    return unless turbo_reflex_requested? || request.headers["Turbo-Frame"].nil?
+    return unless turbo_reflex_requested? || client_turbo_reflex_token.blank?
     session[:turbo_reflex_token] = new_turbo_reflex_token
     append_turbo_reflex_content turbo_stream.replace("turbo-reflex-token", turbo_reflex_meta_tag)
   end

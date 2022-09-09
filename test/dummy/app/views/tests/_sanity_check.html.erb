@@ -1,0 +1,14 @@
+<hr>
+<p>
+  Random: <%= SecureRandom.urlsafe_base64 %>
+</p>
+<p>
+  Reflex Requested:
+  <%= tag.span turbo_reflex_requested?.to_s,
+    class: token_list(red: !turbo_reflex_requested?, green: turbo_reflex_requested?) %>
+</p>
+<p>
+  Reflex Performed:
+  <%= tag.span turbo_reflex_performed?.to_s,
+    class: token_list(red: !turbo_reflex_requested?, green: turbo_reflex_requested?) %>
+</p>
