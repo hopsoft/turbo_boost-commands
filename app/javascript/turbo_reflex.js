@@ -1,5 +1,6 @@
 import './frame_sources'
 import Security from './security'
+import LifecycleEvents from './lifecycle_events'
 import {
   findClosestReflex,
   findClosestFrame,
@@ -12,7 +13,8 @@ import {
   registerEventListener,
   registerEvent,
   registeredEvents,
-  isRegisteredEvent
+  isRegisteredEvent,
+  logRegisteredEvents
 } from './event_registry'
 
 // fires before making a turbo HTTP request
@@ -31,40 +33,66 @@ function buildURL (urlString) {
 }
 
 function invokeReflex (event) {
-  const element = findClosestReflex(event.target)
-  if (!element) return
+  let element, frameId, frame, frameSrc
+  try {
+    element = findClosestReflex(event.target)
+    if (!element) return
 
-  if (!isRegisteredEvent(event.type, element.tagName)) return
+    if (!isRegisteredEvent(event.type, element.tagName)) return
 
-  const frameId = findFrameId(element)
-  if (!frameId) return
+    LifecycleEvents.dispatch(LifecycleEvents.beforeStart, element, { element })
 
-  const frame = findFrame(frameId)
-  if (!frame) return
+    frameId = findFrameId(element)
+    if (!frameId) return
 
-  const frameSrc = findFrameSrc(frame)
-  if (!frameSrc) return
+    frame = findFrame(frameId)
+    if (!frame) return
 
-  const payload = {
-    frameId: frameId,
-    element: buildAttributePayload(element)
-  }
+    frameSrc = findFrameSrc(frame)
+    if (!frameSrc) return
 
-  frame.dataset.turboReflexActive = true
+    const payload = {
+      frameId: frameId,
+      element: buildAttributePayload(element)
+    }
 
-  if (element.tagName.toLowerCase() === 'form') {
-    payload.token = Security.token
-    const input = document.createElement('input')
-    input.type = 'hidden'
-    input.name = 'turbo_reflex'
-    input.value = JSON.stringify(payload)
-    element.appendChild(input)
-  } else {
-    event.preventDefault()
-    event.stopPropagation()
-    const frameURL = buildURL(frameSrc)
-    frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
-    frame.src = frameURL.toString()
+    LifecycleEvents.dispatch(LifecycleEvents.start, element, {
+      element,
+      frameId,
+      frame,
+      frameSrc,
+      payload
+    })
+    frame.dataset.turboReflexActive = true
+    frame.dataset.turboReflexElementId = element.id
+
+    if (element.tagName.toLowerCase() === 'form') {
+      payload.token = Security.token
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = 'turbo_reflex'
+      input.value = JSON.stringify(payload)
+      element.appendChild(input)
+    } else {
+      event.preventDefault()
+      event.stopPropagation()
+      const frameURL = buildURL(frameSrc)
+      frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
+      frame.src = frameURL.toString()
+    }
+  } catch (error) {
+    console.error(
+      `TurboReflex encountered an unexpected error!`,
+      { element, frameId, frame, frameSrc, target: event.target },
+      error
+    )
+    LifecycleEvents.dispatch(LifecycleEvents.error, element || document, {
+      element,
+      frameId,
+      frame,
+      frameSrc,
+      error
+    })
   }
 }
 
@@ -74,4 +102,8 @@ registerEvent('change', ['input', 'select', 'textarea'])
 registerEvent('submit', ['form'])
 registerEvent('click', ['*'])
 
-export default { registeredEvents, registerEvent }
+export default {
+  registerEvent,
+  logRegisteredEvents,
+  logLifecycleEventNames: LifecycleEvents.logEventNames
+}

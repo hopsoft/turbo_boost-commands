@@ -1,3 +1,5 @@
+import LifecycleEvents from './lifecycle_events'
+
 function findClosestReflex (element) {
   return element.closest('[data-turbo-reflex]')
 }
@@ -12,30 +14,39 @@ function findFrameId (element) {
     const frame = findClosestFrame(element)
     if (frame) id = frame.id
   }
-  if (!id)
+  if (!id) {
     console.error(
       `The reflex element does not specify a frame!`,
       `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-reflex-frame' or 'data-turbo-frame' attribute.`,
       element
     )
+    LifecycleEvents.dispatch(LifecycleEvents.missingFrameId, element, {
+      element
+    })
+  }
   return id
 }
 
 function findFrame (id) {
   const frame = document.getElementById(id)
-  if (!frame) console.error(`The frame '${id}' does not exist!`)
+  if (!frame) {
+    console.error(`The frame '${id}' does not exist!`)
+    LifecycleEvents.dispatch(LifecycleEvents.missingFrame, document, { id })
+  }
   return frame
 }
 
 function findFrameSrc (frame) {
   const frameSrc = frame.dataset.turboReflexSrc || frame.src
-  if (!frameSrc)
+  if (!frameSrc) {
     console.error(
       `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!`,
       `TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.`,
       `Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`,
       frame
     )
+    LifecycleEvents.dispatch(LifecycleEvents.missingFrameSrc, frame, { frame })
+  }
   return frameSrc
 }
 
