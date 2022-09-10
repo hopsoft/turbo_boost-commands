@@ -6,6 +6,6 @@ class TestsController < ApplicationController
   end
 
   def update
-    render html: turbo_stream.invoke("console.log", args: ["You submitted a form!"])
+    render params[:id]
   end
 end

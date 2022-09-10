@@ -31,7 +31,7 @@ function findFrameSrc (frame) {
   const frameSrc = frame.dataset.turboReflexSrc || frame.src
   if (!frameSrc)
     console.error(
-      `The the 'src' for frame '${frame.id}' is unknown!`,
+      `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!`,
       `TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.`,
       `Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`,
       frame

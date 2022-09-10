@@ -12,6 +12,15 @@
         <dl class="sm:divide-y sm:divide-gray-200">
           <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">
+              Basic link
+              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a&gt;</code></small>
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <%= link_to "Reload the frame without triggering a reflex", test_path("increment"), class: "underline" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">
               Reflex link
               <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a data-turbo-reflex&gt;</code></small>
             </dt>
@@ -31,11 +40,14 @@
           </div>
           <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">
-              Basic link
-              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a&gt;</code></small>
+              Form
+              <small class="text-gray-400 block font-light"><em>form tag</em><br><code>&lt;form data-turbo-reflex&gt;</code></small>
             </dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <%= link_to "Reload the frame without triggering a reflex", test_path("increment"), class: "underline" %>
+              <%= form_with url: test_path("increment"), method: :patch,
+                data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i } do |form| %>
+                <%= form.submit "Increment", class: button_css %>
+              <% end %>
             </dd>
           </div>
         </dl>
