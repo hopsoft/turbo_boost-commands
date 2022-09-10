@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class TestsController < ApplicationController
+class DemosController < ApplicationController
   def show
     render params[:id]
   end
 
   def update
-    render params[:id]
+    render params[:id] # unless performed?
   end
 end
