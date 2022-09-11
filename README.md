@@ -52,9 +52,11 @@
   - [Installation](#installation)
   - [Setup](#setup)
   - [Usage](#usage)
-    - [Client Side Events](#client-side-events)
+    - [Reflex Triggers](#reflex-triggers)
+    - [Lifecycle Events](#lifecycle-events)
     - [Targeting Frames](#targeting-frames)
     - [Working with Forms](#working-with-forms)
+    - [Lifecycle Events](#lifecycle-events-1)
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Setting Instance Variables](#setting-instance-variables)
@@ -191,7 +193,7 @@ These additional streams will be appended to the standard Turbo Frame response.
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
-### Client Side Events
+### Reflex Triggers
 
 TurboReady uses [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture events that can trigger reflexes.
 
@@ -216,6 +218,18 @@ Here's an example that sets up monitoring for the `sl-change` event on the `sl-s
 ```js
 TurboReflex.registerEvent('sl-change', ['sl-switch'])
 ```
+
+### Lifecycle Events
+
+TurboReflex supports the following lifecycle events.
+
+- `turbo-reflex:before-start` - fires before reflex processing starts
+- `turbo-reflex:start` - fires before the reflex is sent to the server
+- `turbo-reflex:finish` - fires after the server has processed the reflex and responded
+- `turbo-reflex:missing-frame-id` - fires if the reflex cannot determine the target frame id
+- `turbo-reflex:missing-frame` - fires if the the reflex cannot locate the frame element
+- `turbo-reflex:missing-frame-src` - fires if the reflex cannot determine the frame's `src`
+- `turbo-reflex:error` - fires if an unexpected error occurs
 
 ### Targeting Frames
 
@@ -289,6 +303,8 @@ class PostsController < ApplicationController
   end
 end
 ```
+
+### Lifecycle Events
 
 ### Server Side Reflexes
 
