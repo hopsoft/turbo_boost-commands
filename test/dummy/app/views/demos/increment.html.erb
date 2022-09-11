@@ -1,59 +1,92 @@
-<%= turbo_frame_tag "increment" do %>
-  <%= render "components/hero", title: "Increment", subtitle: "A simple increment demo",
-    description: "This entire demo is inside of a single Turbo Frame" do %>
-    <%= render "components/stat", label: "Counter", value: @value.to_i, bg: @value.to_i.zero? ? "bg-slate-100" : "bg-gradient-to-r from-lime-200 to-green-500" %>
+<%= turbo_frame_tag "increment", data: { trubo_reflex_src: "" } do %>
+  <div class="indicator w-full">
+    <span class="indicator-item indicator-center badge badge-secondary"><code>&lt;turbo-frame&gt;</code></span>
 
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg mt-2">
-      <div class="px-4 py-5 sm:px-6">
-        <h3 class="text-lg font-medium leading-6 text-gray-900">Applicant Information</h3>
-        <p class="mt-1 max-w-2xl text-sm text-zinc-500 font-light">Personal details and application.</p>
-      </div>
-      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
-        <dl class="sm:divide-y sm:divide-gray-200">
-          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Basic link
-              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a&gt;</code></small>
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <%= link_to "Reload the frame without triggering a reflex", demo_path("increment"), class: "underline" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Reflex link
-              <small class="text-gray-400 block font-light"><em>anchor tag</em> <code>&lt;a data-turbo-reflex&gt;</code></small>
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <%= link_to "Increment", nil, class: "underline",
-                data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %>
-            </dd>
-          </div>
-          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Reflex button
-              <small class="text-gray-400 block font-light"><em>button tag (not part of a form)</em><br><code>&lt;button data-turbo-reflex&gt;</code></small>
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <%= button_tag "Increment", class: button_css, data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i } %>
-            </dd>
-          </div>
-          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Form
-              <small class="text-gray-400 block font-light"><em>form tag</em><br><code>&lt;form data-turbo-reflex&gt;</code></small>
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <%= form_with id: "form-increment", url: demo_path("increment"), method: :patch,
-                data: { turbo_reflex: "IncrementReflex#form_increment", value: @value.to_i } do |form| %>
-                <%= form.submit "Increment", class: button_css %>
-              <% end %>
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </div>
+    <%= render "components/demo", title: "Increment", subtitle: "A simple increment demo" do %>
 
-    <%= render "sanity_check" %>
-  <% end %>
+      <%= render "components/stats" do %>
+        <%= render "components/stat", title: "Counter", value: number_to_human(@value.to_i, precision: 0), class: token_list("bg-primary text-primary-content": @value.to_i > 0) %>
+        <%= render "components/stat", title: "Request Fingerprint", value: SecureRandom.alphanumeric[0, 6].upcase, value_class: "font-mono" %>
+        <%= render "components/stat", title: "HTTP Method", value: request.method, value_class: token_list("text-primary": request.get?, "text-secondary": !request.get?) %>
+        <%= render "components/stat", title: "Reflex Requested", value: turbo_reflex_requested?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_requested?) %>
+        <%= render "components/stat", title: "Reflex Performed", value: turbo_reflex_performed?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_performed?) %>
+      <% end %>
+
+      <% content_for :table_head, render("components/table_head", columns: ["", "Demo", "Code", "Description"]) %>
+      <%= render "components/table" do %>
+        <% # Standard Link .................................................................................. %>
+        <tr>
+          <td>1</td>
+          <td><%= link_to "Standard Link", demo_path("increment"), class: "link link-accent" %></td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;a href='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a standard link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should reload the frame's content without triggering a reflex.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Link .................................................................................... %>
+        <tr>
+          <td>2</td>
+          <td><%= link_to "Reflex Link", nil, class: "link link-accent", data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %></td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;a </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should trigger a reflex and then reload the frame's content.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Button .................................................................................. %>
+        <tr>
+          <td>3</td>
+          <td><%= button_tag "Reflex Button", class: "btn btn-accent btn-outline", data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i } %></td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;button </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex <kbd class="kbd kbd-sm text-accent">&lt;button&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should trigger a reflex and then reload the frame's content.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Form .................................................................................... %>
+        <tr>
+          <td>4</td>
+          <td>
+            <%= form_with id: "form-increment", url: demo_path("increment"), method: :patch,
+              data: { turbo_reflex: "IncrementReflex#form_increment", value: @value.to_i } do |form| %>
+              <%= button_tag "Reflex Form", type: "submit", class: "btn btn-accent btn-outline" %>
+            <% end %>
+          </td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;form </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+              <pre><code>  &lt;button type="submit"&gt;Reflex Form&lt;button&gt;</code></pre>
+              <pre><code>&lt;form&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex <kbd class="kbd kbd-sm text-accent">&lt;form&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Submit should trigger a reflex and then reload the frame's content.
+            </small>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+
+  </div>
 <% end %>
