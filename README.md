@@ -60,6 +60,7 @@
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Setting Instance Variables](#setting-instance-variables)
+    - [Hijacking the Response](#hijacking-the-response)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [License](#license)
   - [Contributing](#contributing)
@@ -400,6 +401,41 @@ class PostsController < ApplicationController
   end
 end
 ```
+
+### Hijacking the Response
+
+Sometimes you may want to hijack the normal Rails response from within a reflex.
+
+Here's how we might accomplish this.
+
+```erb
+<!-- app/views/users/show.html.erb -->
+<%= turbo_frame_tag "user-alt" do %>
+  <%= form_with model: @user, data: { turbo_reflex: "UserReflex#example" } do |form| %>
+    ...
+  <% end %>
+<% end %>
+```
+
+The form above will send a `PATCH` request to `users#update`,
+but we'll hijack the handling in the reflex so we never hit `users#update`.
+
+```ruby
+# app/reflexes/user_reflex.html.erb
+class UserReflex < TurboReflex::Base
+  def example
+    # business logic, save record, etc...
+
+    controller.render html: "<turbo-frame id='user-alt'>We Hijacked the response!</turbo-frame>".html_safe
+
+    # UsersController#update will not be called because
+    # we've already rendered the response in a before action here
+  end
+end
+```
+
+Remember that reflexes are invoked by a controller [before filter](https://guides.rubyonrails.org/action_controller_overview.html#filters)
+which means that if we render from inside a reflex, the standard request cycle gets halted.
 
 ### Broadcasting Turbo Streams
 
