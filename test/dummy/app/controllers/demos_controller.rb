@@ -6,6 +6,6 @@ class DemosController < ApplicationController
   end
 
   def update
-    render params[:id] # unless performed?
+    render params[:id]
   end
 end
