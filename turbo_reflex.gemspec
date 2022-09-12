@@ -35,4 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "standardrb"
   s.add_development_dependency "turbo_ready"
   s.add_development_dependency "webdrivers"
+  s.add_development_dependency "cuprite", "~> 0.13"
 end

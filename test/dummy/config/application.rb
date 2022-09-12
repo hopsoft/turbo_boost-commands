@@ -8,6 +8,8 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 require "turbo_reflex"
+require "importmap-rails"
+require "sprockets/railtie"
 
 module Dummy
   class Application < Rails::Application

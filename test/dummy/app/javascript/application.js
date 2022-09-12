@@ -10,16 +10,16 @@ window.TurboReady = TurboReady
 window.TurboReflex = TurboReflex
 
 // for debugging
-const lifecycleEventNames = [
-  'turbo-reflex:before-start',
-  'turbo-reflex:start',
-  'turbo-reflex:finish',
-  'turbo-reflex:error',
-  'turbo-reflex:missing-frame-id',
-  'turbo-reflex:missing-frame',
-  'turbo-reflex:missing-frame-src'
-]
-
-lifecycleEventNames.forEach(name =>
-  document.addEventListener(name, event => console.log(name, event.detail))
-)
+// const lifecycleEventNames = [
+//   'turbo-reflex:before-start',
+//   'turbo-reflex:start',
+//   'turbo-reflex:finish',
+//   'turbo-reflex:error',
+//   'turbo-reflex:missing-frame-id',
+//   'turbo-reflex:missing-frame',
+//   'turbo-reflex:missing-frame-src'
+// ]
+//
+// lifecycleEventNames.forEach(name =>
+//   document.addEventListener(name, event => console.log(name, event.detail))
+// )
