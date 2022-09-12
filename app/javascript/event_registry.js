@@ -7,7 +7,6 @@ function registerEventListener (fn) {
 
 function registerEvent (eventName, tagNames) {
   registeredEvents[eventName] = tagNames
-  document.removeEventListener(eventName, eventListener, true)
   document.addEventListener(eventName, eventListener, true)
 }
 

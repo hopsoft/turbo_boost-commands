@@ -75,7 +75,6 @@ function invokeReflex (event) {
       element.appendChild(input)
     } else {
       event.preventDefault()
-      event.stopPropagation()
       const frameURL = buildURL(frameSrc)
       frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
       frame.src = frameURL.toString()
