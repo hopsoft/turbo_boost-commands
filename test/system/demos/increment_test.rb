@@ -7,11 +7,12 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     find_by_id("standard-link").click
 
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "GET", find_by_id("stat-method", text: /GET/).text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint")
   end
 
@@ -19,10 +20,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     find_by_id("reflex-link").click
 
+    assert_equal "GET", find_by_id("stat-method", text: /GET/).text
     assert_equal "1", find_by_id("stat-counter", text: /1/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end
@@ -31,10 +33,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     5.times { find_by_id("reflex-link").click }
 
+    assert_equal "GET", find_by_id("stat-method", text: /GET/).text
     assert_equal "5", find_by_id("stat-counter", text: /5/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end
@@ -43,10 +46,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     find_by_id("reflex-button").click
 
+    assert_equal "GET", find_by_id("stat-method", text: /GET/).text
     assert_equal "1", find_by_id("stat-counter", text: /1/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end
@@ -55,10 +59,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     5.times { find_by_id("reflex-button").click }
 
+    assert_equal "GET", find_by_id("stat-method", text: /GET/).text
     assert_equal "5", find_by_id("stat-counter", text: /5/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end
@@ -67,10 +72,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     find_by_id("reflex-form-submit").click
 
+    assert_equal "POST", find_by_id("stat-method", text: /POST/).text
     assert_equal "1", find_by_id("stat-counter", text: /1/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end
@@ -79,10 +85,11 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     fingerprint = find_by_id("stat-fingerprint").text
-    assert_equal "0", find_by_id("stat-counter").text
+    assert_equal "0", find_by_id("stat-counter", text: /0/).text
 
     5.times { find_by_id("reflex-form-submit").click }
 
+    assert_equal "POST", find_by_id("stat-method", text: /POST/).text
     assert_equal "5", find_by_id("stat-counter", text: /5/).text
     assert_not_equal fingerprint, find_by_id("stat-fingerprint").text
   end

@@ -11,11 +11,11 @@
 
       <% content_for :table_head, render("components/table_head", columns: ["", "Demo", "Code", "Description"]) %>
       <%= render "components/table" do %>
-        <% # Reflex Link (same frame) ..................................................................... %>
+        <% # Reflex Link (this frame) ..................................................................... %>
         <tr>
           <td>1</td>
           <td>
-            <%= link_to "Update this Frame", demo_path("multiple_frame_2"), id: "reflex-link-other-frame-2", class: "link link-accent",
+            <%= link_to "Update this Frame", demo_path("multiple_frame_2"), id: "reflex-link-this-frame-2", class: "link link-accent",
               data: { turbo_reflex: "MultipleFramesReflex#update", key: :value_2 } %>
           </td>
           <td>
@@ -49,7 +49,7 @@
             </small>
           </td>
         </tr>
-        <% # Reflex Button (same frame) ................................................................... %>
+        <% # Reflex Button (this frame) ................................................................... %>
         <tr>
           <td>3</td>
           <td>
@@ -72,9 +72,9 @@
         <tr>
           <td>4</td>
           <td>
-            <%= form_with id: "form-2", url: demo_path("multiple_frame_1"), method: :patch,
+            <%= form_with id: "reflex-form-2", url: demo_path("multiple_frame_1"), method: :patch,
               data: { turbo_frame: "multiple-frame-1", turbo_reflex: "MultipleFramesReflex#reset", key: :value_1 } do |form| %>
-              <%= button_tag "Reset other Frame", type: "submit", class: "btn btn-accent btn-outline" %>
+              <%= button_tag "Reset other Frame", id: "reflex-form-2-submit", type: "submit", class: "btn btn-accent btn-outline" %>
             <% end %>
           </td>
           <td>
