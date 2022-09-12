@@ -22,8 +22,10 @@ Gem::Specification.new do |s|
   s.add_dependency "turbo-rails", ">= 1.1"
 
   s.add_development_dependency "capybara"
+  s.add_development_dependency "cuprite"
   s.add_development_dependency "importmap-rails"
   s.add_development_dependency "magic_frozen_string_literal"
+  s.add_development_dependency "minitest-reporters"
   s.add_development_dependency "net-smtp"
   s.add_development_dependency "pry-byebug"
   s.add_development_dependency "puma"
@@ -34,5 +36,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "standardrb"
   s.add_development_dependency "turbo_ready"
   s.add_development_dependency "webdrivers"
-  s.add_development_dependency "cuprite", "~> 0.13"
 end
