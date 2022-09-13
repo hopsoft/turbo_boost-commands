@@ -1,7 +1,7 @@
 {
   "name": "turbo_reflex",
   "version": "0.0.1",
-  "description": "Future home of TurboReflex",
+  "description": "Reflexes for Turbo Frames that help you build robust reactive applications",
   "main": "app/assets/builds/turbo_reflex.js",
   "repository": "https://github.com/hopsoft/turbo_reflex",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",

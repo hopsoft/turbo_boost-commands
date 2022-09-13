@@ -8,9 +8,8 @@ Gem::Specification.new do |s|
   s.authors = ["Nate Hopkins (hopsoft)"]
   s.email = ["natehop@gmail.com"]
   s.homepage = "https://github.com/hopsoft/turbo_reflex"
-  s.summary = "TurboReflex extends Turbo Frames with reflexes to help you build robust reactive applications."
-  s.description = "TurboReflex extends Turbo Frames by adding support for client triggered reflexes (think RPC) which let you sprinkle in functionality that doesn't warrant the ceremony of typical REST boilerplate (routes, controllers, actions, etc...).
-"
+  s.summary = "Reflexes for Turbo Frames that help you build robust reactive applications"
+  s.description = "TurboReflex extends Turbo Frames and adds support for client triggered reflexes (think RPC) which let you sprinkle in functionality and skip the REST boilerplate."
   s.license = "MIT"
 
   s.metadata["homepage_uri"] = s.homepage
