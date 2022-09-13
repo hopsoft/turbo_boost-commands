@@ -87,12 +87,12 @@ They share the same mental model as React and other client side frameworks.
 
 1. **Trigger an event**
 2. **Change state**
-3. **(Re)render to reflect the state change**
+3. **(Re)render to reflect the new state**
 4. *repeat...*
 
-*The primary distinction being that **state** is wholly managed by the server.*
+*The primary distinction being that __state is wholly managed by the server__.*
 
-Also, the fact that TurboReflex is a lightweight Turbo Frame extension means that reactivity runs over HTTP.
+TurboReflex is a lightweight Turbo Frame extension... which means that reactivity runs over HTTP.
 **Web sockets are NOT used for the reactive critical path!** 🎉
 
 ## Sponsors
