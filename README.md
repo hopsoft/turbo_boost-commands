@@ -442,12 +442,25 @@ The best way to learn this stuff is from working examples.
 Be sure to clone the library and run the test application.
 Then dig into the internals.
 
+#### Running Locally
+
 ```sh
 git clone https://github.com/hopsoft/turbo_reflex.git
 cd turbo_reflex
 bundle
 cd test/dummy
 bin/rails s
+# View the app in a browser at http://localhost:3000
+```
+
+#### Running in Docker
+
+Docker users can get up and running even faster.
+
+```sh
+git clone https://github.com/hopsoft/turbo_reflex.git
+cd turbo_reflex
+docker compose up -d
 # View the app in a browser at http://localhost:3000
 ```
 
