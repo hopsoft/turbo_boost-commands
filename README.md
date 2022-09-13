@@ -56,12 +56,12 @@
     - [Lifecycle Events](#lifecycle-events)
     - [Targeting Frames](#targeting-frames)
     - [Working with Forms](#working-with-forms)
-    - [Lifecycle Events](#lifecycle-events-1)
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Setting Instance Variables](#setting-instance-variables)
     - [Hijacking the Response](#hijacking-the-response)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
+    - [Putting it All Together](#putting-it-all-together)
   - [License](#license)
   - [Contributing](#contributing)
   - [Todos](#todos)
@@ -188,9 +188,8 @@ class PostsReflex < TurboReflex::Base
 end
 ```
 
-Note that you can create additional Turbo Streams in the reflex.
-These additional streams will be appended to the standard Turbo Frame response.
-*This is an exceptionally powerful feature.*
+Did you notice that you can append Turbo Streams in the reflex.
+These additional streams are added to the response after the controller action completes and the view is rendered.
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
@@ -285,28 +284,6 @@ Simply specify the `data-turbo-reflex` attribute.
 <% end %>
 ```
 
-```ruby
-# app/controllers/posts_controller.rb
-class PostsController < ApplicationController
-  def update
-    respond_to do |format|
-      if @post.update post_params
-        format.turbo_stream
-
-        # or render inline...
-        # format.turbo_stream {
-        #   render turbo_stream: turbo_stream.replace("post_#{@post.id}", partial: "posts/post", assigns: {post: @post})
-        # }
-      else
-        ...
-      end
-    end
-  end
-end
-```
-
-### Lifecycle Events
-
 ### Server Side Reflexes
 
 The attribute `data-turbo-reflex` specifies the Ruby class and method to invoke.
@@ -352,17 +329,25 @@ end
 ### Appending Turbo Streams
 
 It's possible to append additional Turbo Streams to the response in a reflex.
-*This proves incredibly powerful when paired with [TurboReady](https://github.com/hopsoft/turbo_ready).*
 
 ```ruby
 # app/reflexes/demo_reflex.rb
 class DemoReflex < TurboReflex::Base
   def example
     # logic...
+    turbo_streams << turbo_stream.append("dom_id", "CONTENT")
+    turbo_streams << turbo_stream.prepend("dom_id", "CONTENT")
+    turbo_streams << turbo_stream.replace("dom_id", "CONTENT")
+    turbo_streams << turbo_stream.update("dom_id", "CONTENT")
+    turbo_streams << turbo_stream.remove("dom_id")
+    turbo_streams << turbo_stream.before("dom_id", "CONTENT")
+    turbo_streams << turbo_stream.after("dom_id", "CONTENT")
     turbo_streams << turbo_stream.invoke("console.log", args: ["Whoa! 🤯"])
   end
 end
 ```
+
+*This proves especially powerful when paired with [TurboReady](https://github.com/hopsoft/turbo_ready).*
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
@@ -452,7 +437,24 @@ class DemoReflex < TurboReflex::Base
 end
 ```
 
-*You can learn more about Turbo Stream broadcasting by reading through the [hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code.*
+*You can learn more about Turbo Stream broadcasting by reading through the
+[hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code.*
+
+### Putting it All Together
+
+The best way to learn this stuff is from working examples, so be sure to clone the library and run the test application.
+Then dig into the internals.
+
+```sh
+git clone https://github.com/hopsoft/turbo_reflex.git
+cd turbo_reflex
+bundle
+cd test/dummy
+bin/rails s
+```
+
+Visit the app in a browser at http://localhost:3000 then look at the implementation at `test/dummy/app`.
+*Feel free to add some demos and submit a pull request while you're in there.*
 
 > 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboReady](https://github.com/hopsoft/turbo_ready#broadcasting) feature.
 
