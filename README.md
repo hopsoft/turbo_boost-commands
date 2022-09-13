@@ -82,8 +82,7 @@ Reflexes let you *sprinkle* ✨ in functionality that doesn't warrant the ceremo
 Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, adding filters, etc...
 **Basically any feature where you've been tempted to create a non-RESTful action in a controller.**
 
-#### Reflexes improve the developer experience (DX) of creating modern reactive applications.
-
+Reflexes improve the developer experience (DX) of creating modern reactive applications.
 They share the same mental model as React and other client side frameworks.
 
 1. **Trigger an event**
