@@ -50,30 +50,29 @@ function findFrameSrc (frame) {
   return frameSrc
 }
 
+function assignElementValueToPayload (element, payload = {}) {
+  if (element.tagName.toLowerCase() !== 'select')
+    return (payload.value = element.value)
+
+  if (!element.multiple)
+    return (payload.value = element.options[element.selectedIndex].value)
+
+  payload.values = Array.from(element.options).reduce((memo, option) => {
+    if (option.selected) memo.push(option.value)
+    return memo
+  }, [])
+}
+
 function buildAttributePayload (element) {
-  const { tagName, value } = element
-  const tag = tagName.toLowerCase()
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
     memo[attr.name] = attr.value
     return memo
   }, {})
 
-  payload.tagName = tagName
-  payload.value = value || null
-
-  if (tag === 'select') {
-    if (element.multiple) {
-      payload.values = Array.from(element.options).reduce((memo, option) => {
-        if (option.selected) memo.push(option.value)
-        return memo
-      }, [])
-    } else {
-      payload.value = element.options[element.selectedIndex].value
-    }
-  }
-
-  if (tag === 'input' && element.type === 'checkbox')
-    payload.checked = !!element.checked
+  payload.tag = element.tagName
+  payload.checked = element.checked
+  payload.disabled = element.disabled
+  assignElementValueToPayload(element, payload)
 
   return payload
 }

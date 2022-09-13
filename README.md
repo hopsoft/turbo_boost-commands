@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-401-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-400-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -464,6 +464,9 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Todos
 
 - [ ] Add tests for lifecycle events
+- [ ] Add tests for select elements
+- [ ] Add tests for checkbox elements
+- [ ] Add controller tests
 - [ ] Add tests for all variants of frame targeting
 
 #### Helpful Context
