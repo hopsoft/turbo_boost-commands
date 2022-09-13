@@ -1,5 +1,8 @@
 <p align="center">
-  <img height="200" src="https://ik.imagekit.io/hopsoft/turbo-reflex-logo_dgjKz2_SK.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1661529169962" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://ik.imagekit.io/hopsoft/turbo-reflex-logo-light_2cG9cdQd1.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1663075749336">
+    <img height="120" src="https://ik.imagekit.io/hopsoft/turbo-reflex-logo-dark_kSmo1eDLm.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1663075749241" />
+  </picture>
   <h1 align="center">
     Welcome to TurboReflex 👋<br />
   </h1>
