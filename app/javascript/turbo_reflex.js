@@ -32,6 +32,15 @@ function buildURL (urlString) {
   return new URL(a)
 }
 
+function invokeFormReflex (form, payload = {}) {
+  payload.token = Security.token
+  const input = document.createElement('input')
+  input.type = 'hidden'
+  input.name = 'turbo_reflex'
+  input.value = JSON.stringify(payload)
+  form.appendChild(input)
+}
+
 function invokeReflex (event) {
   let element, frameId, frame, frameSrc
   try {
@@ -66,19 +75,13 @@ function invokeReflex (event) {
     frame.dataset.turboReflexActive = true
     frame.dataset.turboReflexElementId = element.id
 
-    if (element.tagName.toLowerCase() === 'form') {
-      payload.token = Security.token
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'turbo_reflex'
-      input.value = JSON.stringify(payload)
-      element.appendChild(input)
-    } else {
-      event.preventDefault()
-      const frameURL = buildURL(frameSrc)
-      frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
-      frame.src = frameURL.toString()
-    }
+    if (element.tagName.toLowerCase() === 'form')
+      return invokeFormReflex(element, payload)
+
+    event.preventDefault()
+    const frameURL = buildURL(frameSrc)
+    frameURL.searchParams.set('turbo_reflex', JSON.stringify(payload))
+    frame.src = frameURL.toString()
   } catch (error) {
     console.error(
       `TurboReflex encountered an unexpected error!`,
