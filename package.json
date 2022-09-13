@@ -2,7 +2,7 @@
   "name": "turbo_reflex",
   "version": "0.0.2",
   "description": "Reflexes for Turbo Frames that help you build robust reactive applications",
-  "main": "app/assets/builds/turbo_reflex.js",
+  "main": "app/javascript/turbo_reflex.js",
   "repository": "https://github.com/hopsoft/turbo_reflex",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
@@ -15,6 +15,6 @@
     "prettier-standard": "^16.4.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/turbo_reflex.js --bundle --minify --sourcemap --format=esm --outfile=app/assets/builds/turbo_reflex.min.js"
+    "build": "esbuild app/javascript/turbo_reflex.js --bundle --minify --sourcemap --format=esm --outfile=app/assets/builds/turbo_reflex.js"
   }
 }
