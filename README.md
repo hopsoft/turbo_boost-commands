@@ -79,9 +79,10 @@ discrete isolated content, browser history, and scoped navigation... *with the c
 **TurboReflex** extends Turbo Frames and adds support for client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call).
 Reflexes let you *sprinkle* ✨ in functionality that doesn't warrant the ceremony of typical [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) boilerplate *(routes, controllers, actions, etc...)*.
 Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, adding filters, etc...
-Basically any feature where you've been tempted to create a non-RESTful action in a controller.
+**Basically any feature where you've been tempted to create a non-RESTful action in a controller.**
 
-**Reflexes improve the developer experience (DX) of creating modern reactive applications.**
+**#### Reflexes improve the developer experience (DX) of creating modern reactive applications.**
+
 They share the same mental model as React and other client side frameworks.
 
 1. **Trigger an event**
@@ -158,30 +159,28 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
 
 This example illustrates how to use TurboReflex to manage upvotes on a Post.
 
-```erb
-<!-- app/views/posts/show.html.erb -->
-<%= turbo_frame_tag dom_id(@post) do %>
-  <a href="#" data-turbo-reflex="VotesReflex#upvote">Upvote</a>
-  Upvote Count: <%= @post.votes >
-<% end %>
-```
+1. **Trigger an event** - *register an element to listen for events that trigger reflexes*
 
-When the upvote link is clicked, the reflex will be invoked and the Turbo Frame will automatically (re)render.
+    ```erb
+    <!-- app/views/posts/show.html.erb -->
+    <%= turbo_frame_tag dom_id(@post) do %>
+      <a href="#" data-turbo-reflex="VotesReflex#upvote">Upvote</a>
+      Upvote Count: <%= @post.votes >
+    <% end %>
+    ```
 
-```ruby
-# app/reflexes/posts_reflex.rb
-class PostsReflex < TurboReflex::Base
-  def upvote
-    Post.find(controller.params[:id]).increment! :votes
-    turbo_streams << turbo_stream.invoke("alert", args: ["Thanks for voting!"])
-  end
-end
-```
+2. **Change state** - *create a server side reflex that modifies state*
 
-Did you notice that we appended a Turbo Stream in the reflex?
-Appended streams get added to the response after the controller action completes and the view is rendered.
+    ```ruby
+    # app/reflexes/posts_reflex.rb
+    class PostsReflex < TurboReflex::Base
+      def upvote
+        Post.find(controller.params[:id]).increment! :votes
+      end
+    end
+    ```
 
-> 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
+3. **(Re)render to reflect the new state** - *normal Rails / Turbo Frame behavior runs and (re)renders the frame*
 
 ### Reflex Triggers
 
@@ -384,6 +383,12 @@ end
 ### Hijacking the Response
 
 Sometimes you may want to hijack the normal Rails response from within a reflex.
+
+For example, consider the need for a related but separate form that updates a subset of user attributes.
+We'd like to avoid creating a non RESTful route,
+but aren't thrilled at the prospect of adding REST boilerplate for a new route, controller, action, etc...
+
+In that scenario we can reuse an existing route and hijack the response handling with a reflex.
 
 Here's how to do it.
 
