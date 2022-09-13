@@ -64,13 +64,12 @@ function assignElementValueToPayload (element, payload = {}) {
 }
 
 function buildAttributePayload (element) {
-  const tag = element.tagName.toLowerCase()
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
     memo[attr.name] = attr.value
     return memo
   }, {})
 
-  payload.tag = tag
+  payload.tag = element.tagName
   payload.checked = element.checked
   payload.disabled = element.disabled
   assignElementValueToPayload(element, payload)
