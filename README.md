@@ -40,7 +40,7 @@
   </p>
 </p>
 
-#### TurboReflex brings the [reactive programming](https://en.wikipedia.org/wiki/Reactive_programming) model to [Turbo Frames](https://turbo.hotwired.dev/reference/frames).
+#### TurboReflex enhances the [reactive programming](https://en.wikipedia.org/wiki/Reactive_programming) model for [Turbo Frames](https://turbo.hotwired.dev/reference/frames).
 
 <!-- Tocer[start]: Auto-generated, don't remove. -->
 
