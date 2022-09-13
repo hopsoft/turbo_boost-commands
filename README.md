@@ -452,8 +452,10 @@ bin/rails s
 # View the app in a browser at http://localhost:3000
 ```
 
-You can review the implementation in `test/dummy/app`.
+You can review the implementation in [`test/dummy/app`](https://github.com/hopsoft/turbo_reflex/tree/main/test/dummy).
 *Feel free to add some demos and submit a pull request while you're in there.*
+
+![TurboReflex Demos](https://ik.imagekit.io/hopsoft/turbo-reflex-demos_EP54JuWt5.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1663083040904)
 
 ## License
 
