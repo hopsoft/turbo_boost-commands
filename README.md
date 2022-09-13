@@ -464,7 +464,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todos
 
-- [ ] Add test suite
 - [ ] Look into adding a reflex frame to support things like morph or at least document how this can be done *(this should probably be an extension and not part of core)*
 
 ### Requirements
