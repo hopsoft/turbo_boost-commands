@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "multiple-frames" do %>
+  <%= render "components/turbo_frame" do %>
+    <%= render "components/demo", title: "Frame Targets", subtitle: "Frame targeting demos" do %>
+      <div class="grid grid-cols-1 w-full gap-5">
+        <%= turbo_frame_tag "multiple-frame-1", src: demo_path("multiple_frame_1") %>
+        <%= turbo_frame_tag "multiple-frame-2", src: demo_path("multiple_frame_2") %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

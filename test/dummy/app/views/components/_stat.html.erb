@@ -1,0 +1,5 @@
+<%= tag.div class: "stat place-items-center #{local_assigns[:class]}" do %>
+  <%= tag.div title, class: "stat-title" %>
+  <%= tag.div value, id: local_assigns[:id] || "stat-#{SecureRandom.alphanumeric}", class: "stat-value #{local_assigns[:value_class]}" %>
+  <%= tag.div local_assigns[:description], class: "stat-desc" %>
+<% end %>

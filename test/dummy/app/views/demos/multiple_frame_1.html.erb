@@ -1,0 +1,97 @@
+<%= turbo_frame_tag "multiple-frame-1" do %>
+  <%= render "components/turbo_frame" do %>
+    <div class="grid grid-cols-1 w-full gap-2">
+      <%= render "components/stats" do %>
+        <%= render "components/stat", id: "stat-counter-1", title: "Counter", value: number_to_human(session[:value_1].to_i, precision: 0), class: token_list("bg-primary text-primary-content": session[:value_1].to_i > 0) %>
+        <%= render "components/stat", id: "stat-fingerprint-1", title: "Request Fingerprint", value: SecureRandom.alphanumeric[0, 6].upcase, value_class: "font-mono" %>
+        <%= render "components/stat", id: "stat-method-1", title: "HTTP Method", value: request.method, value_class: token_list("text-primary": request.get?, "text-secondary": !request.get?) %>
+        <%= render "components/stat", id: "stat-reflex-requested-1", title: "Reflex Requested", value: turbo_reflex_requested?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_requested?) %>
+        <%= render "components/stat", id: "stat-reflex-performed-1", title: "Reflex Performed", value: turbo_reflex_performed?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_performed?) %>
+      <% end %>
+
+      <% content_for :table_head, render("components/table_head", columns: ["", "Demo", "Code", "Description"]) %>
+      <%= render "components/table" do %>
+        <% # Reflex Link (this frame) ..................................................................... %>
+        <tr>
+          <td>1</td>
+          <td>
+            <%= link_to "Update this Frame", demo_path("multiple_frame_1"), id: "reflex-link-this-frame-1", class: "link link-accent",
+              data: { turbo_reflex: "MultipleFramesReflex#update", key: :value_1 } %>
+          </td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;a href='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should trigger a reflex and reload this frame's content.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Link (other frame) .................................................................... %>
+        <tr>
+          <td>2</td>
+          <td>
+            <%= link_to "Update other Frame", demo_path("multiple_frame_2"), id: "reflex-link-other-frame-1", class: "link link-accent",
+              data: { turbo_reflex: "MultipleFramesReflex#update", turbo_reflex_frame: "multiple-frame-2", key: :value_2 } %>
+          </td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;a <code class="text-accent">data-turbo-frame</code><code>='...'</code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should trigger a reflex and reload the <span class="font-bold text-secondary">other</span> frame's content.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Button (this frame) ................................................................... %>
+        <tr>
+          <td>3</td>
+          <td>
+            <%= button_tag "Reset this Frame", id: "reflex-button-1", class: "btn btn-accent btn-outline",
+              data: { turbo_reflex: "MultipleFramesReflex#reset", key: :value_1 } %>
+          </td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;button </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex button <kbd class="kbd kbd-sm text-accent">&lt;button&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Click should trigger a reflex and reload this frame's content.
+            </small>
+          </td>
+        </tr>
+        <% # Reflex Form .................................................................................. %>
+        <tr>
+          <td>4</td>
+          <td>
+            <%= form_with id: "reflex-form-1", url: demo_path("multiple_frame_2"), method: :patch,
+              data: { turbo_frame: "multiple-frame-2", turbo_reflex: "MultipleFramesReflex#reset", key: :value_2 } do |form| %>
+              <%= button_tag "Reset other Frame", id: "reflex-form-1-submit", type: "submit", class: "btn btn-accent btn-outline" %>
+            <% end %>
+          </td>
+          <td>
+            <small class="block mockup-code">
+              <pre><code>&lt;form </code><code class="text-accent">data-turbo-frame</code><code>='...'</code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
+              <pre><code>  &lt;button type="submit"&gt;Reflex Form&lt;button&gt;</code></pre>
+              <pre><code>&lt;form&gt;</code></pre>
+            </small>
+          </td>
+          <td>
+            This is a reflex <kbd class="kbd kbd-sm text-accent">&lt;form&gt;</kbd> inside a Turbo Frame.
+            <small class="block font-light opacity-75">
+              Submit should trigger a reflex and then reload the <span class="font-bold text-secondary">other</span> frame's content.
+            </small>
+          </td>
+        </tr>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

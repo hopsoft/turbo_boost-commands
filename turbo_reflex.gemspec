@@ -2,27 +2,39 @@
 
 require_relative "lib/turbo_reflex/version"
 
-Gem::Specification.new do |spec|
-  spec.name = "turbo_reflex"
-  spec.version = TurboReflex::VERSION
-  spec.authors = ["Nate Hopkins (hopsoft)"]
-  spec.email = ["natehop@gmail.com"]
-  spec.homepage = "https://github.com/hopsoft/turbo_reflex"
-  spec.summary = "Future home of TurboReflex"
-  spec.description = spec.summary
-  spec.license = "MIT"
+Gem::Specification.new do |s|
+  s.name = "turbo_reflex"
+  s.version = TurboReflex::VERSION
+  s.authors = ["Nate Hopkins (hopsoft)"]
+  s.email = ["natehop@gmail.com"]
+  s.homepage = "https://github.com/hopsoft/turbo_reflex"
+  s.summary = "TurboReflex extends Turbo Frames with reflexes to help you build robust reactive applications."
+  s.description = "TurboReflex extends Turbo Frames by adding support for client triggered reflexes (think RPC) which let you sprinkle in functionality that doesn't warrant the ceremony of typical REST boilerplate (routes, controllers, actions, etc...).
+"
+  s.license = "MIT"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = spec.homepage + "/blob/master/CHANGELOG.md"
+  s.metadata["homepage_uri"] = s.homepage
+  s.metadata["source_code_uri"] = s.homepage
+  s.metadata["changelog_uri"] = s.homepage + "/blob/master/CHANGELOG.md"
 
-  spec.files = Dir["lib/**/*.rb", "app/**/*", "bin/*", "[A-Z]*"]
+  s.files = Dir["lib/**/*.rb", "app/**/*", "bin/*", "[A-Z]*"]
 
-  spec.add_dependency "rails", ">= 7.0"
-  spec.add_dependency "turbo-rails", ">= 1.1"
+  s.add_dependency "rails", ">= 6.1"
+  s.add_dependency "turbo-rails", ">= 1.1"
 
-  spec.add_development_dependency "magic_frozen_string_literal"
-  spec.add_development_dependency "pry-byebug"
-  spec.add_development_dependency "standardrb"
-  spec.add_development_dependency "tocer"
+  s.add_development_dependency "capybara"
+  s.add_development_dependency "cuprite"
+  s.add_development_dependency "importmap-rails"
+  s.add_development_dependency "magic_frozen_string_literal"
+  s.add_development_dependency "minitest-reporters"
+  s.add_development_dependency "net-smtp"
+  s.add_development_dependency "pry-byebug"
+  s.add_development_dependency "puma"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rexml"
+  s.add_development_dependency "sprockets-rails"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "standardrb"
+  s.add_development_dependency "turbo_ready"
+  s.add_development_dependency "webdrivers"
 end

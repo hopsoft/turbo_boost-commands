@@ -1,0 +1,24 @@
+name: Prettier-Standard
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+
+jobs:
+  prettier:
+    name: Prettier-Standard Check Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        version: '16.x'
+    - run: yarn
+      working-directory: .
+    - run: yarn run prettier-standard --check ./app/javascript/**/*.js
+      working-directory: .

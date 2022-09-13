@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full bg-gray-300">
   <head>
-    <title>Dummy</title>
+    <title>TurboReflex Demos</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%= turbo_reflex_meta_tag %>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <%= stylesheet_link_tag "application" %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="h-full">
+    <div class="min-h-full">
+      <div class="navbar bg-base-300 drop-shadow-md">
+        <%= image_tag "turbo-reflex-mark.webp", class: "h-8", alt: "TurboReflex" %>
+        <a href="/" class="btn btn-ghost normal-case text-xl">
+          <span class="font-light">Turbo</span><span class="text-primary-content">Reflex</span>
+          <small class="text-fuchsia-400 opacity-75 font-light ml-1">demos</small>
+        </a>
+        <a href="https://twitter.com/hopsoft" class="mx-2">
+          <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/hopsoft?logo=twitter&style=social">
+        </a>
+      </div>
+
+      <div class="container mx-auto p-4">
+        <%= yield %>
+      </div>
+    </div>
+    <a class="github-fork-ribbon" href="https://github.com/hopsoft/turbo_reflex" target="_blank" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
   </body>
 </html>
