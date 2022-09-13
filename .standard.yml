@@ -1,3 +1,4 @@
 ignore:
   - test/dummy/bin/*
   - test/dummy/config/initializers/inspect_helpers.rb
+  - test/dummy/db/schema.rb
