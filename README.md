@@ -50,7 +50,6 @@
 ## Table of Contents
 
   - [Why TurboReflex?](#why-turboreflex)
-      - [Reflexes improve the developer experience (DX) of creating modern reactive applications.](#reflexes-improve-the-developer-experience-dx-of-creating-modern-reactive-applications)
   - [Sponsors](#sponsors)
   - [Dependencies](#dependencies)
   - [Setup](#setup)
@@ -67,7 +66,7 @@
     - [Putting it All Together](#putting-it-all-together)
   - [License](#license)
   - [Todos](#todos)
-      - [Helpful Context](#helpful-context)
+  - [Releasing](#releasing)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
