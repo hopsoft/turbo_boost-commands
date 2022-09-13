@@ -50,7 +50,6 @@
 ## Table of Contents
 
   - [Why TurboReflex?](#why-turboreflex)
-      - [Reflexes improve the developer experience (DX) of creating modern reactive applications.](#reflexes-improve-the-developer-experience-dx-of-creating-modern-reactive-applications)
   - [Sponsors](#sponsors)
   - [Dependencies](#dependencies)
   - [Setup](#setup)
@@ -67,7 +66,7 @@
     - [Putting it All Together](#putting-it-all-together)
   - [License](#license)
   - [Todos](#todos)
-      - [Helpful Context](#helpful-context)
+  - [Releasing](#releasing)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
@@ -78,7 +77,7 @@ They are similar to [iframes](https://developer.mozilla.org/en-US/docs/Web/HTML/
 discrete isolated content, browser history, and scoped navigation... *with the caveat that they share their parent's DOM tree.*
 
 **TurboReflex** extends Turbo Frames and adds support for client triggered reflexes [*(think RPC)*](https://en.wikipedia.org/wiki/Remote_procedure_call).
-Reflexes let you *sprinkle* ✨ in functionality that doesn't warrant the ceremony of typical [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) boilerplate *(routes, controllers, actions, etc...)*.
+Reflexes let you *sprinkle* ✨ in functionality and skip the ceremony of typical [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) boilerplate *(routes, controllers, actions, etc...)*.
 Reflexes are great for features that ride atop RESTful resources. Things like making selections, toggling switches, adding filters, etc...
 **Basically any feature where you've been tempted to create a non-RESTful action in a controller.**
 
@@ -469,7 +468,16 @@ The gem is available as open source under the terms of the [MIT License](https:/
 - [ ] Add controller tests
 - [ ] Add tests for all variants of frame targeting
 
-#### Helpful Context
 
-- [Allow Turbo Streams with GET via data-turbo-stream](https://github.com/hotwired/turbo/pull/612)
-- [Document data-turbo-stream](https://github.com/hotwired/turbo-site/pull/103)
+## Releasing
+
+1. Run `yarn upgrade` and `bundle update` to pick up the latest
+1. Bump version number at `lib/turbo_reflex/version.rb`. Pre-release versions use `.preN`
+1. Run `bin/standardize`
+1. Run `rake build` and `yarn build`
+1. Commit and push changes to GitHub
+1. Run `rake release`
+1. Run `yarn publish --no-git-tag-version`
+1. Yarn will prompt you for the new version. Pre-release versions use `-preN`
+1. Commit and push any changes to GitHub
+1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_reflex/releases)) and generate the changelog for the stable release for it
