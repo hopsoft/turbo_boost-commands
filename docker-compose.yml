@@ -1,0 +1,37 @@
+version: "3.9"
+
+x-default-app: &default_app
+  build: .
+  image: hopsoft/turbo_reflex
+  tty: true
+  stdin_open: true
+  working_dir: /opt/hopsoft/turbo_reflex/test/dummy
+  environment:
+    RAILS_ENV: development
+  volumes:
+    - ./:/turbo_reflex:cached
+
+services:
+  # ----------------------------------------------------------------------------
+  # Shell - Intended for tinkering and running misc commands
+  # ----------------------------------------------------------------------------
+  shell:
+    <<: *default_app
+    container_name: turbo_reflex-shell
+    command: /bin/bash -c "tail -f /dev/null"
+
+  # ----------------------------------------------------------------------------
+  # Web - Runs the test/dummy Rails app
+  # ----------------------------------------------------------------------------
+  web:
+    <<: *default_app
+    container_name: turbo_reflex-web
+    ports:
+      - 3000:3000
+    command: >
+      /bin/bash -c "rm -f tmp/pids/server.pid &&
+                    rm -f Gemfile.lock &&
+                    bundle --without test &&
+                    bin/rails db:create db:migrate &&
+                    bin/rails log:clear &&
+                    bin/rails s --binding=0.0.0.0 --port=3000"
