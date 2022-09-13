@@ -52,7 +52,6 @@
   - [Why TurboReflex?](#why-turboreflex)
   - [Sponsors](#sponsors)
   - [Dependencies](#dependencies)
-  - [Installation](#installation)
   - [Setup](#setup)
   - [Usage](#usage)
     - [Reflex Triggers](#reflex-triggers)
@@ -66,10 +65,7 @@
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
     - [Putting it All Together](#putting-it-all-together)
   - [License](#license)
-  - [Contributing](#contributing)
   - [Todos](#todos)
-    - [Requirements](#requirements)
-      - [Scope](#scope)
       - [Helpful Context](#helpful-context)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
@@ -115,19 +111,9 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
 - [turbo-rails](https://rubygems.org/gems/turbo-rails) `>=1.1`
 - [@hotwired/turbo-rails](https://yarnpkg.com/package/@hotwired/turbo-rails) `>=7.1`
 
-## Installation
-
-Be sure to install the same version of each libary.
-
-```sh
-bundle add "turbo_reflex --version VERSION"
-yarn add "turbo_reflex@VERSION --exact"
-```
-
-
 ## Setup
 
-1. Add TurboReflex as a dependency
+1. Add the TurboReflex dependencies
 
     ```diff
     # Gemfile
@@ -141,18 +127,19 @@ yarn add "turbo_reflex@VERSION --exact"
     +  "turbo_reflex": "^0.0.2"
     ```
 
-2. Import TurboReflex in the JavaScript application
+  *Be sure to install the __same version__ of the Ruby and JavaScript libraries.*
+
+2. Import TurboReflex in your JavaScript app
 
     ```diff
     # app/javascript/application.js
     +import 'turbo_reflex'
     ```
 
-2. Add TurboReflex behavior to the Rails application
+2. Add TurboReflex behavior to the Rails app
 
     ```diff
     # app/views/layouts/application.html.erb
-    <!DOCTYPE html>
     <html>
       <head>
         ...
@@ -179,7 +166,7 @@ This example illustrates how to use TurboReflex to manage upvotes on a Post.
 <% end %>
 ```
 
-When the user clicks the upvote link, the reflex will be invoked and the Turbo Frame will automatically (re)render.
+When the upvote link is clicked, the reflex will be invoked and the Turbo Frame will automatically (re)render.
 
 ```ruby
 # app/reflexes/posts_reflex.rb
@@ -191,8 +178,8 @@ class PostsReflex < TurboReflex::Base
 end
 ```
 
-Did you notice that you can append Turbo Streams in the reflex.
-These additional streams are added to the response after the controller action completes and the view is rendered.
+Did you notice that we appended a Turbo Stream in the reflex?
+Appended streams get added to the response after the controller action completes and the view is rendered.
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboReady](https://github.com/hopsoft/turbo_ready#usage) feature.
 
@@ -200,7 +187,7 @@ These additional streams are added to the response after the controller action c
 
 TurboReady uses [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture events that can trigger reflexes.
 
-This is the list of default events and their respective elements that TurboReflex monitors.
+Here is the list of default events and respective elements that TurboReflex monitors.
 
 - **`change`** - `<input>`, `<select>`, `<textarea>`
 - **`submit`** - `<form>`
@@ -236,51 +223,52 @@ TurboReflex supports the following lifecycle events.
 
 ### Targeting Frames
 
-By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `turbo-frame` element; however, it's possible to explicitly target other frames.
+By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `<turbo-frame>` element,
+but you can also explicitly target other frames.
 
-```erb
-<!-- 1. TurboReflex first looks for: data-turbo-reflex-frame -->
-<input type="checkbox"
-  data-turbo-reflex="ExampleReflex#work"
-  data-turbo-reflex-frame="some-frame-id">
-```
+1. Look for `data-turbo-reflex-frame` on the reflex elemnt
 
-```erb
-<!-- 2. TurboReflex then looks for: data-turbo-frame -->
-<input type="checkbox"
-  data-turbo-reflex="ExampleReflex#work"
-  data-turbo-frame="some-frame-id">
-```
+    ```erb
+    <input type="checkbox"
+      data-turbo-reflex="ExampleReflex#work"
+      data-turbo-reflex-frame="some-frame-id">
+    ```
 
-```erb
-<!-- 3. TurboReflex uses the closest <turbo-frame> if a frame is not targeted -->
-<turbo-frame id="example-frame">
-  <input type="checkbox" data-turbo-reflex="ExampleReflex#work">
-</turbo-frame>
-```
+2. Look for `data-turbo-frame` on the reflex element
+
+    ```erb
+    <input type="checkbox"
+      data-turbo-reflex="ExampleReflex#work"
+      data-turbo-frame="some-frame-id">
+    ```
+
+3. Find the closest `<turbo-frame>` to the reflex element
+
+    ```erb
+    <turbo-frame id="example-frame">
+      <input type="checkbox" data-turbo-reflex="ExampleReflex#work">
+    </turbo-frame>
+    ```
 
 ### Working with Forms
 
-TurboReflex works great with standard Rails forms.
-Simply specify the `data-turbo-reflex` attribute.
+TurboReflex works great with Rails forms.
+Just specify the `data-turbo-reflex` attribute on the form.
 
 ```erb
 # app/views/posts/post.html.erb
-<!-- implicit frame targeting using form_with -->
 <%= turbo_frame_tag dom_id(@post) do %>
   <%= form_with model: @post, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
-<!-- implicit frame targeting using form_for -->
 <%= turbo_frame_tag dom_id(@post) do %>
   <%= form_for @post, remote: true, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
-<!-- explicit frame targeting using form_with -->
 <%= form_with model: @post,
   html: { turbo_frame: dom_id(@post), turbo_reflex: "ExampleReflex#work" } do |form| %>
   ...
@@ -289,14 +277,16 @@ Simply specify the `data-turbo-reflex` attribute.
 
 ### Server Side Reflexes
 
-The attribute `data-turbo-reflex` specifies the Ruby class and method to invoke.
-*Set the value with RDoc notation. i.e. `ClassName#method_name`*
+The client side DOM attribute `data-turbo-reflex` is indicates what reflex *(Ruby class and method)* to invoke.
+The attribute value is specified with RDoc notation. i.e. `ClassName#method_name`
+
+Here's an example.
 
 ```erb
 <a data-turbo-reflex="DemoReflex#example">
 ```
 
-Reflexes can live anywhere in your app, but we recommend you keep them in the `app` directory.
+Server side reflexes can live anywhere in your app; however, we recommend you keep them in the `app` directory.
 
 ```diff
  |- app
@@ -306,13 +296,11 @@ Reflexes can live anywhere in your app, but we recommend you keep them in the `a
  |  |- views
 ```
 
-Server side reflexes define methods that can be invoked by the client.
-
 Reflexes are simple Ruby classes that inherit from `TurboReflex::Base`.
 They expose the following instance methods and properties.
 
 - `element` - a struct that represents the DOM element that triggered the reflex
-- `controller` - the Rails controller processing the Turbo Frame request
+- `controller` - the Rails controller processing the HTTP request
 - `turbo_stream` - a Turbo Stream [`TagBuilder`](https://github.com/hotwired/turbo-rails/blob/main/app/models/turbo/streams/tag_builder.rb)
 - `turbo_streams` - a list of Turbo Streams to append to the response
 
@@ -332,6 +320,7 @@ end
 ### Appending Turbo Streams
 
 It's possible to append additional Turbo Streams to the response in a reflex.
+Appended streams are added to the response body **after** the Rails controller action has completed and rendered the view template.
 
 ```ruby
 # app/reflexes/demo_reflex.rb
@@ -356,17 +345,19 @@ end
 
 ### Setting Instance Variables
 
-It can prove useful to set instance variables for the Rails controller in a reflex.
+It can be useful to set instance variables on the Rails controller from the reflex.
 
-Here's a contrived example that shows how and why this might prove useful.
-Consider a checkbox that toggles viewing **all** and **unread** posts.
+Here's an example that shows how to do this.
 
 ```erb
 <!-- app/views/posts/index.html.erb -->
 <%= turbo_frame_tag dom_id(@posts) do %>
   <%= check_box_tag :all, :all, @all, data: { turbo_reflex: "PostsReflex#toggle_all" } %>
   View All
-  ...
+
+  <% @posts.each do |post| %>
+    ...
+  <% end %>
 <% end %>
 ```
 
@@ -394,7 +385,7 @@ end
 
 Sometimes you may want to hijack the normal Rails response from within a reflex.
 
-Here's how we might accomplish this.
+Here's how to do it.
 
 ```erb
 <!-- app/views/users/show.html.erb -->
@@ -413,21 +404,17 @@ but we'll hijack the handling in the reflex so we never hit `users#update`.
 class UserReflex < TurboReflex::Base
   def example
     # business logic, save record, etc...
-
     controller.render html: "<turbo-frame id='user-alt'>We Hijacked the response!</turbo-frame>".html_safe
-
-    # UsersController#update will not be called because
-    # we've already rendered the response in a before action here
   end
 end
 ```
 
-Remember that reflexes are invoked by a controller [before filter](https://guides.rubyonrails.org/action_controller_overview.html#filters)
-which means that if we render from inside a reflex, the standard request cycle gets halted.
+Remember that reflexes are invoked by a controller [before filter](https://guides.rubyonrails.org/action_controller_overview.html#filters).
+That means rendering from inside a reflex halts the standard request cycle.
 
 ### Broadcasting Turbo Streams
 
-This isn't a TurboReflex feature *per se*, but it may prove helpful to illustrate that you can broadcast Turbo Streams to other subscribed users from a reflex.
+You can also broadcast Turbo Streams to subscribed users from a reflex.
 
 ```ruby
 # app/reflexes/demo_reflex.rb
@@ -440,12 +427,15 @@ class DemoReflex < TurboReflex::Base
 end
 ```
 
-*You can learn more about Turbo Stream broadcasting by reading through the
+*Learn more about Turbo Stream broadcasting by reading through the
 [hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code.*
+
+> 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboReady](https://github.com/hopsoft/turbo_ready#broadcasting) feature.
 
 ### Putting it All Together
 
-The best way to learn this stuff is from working examples, so be sure to clone the library and run the test application.
+The best way to learn this stuff is from working examples.
+Be sure to clone the library and run the test application.
 Then dig into the internals.
 
 ```sh
@@ -454,28 +444,20 @@ cd turbo_reflex
 bundle
 cd test/dummy
 bin/rails s
+# View the app in a browser at http://localhost:3000
 ```
 
-Visit the app in a browser at http://localhost:3000 then look at the implementation at `test/dummy/app`.
+You can review the implementation in `test/dummy/app`.
 *Feel free to add some demos and submit a pull request while you're in there.*
-
-> 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboReady](https://github.com/hopsoft/turbo_ready#broadcasting) feature.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-## Contributing
-
 ## Todos
 
-- [ ] Look into adding a reflex frame to support things like morph or at least document how this can be done *(this should probably be an extension and not part of core)*
-
-### Requirements
-
-#### Scope
-
-Only support default behavior of frame (re)render with additional TurboStreams.
+- [ ] Add tests for lifecycle events
+- [ ] Add tests for all variants of frame targeting
 
 #### Helpful Context
 
