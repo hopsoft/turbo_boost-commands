@@ -163,7 +163,7 @@ This example illustrates how to use TurboReflex to manage upvotes on a Post.
     ```erb
     <!-- app/views/posts/show.html.erb -->
     <%= turbo_frame_tag dom_id(@post) do %>
-      <a href="#" data-turbo-reflex="VotesReflex#upvote">Upvote</a>
+      <a href="#" data-turbo-reflex="PostReflex#upvote">Upvote</a>
       Upvote Count: <%= @post.votes >
     <% end %>
     ```
@@ -172,7 +172,7 @@ This example illustrates how to use TurboReflex to manage upvotes on a Post.
 
     ```ruby
     # app/reflexes/posts_reflex.rb
-    class PostsReflex < TurboReflex::Base
+    class PostReflex < TurboReflex::Base
       def upvote
         Post.find(controller.params[:id]).increment! :votes
       end
