@@ -466,6 +466,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 - [ ] Add tests for lifecycle events
 - [ ] Add tests for select elements
 - [ ] Add tests for checkbox elements
+- [ ] Add controller tests
 - [ ] Add tests for all variants of frame targeting
 
 #### Helpful Context
