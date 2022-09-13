@@ -128,7 +128,7 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     +  "turbo_reflex": "^0.0.2"
     ```
 
-  *Be sure to install the __same version__ of the Ruby and JavaScript libraries.*
+   *Be sure to install the __same version__ of the Ruby and JavaScript libraries.*
 
 2. Import TurboReflex in your JavaScript app
 
