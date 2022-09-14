@@ -8,6 +8,7 @@ module TurboReflex::Controller
     after_action :append_turbo_reflex_turbo_streams, if: :turbo_reflex_performed?
     after_action :assign_turbo_reflex_token
     helper_method :turbo_reflex_meta_tag, :turbo_reflex_performed?, :turbo_reflex_requested?
+    # helper TurboReflex::TurboReflexHelper # only required if we isolate_namespace
   end
 
   def turbo_reflex_meta_tag

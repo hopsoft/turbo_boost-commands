@@ -5,7 +5,7 @@
       <div class="grid grid-cols-1 w-full gap-2">
         <%= render "components/stats" do %>
           <%= render "components/stat", id: "stat-counter", title: "Counter", value: number_to_human(@value.to_i, precision: 0), class: token_list("bg-primary text-primary-content": @value.to_i > 0) %>
-          <%= render "components/stat", id: "stat-fingerprint", title: "Request Fingerprint", value: SecureRandom.alphanumeric[0, 6].upcase, value_class: "font-mono" %>
+          <%= render "components/stat", id: "stat-fingerprint", title: "Request Fingerprint", value: SecureRandom.alphanumeric(6).upcase, value_class: "font-mono" %>
           <%= render "components/stat", id: "stat-method", title: "HTTP Method", value: request.method, value_class: token_list("text-primary": request.get?, "text-secondary": !request.get?) %>
           <%= render "components/stat", id: "stat-reflex-requested", title: "Reflex Requested", value: turbo_reflex_requested?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_requested?) %>
           <%= render "components/stat", id: "stat-reflex-performed", title: "Reflex Performed", value: turbo_reflex_performed?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_performed?) %>

@@ -3,7 +3,7 @@
     <div class="grid grid-cols-1 w-full gap-2">
       <%= render "components/stats" do %>
         <%= render "components/stat", id: "stat-counter-2", title: "Counter", value: number_to_human(session[:value_2].to_i, precision: 0), class: token_list("bg-primary text-primary-content": session[:value_2].to_i > 0) %>
-        <%= render "components/stat", id: "stat-fingerprint-2", title: "Request Fingerprint", value: SecureRandom.alphanumeric[0, 6].upcase, value_class: "font-mono" %>
+        <%= render "components/stat", id: "stat-fingerprint-2", title: "Request Fingerprint", value: SecureRandom.alphanumeric(6).upcase, value_class: "font-mono" %>
         <%= render "components/stat", id: "stat-method-2", title: "HTTP Method", value: request.method, value_class: token_list("text-primary": request.get?, "text-secondary": !request.get?) %>
         <%= render "components/stat", id: "stat-reflex-requested-2", title: "Reflex Requested", value: turbo_reflex_requested?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_requested?) %>
         <%= render "components/stat", id: "stat-reflex-performed-2", title: "Reflex Performed", value: turbo_reflex_performed?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_performed?) %>
@@ -35,7 +35,7 @@
           <td>2</td>
           <td>
             <%= link_to "Update other Frame", demo_path("multiple_frame_1"), id: "reflex-link-other-frame-2", class: "link link-accent",
-              data: { turbo_reflex: "MultipleFramesReflex#update", turbo_reflex_frame: "multiple-frame-1", key: :value_1 } %>
+              data: { turbo_reflex: "MultipleFramesReflex#update", turbo_frame: "multiple-frame-1", key: :value_1 } %>
           </td>
           <td>
             <small class="block mockup-code">
