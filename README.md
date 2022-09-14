@@ -147,13 +147,6 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
         ...
     ```
 
-    ```diff
-    # /app/controllers/application_controller.rb
-    class ApplicationController < ActionController::Base
-    +  include TurboReflex::Controller
-    end
-    ```
-
 ## Usage
 
 This example illustrates how to use TurboReflex to manage upvotes on a Post.

@@ -2,14 +2,14 @@ version: "3.9"
 
 x-default-app: &default_app
   build: .
-  image: hopsoft/turbo_reflex
+  image: turbo_reflex
   tty: true
   stdin_open: true
-  working_dir: /opt/hopsoft/turbo_reflex/test/dummy
+  working_dir: /opt/turbo_reflex/test/dummy
   environment:
     RAILS_ENV: development
   volumes:
-    - ./:/turbo_reflex:cached
+    - ./:/opt/turbo_reflex:cached
 
 services:
   # ----------------------------------------------------------------------------

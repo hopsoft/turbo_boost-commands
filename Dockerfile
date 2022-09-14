@@ -5,8 +5,8 @@ apt-get -y upgrade && \
 apt-get -y --force-yes install build-essential tzdata && \
 apt-get clean
 
-COPY . /opt/hopsoft/turbo_reflex
-WORKDIR /opt/hopsoft/turbo_reflex
+COPY . /opt/turbo_reflex
+WORKDIR /opt/turbo_reflex
 
 VOLUME /usr/local/bundle
 RUN rm ./Gemfile.lock && gem update --system && bundle --without test
