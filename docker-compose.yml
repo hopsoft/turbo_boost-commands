@@ -10,6 +10,12 @@ x-default-app: &default_app
     RAILS_ENV: development
   volumes:
     - ./:/opt/turbo_reflex:cached
+    - bundle:/usr/local/bundle:delegated
+    - node_modules:/opt/turbo_reflex/node_modules:delegated
+
+volumes:
+  bundle:
+  node_modules:
 
 services:
   # ----------------------------------------------------------------------------
@@ -30,8 +36,11 @@ services:
       - 3000:3000
     command: >
       /bin/bash -c "rm -f tmp/pids/server.pid &&
-                    rm -f Gemfile.lock &&
                     bundle --without test &&
+                    bundle lock --add-platform aarch64-linux &&
                     bin/rails db:create db:migrate &&
                     bin/rails log:clear &&
+                    bin/rails assets:clobber &&
+                    bin/rails assets:precompile &&
                     bin/rails s --binding=0.0.0.0 --port=3000"
+
