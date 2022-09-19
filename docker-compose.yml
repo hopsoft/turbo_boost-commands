@@ -9,9 +9,8 @@ x-default-app: &default_app
   environment:
     RAILS_ENV: development
   volumes:
-    - ./:/opt/turbo_reflex:cached
     - bundle:/usr/local/bundle:delegated
-    - node_modules:/opt/turbo_reflex/node_modules:delegated
+    - node_modules:/opt/turbo_reflex/node_modules
 
 volumes:
   bundle:
@@ -35,12 +34,11 @@ services:
     ports:
       - 3000:3000
     command: >
-      /bin/bash -c "rm -f tmp/pids/server.pid &&
-                    bundle --without test &&
-                    bundle lock --add-platform aarch64-linux &&
+      /bin/bash -c "git pull --no-rebase github main &&
+                    cd /opt/turbo_reflex && yarn &&
+                    cd /opt/turbo_reflex/test/dummy && bundle &&
+                    rm -f tmp/pids/server.pid &&
                     bin/rails db:create db:migrate &&
-                    bin/rails log:clear &&
                     bin/rails assets:clobber &&
                     bin/rails assets:precompile &&
                     bin/rails s --binding=0.0.0.0 --port=3000"
-
