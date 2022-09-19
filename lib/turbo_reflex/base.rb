@@ -3,6 +3,8 @@
 class TurboReflex::Base
   attr_reader :controller, :turbo_streams
 
+  delegate :render, to: :renderer
+
   def initialize(controller)
     @controller = controller
     @turbo_streams = Set.new
@@ -28,5 +30,9 @@ class TurboReflex::Base
 
   def turbo_stream
     @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
+  end
+
+  def renderer
+    ActionController::Renderer.for controller.class, controller.request.env
   end
 end

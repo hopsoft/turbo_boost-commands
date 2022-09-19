@@ -3,3 +3,4 @@
 bundle exec magic_frozen_string_literal
 bundle exec standardrb --fix
 yarn run prettier-standard "app/javascript/**/*.js"
+yarn run rustywind --write test/dummy

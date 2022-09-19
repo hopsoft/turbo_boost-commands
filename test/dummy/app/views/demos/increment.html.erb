@@ -2,7 +2,7 @@
   <%= render "components/turbo_frame" do %>
     <%= render "components/demo", title: "Increment", subtitle: "A simple increment demo" do %>
 
-      <div class="grid grid-cols-1 w-full gap-2">
+      <div class="grid grid-cols-1 gap-2 w-full">
         <%= render "components/stats" do %>
           <%= render "components/stat", id: "stat-counter", title: "Counter", value: number_to_human(@value.to_i, precision: 0), class: token_list("bg-primary text-primary-content": @value.to_i > 0) %>
           <%= render "components/stat", id: "stat-fingerprint", title: "Request Fingerprint", value: SecureRandom.alphanumeric(6).upcase, value_class: "font-mono" %>
