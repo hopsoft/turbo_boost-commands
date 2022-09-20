@@ -2,19 +2,41 @@ FROM ruby:3.1.2
 
 RUN apt-get -y update && \
 apt-get -y upgrade && \
-apt-get -y --force-yes install build-essential tzdata && \
+apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages install \
+build-essential \
+git \
+nodejs \
+npm \
+sqlite3 \
+tzdata && \
 apt-get clean
 
-COPY . /opt/hopsoft/turbo_reflex
-WORKDIR /opt/hopsoft/turbo_reflex
+# prepare the environment
+ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true
 
-VOLUME /usr/local/bundle
-RUN rm ./Gemfile.lock && gem update --system && bundle --without test
+# setup ruby gems
+RUN gem update --system && \
+gem install bundler && \
+bundle config set --global --without test
 
-ENV RAILS_ENV=production
-CMD rm -f ./tmp/pids/server.pid && \
-rm -f ./Gemfile.lock && \
-cd ./test/dummy && \
-./bin/rails db:create db:migrate && \
-./bin/rails log:clear && \
-./bin/rails s --binding=0.0.0.0 --port=3000
+# setup yarn
+RUN npm install -g yarn
+
+# get application code
+RUN git clone --origin github --branch main --depth 1 https://github.com/hopsoft/turbo_reflex.git /opt/turbo_reflex
+
+# install application dependencies 1st time
+WORKDIR /opt/turbo_reflex
+RUN yarn
+WORKDIR /opt/turbo_reflex/test/dummy
+RUN bundle
+
+# prepare and run the application
+CMD git pull --no-rebase github main && \
+cd /opt/turbo_reflex && yarn && \
+cd /opt/turbo_reflex/test/dummy && bundle && \
+rm -f tmp/pids/server.pid && \
+bin/rails db:create db:migrate && \
+bin/rails assets:clobber && \
+bin/rails assets:precompile && \
+bin/rails s --binding=0.0.0.0 --port=3000

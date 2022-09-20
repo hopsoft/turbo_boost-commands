@@ -2,14 +2,19 @@ version: "3.9"
 
 x-default-app: &default_app
   build: .
-  image: hopsoft/turbo_reflex
+  image: turbo_reflex
   tty: true
   stdin_open: true
-  working_dir: /opt/hopsoft/turbo_reflex/test/dummy
+  working_dir: /opt/turbo_reflex/test/dummy
   environment:
     RAILS_ENV: development
   volumes:
-    - ./:/turbo_reflex:cached
+    - bundle:/usr/local/bundle:delegated
+    - node_modules:/opt/turbo_reflex/node_modules
+
+volumes:
+  bundle:
+  node_modules:
 
 services:
   # ----------------------------------------------------------------------------
@@ -29,9 +34,11 @@ services:
     ports:
       - 3000:3000
     command: >
-      /bin/bash -c "rm -f tmp/pids/server.pid &&
-                    rm -f Gemfile.lock &&
-                    bundle --without test &&
+      /bin/bash -c "git pull --no-rebase github main &&
+                    cd /opt/turbo_reflex && yarn &&
+                    cd /opt/turbo_reflex/test/dummy && bundle &&
+                    rm -f tmp/pids/server.pid &&
                     bin/rails db:create db:migrate &&
-                    bin/rails log:clear &&
+                    bin/rails assets:clobber &&
+                    bin/rails assets:precompile &&
                     bin/rails s --binding=0.0.0.0 --port=3000"
