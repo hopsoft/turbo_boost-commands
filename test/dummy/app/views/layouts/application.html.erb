@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= turbo_reflex_meta_tag %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "inter-font", "data-turbo-track": "reload" unless Rails.env.test? %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -28,6 +26,8 @@
     </div>
 
     <%= render component(:footer) %>
+
+    <%= turbo_reflex_frame_tag %>
 
     <script type="text/javascript">
       window.TailwindDefaults = <%= tailwind_defaults.to_json.html_safe %>;

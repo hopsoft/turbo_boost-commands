@@ -11,19 +11,15 @@
 
   <div class="overflow-y-auto py-4">
     <ul class="space-y-2">
-      <%= tag.li render(component(:divider), class: "mb-3") %>
-
-      <li>
-        <%= link_to root_path, class: css("sidebar.link", css("sidebar.link.active") => action_name == "index") do %>
-          <%= render heroicon(:home), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => action_name == "index") %>
-          Home
-        <% end %>
-      </li>
-
-      <%= tag.li render(component(:divider), class: "my-3") %>
-
       <li class="pt-2 text-gray-500 dark:text-gray-400">
         Demos
+      </li>
+
+      <li>
+        <%= link_to root_path, class: css("sidebar.link", css("sidebar.link.active") => demos_active?) do %>
+          <%= render heroicon(:home), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => demos_active?) %>
+          Home
+        <% end %>
       </li>
 
       <li>
@@ -58,21 +54,21 @@
 
       <li>
         <%= link_to docs_path, class: css("sidebar.link", css("sidebar.link.active") => docs_active?) do %>
-          <%= render heroicon(:sparkles), class: css("sidebar.link.icon") %>
-          Recently Updated
+          <%= render heroicon(:rectangle_stack), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => docs_active?) %>
+          Catalog
         <% end %>
       </li>
 
       <li>
         <%= link_to doc_path(:start), class: css("sidebar.link", css("sidebar.link.active") => doc_active?(:start)) do %>
-          <%= render heroicon(:academic_cap), class: css("sidebar.link.icon") %>
-          Getting Started
+          <%= render heroicon(:academic_cap), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => doc_active?(:start)) %>
+          Get Started
         <% end %>
       </li>
 
       <li>
         <%= link_to doc_path(:warning), class: css("sidebar.link", css("sidebar.link.active") => doc_active?(:warning)) do %>
-          <%= render heroicon(:exclamation), class: css("sidebar.link.icon") %>
+          <%= render heroicon(:exclamation), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => doc_active?(:warning)) %>
           Word of Warning
         <% end %>
       </li>

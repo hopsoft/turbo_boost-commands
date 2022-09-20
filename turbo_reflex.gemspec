@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "capybara"
   s.add_development_dependency "cuprite"
+  s.add_development_dependency "foreman"
   s.add_development_dependency "importmap-rails"
   s.add_development_dependency "magic_frozen_string_literal"
   s.add_development_dependency "minitest-reporters"
