@@ -12,7 +12,7 @@ tzdata && \
 apt-get clean
 
 # prepare the environment
-ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true
+ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
 
 # setup ruby gems
 RUN gem update --system && \

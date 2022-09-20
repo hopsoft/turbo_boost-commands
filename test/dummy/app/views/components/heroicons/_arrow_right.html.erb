@@ -1,0 +1,8 @@
+<%= tag.svg xmlns: "http://www.w3.org/2000/svg", class: token_list(local_assigns[:class]), data: local_assigns[:data],
+  fill: heroicon_fill(local_assigns), stroke: heroicon_stroke(local_assigns), viewBox: heroicon_view_box(local_assigns) do %>
+  <% if local_assigns[:solid] %>
+    <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" clip-rule="evenodd" />
+  <% else %>
+    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+  <% end %>
+<% end %>

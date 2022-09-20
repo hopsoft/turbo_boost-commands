@@ -1,0 +1,3 @@
+<%= tag.div id: local_assigns[:id] || SecureRandom.alphanumeric(10), class: "highlight #{local_assigns[:class]}" do %>
+  <%= tag.pre render_source(read_source(source_path, erb: local_assigns[:erb]), language: language), class: "p-5 rounded-lg dark:border dark:border-stone-700" %>
+<% end %>

@@ -1,0 +1,6 @@
+<%= tag.div role: "tooltip", style: "position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(1269px, 63px);",
+  id: local_assigns.fetch(:id, "tooltip-#{SecureRandom.alphanumeric}"),
+  class: css("flowbite.tooltip", local_assigns[:class]),
+  data: { popper_placement: local_assigns.fetch(:placement, "top") } do %>
+  <%= yield %>
+<% end %>

@@ -31,9 +31,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency "puma"
   s.add_development_dependency "rake"
   s.add_development_dependency "rexml"
+  s.add_development_dependency "rouge"
   s.add_development_dependency "sprockets-rails"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "standardrb"
+  s.add_development_dependency "tailwindcss-rails"
   s.add_development_dependency "turbo_ready"
+  s.add_development_dependency "web-console"
   s.add_development_dependency "webdrivers"
 end
