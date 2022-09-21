@@ -16,4 +16,12 @@ module ApplicationHelper
   def icon(name)
     component "icons/#{name}"
   end
+
+  def el_id(*values, prefix: nil)
+    "#{prefix}#{values.join("-").parameterize}"
+  end
+
+  def boolean_text(value)
+    (!!value).to_s
+  end
 end

@@ -13,4 +13,12 @@ module DemosHelper
   def demos_active?
     controller_name == "demos" && action_name == "index"
   end
+
+  def demo_frame_id(template_path)
+    "frame-" + Base64.urlsafe_encode64(template_path)
+  end
+
+  def demo_turbo_frame_tag(template_path)
+    turbo_frame_tag demo_frame_id(template_path), src: frame_path(Base64.urlsafe_encode64(template_path))
+  end
 end

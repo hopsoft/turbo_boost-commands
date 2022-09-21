@@ -1,0 +1,11 @@
+<div class="flex w-full">
+  <div class="flex justify-center items-center mr-4 w-12 h-12 bg-white rounded shadow dark:bg-gray-700 shrink-0">
+    <%= render heroicon(local_assigns[:heroicon]), class: "w-7 h-7 text-gray-900 dark:text-gray-400" %>
+  </div>
+  <div class="w-full">
+    <h3 class="mb-1 text-xl font-bold text-gray-900 dark:text-white"><%= title %></h3>
+    <p class="font-light text-gray-500 dark:text-gray-400">
+      <%= yield %>
+    </p>
+  </div>
+</div>

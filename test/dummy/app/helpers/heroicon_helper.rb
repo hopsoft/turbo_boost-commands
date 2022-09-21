@@ -10,6 +10,6 @@ module HeroiconHelper
   end
 
   def heroicon_view_box(local_assigns)
-    local_assigns[:solid] ? "0 0 20 20" : "0 0 24 24"
+    "0 0 24 24"
   end
 end

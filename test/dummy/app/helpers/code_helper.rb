@@ -14,9 +14,10 @@ module CodeHelper
 
     lexer = case language
     when :erb then Rouge::Lexers::ERB.new
-    when :ruby then Rouge::Lexers::Ruby.new
+    when :html then Rouge::Lexers::HTML.new
     when :javascript then Rouge::Lexers::Javascript.new
     when :json then Rouge::Lexers::JSON.new
+    when :ruby then Rouge::Lexers::Ruby.new
     end
 
     formatter.format(lexer.lex(source)).html_safe
