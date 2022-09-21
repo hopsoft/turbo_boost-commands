@@ -17,7 +17,7 @@ module TailwindHelper
   def tailwind_defaults
     @tailwind_defaults ||= self.class.instance_variable_get(:@tailwind_defaults)
     @tailwind_defaults ||= begin
-      defaults = YAML.safe_load(File.read(Rails.root.join("app/views/_tailwind.yml.erb")))
+      defaults = YAML.safe_load(File.read(Rails.root.join("app/views/components/_tailwind.yml.erb")))
       self.class.instance_variable_set(:@tailwind_defaults, defaults) unless Rails.env.development?
       defaults
     end
