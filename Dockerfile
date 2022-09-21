@@ -24,18 +24,17 @@ RUN git clone --origin github --branch main --depth 1 https://github.com/hopsoft
 
 # install application dependencies 1st time
 WORKDIR /opt/turbo_reflex
-RUN yarn
-WORKDIR /opt/turbo_reflex/test/dummy
 RUN bundle
+RUN yarn
 
 # prepare the environment
 ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
 
 # prepare and run the application
-CMD git pull --no-rebase github && \
-git checkout hopsoft/hijack && \
-cd /opt/turbo_reflex && yarn && \
-cd /opt/turbo_reflex/test/dummy && bundle && \
+CMD git pull --no-rebase github main && \
+bundle && \
+yarn && \
+cd test/dummy && \
 rm -f tmp/pids/server.pid && \
 bin/rails db:create db:migrate && \
 bin/rails assets:clobber && \
