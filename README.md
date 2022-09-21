@@ -463,12 +463,12 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todos
 
+- [ ] Consider how to best support `button_to` and `link_to`
+- [ ] Update system tests for new demos
 - [ ] Add tests for lifecycle events
 - [ ] Add tests for select elements
 - [ ] Add tests for checkbox elements
-- [ ] Add controller tests
 - [ ] Add tests for all variants of frame targeting
-
 
 ## Releasing
 
