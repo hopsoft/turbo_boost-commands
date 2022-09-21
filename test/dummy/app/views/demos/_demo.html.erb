@@ -2,7 +2,7 @@
   <%= tag.button type: "button",
     aria: { controls: el_id(id), expanded: boolean_text(local_assigns[:open]) },
     data: { accordion_target: el_id(id, prefix: "#") },
-    class: "flex items-center justify-between w-full py-5 font-medium text-left border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400" do %>
+    class: "flex items-center justify-between w-full p-5 font-medium text-left border-b border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 bg-white hover:bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400" do %>
     <span class="flex items-center">
     <%= render heroicon(:code_bracket), solid: false, class: "w-5 h-5 mr-2 text-gray-500" %>
     <%= title %>
@@ -12,7 +12,7 @@
   <% end %>
 <% end %>
 <%= tag.div id: id, class: "hidden", aria: { labelledby: el_id(id, :label) } do %>
-  <%= tag.div class: "text-gray-500 dark:text-gray-400 font-light border-b border-gray-200 dark:border-gray-700 pl-6 py-6" do %>
+  <%= tag.div class: "text-gray-500 dark:text-gray-400 font-light border-b border-gray-200 dark:border-gray-700 p-6 bg-gray-400 dark:bg-black" do %>
     <%= yield %>
   <% end %>
 <% end %>

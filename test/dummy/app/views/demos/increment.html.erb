@@ -18,32 +18,40 @@
     See the <%= link_to "Get Started", doc_path(:start), class: css("flowbite.link.default", "mx-1") %> guide to learn how to install and setup TurboReflex.
   <% end %>
 
-  <p class="my-10 text-xl">
+  <p class="mt-10 mb-6 text-xl">
     This set of demos introduces TurboReflex and showcases how to use it in a Rails/Hotwire app.
-    We chose a simple counter to reduce complexity as much as possible.
+  </p>
+  <p class="my-6">
+    We chose to start with a simple incrementor demo to reduce complexity.
     <span class="text-lg font-light opacity-80">
-      Note that we also manage <code>state</code> in the HTML to further reduce complexity.
+      We also manage <code>state</code> in the HTML to further reduce complexity.
       <em>(i.e. We pass the current <code>count</code> to the server with each reflex request.)</em>
     </span>
   </p>
 
-  <h3 class="text-3xl text-gray-900 dark:text-white">Reflex</h3>
+  <h3 class="text-3xl text-gray-900 dark:text-white">The Reflex</h3>
 
   <p class="my-6">
     Reflexes are simple Ruby classes.
-    They expose methods that are intended to be executed by controller <%= link_to "before filters", "https://guides.rubyonrails.org/action_controller_overview.html#filters", target: "_blank", rel: "noopener", class: css("flowbite.link.paragraph") %>.
+    Their public methods can be invoked by user interactions in the browser.
+    On the server, reflexes are performed by a
+    <%= link_to "before filter", "https://guides.rubyonrails.org/action_controller_overview.html#filters", target: "_blank", rel: "noopener", class: css("flowbite.link.paragraph") %>
+    in your Rails controllers.
+  </p>
+  <p class="my-6">
     Here's the reflex we're using for this demo.
   </p>
 
   <%= render component(:code), language: :ruby, class: "text-sm",
     path: "app/reflexes/increment_reflex.rb", source_path: "app/reflexes/increment_reflex.rb" %>
 
-  <h3 class="mt-12 text-3xl text-gray-900 dark:text-white">Demos</h3>
+  <h3 class="mt-12 text-3xl text-gray-900 dark:text-white">The Demos</h3>
   <p class="my-4 font-light">
-    The first several examples showcase using reflexes with Turbo Frames.
+    The first several examples below show how to use reflexes with Turbo Frames.
   </p>
-  <p class="my-4 font-light text-blue-500">
-    The last example showcases using reflexes <strong class="underline underline-offset-8">without frames</strong>.
+  <p class="my-4 font-light">
+    <span class="text-blue-500">The last example shows how to use reflexes <strong class="underline underline-offset-8">without frames</strong>.</span>
+    A technique that can simplify your Hotwire code significantly.
   </p>
 
   <div class="grid gap-16 pt-16 -mt-14 sm:grid-cols-2 lg:grid-cols-1">
@@ -65,7 +73,7 @@
       <% end %>
 
       <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames with Targeting" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/form_in_frame" %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/multiple_frames" %>
       <% end %>
 
       <%= render "demo", id: "reflex-without-frame",
