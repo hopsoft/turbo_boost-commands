@@ -34,7 +34,7 @@ services:
     ports:
       - 3000:3000
     command: >
-      /bin/bash -c "git pull --no-rebase github main &&
+      /bin/bash -c "git pull --no-rebase github hopsoft/hijack &&
                     cd /opt/turbo_reflex && yarn &&
                     cd /opt/turbo_reflex/test/dummy && bundle &&
                     rm -f tmp/pids/server.pid &&
