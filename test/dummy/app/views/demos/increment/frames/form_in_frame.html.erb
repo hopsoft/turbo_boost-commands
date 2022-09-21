@@ -1,8 +1,6 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  Form in Frame
-
-  <%= render "demos/stats" do %>
-    <%= render "demos/stat", label: "Counter", value: 0, class: "!bg-indigo-600 dark:!bg-indigo-900",
-      value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
-  <% end %>
+  <div class="flex items-center">
+    <%= render heroicon(:sparkles), class: "h-6 w-6 mr-2 opacity-40" %>
+    Coming soon...
+  </div>
 <% end %>

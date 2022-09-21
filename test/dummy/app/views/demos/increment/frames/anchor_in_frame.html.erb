@@ -6,16 +6,17 @@
     <% end %>
 
     <p class="my-8">
-      Clicking the links below will trigger a reflex before Rails/Hotwire replaces the frame's content.
+      The link below will invoke a reflex before Rails/Hotwire replaces the frame's content.
     </p>
 
-    <%= link_to "Increment +", nil, class: css("flowbite.link.default", "block m-4"), data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
-    <%= render component(:code), source: 'link_to "Increment +", nil, data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i }', language: :ruby, class: "text-sm mb-12" %>
+    <%= link_to "Increment Anchor Tag", nil, class: css("flowbite.link.default", "block mb-8 ml-0"), data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
 
-    <%= link_to "Decrement -", nil, class: css("flowbite.link.default", "block m-4"), data: { turbo_reflex: "IncrementReflex#decrement", count: @count.to_i } %>
-    <%= render component(:code), source: 'link_to "Decrement -", nil, data: { turbo_reflex: "IncrementReflex#decrement", count: @count.to_i }', language: :ruby, class: "text-sm mb-20" %>
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "ERB template", source_path: "app/views/demos/increment/frames/anchor_in_frame/increment.erb" %>
 
-    <code class="block m-2 text-sm font-light opacity-60">app/reflexes/increment_reflex.rb</code>
-    <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/reflexes/increment_reflex.rb" %>
+    <div class="my-4"></div>
+
+    <%= render component(:code), language: :html, class: "text-sm",
+      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/anchor_in_frame/increment.html", erb: true %>
   <% end %>
 <% end %>

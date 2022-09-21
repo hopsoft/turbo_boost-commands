@@ -23,26 +23,9 @@
       </li>
 
       <li>
-        <%= link_to demo_path(:method), class: css("sidebar.link", css("sidebar.link.active") => demo_active?(:method)) do %>
-          <%= render heroicon(:variable), class: css("sidebar.link.icon", "!text-blue-500", css("sidebar.link.icon.active") => demo_active?(:method)) %>
-          <code class="mr-1 text-sm text-gray-400 dark:text-gray-500">invoke</code>
-          Method
-        <% end %>
-      </li>
-
-      <li>
-        <%= link_to demo_path(:assignment), class: css("sidebar.link", css("sidebar.link.active") => demo_active?(:assignment)) do %>
-          <%= render heroicon(:bars_3), solid: true, class: css("sidebar.link.icon", "!text-blue-500", css("sidebar.link.icon.active") => demo_active?(:assignment)) %>
-          <code class="mr-1 text-sm text-gray-400 dark:text-gray-500">invoke</code>
-          Assignment
-        <% end %>
-      </li>
-
-      <li>
-        <%= link_to demo_path(:event), class: css("sidebar.link", css("sidebar.link.active") => demo_active?(:event)) do %>
-          <%= render heroicon(:lightning_bolt), class: css("sidebar.link.icon", "!text-blue-500", css("sidebar.link.icon.active") => demo_active?(:event)) %>
-          <code class="mr-1 text-sm text-gray-400 dark:text-gray-500">invoke</code>
-          Event
+        <%= link_to demo_path(:increment), class: css("sidebar.link", css("sidebar.link.active") => demo_active?(:increment)) do %>
+          <%= render heroicon(:calculator), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => demo_active?(:increment)) %>
+          Increment
         <% end %>
       </li>
 
@@ -63,13 +46,6 @@
         <%= link_to doc_path(:start), class: css("sidebar.link", css("sidebar.link.active") => doc_active?(:start)) do %>
           <%= render heroicon(:academic_cap), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => doc_active?(:start)) %>
           Get Started
-        <% end %>
-      </li>
-
-      <li>
-        <%= link_to doc_path(:warning), class: css("sidebar.link", css("sidebar.link.active") => doc_active?(:warning)) do %>
-          <%= render heroicon(:exclamation), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => doc_active?(:warning)) %>
-          Word of Warning
         <% end %>
       </li>
     </ul>
