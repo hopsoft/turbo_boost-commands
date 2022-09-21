@@ -1,4 +1,37 @@
-<div class="my-6"></div>
-<%= turbo_frame_tag "increment", src: demo_path("increment") %>
-<div class="my-9"></div>
-<%= turbo_frame_tag "multiple-frames", src: demo_path("multiple_frames") %>
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Demos", href: demos_path, active: true %>
+<% end %>
+
+<section>
+  <div class="gap-8 items-center py-8 px-4 mx-auto max-w-screen-xl sm:py-16 md:grid md:grid-cols-2 lg:px-6 xl:gap-16">
+    <img class="w-full dark:hidden" src="https://ik.imagekit.io/hopsoft/cta-dashboard-mockup-dark_VTXU6mTTf.svg?ik-sdk-version=javascript-1.4.3&updatedAt=1663579699221" alt="dashboard image">
+    <img class="hidden w-full dark:block" src="https://ik.imagekit.io/hopsoft/cta-dashboard-mockup-dark_VTXU6mTTf.svg?ik-sdk-version=javascript-1.4.3&updatedAt=1663579699221" alt="dashboard image">
+    <div class="mt-4 md:mt-0">
+      <h2 class="mb-4 text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+        Unlock the strength of
+        <span class="text-emerald-400 dark:text-emerald-100">Turbo Frames</span>
+      </h2>
+      <h3 class="mb-4 text-2xl text-gray-500">
+        <span class="inline-block tracking-tight whitespace-nowrap dark:text-white">
+          <span class="self-center font-light opacity-70">Turbo</span><span class="font-bold text-emerald-500">Reflex</span>
+        </span>
+        simplifies building modern, robust, reactive web apps with Hotwire.
+      </h3>
+      <p class="mb-6 font-light text-gray-500 md:text-lg dark:text-gray-400">
+        TurboReflex reduces Turbo Frame complexity so you can focus on features.
+        It extends frames with reflexes (RPC) and ensures <strong class="font-extrabold">robust</strong> reactivity over <strong class="font-extrabold">HTTP</strong> instead of web sockets.
+      </p>
+      <div class="flex">
+        <%= button_to demo_path(:increment), method: :get, class: css("flowbite.button.pink_to_orange", "mr-6") do %>
+          View the first Demo
+          <%= render heroicon(:arrow_right), class: "ml-2 -mr-1 w-5 h-5" %>
+        <% end %>
+        <%= link_to docs_path, method: :get, class: css("flowbite.link.default", "inline-flex items-center") do %>
+          Read the docs
+          <%= render heroicon(:arrow_right), class: "ml-1 w-5 h-5" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

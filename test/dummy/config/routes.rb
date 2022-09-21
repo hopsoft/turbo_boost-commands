@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :demos, only: %i[index show update]
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
+  resources :frames, only: [:show]
+  resources :demos, only: %i[index show]
+  resources :docs, only: %i[index show]
   root "demos#index"
 end

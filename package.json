@@ -12,7 +12,9 @@
   "devDependencies": {
     "esbuild": "^0.15.7",
     "eslint": "^8.19.0",
-    "prettier-standard": "^16.4.1"
+    "flowbite": "^1.5.3",
+    "prettier-standard": "^16.4.1",
+    "rustywind": "^0.15.1"
   },
   "scripts": {
     "build": "esbuild app/javascript/turbo_reflex.js --bundle --minify --sourcemap --format=esm --outfile=app/assets/builds/turbo_reflex.js"

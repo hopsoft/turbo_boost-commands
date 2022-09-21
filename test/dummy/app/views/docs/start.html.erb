@@ -1,0 +1,58 @@
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Docs", href: docs_path %>
+  <%= render flowbite(:breadcrumb), html: "Get Started", href: doc_path(:start), active: true %>
+<% end %>
+
+<%= render component(:doc) do %>
+  <h2 class="inline-flex items-center mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+    Get Started
+  </h2>
+  <p class="mb-8 font-light text-blue-500 lg:text-xl">
+    Install and configure TurboReflex in your Rails/Hotwire app
+  </p>
+
+  <%= render component(:divider) %>
+
+  <div class="grid gap-12 pt-12 sm:grid-cols-2 lg:grid-cols-1">
+    <ol class="space-y-4 list-decimal list-inside text-gray-500 dark:text-gray-400">
+      <li>
+        <span class="text-gray-800 dark:text-white">First add the GEM to your <code>Gemfile</code>.</span>
+        <div class="pl-6 mt-4 mb-14">
+          <pre class="my-2 text-gray-400 dark:text-gray-700"><code>bundle add turbo_reflex --version <%= TurboReflex::VERSION %></code></pre>
+          <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/docs/start/_gemfile.rb.erb", erb: true %>
+        </div>
+      </li>
+      <li>
+        <span class="text-gray-800 dark:text-white">Next add the NPM package to your <code>package.json</code> file.</span>
+        <div class="pl-6 mt-4 mb-14">
+          <pre class="my-2 text-gray-400 dark:text-gray-700"><code>yarn add turbo_reflex@<%= TurboReflex::VERSION %></code></pre>
+          <%= render component(:code), language: :json, class: "mb-8 text-sm", source_path: "app/views/docs/start/_package.json.erb", erb: true %>
+
+          <span class="">Alternately, pin the JavaScript package to your <code>config/importmap.rb</code> file.</span>
+          <pre class="my-6 mb-2 text-gray-400 dark:text-gray-700"><code>bin/importmap pin turbo_reflex@<%= TurboReflex::VERSION %></code></pre>
+          <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/docs/start/_importmap.rb.erb", erb: true %>
+        </div>
+      </li>
+      <li>
+        <span class="text-gray-800 dark:text-white">Now add TurboReflex to your JavaScript app.</span>
+        <div class="pl-6 mt-4 mb-14">
+          <%= render component(:code), language: :javascript, class: "mb-8 text-sm", source_path: "app/views/docs/start/_application.js" %>
+        </div>
+      </li>
+      <li>
+        <span class="text-gray-800 dark:text-white">Finally add TurboReflex to your Rails app.</span>
+        <div class="pl-6 mt-4 mb-14">
+          <%= render component(:code), language: :erb, class: "mb-8 text-sm", source_path: "app/views/docs/start/_application.html.erb" %>
+        </div>
+      </li>
+    </ol>
+
+    <div>
+      <%= link_to "https://github.com/hopsoft/turbo_reflex/tree/main/test/dummy", rel: "nopener", target: "_blank",
+        class: css("flowbite.link.cta", "-mt-4") do %>
+        <%= render icon(:github), class: "w-5 h-5 mr-2" %>
+        You can also view our source to see how we did it.
+      <% end %>
+    </div>
+<% end %>

@@ -11,9 +11,6 @@ sqlite3 \
 tzdata && \
 apt-get clean
 
-# prepare the environment
-ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true
-
 # setup ruby gems
 RUN gem update --system && \
 gem install bundler && \
@@ -31,8 +28,12 @@ RUN yarn
 WORKDIR /opt/turbo_reflex/test/dummy
 RUN bundle
 
+# prepare the environment
+ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
+
 # prepare and run the application
-CMD git pull --no-rebase github main && \
+CMD git pull --no-rebase github && \
+git checkout hopsoft/hijack && \
 cd /opt/turbo_reflex && yarn && \
 cd /opt/turbo_reflex/test/dummy && bundle && \
 rm -f tmp/pids/server.pid && \

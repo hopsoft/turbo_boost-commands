@@ -1,0 +1,8 @@
+<%= tag.div class: token_list("relative bg-gray-100 dark:bg-gray-800 rounded border border-purple-300 dark:border-purple-900", local_assigns[:class]) do %>
+  <%= tag.span class: css("badge.frame", "relative left-5 -top-4") do %>
+    <small><code>&lt;turbo-frame&gt;</code></small>
+  <% end %>
+  <div class="relative -top-4 p-4">
+    <%= yield %>
+  </div>
+<% end %>

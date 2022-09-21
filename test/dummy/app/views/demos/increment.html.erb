@@ -1,98 +1,77 @@
-<%= turbo_frame_tag "increment", data: { turbo_reflex_src: demo_path("increment") } do %>
-  <%= render "components/turbo_frame" do %>
-    <%= render "components/demo", title: "Increment", subtitle: "A simple increment demo" do %>
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Demos", href: demos_path %>
+  <%= render flowbite(:breadcrumb), html: "Increment", href: demo_path(:increment), active: true %>
+<% end %>
 
-      <div class="grid grid-cols-1 w-full gap-2">
-        <%= render "components/stats" do %>
-          <%= render "components/stat", id: "stat-counter", title: "Counter", value: number_to_human(@value.to_i, precision: 0), class: token_list("bg-primary text-primary-content": @value.to_i > 0) %>
-          <%= render "components/stat", id: "stat-fingerprint", title: "Request Fingerprint", value: SecureRandom.alphanumeric[0, 6].upcase, value_class: "font-mono" %>
-          <%= render "components/stat", id: "stat-method", title: "HTTP Method", value: request.method, value_class: token_list("text-primary": request.get?, "text-secondary": !request.get?) %>
-          <%= render "components/stat", id: "stat-reflex-requested", title: "Reflex Requested", value: turbo_reflex_requested?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_requested?) %>
-          <%= render "components/stat", id: "stat-reflex-performed", title: "Reflex Performed", value: turbo_reflex_performed?.to_s.upcase, value_class: token_list("text-success": turbo_reflex_performed?) %>
-        <% end %>
+<%= render component(:demos) do %>
+  <h2 class="inline-flex items-center mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+    <%= render heroicon(:calculator), class: "h-10 w-auto mr-3 text-blue-500" %>
+    Increment
+  </h2>
+  <p class="mb-8 font-light text-blue-500 lg:text-xl">
+    A simple counter <span class="opacity-50">(state is managed in the html)</span>
+  </p>
 
-        <% content_for :table_head, render("components/table_head", columns: ["", "Demo", "Code", "Description"]) %>
-        <%= render "components/table" do %>
-          <% # Standard Link .................................................................................. %>
-          <tr>
-            <td>1</td>
-            <td><%= link_to "Standard Link", demo_path("increment"), id: "standard-link", class: "link link-accent" %></td>
-            <td>
-              <small class="block mockup-code">
-                <pre><code>&lt;a href='...'&gt;</code></pre>
-              </small>
-            </td>
-            <td>
-              This is a standard link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
-              <small class="block font-light opacity-75">
-                Click should reload the frame's content without triggering a reflex.
-              </small>
-            </td>
-          </tr>
-          <% # Reflex Link .................................................................................... %>
-          <tr>
-            <td>2</td>
-            <td>
-              <%= link_to "Reflex Link", nil, id: "reflex-link", class: "link link-accent",
-                data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i} %>
-            </td>
-            <td>
-              <small class="block mockup-code">
-                <pre><code>&lt;a </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
-              </small>
-            </td>
-            <td>
-              This is a reflex link <kbd class="kbd kbd-sm text-accent">&lt;a&gt;</kbd> inside a Turbo Frame.
-              <small class="block font-light opacity-75">
-                Click should trigger a reflex and then reload the frame's content.
-              </small>
-            </td>
-          </tr>
-          <% # Reflex Button .................................................................................. %>
-          <tr>
-            <td>3</td>
-            <td>
-              <%= button_tag "Reflex Button", id: "reflex-button", class: "btn btn-accent btn-outline",
-                data: { turbo_reflex: "IncrementReflex#increment", value: @value.to_i } %>
-            </td>
-            <td>
-              <small class="block mockup-code">
-                <pre><code>&lt;button </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
-              </small>
-            </td>
-            <td>
-              This is a reflex <kbd class="kbd kbd-sm text-accent">&lt;button&gt;</kbd> inside a Turbo Frame.
-              <small class="block font-light opacity-75">
-                Click should trigger a reflex and then reload the frame's content.
-              </small>
-            </td>
-          </tr>
-          <% # Reflex Form .................................................................................... %>
-          <tr>
-            <td>4</td>
-            <td>
-              <%= form_with id: "reflex-form", url: demo_path("increment"), method: :patch,
-                data: { turbo_reflex: "IncrementReflex#form_increment", value: @value.to_i } do |form| %>
-                <%= button_tag "Reflex Form", id: "reflex-form-submit", type: "submit", class: "btn btn-accent btn-outline" %>
-              <% end %>
-            </td>
-            <td>
-              <small class="block mockup-code">
-                <pre><code>&lt;form </code><code class="text-accent">data-turbo-reflex</code><code>='...'&gt;</code></pre>
-                <pre><code>  &lt;button type="submit"&gt;Reflex Form&lt;button&gt;</code></pre>
-                <pre><code>&lt;form&gt;</code></pre>
-              </small>
-            </td>
-            <td>
-              This is a reflex <kbd class="kbd kbd-sm text-accent">&lt;form&gt;</kbd> inside a Turbo Frame.
-              <small class="block font-light opacity-75">
-                Submit should trigger a reflex and then reload the frame's content.
-              </small>
-            </td>
-          </tr>
-        <% end %>
-      </div>
-    <% end %>
-
+  <%= render flowbite(:alert), type: :info, class: "flex items-center" do %>
+    <%= render heroicon(:information_circle), class: "w-6 h-6 mr-2" %>
+    See the <%= link_to "Get Started", doc_path(:start), class: css("flowbite.link.default") %> guide to learn how to install and setup TurboReflex.
   <% end %>
+
+  <p class="my-10 text-xl">
+    This set of demos introduces TurboReflex and showcases how to use it in a Rails/Hotwire app.
+    We chose a simple counter to reduce complexity as much as possible.
+    <span class="text-lg font-light opacity-80">
+      Note that we also manage <code>state</code> in the HTML to further reduce complexity.
+      <em>(i.e. We pass the current <code>count</code> to the server with each reflex request.)</em>
+    </span>
+  </p>
+
+  <h3 class="text-3xl text-gray-900 dark:text-white">Reflex</h3>
+
+  <p class="my-6">
+    Reflexes are simple Ruby classes.
+    They expose methods that are intended to be executed by controller <%= link_to "before filters", "https://guides.rubyonrails.org/action_controller_overview.html#filters", target: "_blank", rel: "noopener", class: css("flowbite.link.paragraph") %>.
+    Here's the reflex we're using for this demo.
+  </p>
+
+  <%= render component(:code), language: :ruby, class: "text-sm",
+    path: "app/reflexes/increment_reflex.rb", source_path: "app/reflexes/increment_reflex.rb" %>
+
+  <h3 class="mt-12 text-3xl text-gray-900 dark:text-white">Demos</h3>
+  <p class="my-4 font-light">
+    The first several examples showcase using reflexes with Turbo Frames.
+  </p>
+  <p class="my-4 font-light text-blue-500">
+    The last example showcases using reflexes <strong class="underline underline-offset-8">without frames</strong>.
+  </p>
+
+  <div class="grid gap-16 pt-16 -mt-14 sm:grid-cols-2 lg:grid-cols-1">
+    <%= render "demos" do %>
+      <%= render "demo", id: "anchor-in-frame", title: "Anchors inside a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/anchor_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "button-in-frame", title: "Buttons inside a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/button_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "elements-in-frame", title: "Misc elements inside a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/button_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "form-in-frame", title: "Forms inside a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/form_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "form-in-frame", title: "Multiple Turbo Frames with Targeting" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/form_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "reflex-without-frame",
+        title: "Reflex without Turbo Frames <small class='mx-2 font-extralight text-blue-500'>(RPC over HTTP)</small>".html_safe do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/reflex_without_frame" %>
+      <% end %>
+    <% end %>
+  </div>
 <% end %>

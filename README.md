@@ -142,16 +142,12 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     # app/views/layouts/application.html.erb
     <html>
       <head>
-        ...
-    +    <%= turbo_reflex_meta_tag %>
-        ...
-    ```
-
-    ```diff
-    # /app/controllers/application_controller.rb
-    class ApplicationController < ActionController::Base
-    +  include TurboReflex::Controller
-    end
+    +  <%= turbo_reflex_meta_tag %>
+      </head>
+      <body>
+    +  <%= turbo_reflex_frame_tag %>
+      </body>
+    </html>
     ```
 
 ## Usage
@@ -221,18 +217,10 @@ TurboReflex supports the following lifecycle events.
 
 ### Targeting Frames
 
-By default TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `<turbo-frame>` element,
-but you can also explicitly target other frames.
+TurboReflex targets the [`closest`](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) `<turbo-frame>` element by default,
+but you can also explicitly target other frames just like you normally would with Turbo Frames.
 
-1. Look for `data-turbo-reflex-frame` on the reflex elemnt
-
-    ```erb
-    <input type="checkbox"
-      data-turbo-reflex="ExampleReflex#work"
-      data-turbo-reflex-frame="some-frame-id">
-    ```
-
-2. Look for `data-turbo-frame` on the reflex element
+1. Look for `data-turbo-frame` on the reflex element
 
     ```erb
     <input type="checkbox"
@@ -240,7 +228,7 @@ but you can also explicitly target other frames.
       data-turbo-frame="some-frame-id">
     ```
 
-3. Find the closest `<turbo-frame>` to the reflex element
+1. Find the closest `<turbo-frame>` to the reflex element
 
     ```erb
     <turbo-frame id="example-frame">

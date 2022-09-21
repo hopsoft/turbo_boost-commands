@@ -1,0 +1,26 @@
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Docs", href: docs_path, active: true %>
+<% end %>
+
+<section class="bg-white dark:bg-gray-900">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+    <div class="mx-auto mb-8 max-w-screen-sm text-center lg:mb-16">
+      <h2 class="mb-4 text-5xl font-extrabold tracking-tight text-gray-700 lg:text-6xl dark:text-gray-500">
+        <div class="grid place-items-center">
+          <span class="flex items-center">
+            <%= image_tag "turbo-reflex-mark.webp", class: "-ml-10 mr-2 h-14", alt: "TurboReflex Logo" %>
+            <span class="flex tracking-tight whitespace-nowrap dark:text-white">
+              <span class="font-light opacity-70">Turbo</span><span class="mr-2 font-bold text-emerald-500">Reflex</span>
+            </span>
+          </span>
+        </div>
+      </h2>
+      <h3 class="-mt-4 text-2xl font-light tracking-widest text-gray-700 uppercase dark:text-gray-500">Documentation</h3>
+    </div>
+    <div class="grid gap-8 lg:grid-cols-2">
+      <%= render component(:preview), icon: :academic_cap, label: :tutorial, href: doc_path(:start),
+        title: "Get Started", description: "Get up and running quickly. We'll install and configure the JavaScript package, install the Ruby GEM and..." %>
+    </div>
+  </div>
+</section>

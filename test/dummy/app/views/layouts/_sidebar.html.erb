@@ -1,0 +1,54 @@
+<div id="sidebar" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-80 h-screen bg-white border-r border-gray-200 transition-transform -translate-x-full dark:bg-gray-800 dark:border-gray-700">
+
+  <h5 class="flex text-base font-semibold tracking-tight text-gray-500 dark:text-white">
+    <%= image_tag "turbo-reflex-mark.webp", class: "mr-2 h-6", alt: "TurboReady Logo" %>
+    <span class="font-light opacity-70">Turbo</span><span class="font-bold text-emerald-500">Reflex</span>
+  </h5>
+  <button type="button" data-drawer-dismiss="sidebar" class="inline-flex absolute top-2.5 right-2.5 items-center p-1.5 text-sm text-gray-400 bg-transparent rounded-lg hover:text-gray-900 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">
+    <%= render heroicon(:x_mark), class: "w-5 h-5" %>
+    <span class="sr-only">Close menu</span>
+  </button>
+
+  <div class="overflow-y-auto py-4">
+    <ul class="space-y-2">
+      <li class="pt-2 text-gray-500 dark:text-gray-400">
+        Demos
+      </li>
+
+      <li>
+        <%= link_to root_path, class: css("sidebar.link", css("sidebar.link.active") => demos_active?) do %>
+          <%= render heroicon(:home), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => demos_active?) %>
+          Home
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to demo_path(:increment), class: css("sidebar.link", css("sidebar.link.active") => demo_active?(:increment)) do %>
+          <%= render heroicon(:calculator), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => demo_active?(:increment)) %>
+          Increment
+        <% end %>
+      </li>
+
+      <%= tag.li render(component(:divider), class: "my-3") %>
+
+      <li class="pt-2 text-gray-500 dark:text-gray-400">
+        Docs
+      </li>
+
+      <li>
+        <%= link_to docs_path, class: css("sidebar.link", css("sidebar.link.active") => docs_active?) do %>
+          <%= render heroicon(:rectangle_stack), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => docs_active?) %>
+          Catalog
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to doc_path(:start), class: css("sidebar.link", css("sidebar.link.active") => doc_active?(:start)) do %>
+          <%= render heroicon(:academic_cap), class: css("sidebar.link.icon", css("sidebar.link.icon.active") => doc_active?(:start)) %>
+          Get Started
+        <% end %>
+      </li>
+    </ul>
+  </div>
+
+</div>

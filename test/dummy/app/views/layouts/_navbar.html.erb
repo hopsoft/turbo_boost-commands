@@ -1,0 +1,43 @@
+<%= tag.nav(class: "fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700") do %>
+  <div class="py-3 px-3 lg:px-5 lg:pl-3">
+    <div class="flex justify-between items-center">
+
+      <!-- Navbar Left Side -->
+      <div class="flex items-center">
+        <button class="p-2.5 text-sm text-gray-500 rounded-lg dark:text-gray-400 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 focus:outline-none dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          data-tooltip-target="sidebar-tooltip"
+          data-drawer-target="sidebar"
+          data-drawer-toggle="sidebar"
+          data-drawer-backdrop="true">
+          <%= render heroicon(:bars_3), solid: true, class: "w-5 h-5" %>
+        </button>
+        <%= render flowbite(:tooltip), id: "sidebar-tooltip" do %>
+          Open navigation menu
+          <div data-popper-arrow class="tooltip-arrow" style="position: absolute; left: 0px; transform: translate(69px, 0px);"></div>
+        <% end %>
+
+        <%= link_to root_path, class: "flex ml-5" do %>
+          <%= image_tag "turbo-reflex-mark.webp", class: "mr-2 h-8", alt: "TurboReady Logo" %>
+          <span class="flex text-2xl tracking-tight whitespace-nowrap dark:text-white">
+            <span class="font-light opacity-70">Turbo</span><span class="font-bold text-emerald-500">Reflex</span>
+          </span>
+        <% end %>
+      </div>
+
+      <!-- Navbar Right Side -->
+      <div class="flex items-center">
+        <button type="button" class="p-2.5 text-sm text-gray-500 rounded-lg dark:text-gray-400 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 focus:outline-none dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          data-tooltip-target="view-mode-tooltip"
+          data-controller="view-mode"
+          data-action="click->view-mode#toggle">
+          <%= render heroicon(:moon), class: "w-5 h-5 hidden", data: { view_mode_target: "moon" } %>
+          <%= render heroicon(:sun), class: "w-5 h-5 hidden", data: { view_mode_target: "sun" } %>
+        </button>
+        <%= render flowbite(:tooltip), id: "view-mode-tooltip" do %>
+          Toggle view mode
+          <div data-popper-arrow class="tooltip-arrow" style="position: absolute; left: 0px; transform: translate(69px, 0px);"></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

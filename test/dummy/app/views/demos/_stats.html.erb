@@ -1,0 +1,15 @@
+<dl class="grid gap-6 text-gray-900 sm:grid-cols-3 lg:grid-cols-5 dark:text-white">
+  <%= yield %>
+  <%= render "demos/stat", label: "HTTP Fingerpint", value: turbo_reflex_requested? ? SecureRandom.alphanumeric(6).upcase : "N/A",
+    class: token_list("!opacity-60": !turbo_reflex_requested?),
+    value_class: "font-mono" %>
+  <%= render "demos/stat", label: "HTTP Method", value: turbo_reflex_requested? ? request.method : "N/A",
+    class: token_list("!opacity-60": !turbo_reflex_requested?),
+    value_class: token_list("!text-sky-500": turbo_reflex_requested? && request.get?, "!text-fuchsia-500": turbo_reflex_requested? && !request.get?) %>
+  <%= render "demos/stat", label: "Reflex Requested",
+    class: token_list("!opacity-60": !turbo_reflex_requested?),
+    value: turbo_reflex_requested? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
+  <%= render "demos/stat", label: "Reflex Performed",
+    class: token_list("!opacity-60": !turbo_reflex_performed?),
+    value: turbo_reflex_performed? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
+</dl>

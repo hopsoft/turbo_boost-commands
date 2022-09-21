@@ -1,0 +1,15 @@
+<article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+  <div class="flex justify-between items-center mb-5 text-gray-500">
+    <%= tag.span class: css("flowbite.badge.dark", "flex items-center") do %>
+      <%= render heroicon(icon), class: "w-5 h-5 -ml-1 mr-1" %>
+      <%= label.to_s.titleize %>
+    <% end %>
+  </div>
+  <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= link_to title, href: href %></h2>
+  <p class="mb-5 font-light text-gray-500 dark:text-gray-400"><%= description %></p>
+  <div class="flex justify-between items-center">
+    <%= link_to href, class: css("flowbite.link.default", "flex items-center") do %>
+      Read more <%= render heroicon(:arrow_right), class: "w-5 h-5 -mr-1 ml-1" %>
+    <% end %>
+  </div>
+</article>

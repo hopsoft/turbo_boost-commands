@@ -1,0 +1,8 @@
+<!--
+  NOTE: The `href` is irrelevant because the <a> element
+        declares a reflex and lives inside a <turbo-frame>
+        reflex handling will find the <turbo-frame> and uses its `src`
+-->
+<%= link_to "Increment +", "",
+  data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i }
+%>

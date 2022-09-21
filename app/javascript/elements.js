@@ -9,7 +9,7 @@ function findClosestFrame (element) {
 }
 
 function findFrameId (element) {
-  let id = element.dataset.turboReflexFrame || element.dataset.turboFrame
+  let id = element.dataset.turboFrame
   if (!id) {
     const frame = findClosestFrame(element)
     if (frame) id = frame.id
@@ -17,7 +17,7 @@ function findFrameId (element) {
   if (!id) {
     console.error(
       `The reflex element does not specify a frame!`,
-      `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-reflex-frame' or 'data-turbo-frame' attribute.`,
+      `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-frame' attribute.`,
       element
     )
     LifecycleEvents.dispatch(LifecycleEvents.missingFrameId, element, {
