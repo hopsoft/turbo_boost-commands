@@ -33,7 +33,7 @@ ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
 
 # prepare and run the application
 CMD git pull --no-rebase github main && \
-cd yarn && \
+yarn && \
 cd test/dummy && \
 bundle && \
 rm -f tmp/pids/server.pid && \
