@@ -1,6 +1,24 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <div class="flex items-center">
-    <%= render heroicon(:sparkles), class: "h-6 w-6 mr-2 opacity-40" %>
-    Coming soon...
-  </div>
+  <%= render "demos/frame" do %>
+    <%= render "demos/stats" do %>
+      <%= render "demos/stat", label: "Counter", value: @count.to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+        value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
+    <% end %>
+
+    <p class="my-8">
+      You can attach reflexes to any element.
+    </p>
+
+    <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+    <%= tag.div "DIV Tag", class: "cursor-pointer my-4", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+    <%= tag.span "SPAN Tag", class: "cursor-pointer mb-8 inline-block", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "ERB template", source_path: "app/views/demos/increment/frames/elements_in_frame/elements.erb" %>
+
+    <div class="my-4"></div>
+
+    <%= render component(:code), language: :html, class: "text-sm",
+      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/elements_in_frame/elements.html", erb: true %>
+  <% end %>
 <% end %>

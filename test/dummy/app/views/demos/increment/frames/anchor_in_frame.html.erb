@@ -9,14 +9,14 @@
       The link below will invoke a reflex before Rails/Hotwire replaces the frame's content.
     </p>
 
-    <%= link_to "Increment Anchor Tag", nil, class: css("flowbite.link.default", "block mb-8 ml-0"), data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+    <%= link_to "Basic Link", nil, class: css("flowbite.link.default", "block mb-8 ml-0"), data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
 
     <%= render component(:code), language: :erb, class: "text-sm",
-      path: "ERB template", source_path: "app/views/demos/increment/frames/anchor_in_frame/increment.erb" %>
+      path: "ERB template", source_path: "app/views/demos/increment/frames/anchor_in_frame/basic_link.erb" %>
 
     <div class="my-4"></div>
 
     <%= render component(:code), language: :html, class: "text-sm",
-      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/anchor_in_frame/increment.html", erb: true %>
+      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/anchor_in_frame/basic_link.html", erb: true %>
   <% end %>
 <% end %>

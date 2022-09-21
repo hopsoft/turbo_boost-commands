@@ -3,8 +3,19 @@
 class FramesController < ApplicationController
   layout false
 
+  before_action :assign_template_path
+
   def show
-    @template_path = Base64.urlsafe_decode64(params[:id])
     render @template_path
+  end
+
+  def update
+    render @template_path
+  end
+
+  private
+
+  def assign_template_path
+    @template_path = Base64.urlsafe_decode64(params[:id])
   end
 end
