@@ -9,7 +9,11 @@
       The buttons below will invoke a reflex before Rails/Hotwire replaces the frame's content.
     </p>
 
-    <%= tag.button "Basic Button", class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0"), data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+    <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
+      data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } do %>
+      Basic Button
+      <%= render flowbite(:notification_badge), value: @count.to_i if @count.to_i > 0 %>
+    <% end %>
 
     <%= render component(:code), language: :erb, class: "text-sm",
       path: "ERB template", source_path: "app/views/demos/increment/frames/button_in_frame/basic_button.erb" %>
@@ -18,5 +22,20 @@
 
     <%= render component(:code), language: :html, class: "text-sm",
       path: "Rendered HTML", source_path: "app/views/demos/increment/frames/button_in_frame/basic_button.html", erb: true %>
+
+    <%= button_to frame_path(params[:id]), method: :patch, remote: true,
+      class: css("flowbite.button.cyan_to_blue", "block mt-12 mb-8 ml-0 relative"),
+      form: { data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } } do %>
+      Form Button <small class="ml-2 font-mono opacity-50">button_to</small>
+      <%= render flowbite(:notification_badge), value: @count.to_i if @count.to_i > 0 %>
+    <% end %>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "ERB template", source_path: "app/views/demos/increment/frames/button_in_frame/form_button.erb" %>
+
+    <div class="my-4"></div>
+
+    <%= render component(:code), language: :html, class: "text-sm",
+      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/button_in_frame/form_button.html", erb: true %>
   <% end %>
 <% end %>
