@@ -10,7 +10,7 @@
     Increment
   </h2>
   <p class="mb-8 font-light text-blue-500 lg:text-xl">
-    A simple counter <span class="opacity-50">(state is managed in the html)</span>
+    A simple counter <span class="opacity-50">(state is managed in the HTML)</span>
   </p>
 
   <%= render flowbite(:alert), type: :info, class: "flex items-center" do %>
@@ -56,8 +56,8 @@
 
   <div class="grid gap-16 pt-16 -mt-14 sm:grid-cols-2 lg:grid-cols-1">
     <%= render "demos" do %>
-      <%= render "demo", id: "anchor-in-frame", title: "Anchors inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/anchor_in_frame" %>
+      <%= render "demo", id: "link-in-frame", title: "Links inside a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "demos/increment/frames/link_in_frame" %>
       <% end %>
 
       <%= render "demo", id: "button-in-frame", title: "Buttons inside a Turbo Frame" do %>

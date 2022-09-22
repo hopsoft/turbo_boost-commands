@@ -9,9 +9,20 @@
       You can attach reflexes to any element.
     </p>
 
-    <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
-    <%= tag.div "DIV Tag", class: "cursor-pointer my-4", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
-    <%= tag.span "SPAN Tag", class: "cursor-pointer mb-8 inline-block", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+    <div class="relative m-6">
+      <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } %>
+      <%= render flowbite(:notification_badge), value: @count.to_i, class: "!-left-4" if @count.to_i > 0 %>
+    </div>
+
+    <%= tag.div class: "cursor-pointer m-6 relative", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } do %>
+      DIV Tag
+      <%= render flowbite(:notification_badge), value: @count.to_i, class: "!-left-4" if @count.to_i > 0 %>
+    <% end %>
+
+    <%= tag.span class: "cursor-pointer m-6 mb-12 block relative", data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } do %>
+      SPAN Tag
+      <%= render flowbite(:notification_badge), value: @count.to_i, class: "!-left-4" if @count.to_i > 0 %>
+    <% end %>
 
     <%= render component(:code), language: :erb, class: "text-sm",
       path: "ERB template", source_path: "app/views/demos/increment/frames/elements_in_frame/elements.erb" %>

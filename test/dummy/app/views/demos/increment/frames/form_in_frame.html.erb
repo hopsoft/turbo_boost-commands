@@ -9,10 +9,13 @@
       You can attach reflexes to any element.
     </p>
 
-    <%= form_with url: frame_path(Base64.urlsafe_encode64(@template_path)), method: :patch,
+    <%= form_with url: frame_path(params[:id]), method: :patch,
       class: "mb-8",
       data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } do |form| %>
-      <%= form.submit "Submit Form", class: css("flowbite.button.cyan_to_blue", "cursor-pointer") %>
+      <div class="inline-block relative">
+        <%= form.submit "Submit Form", class: css("flowbite.button.cyan_to_blue", "cursor-pointer") %>
+        <%= render flowbite(:notification_badge), value: @count.to_i, class: "!-right-0" if @count.to_i > 0 %>
+      </div>
     <% end %>
 
     <%= render component(:code), language: :erb, class: "text-sm",

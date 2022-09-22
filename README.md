@@ -463,7 +463,8 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todos
 
-- [ ] Consider how to best support `button_to` and `link_to`
+- [ ] Consider falling back to the turbo-reflex-frame when a frame can't be identified
+- [ ] Consider how to best support `link_to` with methods other than GET
 - [ ] Update system tests for new demos
 - [ ] Add tests for lifecycle events
 - [ ] Add tests for select elements
