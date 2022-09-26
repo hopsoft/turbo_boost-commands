@@ -1,7 +1,7 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= render "demos/frame" do %>
-    <%= render "demos/stats" do %>
-      <%= render "demos/stat", label: "Counter", value: @count.to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+  <%= render "frames/frame" do %>
+    <%= render "stats/stats" do %>
+      <%= render "stats/stat", label: "Counter", value: @count.to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
         value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
     <% end %>
 
@@ -16,11 +16,11 @@
     <% end %>
 
     <%= render component(:code), language: :erb, class: "text-sm",
-      path: "ERB template", source_path: "app/views/demos/increment/frames/link_in_frame/basic_link.erb" %>
+      path: "ERB template", source_path: "app/views/codes/increment/link_in_frame/basic_link.erb" %>
 
     <div class="my-4"></div>
 
     <%= render component(:code), language: :html, class: "text-sm",
-      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/link_in_frame/basic_link.html", erb: true %>
+      path: "Rendered HTML", source_path: "app/views/codes/increment/link_in_frame/basic_link.html", erb: true %>
   <% end %>
 <% end %>
