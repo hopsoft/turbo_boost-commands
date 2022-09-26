@@ -1,0 +1,26 @@
+<%= turbo_frame_tag demo_frame_id(@template_path) do %>
+  <%= render "frames/frame", name: "turbo-frame 1" do %>
+    <%= render "stats/stats" do %>
+      <%= render "stats/stat", label: "Counter", value: session[:frame_1_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+        value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
+    <% end %>
+
+    <div class="inline-flex relative mt-8 rounded-md shadow-sm" role="group">
+      <%= button_tag class: css("flowbite.button.group_left"),
+        data: { turbo_reflex: "IncrementReflex#increment", session_key: :frame_1_count } do %>
+        Increment this frame
+      <% end %>
+
+      <%= button_tag class: css("flowbite.button.group_right"),
+        data: {
+          turbo_reflex: "IncrementReflex#increment",
+          turbo_frame: demo_frame_id("frames/increment/multiple_2_frame"),
+          session_key: :frame_2_count
+        } do %>
+        Increment other frame
+      <% end %>
+
+      <%= render flowbite(:notification_badge), value: session[:frame_1_count].to_i, class: "!-left-2" if session[:frame_1_count].to_i > 0 %>
+    </div>
+  <% end %>
+<% end %>

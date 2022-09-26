@@ -24,8 +24,7 @@
   <p class="my-6">
     We chose to start with a simple incrementor demo to reduce complexity.
     <span class="text-lg font-light opacity-80">
-      We also manage <code>state</code> in the HTML to further reduce complexity.
-      <em>(i.e. We pass the current <code>count</code> to the server with each reflex request.)</em>
+      We hold <code>state</code> in the session to further reduce complexity.
     </span>
   </p>
 
@@ -72,8 +71,8 @@
         <%= demo_turbo_frame_tag "frames/increment/form_in_frame" %>
       <% end %>
 
-      <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames with Targeting" do %>
-        <%= demo_turbo_frame_tag "frames/coming_soon_frame" %>
+      <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames <small class='mx-2 font-extralight opacity-60'>(with Targeting)</small>".html_safe do %>
+        <%= demo_turbo_frame_tag "frames/increment/multiple_frame" %>
       <% end %>
 
       <%= render "demo", id: "reflex-without-frame",

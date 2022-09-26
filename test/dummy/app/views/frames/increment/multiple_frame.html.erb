@@ -1,0 +1,5 @@
+<%= turbo_frame_tag demo_frame_id(@template_path) do %>
+  <%= demo_turbo_frame_tag "frames/increment/multiple_1_frame" %>
+  <div class="my-8"></div>
+  <%= demo_turbo_frame_tag "frames/increment/multiple_2_frame" %>
+<% end %>
