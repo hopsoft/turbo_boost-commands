@@ -1,7 +1,7 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= render "demos/frame" do %>
-    <%= render "demos/stats" do %>
-      <%= render "demos/stat", label: "Counter", value: @count.to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+  <%= render "frames/frame" do %>
+    <%= render "stats/stats" do %>
+      <%= render "stats/stat", label: "Counter", value: session[:form_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
         value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
     <% end %>
 
@@ -11,19 +11,19 @@
 
     <%= form_with url: frame_path(params[:id]), method: :patch,
       class: "mb-8",
-      data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } do |form| %>
+      data: { turbo_reflex: "IncrementReflex#increment", session_key: :form_in_frame_count } do |form| %>
       <div class="inline-block relative">
         <%= form.submit "Submit Form", class: css("flowbite.button.cyan_to_blue", "cursor-pointer") %>
-        <%= render flowbite(:notification_badge), value: @count.to_i, class: "!-right-0" if @count.to_i > 0 %>
+        <%= render flowbite(:notification_badge), value: session[:form_in_frame_count].to_i, class: "!-right-0" if session[:form_in_frame_count].to_i > 0 %>
       </div>
     <% end %>
 
     <%= render component(:code), language: :erb, class: "text-sm",
-      path: "ERB template", source_path: "app/views/demos/increment/frames/form_in_frame/form.erb" %>
+      path: "ERB template", source_path: "app/views/codes/increment/form_in_frame/form.erb" %>
 
     <div class="my-4"></div>
 
     <%= render component(:code), language: :html, class: "text-sm",
-      path: "Rendered HTML", source_path: "app/views/demos/increment/frames/form_in_frame/form.html", erb: true %>
+      path: "Rendered HTML", source_path: "app/views/codes/increment/form_in_frame/form.html" %>
   <% end %>
 <% end %>

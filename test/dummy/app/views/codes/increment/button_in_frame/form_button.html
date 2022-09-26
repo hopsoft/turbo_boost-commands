@@ -1,7 +1,6 @@
 <form method="post" action="path/to/frame"
   data-turbo-reflex="IncrementReflex#increment"
-  data-count="<%= @count.to_i %>"
-  data-remote="true">
+  data-session-key="count">
   <input type="hidden" name="authenticity_token" value="...">
   <input type="hidden" name="_method" value="patch">
   <button>Form Button (button_to)</button>

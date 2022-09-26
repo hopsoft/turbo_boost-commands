@@ -8,7 +8,19 @@
 # * turbo_streams .. A list of Turbo Streams to append to the response
 #
 class IncrementReflex < TurboReflex::Base
+  delegate :session, to: :controller
+
   def increment
-    controller.instance_variable_set :@count, element.data_count.to_i + 1
+    self.count += 1
+  end
+
+  private
+
+  def count
+    session[element.data_session_key] ||= 0
+  end
+
+  def count=(value)
+    session[element.data_session_key] = value
   end
 end

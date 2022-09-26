@@ -1,4 +1,4 @@
-<%= tag.code path, class: "block m-2 text-sm font-light opacity-60" if local_assigns[:path] %>
+<%= tag.code path, class: "block m-2 text-sm opacity-60" if local_assigns[:path] %>
 <%= tag.div id: local_assigns[:id] || SecureRandom.alphanumeric(10), class: "highlight #{local_assigns[:class]}" do %>
   <% if local_assigns[:source] %>
     <%= tag.pre render_source(source, language: language), class: "overflow-scroll p-5 rounded-lg dark:border dark:border-stone-700" %>

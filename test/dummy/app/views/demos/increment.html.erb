@@ -24,8 +24,7 @@
   <p class="my-6">
     We chose to start with a simple incrementor demo to reduce complexity.
     <span class="text-lg font-light opacity-80">
-      We also manage <code>state</code> in the HTML to further reduce complexity.
-      <em>(i.e. We pass the current <code>count</code> to the server with each reflex request.)</em>
+      We hold <code>state</code> in the session to further reduce complexity.
     </span>
   </p>
 
@@ -57,28 +56,28 @@
   <div class="grid gap-16 pt-16 -mt-14 sm:grid-cols-2 lg:grid-cols-1">
     <%= render "demos" do %>
       <%= render "demo", id: "link-in-frame", title: "Links inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/link_in_frame" %>
+        <%= demo_turbo_frame_tag "frames/increment/link_in_frame" %>
       <% end %>
 
       <%= render "demo", id: "button-in-frame", title: "Buttons inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/button_in_frame" %>
+        <%= demo_turbo_frame_tag "frames/increment/button_in_frame" %>
       <% end %>
 
       <%= render "demo", id: "elements-in-frame", title: "Misc elements inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/elements_in_frame" %>
+        <%= demo_turbo_frame_tag "frames/increment/elements_in_frame" %>
       <% end %>
 
       <%= render "demo", id: "form-in-frame", title: "Forms inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/form_in_frame" %>
+        <%= demo_turbo_frame_tag "frames/increment/form_in_frame" %>
       <% end %>
 
-      <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames with Targeting" do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/multiple_frames" %>
+      <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames <small class='mx-2 font-extralight opacity-60'>(with Targeting)</small>".html_safe do %>
+        <%= demo_turbo_frame_tag "frames/increment/multiple_frame" %>
       <% end %>
 
       <%= render "demo", id: "reflex-without-frame",
         title: "Reflex without Turbo Frames <small class='mx-2 font-extralight text-blue-500'>(RPC over HTTP)</small>".html_safe do %>
-        <%= demo_turbo_frame_tag "demos/increment/frames/reflex_without_frame" %>
+        <%= demo_turbo_frame_tag "frames/coming_soon_frame" %>
       <% end %>
     <% end %>
   </div>

@@ -1,0 +1,29 @@
+<%= turbo_frame_tag demo_frame_id(@template_path) do %>
+  <%= demo_turbo_frame_tag "frames/increment/multiple_1_frame" %>
+  <div class="my-8"></div>
+  <%= demo_turbo_frame_tag "frames/increment/multiple_2_frame" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "Container ERB template", source_path: "app/views/codes/increment/multiple_frame/container.erb" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "Container rendered HTML", source_path: "app/views/codes/increment/multiple_frame/container.html" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "frame-1 ERB template", source_path: "app/views/codes/increment/multiple_frame/frame_1.erb" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "frame-1 rendered HTML", source_path: "app/views/codes/increment/multiple_frame/frame_1.html" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "frame-2 ERB template", source_path: "app/views/codes/increment/multiple_frame/frame_2.erb" %>
+
+  <div class="my-8"></div>
+  <%= render component(:code), language: :erb, class: "text-sm",
+    path: "frame-2 rendered HTML", source_path: "app/views/codes/increment/multiple_frame/frame_2.html" %>
+<% end %>

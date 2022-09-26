@@ -1,0 +1,41 @@
+<%= turbo_frame_tag demo_frame_id(@template_path) do %>
+  <%= render "frames/frame" do %>
+    <%= render "stats/stats" do %>
+      <%= render "stats/stat", label: "Counter", value: session[:button_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+        value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
+    <% end %>
+
+    <p class="my-8">
+      The buttons below will invoke a reflex before Rails/Hotwire replaces the frame's content.
+    </p>
+
+    <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
+      data: { turbo_reflex: "IncrementReflex#increment", session_key: :button_in_frame_count } do %>
+      Basic Button
+      <%= render flowbite(:notification_badge), value: session[:button_in_frame_count].to_i if session[:button_in_frame_count].to_i > 0 %>
+    <% end %>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "ERB template", source_path: "app/views/codes/increment/button_in_frame/basic_button.erb" %>
+
+    <div class="my-4"></div>
+
+    <%= render component(:code), language: :html, class: "text-sm",
+      path: "Rendered HTML", source_path: "app/views/codes/increment/button_in_frame/basic_button.html" %>
+
+    <%= button_to frame_path(params[:id]), method: :patch,
+      class: css("flowbite.button.cyan_to_blue", "block mt-12 mb-8 ml-0 relative"),
+      form: { data: { turbo_reflex: "IncrementReflex#increment", session_key: :button_in_frame_count } } do %>
+      Form Button <small class="ml-2 font-mono opacity-50">button_to</small>
+      <%= render flowbite(:notification_badge), value: session[:button_in_frame_count].to_i if session[:button_in_frame_count].to_i > 0 %>
+    <% end %>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "ERB template", source_path: "app/views/codes/increment/button_in_frame/form_button.erb" %>
+
+    <div class="my-4"></div>
+
+    <%= render component(:code), language: :html, class: "text-sm",
+      path: "Rendered HTML", source_path: "app/views/codes/increment/button_in_frame/form_button.html" %>
+  <% end %>
+<% end %>
