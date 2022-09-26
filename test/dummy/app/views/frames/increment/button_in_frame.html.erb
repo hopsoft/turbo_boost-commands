@@ -23,7 +23,7 @@
     <%= render component(:code), language: :html, class: "text-sm",
       path: "Rendered HTML", source_path: "app/views/codes/increment/button_in_frame/basic_button.html", erb: true %>
 
-    <%= button_to frame_path(params[:id]), method: :patch, remote: true,
+    <%= button_to frame_path(params[:id]), method: :patch,
       class: css("flowbite.button.cyan_to_blue", "block mt-12 mb-8 ml-0 relative"),
       form: { data: { turbo_reflex: "IncrementReflex#increment", count: @count.to_i } } do %>
       Form Button <small class="ml-2 font-mono opacity-50">button_to</small>
