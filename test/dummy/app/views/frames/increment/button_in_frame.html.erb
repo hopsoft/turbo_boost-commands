@@ -27,12 +27,12 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :erb, class: "text-sm",
-        path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/button_in_frame/basic_button.erb" %>
+        path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/button_in_frame/show.erb" %>
 
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/basic_button.html", erb: true %>
+        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/show.html", erb: true %>
 
 
       <%= render component(:divider), class: "my-12" %>
@@ -50,17 +50,17 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
-        path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller_form.rb" %>
+        path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller.rb" %>
 
       <div class="my-8"></div>
 
       <%= render component(:code), language: :erb, class: "text-sm",
-        path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/button_in_frame/form_button.erb" %>
+        path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/button_in_frame/show_form.erb" %>
 
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/form_button.html", erb: true %>
+        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/show_form.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>

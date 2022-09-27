@@ -7,4 +7,9 @@ class DemosController < ApplicationController
     # controller logic...
     # renders app/views/demos/show.html.erb
   end
+
+  def update
+    # controller logic...
+    # renders app/views/demos/show.html.erb
+  end
 end
