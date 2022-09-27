@@ -1,14 +1,11 @@
-<turbo-frame id="frame-2">
-  <button
-    data-turbo-reflex="IncrementReflex#increment"
-    data-session-key="frame-2-count">
+<turbo-frame id="frame-2" src="/frames/2">
+  <%= session[:frame_2_count].to_i %>
+
+  <button data-turbo-reflex="IncrementReflex#increment">
     Increment this frame
   </button>
 
-  <button
-    data-turbo-reflex="IncrementReflex#increment"
-    data-turbo-frame="frame-1"
-    data-session-key="frame-1-count">
+  <button data-turbo-reflex="IncrementReflex#increment" data-turbo-frame="frame-1">
     Increment other frame
   </button>
 </turbo-frame>
