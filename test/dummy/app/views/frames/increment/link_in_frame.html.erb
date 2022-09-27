@@ -19,20 +19,20 @@
       <%= render component(:code), language: :ruby, class: "text-sm",
         path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
-      <div class="my-12"></div>
+      <div class="my-8"></div>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
         path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller.rb" %>
 
-      <div class="my-12"></div>
+      <div class="my-8"></div>
 
       <%= render component(:code), language: :erb, class: "text-sm",
         path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/link_in_frame/basic_link.erb" %>
 
-      <div class="my-4"></div>
+      <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML", source_path: "app/views/codes/increment/link_in_frame/basic_link.html", erb: true %>
+        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/link_in_frame/basic_link.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>
