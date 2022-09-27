@@ -75,8 +75,8 @@ module TurboReflex::Controller
   protected
 
   def perform_turbo_reflex
-    turbo_reflex_instance.public_send turbo_reflex_method_name
     @turbo_reflex_performed = true
+    turbo_reflex_instance.public_send turbo_reflex_method_name
   end
 
   def append_turbo_reflex_turbo_streams

@@ -1,0 +1,17 @@
+<%= turbo_frame_tag "frame-#{params[:id]}" do %>
+  <%# State is held in session for this demo. %>
+  <%= session["frame-#{params[:id]}-count"].to_i %>
+
+  <%# The turbo_reflex data attribute instructs the client to perform a reflex when clicked %>
+  <%= button_tag "Increment this frame",
+    data: { turbo_reflex: "IncrementReflex#increment" } %>
+
+  <%
+    # The turbo_reflex data attribute instructs the client to perform a reflex when clicked
+    # The turbo_frame data attribute explicitly targets another frame to update
+  %>
+  <%= button_tag "Increment other frame",
+    data: {
+      turbo_reflex: "IncrementReflex#increment",
+      turbo_frame: "frame-#{params[:other_frame_id]}" } %>
+<% end %>

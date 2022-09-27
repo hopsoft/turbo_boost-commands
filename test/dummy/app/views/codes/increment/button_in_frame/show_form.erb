@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "demo", src: demo_path do %>
+  <%# State is held in session for this demo %>
+  <%= session[:count].to_i %>
+
+  <%
+    # The turbo_reflex data attribute instructs the client to perform a reflex when submitted
+    # in addition to normal form handling
+  %>
+  <%= button_to "Form Button (button_to)", demo_path, method: :patch,
+    form: { data: { turbo_reflex: "IncrementReflex#increment" } } %>
+<% end %>

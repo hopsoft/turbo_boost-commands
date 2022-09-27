@@ -1,26 +1,38 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= render "frames/frame" do %>
-    <%= render "stats/stats" do %>
-      <%= render "stats/stat", label: "Counter", value: session[:link_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
-        value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
+  <%= cache session[:link_in_frame_count].to_i do %>
+    <%= render "frames/frame" do %>
+      <%= render "stats/stats" do %>
+        <%= render "stats/stat", label: "Counter", value: session[:link_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+          value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
+      <% end %>
+
+      <p class="my-8">
+        The link below will invoke a reflex before Rails/Hotwire replaces the frame's content.
+      </p>
+
+      <%= link_to nil, class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
+        data: { turbo_reflex: "IncrementReflex#increment", session_key: :link_in_frame_count } do %>
+        Basic Link
+        <%= render flowbite(:notification_badge), value: session[:link_in_frame_count].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
+      <% end %>
+
+      <%= render component(:code), language: :ruby, class: "text-sm",
+        path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+
+      <div class="my-8"></div>
+
+      <%= render component(:code), language: :ruby, class: "text-sm",
+        path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller.rb" %>
+
+      <div class="my-8"></div>
+
+      <%= render component(:code), language: :erb, class: "text-sm",
+        path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/link_in_frame/show.erb" %>
+
+      <div class="my-8"></div>
+
+      <%= render component(:code), language: :html, class: "text-sm",
+        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/link_in_frame/show.html", erb: true %>
     <% end %>
-
-    <p class="my-8">
-      The link below will invoke a reflex before Rails/Hotwire replaces the frame's content.
-    </p>
-
-    <%= link_to nil, class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
-      data: { turbo_reflex: "IncrementReflex#increment", session_key: :link_in_frame_count } do %>
-      Basic Link
-      <%= render flowbite(:notification_badge), value: session[:link_in_frame_count].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
-    <% end %>
-
-    <%= render component(:code), language: :erb, class: "text-sm",
-      path: "ERB template", source_path: "app/views/codes/increment/link_in_frame/basic_link.erb" %>
-
-    <div class="my-4"></div>
-
-    <%= render component(:code), language: :html, class: "text-sm",
-      path: "Rendered HTML", source_path: "app/views/codes/increment/link_in_frame/basic_link.html" %>
   <% end %>
 <% end %>

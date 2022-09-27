@@ -1,0 +1,14 @@
+<div id="rpc">
+  <%# State is held in session for this demo. %>
+  <%= session[:count].to_i %>
+
+  <%
+    # The turbo_reflex data attribute instructs the client to perform a reflex when clicked
+    # The turbo_frame data attribute targets a specialized frame dedicated to RPC over HTTP
+  %>
+  <%= button_tag data: {
+    turbo_reflex: "IncrementReflex#increment",
+    turbo_frame: "turbo-reflex-frame" } do %>
+    RPC over HTTP
+  <% end %>
+</div>

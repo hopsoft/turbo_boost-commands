@@ -1,5 +1,5 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= render "frames/frame", name: "turbo-frame 1" do %>
+  <%= render "frames/frame", name: "turbo-frame id=\"frame-1\"" do %>
     <%= render "stats/stats" do %>
       <%= render "stats/stat", label: "Counter", value: session[:frame_1_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
         value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>

@@ -18,66 +18,52 @@
     See the <%= link_to "Get Started", doc_path(:start), class: css("flowbite.link.default", "mx-1") %> guide to learn how to install and setup TurboReflex.
   <% end %>
 
-  <p class="mt-10 mb-6 text-xl">
-    This set of demos introduces TurboReflex and showcases how to use it in a Rails/Hotwire app.
-  </p>
-  <p class="my-6">
-    We chose to start with a simple incrementor demo to reduce complexity.
-    <span class="text-lg font-light opacity-80">
-      We hold <code>state</code> in the session to further reduce complexity.
-    </span>
+  <p class="my-10 text-2xl text-white">
+    These demos introduce TurboReflex and show you how to use it in a Rails/Hotwire app.
   </p>
 
-  <h3 class="text-3xl text-gray-900 dark:text-white">The Reflex</h3>
-
   <p class="my-6">
-    Reflexes are simple Ruby classes.
-    Their public methods can be invoked by user interactions in the browser.
-    On the server, reflexes are performed by a
+    Reflexes are simple Ruby classes that can be triggered by client-side events in a web browser.
+    They are executed server-side via a
     <%= link_to "before filter", "https://guides.rubyonrails.org/action_controller_overview.html#filters", target: "_blank", rel: "noopener", class: css("flowbite.link.paragraph") %>
     in your Rails controllers.
   </p>
-  <p class="my-6">
-    Here's the reflex we're using for this demo.
-  </p>
-
-  <%= render component(:code), language: :ruby, class: "text-sm",
-    path: "app/reflexes/increment_reflex.rb", source_path: "app/reflexes/increment_reflex.rb" %>
-
-  <h3 class="mt-12 text-3xl text-gray-900 dark:text-white">The Demos</h3>
   <p class="my-4 font-light">
-    The first several examples below show how to use reflexes with Turbo Frames.
-  </p>
-  <p class="my-4 font-light">
-    <span class="text-blue-500">The last example shows how to use reflexes <strong class="underline underline-offset-8">without frames</strong>.</span>
-    A technique that can simplify your Hotwire code significantly.
+    The first several examples demonstrate how to use reflexes with Turbo Frames.
+    <span class="text-blue-500">The last example demonstrates how to use reflexes <strong class="underline underline-offset-8">without frames</strong>.</span>
+    <em>A technique that can simplify your Hotwire code significantly.</em>
   </p>
 
-  <div class="grid gap-16 pt-16 -mt-14 sm:grid-cols-2 lg:grid-cols-1">
+  <%= button_to session_path, method: :delete, class: css("flowbite.button.red_to_yellow", "my-12 flex items-center") do %>
+    <%= render heroicon(:exclamation), class: "w-6 h-6 mr-2" %>
+    Clear the session <small class="ml-2 opacity-60">(reset the state for all demos)</small>
+  <% end %>
+
+  <div class="grid gap-16 pt-16 -mt-10 sm:grid-cols-2 lg:grid-cols-1">
     <%= render "demos" do %>
-      <%= render "demo", id: "link-in-frame", title: "Links inside a Turbo Frame" do %>
+      <%= render "demo", id: "link-in-frame-demo", title: "Links in a Turbo Frame" do %>
         <%= demo_turbo_frame_tag "frames/increment/link_in_frame" %>
       <% end %>
 
-      <%= render "demo", id: "button-in-frame", title: "Buttons inside a Turbo Frame" do %>
+      <%= render "demo", id: "button-in-frame-demo", title: "Buttons in a Turbo Frame" do %>
         <%= demo_turbo_frame_tag "frames/increment/button_in_frame" %>
       <% end %>
 
-      <%= render "demo", id: "elements-in-frame", title: "Misc elements inside a Turbo Frame" do %>
-        <%= demo_turbo_frame_tag "frames/increment/elements_in_frame" %>
-      <% end %>
-
-      <%= render "demo", id: "form-in-frame", title: "Forms inside a Turbo Frame" do %>
+      <%= render "demo", id: "form-in-frame-demo", title: "Forms in a Turbo Frame" do %>
         <%= demo_turbo_frame_tag "frames/increment/form_in_frame" %>
       <% end %>
 
-      <%= render "demo", id: "multiple-frames", title: "Multiple Turbo Frames <small class='mx-2 font-extralight opacity-60'>(with Targeting)</small>".html_safe do %>
+      <%= render "demo", id: "elements-in-frame-demo", title: "Other elements in a Turbo Frame" do %>
+        <%= demo_turbo_frame_tag "frames/increment/elements_in_frame" %>
+      <% end %>
+
+      <%= render "demo", id: "multiple-frames-demo", title: "Multiple Turbo Frames <small class='mx-2 font-extralight opacity-60'>(with targeting)</small>".html_safe do %>
         <%= demo_turbo_frame_tag "frames/increment/multiple_frame" %>
       <% end %>
 
-      <%= render "demo", id: "reflex-without-frame",
+      <%= render "demo", id: "rpc-over-http-demo",
         title: "Reflex without Turbo Frames <small class='mx-2 font-extralight text-blue-500'>(RPC over HTTP)</small>".html_safe do %>
-        <%= demo_turbo_frame_tag "frames/coming_soon_frame" %>
+        <%= render "increment_rpc" %>
       <% end %>
     <% end %>
   </div>

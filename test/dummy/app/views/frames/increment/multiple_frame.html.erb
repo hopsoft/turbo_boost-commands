@@ -1,29 +1,47 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= demo_turbo_frame_tag "frames/increment/multiple_1_frame" %>
-  <div class="my-8"></div>
-  <%= demo_turbo_frame_tag "frames/increment/multiple_2_frame" %>
+  <%= cache [session[:frame_1_count].to_i, session[:frame_2_count].to_i] do %>
+    <%= demo_turbo_frame_tag "frames/increment/multiple_1_frame" %>
+    <div class="my-8"></div>
+    <%= demo_turbo_frame_tag "frames/increment/multiple_2_frame" %>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "Container ERB template", source_path: "app/views/codes/increment/multiple_frame/container.erb" %>
+    <div class="my-12"></div>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "Container rendered HTML", source_path: "app/views/codes/increment/multiple_frame/container.html" %>
+    <%= render component(:code), language: :ruby, class: "text-sm",
+      path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/multiple_frame/reflex.rb" %>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "frame-1 ERB template", source_path: "app/views/codes/increment/multiple_frame/frame_1.erb" %>
+    <div class="my-8"></div>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "frame-1 rendered HTML", source_path: "app/views/codes/increment/multiple_frame/frame_1.html" %>
+    <%= render component(:code), language: :ruby, class: "text-sm",
+      path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller.rb" %>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "frame-2 ERB template", source_path: "app/views/codes/increment/multiple_frame/frame_2.erb" %>
+    <div class="my-8"></div>
 
-  <div class="my-8"></div>
-  <%= render component(:code), language: :erb, class: "text-sm",
-    path: "frame-2 rendered HTML", source_path: "app/views/codes/increment/multiple_frame/frame_2.html" %>
+    <%= render component(:code), language: :ruby, class: "text-sm",
+      path: "app/controllers/frames_controller.rb", source_path: "app/views/codes/increment/multiple_frame/controller_frame.rb" %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "app/views/demos/show.html.erb", source_path: "app/views/codes/increment/multiple_frame/show_demo.erb" %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/multiple_frame/show_demo.html" %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "app/views/frames/show.html.erb", source_path: "app/views/codes/increment/multiple_frame/show_frame.erb" %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "Rendered HTML for: /frames/1", source_path: "app/views/codes/increment/multiple_frame/show_frame_1.html", erb: true %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "Rendered HTML for: /frames/2", source_path: "app/views/codes/increment/multiple_frame/show_frame_2.html", erb: true %>
+  <% end %>
 <% end %>
