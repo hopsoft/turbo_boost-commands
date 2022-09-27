@@ -4,7 +4,8 @@ require "rouge"
 
 module CodeHelper
   def read_source(path, erb: false)
-    source = File.read(Rails.root.join(path))
+    cache_key = "#{path}/#{File.mtime(Rails.root.join(path)).iso8601}"
+    source = Rails.cache.fetch(cache_key) { File.read(Rails.root.join(path)) }
     return source unless erb
     ERB.new(source).result(binding)
   end
