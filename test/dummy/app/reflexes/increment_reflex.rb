@@ -11,16 +11,7 @@ class IncrementReflex < TurboReflex::Base
   delegate :session, to: :controller
 
   def increment
-    self.count += 1
-  end
-
-  private
-
-  def count
-    session[element.data_session_key] ||= 0
-  end
-
-  def count=(value)
-    session[element.data_session_key] = value
+    key = element.data_session_key
+    session[key] = session.fetch(key, 0) + 1
   end
 end

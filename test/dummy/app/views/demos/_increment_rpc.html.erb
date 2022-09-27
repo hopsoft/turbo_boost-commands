@@ -4,12 +4,16 @@
       value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
   <% end %>
 
-  <p class="mt-8 mb-4">
+  <p class="my-8 text-xl text-white">
     You can also use TurboReflex without explicitly defining Turbo Frames.
-    This reduces the complexity related to architecting with frames and eliminates the proliferation of frame related boilerplate code in your app.
+  </p>
+  <p class="mt-4">
+    This feature is known as <span class="text-blue-500">RPC over HTTP</span>.
+    It eliminates the boilerplate and complexity imposed by Turbo Frames via a specialized frame dedicated to reflexes,
+    allowing you to <span class="underline underline-offset-4">focus on business logic instead of frames</span>.
   </p>
   <p class="mt-4 mb-8">
-    We call this feature <span class="text-blue-500">RPC over HTTP</span> which uses a frame dedicated for this purpose.
+  <em>And because it uses Turbo Frames under the hood, it guarantees robust and reliable reactivity over HTTP.</em>
   </p>
 
   <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
