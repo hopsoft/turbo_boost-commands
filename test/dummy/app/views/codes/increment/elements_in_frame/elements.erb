@@ -1,3 +1,9 @@
-<%= tag.p "P Tag", data: { turbo_reflex: "IncrementReflex#increment", session_key: :count } %>
-<%= tag.div "DIV Tag", data: { turbo_reflex: "IncrementReflex#increment", session_key: :count } %>
-<%= tag.span "SPAN Tag", data: { turbo_reflex: "IncrementReflex#increment", session_key: :count } %>
+<%= turbo_frame_tag "demo", src: demo_path do %>
+  <%# State is held in session for this demo. %>
+  <%= session[:count].to_i %>
+
+  <%# The data attribute instructs the client to perform a reflex when clicked %>
+  <%= tag.p "P Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
+  <%= tag.div "DIV Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
+  <%= tag.span "SPAN Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
+<% end %>

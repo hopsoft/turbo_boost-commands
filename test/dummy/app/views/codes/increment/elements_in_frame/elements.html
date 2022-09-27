@@ -1,3 +1,7 @@
-<p data-turbo-reflex="IncrementReflex#increment" data-session-key="count">P Tag</p>
-<div data-turbo-reflex="IncrementReflex#increment" data-session-key="count">DIV Tag</div>
-<span data-turbo-reflex="IncrementReflex#increment" data-session-key="count">SPAN Tag</span>
+<turbo-frame id="demo" src="/demo">
+  <%= session[:elements_in_frame_count].to_i %>
+
+  <p data-turbo-reflex="IncrementReflex#increment">P Tag</p>
+  <div data-turbo-reflex="IncrementReflex#increment">DIV Tag</div>
+  <span data-turbo-reflex="IncrementReflex#increment">SPAN Tag</span>
+</turbo-frame>
