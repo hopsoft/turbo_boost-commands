@@ -18,12 +18,22 @@
       </div>
     <% end %>
 
-    <%= render component(:code), language: :erb, class: "text-sm",
-      path: "ERB template", source_path: "app/views/codes/increment/form_in_frame/form.erb" %>
+    <%= render component(:code), language: :ruby, class: "text-sm",
+      path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
-    <div class="my-4"></div>
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :ruby, class: "text-sm",
+      path: "app/controllers/demos_controller.rb", source_path: "app/views/codes/increment/controller_form.rb" %>
+
+    <div class="my-8"></div>
+
+    <%= render component(:code), language: :erb, class: "text-sm",
+      path: "app/views/demo/show.html.erb", source_path: "app/views/codes/increment/form_in_frame/form.erb" %>
+
+    <div class="my-8"></div>
 
     <%= render component(:code), language: :html, class: "text-sm",
-      path: "Rendered HTML", source_path: "app/views/codes/increment/form_in_frame/form.html" %>
+      path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/form_in_frame/form.html", erb: true %>
   <% end %>
 <% end %>
