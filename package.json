@@ -1,6 +1,6 @@
 {
   "name": "turbo_reflex",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Reflexes for Turbo Frames that help you build robust reactive applications",
   "main": "app/javascript/turbo_reflex.js",
   "repository": "https://github.com/hopsoft/turbo_reflex",
