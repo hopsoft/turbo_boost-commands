@@ -12,7 +12,7 @@ class TurboReflex::Engine < ::Rails::Engine
   config.turbo_reflex = ActiveSupport::OrderedOptions.new
   initializer "turbo_reflex.configuration" do
     config.to_prepare do |app|
-      ::ApplicationController.send :include, TurboReflex::Controller
+      ::ActionController::Base.send :include, TurboReflex::Controller
     end
 
     config.after_initialize do |app|
