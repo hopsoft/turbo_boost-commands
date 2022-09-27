@@ -8,11 +8,11 @@
 # * turbo_stream ... A Turbo Stream TagBuilder
 # * turbo_streams .. A list of Turbo Streams to append to the response
 #
-class IncrementReflex < TurboReflex::Base
+class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
 
   def increment
     session[:count] = session.fetch(:count, 0) + 1
-    turbo_streams << turbo_stream.replace("rpc", partial: "demos/increment")
+    turbo_streams << turbo_stream.replace("counter", partial: "demos/counter")
   end
 end

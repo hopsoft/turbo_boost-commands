@@ -11,13 +11,13 @@
       </p>
 
       <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-        data: { turbo_reflex: "IncrementReflex#increment", session_key: :button_in_frame_count } do %>
+        data: { turbo_reflex: "CounterReflex#increment", session_key: :button_in_frame_count } do %>
         Basic Button
         <%= render flowbite(:notification_badge), value: session[:button_in_frame_count].to_i if session[:button_in_frame_count].to_i > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
-        path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+        path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
       <div class="my-8"></div>
 
@@ -32,20 +32,20 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/show.html", erb: true %>
+        path: "Rendered HTML for: /demos/2", source_path: "app/views/codes/increment/button_in_frame/show.html", erb: true %>
 
 
       <%= render component(:divider), class: "my-12" %>
 
       <%= button_to frame_path(params[:id]), method: :patch,
         class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-        form: { data: { turbo_reflex: "IncrementReflex#increment", session_key: :button_in_frame_count } } do %>
+        form: { data: { turbo_reflex: "CounterReflex#increment", session_key: :button_in_frame_count } } do %>
         Form Button <small class="ml-2 font-mono opacity-50">button_to</small>
         <%= render flowbite(:notification_badge), value: session[:button_in_frame_count].to_i if session[:button_in_frame_count].to_i > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
-        path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+        path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
       <div class="my-8"></div>
 
@@ -60,7 +60,7 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/button_in_frame/show_form.html", erb: true %>
+        path: "Rendered HTML for: /demos/2", source_path: "app/views/codes/increment/button_in_frame/show_form.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>

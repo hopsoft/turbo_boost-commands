@@ -1,7 +1,7 @@
-<turbo-frame id="demo" src="/demo">
+<turbo-frame id="demo-2">
   <%= session[:button_in_frame_count].to_i %>
 
-  <button data-turbo-reflex="IncrementReflex#increment">
+  <button data-turbo-reflex="CounterReflex#increment">
     Basic Button
   </button>
 </turbo-frame>

@@ -11,26 +11,26 @@
       </p>
 
       <div class="inline-block relative mb-4">
-        <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "IncrementReflex#increment", session_key: :elements_in_frame_count } %>
+        <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "CounterReflex#increment", session_key: :elements_in_frame_count } %>
         <%= render flowbite(:notification_badge), value: session[:elements_in_frame_count].to_i, class: "!-right-4" if session[:elements_in_frame_count].to_i > 0 %>
       </div>
 
       <br>
 
-      <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { turbo_reflex: "IncrementReflex#increment", session_key: :elements_in_frame_count } do %>
+      <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { turbo_reflex: "CounterReflex#increment", session_key: :elements_in_frame_count } do %>
         DIV Tag
         <%= render flowbite(:notification_badge), value: session[:elements_in_frame_count].to_i, class: "!-right-4" if session[:elements_in_frame_count].to_i > 0 %>
       <% end %>
 
       <br>
 
-      <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { turbo_reflex: "IncrementReflex#increment", session_key: :elements_in_frame_count } do %>
+      <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { turbo_reflex: "CounterReflex#increment", session_key: :elements_in_frame_count } do %>
         SPAN Tag
         <%= render flowbite(:notification_badge), value: session[:elements_in_frame_count].to_i, class: "!-right-4" if session[:elements_in_frame_count].to_i > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
-        path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+        path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
       <div class="my-8"></div>
 
@@ -45,7 +45,7 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demos", source_path: "app/views/codes/increment/elements_in_frame/show.html", erb: true %>
+        path: "Rendered HTML for: /demos/4", source_path: "app/views/codes/increment/elements_in_frame/show.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>

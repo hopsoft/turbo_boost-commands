@@ -11,13 +11,13 @@
       </p>
 
       <%= link_to nil, class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
-        data: { turbo_reflex: "IncrementReflex#increment", session_key: :link_in_frame_count } do %>
+        data: { turbo_reflex: "CounterReflex#increment", session_key: :link_in_frame_count } do %>
         Basic Link
         <%= render flowbite(:notification_badge), value: session[:link_in_frame_count].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
-        path: "app/reflexes/increment_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+        path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
 
       <div class="my-8"></div>
 
@@ -32,7 +32,7 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demo", source_path: "app/views/codes/increment/link_in_frame/show.html", erb: true %>
+        path: "Rendered HTML for: /demos/#{demo_index + 1}", source_path: "app/views/codes/increment/link_in_frame/show.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>

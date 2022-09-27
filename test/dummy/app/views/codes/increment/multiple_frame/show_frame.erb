@@ -4,7 +4,7 @@
 
   <%# The turbo_reflex data attribute instructs the client to perform a reflex when clicked %>
   <%= button_tag "Increment this frame",
-    data: { turbo_reflex: "IncrementReflex#increment" } %>
+    data: { turbo_reflex: "CounterReflex#increment" } %>
 
   <%
     # The turbo_reflex data attribute instructs the client to perform a reflex when clicked
@@ -12,6 +12,6 @@
   %>
   <%= button_tag "Increment other frame",
     data: {
-      turbo_reflex: "IncrementReflex#increment",
+      turbo_reflex: "CounterReflex#increment",
       turbo_frame: "frame-#{params[:other_frame_id]}" } %>
 <% end %>

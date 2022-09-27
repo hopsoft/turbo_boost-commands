@@ -8,7 +8,7 @@
 # * turbo_stream ... A Turbo Stream TagBuilder
 # * turbo_streams .. A list of Turbo Streams to append to the response
 #
-class IncrementReflex < TurboReflex::Base
+class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
 
   def increment

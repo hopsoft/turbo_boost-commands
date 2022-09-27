@@ -1,9 +1,9 @@
-<%= turbo_frame_tag "demo", src: demo_path do %>
+<%= turbo_frame_tag "demo-#{params[:id]}" do %>
   <%# State is held in session for this demo %>
   <%= session[:count].to_i %>
 
   <%# The turbo_reflex data attribute instructs the client to perform a reflex when clicked %>
-  <%= tag.p "P Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
-  <%= tag.div "DIV Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
-  <%= tag.span "SPAN Tag", data: { turbo_reflex: "IncrementReflex#increment" } %>
+  <%= tag.p "P Tag", data: { turbo_reflex: "CounterReflex#increment" } %>
+  <%= tag.div "DIV Tag", data: { turbo_reflex: "CounterReflex#increment" } %>
+  <%= tag.span "SPAN Tag", data: { turbo_reflex: "CounterReflex#increment" } %>
 <% end %>

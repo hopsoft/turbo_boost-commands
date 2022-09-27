@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "demo", src: demo_path do %>
+<%= turbo_frame_tag "demo-#{params[:id]}" do %>
   <%# State is held in session for this demo %>
   <%= session[:count].to_i %>
 
@@ -6,8 +6,8 @@
     # The turbo_reflex data attribute instructs the client to perform a reflex when submitted
     # in addition to normal form handling
   %>
-  <%= form_with url: demo_path, method: :patch,
-    data: { turbo_reflex: "IncrementReflex#increment" } do |form| %>
+  <%= form_with url: demo_path(params[:id]), method: :patch,
+    data: { turbo_reflex: "CounterReflex#increment" } do |form| %>
     <%= form.submit "Submit Form" %>
   <% end %>
 <% end %>

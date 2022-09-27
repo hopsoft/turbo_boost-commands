@@ -4,8 +4,8 @@
     data: { accordion_target: el_id(id, prefix: "#") },
     class: "flex items-center justify-between w-full py-5 pl-2 pr-3 font-medium text-left border-b border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 bg-white hover:bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400" do %>
     <span class="flex items-center">
-    <%= render heroicon(:code_bracket), solid: false, class: "w-5 h-5 mr-2 text-gray-500" %>
-    <%= title %>
+      <code class="!font-thin mr-2 text-gray-400 dark:text-gray-600"><%= @demo_index = demo_index + 1 %></code>
+      <%= title %>
     </span>
     <%= render heroicon(:chevron_down), solid: true, data: { accordion_icon: true },
       class: "w-5 h-5 shrink-0" %>

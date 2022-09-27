@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module DemosHelper
+  def demo_index
+    @demo_index ||= 0
+  end
+
   def demo_name
     return nil unless controller_name == "demos"
     params[:id]

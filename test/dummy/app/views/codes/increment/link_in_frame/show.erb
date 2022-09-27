@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "demo", src: demo_path do %>
+<%= turbo_frame_tag "demo-#{params[:id]}" do %>
   <%# State is held in session for this demo. %>
   <%= session[:count].to_i %>
 
@@ -7,5 +7,5 @@
     # in addition to normal click handling
   %>
   <%= link_to "Basic Link", "#",
-    data: { turbo_reflex: "IncrementReflex#increment" } %>
+    data: { turbo_reflex: "CounterReflex#increment" } %>
 <% end %>

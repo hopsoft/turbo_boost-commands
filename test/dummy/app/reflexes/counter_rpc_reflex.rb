@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IncrementRpcReflex < TurboReflex::Base
+class CounterRpcReflex < TurboReflex::Base
   delegate :session, to: :controller
 
   def increment

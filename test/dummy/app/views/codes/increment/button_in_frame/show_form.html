@@ -1,7 +1,7 @@
-<turbo-frame id="demo" src="/demo">
+<turbo-frame id="demo-2">
   <%= session[:button_in_frame_count].to_i %>
 
-  <form action="/demo" method="post" data-turbo-reflex="IncrementReflex#increment">
+  <form action="/demos/2" method="post" data-turbo-reflex="CounterReflex#increment">
     <input type="hidden" name="authenticity_token" value="...">
     <input type="hidden" name="_method" value="patch">
     <button>Form Button (button_to)</button>
