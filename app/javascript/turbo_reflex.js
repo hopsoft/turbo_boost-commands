@@ -33,15 +33,6 @@ function buildURL (urlString) {
   return new URL(a)
 }
 
-function invokeFormReflex (form, payload = {}) {
-  payload.token = metaElements.turboReflexToken.getAttribute('content')
-  const input = document.createElement('input')
-  input.type = 'hidden'
-  input.name = 'turbo_reflex'
-  input.value = JSON.stringify(payload)
-  form.appendChild(input)
-}
-
 function invokeFrameReflex (frame, payload) {
   const src = findFrameSrc(frame)
   if (!src) return
@@ -49,6 +40,15 @@ function invokeFrameReflex (frame, payload) {
   url.searchParams.set('turbo_reflex', JSON.stringify(payload))
   frame.dataset.turboReflexActive = true
   frame.src = url.toString()
+}
+
+function invokeFormReflex (form, payload = {}) {
+  payload.token = metaElements.turboReflexToken.getAttribute('content')
+  const input = document.createElement('input')
+  input.type = 'hidden'
+  input.name = 'turbo_reflex'
+  input.value = JSON.stringify(payload)
+  form.appendChild(input)
 }
 
 function invokeWindowReflex (payload) {
@@ -61,10 +61,14 @@ function invokeWindowReflex (payload) {
     metaElements.turboReflexToken.getAttribute('content')
   )
   xhr.addEventListener('load', () => {
-    const streams = xhr.responseText.match(
-      /<\s*turbo-stream.*<\/turbo-stream\s*>/i
-    )
-    document.body.insertAdjacentHTML('beforeend', streams)
+    const head = '<turbo-stream'
+    const tail = '</turbo-stream>'
+    const headIndex = xhr.responseText.indexOf(head)
+    const tailIndex = xhr.responseText.lastIndexOf(tail)
+    if (headIndex >= 0 && tailIndex >= 0) {
+      const streams = xhr.responseText.slice(headIndex, tailIndex + tail.length)
+      document.body.insertAdjacentHTML('beforeend', streams)
+    }
   })
   xhr.addEventListener('error', () => {
     // TODO: handle errors
@@ -106,17 +110,18 @@ function invokeReflex (event) {
     Object.assign(metaElements.turboReflex.dataset, dataset)
     LifecycleEvents.dispatch(LifecycleEvents.start, element, detail)
 
+    if (driver !== 'form') event.preventDefault()
+
     switch (driver) {
       case 'frame':
-        event.preventDefault()
-        return invokeFrameReflex(frame, payload)
+        invokeFrameReflex(frame, payload)
+        break
       case 'form':
-        debugger
-        //return invokeFormReflex(element, payload)
+        invokeFormReflex(element, payload)
         break
       case 'window':
-        event.preventDefault()
-        return invokeWindowReflex(payload)
+        invokeWindowReflex(payload)
+        break
     }
   } catch (error) {
     detail.error = error

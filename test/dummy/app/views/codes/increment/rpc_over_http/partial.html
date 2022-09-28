@@ -1,9 +1,7 @@
 <div id="counter">
   <%= session[:rpc_count].to_i %>
 
-  <button
-    data-turbo-reflex="CounterReflex#increment"
-    data-turbo-frame="turbo-reflex-frame">
+  <button data-turbo-reflex="CounterReflex#increment">
     RPC over HTTP
   </button>
 </div>

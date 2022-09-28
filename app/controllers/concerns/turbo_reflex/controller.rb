@@ -99,12 +99,11 @@ module TurboReflex::Controller
     session[:turbo_reflex_token] = new_turbo_reflex_token
     append_turbo_reflex turbo_stream.replace("turbo-reflex-token", turbo_reflex_token_meta_tag)
     append_turbo_reflex turbo_stream.replace("turbo-reflex", turbo_reflex_meta_tag)
-    # append_turbo_reflex turbo_stream.invoke("console.log", args: ["append_turbo_reflex_meta_tags"])
   end
 
   def append_turbo_reflex_content
+    append_turbo_reflex_turbo_streams
     append_turbo_reflex_meta_tags
-    append_turbo_reflex_turbo_streams if turbo_reflex_performed?
   end
 
   private
@@ -147,8 +146,7 @@ module TurboReflex::Controller
     case turbo_reflex_response_type
     when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    when :stream then response.body << sanitized_content
-    else response.body << sanitized_content if turbo_reflex_performed?
+    else response.body << sanitized_content
     end
   end
 end
