@@ -142,10 +142,9 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     # app/views/layouts/application.html.erb
     <html>
       <head>
-    +  <%= turbo_reflex_meta_tag %>
+    +  <%= turbo_reflex_meta_tags %>
       </head>
       <body>
-    +  <%= turbo_reflex_frame_tag %>
       </body>
     </html>
     ```

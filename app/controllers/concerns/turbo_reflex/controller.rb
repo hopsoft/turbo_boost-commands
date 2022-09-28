@@ -131,10 +131,6 @@ module TurboReflex::Controller
     unmasked_token == current_turbo_reflex_token
   end
 
-  def response_includes_turbo_reflex_token_tag?
-    response.body.include? "turbo-reflex-token"
-  end
-
   def turbo_reflex_response_type
     body = response.body.to_s.strip
     return :body if body.match?(/<\/\s*body.*>/i)

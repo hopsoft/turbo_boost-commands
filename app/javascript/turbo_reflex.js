@@ -20,8 +20,7 @@ import {
 // fires before making a turbo HTTP request
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target
-  const { turboReflexActive } = frame.dataset
-  if (!turboReflexActive) return
+  if (frame !== metaElements.turboReflex.frame) return
   const { fetchOptions } = event.detail
   fetchOptions.headers[
     'TurboReflex-Token'
@@ -48,6 +47,7 @@ function invokeFrameReflex (frame, payload) {
   if (!src) return
   const url = buildURL(src)
   url.searchParams.set('turbo_reflex', JSON.stringify(payload))
+  frame.dataset.turboReflexActive = true
   frame.src = url.toString()
 }
 
@@ -102,15 +102,14 @@ function invokeReflex (event) {
     detail = { ...payload, frame, element }
     const dataset = { busy: true, driver, reflex: element.dataset.turboReflex }
 
+    metaElements.turboReflex.frame = frame
     Object.assign(metaElements.turboReflex.dataset, dataset)
     LifecycleEvents.dispatch(LifecycleEvents.start, element, detail)
 
     switch (driver) {
       case 'frame':
         event.preventDefault()
-        debugger
-        //return invokeFrameReflex(frame, payload)
-        break
+        return invokeFrameReflex(frame, payload)
       case 'form':
         debugger
         //return invokeFormReflex(element, payload)
