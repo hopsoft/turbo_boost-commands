@@ -5,16 +5,22 @@ module TurboReflex::Controller
 
   included do
     before_action :perform_turbo_reflex, if: -> { turbo_reflex_requested? && turbo_reflex_valid? }
-    after_action :append_turbo_reflex_turbo_streams, if: :turbo_reflex_performed?
-    after_action :assign_turbo_reflex_token
-    helper_method :turbo_reflex_meta_tag, :turbo_reflex_performed?, :turbo_reflex_requested?
+    after_action :append_turbo_reflex_content
+    helper_method :turbo_reflex_meta_tags, :turbo_reflex_performed?, :turbo_reflex_requested?
     # helper TurboReflex::TurboReflexHelper # only required if we isolate_namespace
   end
 
-  def turbo_reflex_meta_tag
+  def turbo_reflex_token_meta_tag
     masked_token = turbo_reflex_message_verifier.generate(new_turbo_reflex_token)
-    options = {id: "turbo-reflex-token", name: "turbo-reflex-token", content: masked_token}
-    view_context.tag("meta", options).html_safe
+    view_context.tag "meta", id: "turbo-reflex-token", name: "turbo-reflex-token", content: masked_token
+  end
+
+  def turbo_reflex_meta_tag
+    view_context.tag "meta", id: "turbo-reflex", name: "turbo-reflex", data: {busy: false}
+  end
+
+  def turbo_reflex_meta_tags
+    [turbo_reflex_token_meta_tag, turbo_reflex_meta_tag].join("\n").html_safe
   end
 
   def turbo_reflex_params
@@ -77,12 +83,28 @@ module TurboReflex::Controller
   def perform_turbo_reflex
     @turbo_reflex_performed = true
     turbo_reflex_instance.public_send turbo_reflex_method_name
+    if turbo_reflex_params[:driver] == "window"
+      render html: "", layout: false
+      append_turbo_reflex_content
+    end
   end
 
   def append_turbo_reflex_turbo_streams
     return unless turbo_reflex_performed?
     return unless turbo_reflex_instance&.turbo_streams.present?
-    append_turbo_reflex_content turbo_reflex_instance.turbo_streams.map(&:to_s).join
+    append_turbo_reflex turbo_reflex_instance.turbo_streams.map(&:to_s).join.html_safe
+  end
+
+  def append_turbo_reflex_meta_tags
+    session[:turbo_reflex_token] = new_turbo_reflex_token
+    append_turbo_reflex turbo_stream.replace("turbo-reflex-token", turbo_reflex_token_meta_tag)
+    append_turbo_reflex turbo_stream.replace("turbo-reflex", turbo_reflex_meta_tag)
+    # append_turbo_reflex turbo_stream.invoke("console.log", args: ["append_turbo_reflex_meta_tags"])
+  end
+
+  def append_turbo_reflex_content
+    append_turbo_reflex_meta_tags
+    append_turbo_reflex_turbo_streams if turbo_reflex_performed?
   end
 
   private
@@ -92,7 +114,7 @@ module TurboReflex::Controller
   end
 
   def client_turbo_reflex_token
-    (request.headers["Turbo-Reflex"] || turbo_reflex_params[:token]).to_s
+    (request.headers["TurboReflex-Token"] || turbo_reflex_params[:token]).to_s
   end
 
   def new_turbo_reflex_token
@@ -109,25 +131,28 @@ module TurboReflex::Controller
     unmasked_token == current_turbo_reflex_token
   end
 
-  def assign_turbo_reflex_token
-    return unless turbo_reflex_requested? || client_turbo_reflex_token.blank?
-    session[:turbo_reflex_token] = new_turbo_reflex_token
-    append_turbo_reflex_content turbo_stream.replace("turbo-reflex-token", turbo_reflex_meta_tag)
+  def response_includes_turbo_reflex_token_tag?
+    response.body.include? "turbo-reflex-token"
   end
 
   def turbo_reflex_response_type
     body = response.body.to_s.strip
-    return :stream if body.ends_with?("</turbo-stream>")
-    return :frame if body.ends_with?("</turbo-frame>")
-    :default
+    return :body if body.match?(/<\/\s*body.*>/i)
+    return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
+    return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
+    :unknown
   end
 
-  def append_turbo_reflex_content(content)
+  def append_turbo_reflex(content)
     sanitized_content = TurboReflex::Sanitizer.instance.sanitize(content).html_safe
+
+    return if sanitized_content.blank?
+
     case turbo_reflex_response_type
+    when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
+    when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
     when :stream then response.body << sanitized_content
-    when :frame then response.body.sub!("</turbo-frame>", "#{sanitized_content}</turbo-frame>")
-    when :default then response.body.sub!("</body>", "#{sanitized_content}</body>")
+    else response.body << sanitized_content if turbo_reflex_performed?
     end
   end
 end

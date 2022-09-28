@@ -14,11 +14,5 @@ class TurboReflex::Engine < ::Rails::Engine
     config.to_prepare do |app|
       ::ActionController::Base.send :include, TurboReflex::Controller
     end
-
-    config.after_initialize do |app|
-      app.routes.draw do
-        mount TurboReflex::Engine => "/turbo_reflex"
-      end
-    end
   end
 end

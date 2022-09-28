@@ -1,5 +1,15 @@
 import LifecycleEvents from './lifecycle_events'
 
+const metaElements = {
+  get turboReflex () {
+    return document.getElementById('turbo-reflex')
+  },
+
+  get turboReflexToken () {
+    return document.getElementById('turbo-reflex-token')
+  }
+}
+
 function findClosestReflex (element) {
   return element.closest('[data-turbo-reflex]')
 }
@@ -13,16 +23,6 @@ function findFrameId (element) {
   if (!id) {
     const frame = findClosestFrame(element)
     if (frame) id = frame.id
-  }
-  if (!id) {
-    console.error(
-      `The reflex element does not specify a frame!`,
-      `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-frame' attribute.`,
-      element
-    )
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrameId, element, {
-      element
-    })
   }
   return id
 }
@@ -78,10 +78,11 @@ function buildAttributePayload (element) {
 }
 
 export {
+  buildAttributePayload,
   findClosestReflex,
   findClosestFrame,
   findFrameId,
   findFrame,
   findFrameSrc,
-  buildAttributePayload
+  metaElements
 }
