@@ -1,12 +1,12 @@
 import LifecycleEvents from './lifecycle_events'
 
-const metaElements = {
-  get turboReflex () {
+const meta = {
+  get element () {
     return document.getElementById('turbo-reflex')
   },
 
-  get turboReflexToken () {
-    return document.getElementById('turbo-reflex-token')
+  get token () {
+    return document.getElementById('turbo-reflex').getAttribute('content')
   }
 }
 
@@ -84,5 +84,5 @@ export {
   findFrameId,
   findFrame,
   findFrameSrc,
-  metaElements
+  meta
 }

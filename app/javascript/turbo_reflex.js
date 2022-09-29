@@ -7,7 +7,7 @@ import {
   findFrameId,
   findFrame,
   findFrameSrc,
-  metaElements
+  meta
 } from './elements'
 import {
   registerEventListener,
@@ -20,11 +20,9 @@ import {
 // fires before making a turbo HTTP request
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target
-  if (frame !== metaElements.turboReflex.frame) return
+  if (frame !== meta.element.frame) return
   const { fetchOptions } = event.detail
-  fetchOptions.headers[
-    'TurboReflex-Token'
-  ] = metaElements.turboReflexToken.getAttribute('content')
+  fetchOptions.headers['TurboReflex-Token'] = meta.token
 })
 
 function buildURL (urlString) {
@@ -43,7 +41,7 @@ function invokeFrameReflex (frame, payload) {
 }
 
 function invokeFormReflex (form, payload = {}) {
-  payload.token = metaElements.turboReflexToken.getAttribute('content')
+  payload.token = meta.token
   const input = document.createElement('input')
   input.type = 'hidden'
   input.name = 'turbo_reflex'
@@ -56,11 +54,9 @@ function invokeWindowReflex (payload) {
   url.searchParams.set('turbo_reflex', JSON.stringify(payload))
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url, true)
-  xhr.setRequestHeader(
-    'TurboReflex-Token',
-    metaElements.turboReflexToken.getAttribute('content')
-  )
+  xhr.setRequestHeader('TurboReflex-Token', meta.token)
   xhr.addEventListener('load', () => {
+    // if hijacked
     const head = '<turbo-stream'
     const tail = '</turbo-stream>'
     const headIndex = xhr.responseText.indexOf(head)
@@ -69,6 +65,9 @@ function invokeWindowReflex (payload) {
       const streams = xhr.responseText.slice(headIndex, tailIndex + tail.length)
       document.body.insertAdjacentHTML('beforeend', streams)
     }
+
+    // else
+    // replace/morph the body
   })
   xhr.addEventListener('error', () => {
     // TODO: handle errors
@@ -106,8 +105,8 @@ function invokeReflex (event) {
     detail = { ...payload, frame, element }
     const dataset = { busy: true, driver, reflex: element.dataset.turboReflex }
 
-    metaElements.turboReflex.frame = frame
-    Object.assign(metaElements.turboReflex.dataset, dataset)
+    meta.element.frame = frame
+    Object.assign(meta.element.dataset, dataset)
     LifecycleEvents.dispatch(LifecycleEvents.start, element, detail)
 
     if (driver !== 'form') event.preventDefault()
