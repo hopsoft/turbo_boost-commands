@@ -2,29 +2,24 @@ import elements from '../elements'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
 
-function finalize (lifecycleEventName, detail = {}) {
-  detail = { ...elements.metaElement.detail, ...detail }
-  const target = detail.element || document
-  delete elements.metaElement.dataset.busy
-  delete elements.metaElement.detail
-  lifecycle.dispatch(lifecycleEventName, target, detail)
-  lifecycle.dispatch(lifecycle.events.finish, target, detail)
-}
+// TODO: figure out how to cleanup activity tracker for aborted and errored conditions
 
 function aborted (event) {
-  finalize(lifecycle.events.abort)
+  const xhr = event.target
+  dispatch(lifecycle.events.abort, xhr, { ...event.detail })
 }
 
 function errored (event) {
   const xhr = event.target
-  const { status, statusText } = xhr
-  const detail = {
-    ...event.detail,
-    responseStatus: status,
-    responseStatusText: statusText,
-    responseText: xhr.responseText
-  }
-  finalize(lifecycle.events.error, detail)
+  dispatch(
+    lifecycle.events.clientError,
+    xhr,
+    {
+      ...event.detail,
+      error: `Server returned a ${xhr.status} status code! ${xhr.statusText}`
+    },
+    true
+  )
 }
 
 function loaded (event) {
@@ -55,8 +50,6 @@ function loaded (event) {
       document.documentElement.innerHTML = html
     }
   }
-
-  finalize(lifecycle.events.success)
 }
 
 function invokeReflex (payload) {

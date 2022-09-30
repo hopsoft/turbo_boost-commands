@@ -34,7 +34,7 @@ class TurboReflex::Runner
   def reflex_params
     return ActionController::Parameters.new if params[:turbo_reflex].nil?
     @reflex_params ||= begin
-      payload = JSON.parse(params[:turbo_reflex]).deep_transform_keys(&:underscore)
+      payload = parsed_reflex_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
     end
   end
@@ -42,13 +42,13 @@ class TurboReflex::Runner
   def reflex_element
     return nil if reflex_params.blank?
     @reflex_element ||= Struct
-      .new(*reflex_params[:element].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
-      .new(*reflex_params[:element].values)
+      .new(*reflex_params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
+      .new(*reflex_params[:element_attributes].values)
   end
 
   def reflex_name
     return nil unless reflex_requested?
-    reflex_element.data_turbo_reflex
+    reflex_params[:name]
   end
 
   def reflex_class_name
@@ -78,6 +78,16 @@ class TurboReflex::Runner
     return if reflex_performed?
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
+  rescue => e
+    message = "Error in #{reflex_name}! #{e.inspect}"
+    Rails.logger.error message
+    args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
+    error_event = if reflex_element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+    else
+      turbo_stream.invoke :dispatch_event, args: args
+    end
+    reflex_instance.turbo_streams << error_event
   end
 
   def hijack_response
@@ -87,6 +97,16 @@ class TurboReflex::Runner
   end
 
   def append_to_response
+    if reflex_performed?
+      args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
+      success_event = if reflex_element.try(:id).present?
+        turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+      else
+        turbo_stream.invoke :dispatch_event, args: args
+      end
+      reflex_instance.turbo_streams << success_event
+    end
+
     append_turbo_streams_to_response_body
     append_meta_tag_to_response_body
   end
@@ -96,6 +116,10 @@ class TurboReflex::Runner
   end
 
   private
+
+  def parsed_reflex_params
+    @parsed_reflex_params ||= JSON.parse(params[:turbo_reflex])
+  end
 
   def message_verifier
     ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"

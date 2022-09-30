@@ -29,8 +29,8 @@ class TurboReflex::Base
 
   def element
     @element ||= begin
-      keys = params[:element].keys.map { |key| key.to_s.parameterize.underscore.to_sym }
-      values = params[:element].values
+      keys = params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym }
+      values = params[:element_attributes].values
 
       unless keys.include? :value
         keys << :value
