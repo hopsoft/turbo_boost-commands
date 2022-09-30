@@ -107,6 +107,9 @@ class TurboReflex::Runner
   end
 
   def append_to_response
+    append_turbo_streams_to_response_body
+    append_meta_tag_to_response_body
+
     if reflex_succeeded?
       args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
       success_event = if reflex_element.try(:id).present?
@@ -116,9 +119,6 @@ class TurboReflex::Runner
       end
       reflex_instance.turbo_streams << success_event
     end
-
-    append_turbo_streams_to_response_body
-    append_meta_tag_to_response_body
   end
 
   def turbo_stream
@@ -167,7 +167,7 @@ class TurboReflex::Runner
   end
 
   def append_turbo_streams_to_response_body
-    return unless reflex_performed?
+    return unless reflex_succeeded?
     return unless reflex_instance&.turbo_streams.present?
     append_to_response_body reflex_instance.turbo_streams.map(&:to_s).join.html_safe
   end
