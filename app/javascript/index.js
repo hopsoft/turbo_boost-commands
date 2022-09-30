@@ -25,8 +25,8 @@ function invokeReflex (event) {
       name: element.dataset.turboReflex,
       driver: driver.name,
       src: driver.src,
-      frameId: driver?.frame?.id,
-      elementId: element.id,
+      frameId: driver.frame ? driver.frame.id : null,
+      elementId: element.id.length > 0 ? element.id : null,
       elementAttributes: elements.buildAttributePayload(element),
       startedAt: new Date().getTime()
     }

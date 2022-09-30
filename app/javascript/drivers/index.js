@@ -4,10 +4,11 @@ import frameDriver from './frame'
 import windowDriver from './window'
 
 function src (element, frame) {
+  frame = frame || { dataset: {} }
   return (
     element.href ||
-    frame?.src ||
-    frame?.dataset?.turboReflexSrc ||
+    frame.src ||
+    frame.dataset.turboReflexSrc ||
     (frame ? null : location.href)
   )
 }
