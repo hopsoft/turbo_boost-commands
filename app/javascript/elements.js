@@ -8,42 +8,6 @@ function findClosestFrame (element) {
   return element.closest('turbo-frame')
 }
 
-function findFrameId (element) {
-  let id = element.dataset.turboFrame
-  if (!id) {
-    const frame = findClosestFrame(element)
-    if (frame) id = frame.id
-  }
-  return id
-}
-
-function findFrame (id, target = document, payload = {}) {
-  const frame = document.getElementById(id)
-  if (!frame) {
-    target = target || document
-    const message = `The frame '${id}' does not exist!`
-    lifecycle.dispatch(lifecycle.events.missingFrame, target, {
-      message,
-      ...payload
-    })
-  }
-  return frame
-}
-
-function findFrameSrc (frame, payload = {}) {
-  const frameSrc = frame.dataset.turboReflexSrc || frame.src
-  if (!frameSrc) {
-    const message = `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!
-      TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.
-      Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`
-    lifecycle.dispatch(lifecycle.events.missingFrameSrc, frame, {
-      message,
-      ...payload
-    })
-  }
-  return frameSrc
-}
-
 function assignElementValueToPayload (element, payload = {}) {
   if (element.tagName.toLowerCase() !== 'select')
     return (payload.value = element.value)
@@ -58,8 +22,16 @@ function assignElementValueToPayload (element, payload = {}) {
 }
 
 function buildAttributePayload (element) {
+  // truncate long values to optimize payload size
+  // TODO: revisit this decision
+  const maxAttributeLength = 100
+  const maxValueLength = 500
+
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
-    memo[attr.name] = attr.value
+    let value = attr.value
+    if (typeof value === 'string' && value.length > maxAttributeLength)
+      value = value.slice(0, maxAttributeLength) + '...'
+    memo[attr.name] = value
     return memo
   }, {})
 
@@ -68,6 +40,15 @@ function buildAttributePayload (element) {
   payload.disabled = element.disabled
   assignElementValueToPayload(element, payload)
 
+  if (
+    typeof payload.value === 'string' &&
+    payload.value.length > maxValueLength
+  )
+    payload.value = payload.value.slice(0, maxValueLength) + '...'
+
+  delete payload.class
+  delete payload['data-turbo-reflex']
+  delete payload['data-turbo-frame']
   return payload
 }
 
@@ -75,9 +56,6 @@ export default {
   buildAttributePayload,
   findClosestReflex,
   findClosestFrame,
-  findFrameId,
-  findFrame,
-  findFrameSrc,
   get metaElement () {
     return document.getElementById('turbo-reflex')
   },

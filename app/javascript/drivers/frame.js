@@ -2,8 +2,9 @@ import urls from '../urls'
 import elements from '../elements'
 
 function invokeReflex (frame, payload) {
-  const src = elements.findFrameSrc(frame, payload)
-  if (!src) return
+  const src = payload.src
+  payload = { ...payload }
+  delete payload.src
   frame.src = urls.build(src, payload)
 }
 

@@ -91,13 +91,7 @@ class TurboReflex::Runner
     @reflex_errored = true
     message = "Error in #{reflex_name}! #{e.inspect}"
     Rails.logger.error message
-    args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
-    error_event = if reflex_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
-    else
-      turbo_stream.invoke :dispatch_event, args: args
-    end
-    reflex_instance.turbo_streams << error_event
+    append_error_event_to_response_body message
   end
 
   def hijack_response
@@ -109,16 +103,7 @@ class TurboReflex::Runner
   def append_to_response
     append_turbo_streams_to_response_body
     append_meta_tag_to_response_body
-
-    if reflex_succeeded?
-      args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
-      success_event = if reflex_element.try(:id).present?
-        turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
-      else
-        turbo_stream.invoke :dispatch_event, args: args
-      end
-      reflex_instance.turbo_streams << success_event
-    end
+    append_success_event_to_response_body
   end
 
   def turbo_stream
@@ -175,6 +160,28 @@ class TurboReflex::Runner
   def append_meta_tag_to_response_body
     session[:turbo_reflex_token] = new_token
     append_to_response_body turbo_stream.replace("turbo-reflex", meta_tag)
+  end
+
+  def append_success_event_to_response_body
+    return unless reflex_succeeded?
+    args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
+    success_event = if reflex_element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+    else
+      turbo_stream.invoke :dispatch_event, args: args
+    end
+    append_to_response_body success_event
+  end
+
+  def append_error_event_to_response_body(message)
+    return unless reflex_errored?
+    args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
+    error_event = if reflex_element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+    else
+      turbo_stream.invoke :dispatch_event, args: args
+    end
+    append_to_response_body success_event
   end
 
   def append_to_response_body(content)

@@ -1,15 +1,12 @@
 import activity from './activity'
 
 const events = {
-  beforeStart: 'turbo-reflex:before-start',
   start: 'turbo-reflex:start',
   success: 'turbo-reflex:success',
   finish: 'turbo-reflex:finish',
   abort: 'turbo-reflex:abort',
   clientError: 'turbo-reflex:client-error',
-  serverError: 'turbo-reflex:server-error',
-  missingFrame: 'turbo-reflex:missing-frame',
-  missingFrameSrc: 'turbo-reflex:missing-frame-src'
+  serverError: 'turbo-reflex:server-error'
 }
 
 function dispatch (name, target = document, detail = {}, raise = false) {
@@ -35,8 +32,6 @@ function finish (event) {
 
 addEventListener(events.serverError, finish)
 addEventListener(events.success, finish)
-addEventListener(events.missingFrame, finish)
-addEventListener(events.missingFrameSrc, finish)
 addEventListener(events.finish, event => activity.remove(event.detail.id), true)
 
 export default {

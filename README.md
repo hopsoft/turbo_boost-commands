@@ -206,12 +206,8 @@ TurboReflex.registerEvent('sl-change', ['sl-switch'])
 
 TurboReflex supports the following lifecycle events.
 
-- `turbo-reflex:before-start` - fires before reflex processing starts
 - `turbo-reflex:start` - fires before the reflex is sent to the server
 - `turbo-reflex:finish` - fires after the server has processed the reflex and responded
-- `turbo-reflex:missing-frame-id` - fires if the reflex cannot determine the target frame id
-- `turbo-reflex:missing-frame` - fires if the the reflex cannot locate the frame element
-- `turbo-reflex:missing-frame-src` - fires if the reflex cannot determine the frame's `src`
 - `turbo-reflex:error` - fires if an unexpected error occurs
 
 ### Targeting Frames

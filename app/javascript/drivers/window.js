@@ -49,9 +49,13 @@ function loaded (event) {
 }
 
 function invokeReflex (payload) {
+  const src = payload.src
+  payload = { ...payload }
+  delete payload.src
+
   try {
     const xhr = new XMLHttpRequest()
-    xhr.open('GET', urls.build(window.location.href, payload), true)
+    xhr.open('GET', urls.build(src, payload), true)
     xhr.setRequestHeader('TurboReflex-Token', elements.metaElementToken)
     xhr.addEventListener('abort', aborted)
     xhr.addEventListener('error', errored)

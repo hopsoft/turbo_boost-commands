@@ -8,16 +8,9 @@ const logLevels = {
   warn: [
     lifecycle.events.abort,
     lifecycle.events.clientError,
-    lifecycle.events.missingFrame,
-    lifecycle.events.missingFrameSrc,
     lifecycle.events.serverError
   ],
-  error: [
-    lifecycle.events.clientError,
-    lifecycle.events.missingFrame,
-    lifecycle.events.missingFrameSrc,
-    lifecycle.events.serverError
-  ],
+  error: [lifecycle.events.clientError, lifecycle.events.serverError],
   unknown: []
 }
 
