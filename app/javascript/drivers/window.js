@@ -2,21 +2,20 @@ import elements from '../elements'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
 
-// TODO: figure out how to cleanup activity tracker for aborted and errored conditions
-
 function aborted (event) {
   const xhr = event.target
-  dispatch(lifecycle.events.abort, xhr, { ...event.detail })
+  lifecycle.dispatch(lifecycle.events.abort, window, { xhr, ...event.detail })
 }
 
 function errored (event) {
   const xhr = event.target
-  dispatch(
+  lifecycle.dispatch(
     lifecycle.events.clientError,
-    xhr,
+    window,
     {
+      xhr,
       ...event.detail,
-      error: `Server returned a ${xhr.status} status code! ${xhr.statusText}`
+      error: `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes. Server message: ${xhr.statusText}`
     },
     true
   )
@@ -24,12 +23,9 @@ function errored (event) {
 
 function loaded (event) {
   const xhr = event.target
-  const success = xhr.status >= 200 && xhr.status <= 299
-
-  if (!success) return errored(event)
-
   const content = xhr.responseText
   const hijacked = xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
+  if (xhr.status < 200 || xhr.status > 299) errored(event)
 
   if (hijacked) {
     const head = '<turbo-stream'
@@ -53,15 +49,18 @@ function loaded (event) {
 }
 
 function invokeReflex (payload) {
-  const url = urls.build(window.location.href)
-  url.searchParams.set('turbo_reflex', JSON.stringify(payload))
-  const xhr = new XMLHttpRequest()
-  xhr.open('GET', url, true)
-  xhr.setRequestHeader('TurboReflex-Token', elements.metaElementToken)
-  xhr.addEventListener('abort', aborted)
-  xhr.addEventListener('error', errored)
-  xhr.addEventListener('load', loaded)
-  xhr.send()
+  try {
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', urls.build(window.location.href, payload), true)
+    xhr.setRequestHeader('TurboReflex-Token', elements.metaElementToken)
+    xhr.addEventListener('abort', aborted)
+    xhr.addEventListener('error', errored)
+    xhr.addEventListener('load', loaded)
+    xhr.send()
+  } catch (ex) {
+    const message = `Unexpected error sending HTTP request! ${ex.message}`
+    errored(ex, { detail: { message } })
+  }
 }
 
 export default { invokeReflex }

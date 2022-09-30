@@ -17,22 +17,29 @@ function findFrameId (element) {
   return id
 }
 
-function findFrame (id) {
+function findFrame (id, target = document, payload = {}) {
   const frame = document.getElementById(id)
   if (!frame) {
+    target = target || document
     const message = `The frame '${id}' does not exist!`
-    lifecycle.dispatch(lifecycle.events.missingFrame, document, { message })
+    lifecycle.dispatch(lifecycle.events.missingFrame, target, {
+      message,
+      ...payload
+    })
   }
   return frame
 }
 
-function findFrameSrc (frame) {
+function findFrameSrc (frame, payload = {}) {
   const frameSrc = frame.dataset.turboReflexSrc || frame.src
   if (!frameSrc) {
     const message = `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!
       TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.
       Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`
-    lifecycle.dispatch(lifecycle.events.missingFrameSrc, frame, { message })
+    lifecycle.dispatch(lifecycle.events.missingFrameSrc, frame, {
+      message,
+      ...payload
+    })
   }
   return frameSrc
 }

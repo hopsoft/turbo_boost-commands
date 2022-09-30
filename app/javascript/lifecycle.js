@@ -27,13 +27,16 @@ function dispatch (name, target = document, detail = {}, raise = false) {
   }
 }
 
-function severEventHandler (event) {
+function finish (event) {
   event.detail.endedAt = new Date().getTime()
   event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
   setTimeout(() => dispatch(events.finish, event.target, event.detail), 10)
 }
-addEventListener(events.serverError, severEventHandler)
-addEventListener(events.success, severEventHandler)
+
+addEventListener(events.serverError, finish)
+addEventListener(events.success, finish)
+addEventListener(events.missingFrame, finish)
+addEventListener(events.missingFrameSrc, finish)
 addEventListener(events.finish, event => activity.remove(event.detail.id), true)
 
 export default {

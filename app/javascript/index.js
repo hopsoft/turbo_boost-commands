@@ -33,7 +33,7 @@ function invokeReflex (event) {
     payload.frameId = frameId
     let frame
     if (frameId) {
-      frame = elements.findFrame(frameId)
+      frame = elements.findFrame(frameId, element, payload)
       if (!frame) return
     }
 
