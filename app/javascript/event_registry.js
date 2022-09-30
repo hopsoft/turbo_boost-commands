@@ -21,14 +21,9 @@ function isRegisteredEvent (eventName, tagName) {
   )
 }
 
-function logRegisteredEvents () {
-  console.log(registeredEvents)
-}
-
 export {
   registerEventListener,
   registerEvent,
   registeredEvents,
-  isRegisteredEvent,
-  logRegisteredEvents
+  isRegisteredEvent
 }

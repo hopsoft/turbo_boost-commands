@@ -6,9 +6,16 @@ import TurboReady from 'turbo_ready'
 import TurboReflex from 'turbo_reflex'
 
 TurboReady.initialize(Turbo.StreamActions)
+TurboReflex.logLevel = 'debug'
 
 window.TurboReady = TurboReady
 window.TurboReflex = TurboReflex
+
+import debounced from 'debounced'
+debounced.initialize({
+  ...debounced.events,
+  'turbo-reflex:finish': { wait: 150 }
+})
 
 import './controllers'
 
@@ -16,13 +23,16 @@ import './controllers'
 // This ensures that libs which don't work with Turbo Drive...
 // (i.e. the body being replaced without reparsing scripts in <head>)
 // ...will continue to work.
-document.addEventListener('turbo:load', event => {
-  document.querySelectorAll('script[type=importmap]').forEach(el => {
+function reloadScripts () {
+  document.querySelectorAll('head script').forEach(el => {
+    console.log('reloading script', el)
     const parent = el.parentNode
     el.remove()
     parent.appendChild(el)
   })
-})
+}
+//document.addEventListener('turbo:load', reloadScripts)
+document.addEventListener('debounced:turbo-reflex:finish', reloadScripts)
 
 // for debugging
 // const lifecycleEventNames = [

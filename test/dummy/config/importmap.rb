@@ -15,3 +15,4 @@ pin "turbo_ready", to: "https://ga.jspm.io/npm:turbo_ready@0.1.0/app/javascript/
 pin "turbo_reflex", to: "turbo_reflex.js"
 
 pin "application", preload: true
+pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"

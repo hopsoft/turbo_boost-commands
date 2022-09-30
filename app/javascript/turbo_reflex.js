@@ -1,5 +1,7 @@
-import './frame_sources'
-import LifecycleEvents from './lifecycle_events'
+import './turbo'
+import lifecycle from './lifecycle'
+import { build as buildURL } from './urls'
+import { default as invokeWindowReflex } from './drivers/window'
 import {
   buildAttributePayload,
   findClosestReflex,
@@ -17,26 +19,11 @@ import {
   logRegisteredEvents
 } from './event_registry'
 
-// fires before making a turbo HTTP request
-addEventListener('turbo:before-fetch-request', event => {
-  const frame = event.target
-  if (frame !== meta.element.frame) return
-  const { fetchOptions } = event.detail
-  fetchOptions.headers['TurboReflex-Token'] = meta.token
-})
-
-function buildURL (urlString) {
-  const a = document.createElement('a')
-  a.href = urlString
-  return new URL(a)
-}
-
 function invokeFrameReflex (frame, payload) {
   const src = findFrameSrc(frame)
   if (!src) return
   const url = buildURL(src)
   url.searchParams.set('turbo_reflex', JSON.stringify(payload))
-  frame.dataset.turboReflexActive = true
   frame.src = url.toString()
 }
 
@@ -49,46 +36,16 @@ function invokeFormReflex (form, payload = {}) {
   form.appendChild(input)
 }
 
-function invokeWindowReflex (payload) {
-  const url = buildURL(window.location.href)
-  url.searchParams.set('turbo_reflex', JSON.stringify(payload))
-  const xhr = new XMLHttpRequest()
-  xhr.open('GET', url, true)
-  xhr.setRequestHeader('TurboReflex-Token', meta.token)
-  xhr.addEventListener('load', () => {
-    // if hijacked
-    const head = '<turbo-stream'
-    const tail = '</turbo-stream>'
-    const headIndex = xhr.responseText.indexOf(head)
-    const tailIndex = xhr.responseText.lastIndexOf(tail)
-    if (headIndex >= 0 && tailIndex >= 0) {
-      const streams = xhr.responseText.slice(headIndex, tailIndex + tail.length)
-      document.body.insertAdjacentHTML('beforeend', streams)
-    }
-
-    // else
-    // replace/morph the body
-  })
-  xhr.addEventListener('error', () => {
-    // TODO: handle errors
-    debugger
-  })
-  xhr.addEventListener('abort', () => {
-    // TODO: handle aborts
-    debugger
-  })
-  xhr.send()
-}
-
 function invokeReflex (event) {
+  let element
   let detail = {}
 
   try {
-    let element = findClosestReflex(event.target)
+    element = findClosestReflex(event.target)
     if (!element) return
     if (!isRegisteredEvent(event.type, element.tagName)) return
 
-    LifecycleEvents.dispatch(LifecycleEvents.beforeStart, element)
+    lifecycle.dispatch(lifecycle.events.beforeStart, element)
 
     const frameId = findFrameId(element)
     let frame
@@ -103,11 +60,10 @@ function invokeReflex (event) {
 
     const payload = { driver, element: buildAttributePayload(element) }
     detail = { ...payload, frame, element }
-    const dataset = { busy: true, driver, reflex: element.dataset.turboReflex }
+    meta.element.dataset.busy = true
+    meta.element.detail = detail
 
-    meta.element.frame = frame
-    Object.assign(meta.element.dataset, dataset)
-    LifecycleEvents.dispatch(LifecycleEvents.start, element, detail)
+    lifecycle.dispatch(lifecycle.events.start, element, detail)
 
     if (driver !== 'form') event.preventDefault()
 
@@ -125,7 +81,7 @@ function invokeReflex (event) {
   } catch (error) {
     detail.error = error
     console.error(`TurboReflex encountered an unexpected error!`, detail)
-    LifecycleEvents.dispatch(LifecycleEvents.error, element || document, detail)
+    lifecycle.dispatch(lifecycle.events.error, element || document, detail)
   }
 }
 
@@ -137,6 +93,16 @@ registerEvent('click', ['*'])
 
 export default {
   registerEvent,
-  logRegisteredEvents,
-  logLifecycleEventNames: LifecycleEvents.logEventNames
+  get registeredEvents () {
+    return { ...registeredEvents }
+  },
+  get lifecycleEvents () {
+    return [...Object.values(lifecycle.events)]
+  },
+  get logLevel () {
+    return lifecycle.logLevel
+  },
+  set logLevel (value) {
+    return (lifecycle.logLevel = value)
+  }
 }

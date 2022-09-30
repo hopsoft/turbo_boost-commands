@@ -1,4 +1,4 @@
-import LifecycleEvents from './lifecycle_events'
+import lifecycle from './lifecycle'
 
 const meta = {
   get element () {
@@ -30,8 +30,8 @@ function findFrameId (element) {
 function findFrame (id) {
   const frame = document.getElementById(id)
   if (!frame) {
-    console.error(`The frame '${id}' does not exist!`)
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrame, document, { id })
+    const message = `The frame '${id}' does not exist!`
+    lifecycle.dispatch(lifecycle.events.missingFrame, document, { message })
   }
   return frame
 }
@@ -39,13 +39,10 @@ function findFrame (id) {
 function findFrameSrc (frame) {
   const frameSrc = frame.dataset.turboReflexSrc || frame.src
   if (!frameSrc) {
-    console.error(
-      `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!`,
-      `TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.`,
-      `Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`,
-      frame
-    )
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrameSrc, frame, { frame })
+    const message = `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!
+      TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.
+      Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`
+    lifecycle.dispatch(lifecycle.events.missingFrameSrc, frame, { message })
   }
   return frameSrc
 }
