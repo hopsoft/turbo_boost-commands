@@ -82,7 +82,6 @@ class TurboReflex::Runner
 
   def hijack_response
     response.set_header "TurboReflex-Hijacked", true
-    raise
     render html: "", layout: false
     append_to_response
   end

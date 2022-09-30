@@ -14,6 +14,7 @@ window.TurboReflex = TurboReflex
 import debounced from 'debounced'
 debounced.initialize({
   ...debounced.events,
+  'turbo:load': { wait: 150 },
   'turbo-reflex:finish': { wait: 150 }
 })
 
@@ -23,28 +24,13 @@ import './controllers'
 // This ensures that libs which don't work with Turbo Drive...
 // (i.e. the body being replaced without reparsing scripts in <head>)
 // ...will continue to work.
-function reloadScripts () {
-  document.querySelectorAll('head script').forEach(el => {
-    console.log('reloading script', el)
-    const parent = el.parentNode
-    el.remove()
-    parent.appendChild(el)
-  })
-}
-//document.addEventListener('turbo:load', reloadScripts)
-document.addEventListener('debounced:turbo-reflex:finish', reloadScripts)
-
-// for debugging
-// const lifecycleEventNames = [
-//   'turbo-reflex:before-start',
-//   'turbo-reflex:start',
-//   'turbo-reflex:finish',
-//   'turbo-reflex:error',
-//   'turbo-reflex:missing-frame-id',
-//   'turbo-reflex:missing-frame',
-//   'turbo-reflex:missing-frame-src'
-// ]
-//
-// lifecycleEventNames.forEach(name =>
-//   document.addEventListener(name, event => console.log(name, event.detail))
-// )
+// function reloadScripts () {
+//   const head = document.querySelector('head')
+//   head.querySelectorAll('script').forEach(script => {
+//     script.remove()
+//     head.insertAdjacentHTML('beforeend', script.outerHTML)
+//     console.log('reload script', script.outerHTML)
+//   })
+// }
+// document.addEventListener('debounced:turbo:load', reloadScripts)
+// document.addEventListener('debounced:turbo-reflex:finish', reloadScripts)
