@@ -6,7 +6,7 @@ import TurboReady from 'turbo_ready'
 import TurboReflex from 'turbo_reflex'
 
 TurboReady.initialize(Turbo.StreamActions)
-TurboReflex.logLevel = 'debug'
+TurboReflex.logger.level = 'debug'
 
 window.TurboReady = TurboReady
 window.TurboReflex = TurboReflex

@@ -1,6 +1,6 @@
 import lifecycle from './lifecycle'
 
-let currentLogLevel = 'unknown'
+let currentLevel = 'unknown'
 
 const logLevels = {
   debug: Object.values(lifecycle.events),
@@ -23,19 +23,19 @@ const logLevels = {
 
 Object.values(lifecycle.events).forEach(name => {
   addEventListener(name, event => {
-    if (logLevels[currentLogLevel].includes(event.type)) {
-      const level = currentLogLevel === 'debug' ? 'log' : currentLogLevel
+    if (logLevels[currentLevel].includes(event.type)) {
+      const level = currentLevel === 'debug' ? 'log' : currentLevel
       console[level](event.type, event.detail)
     }
   })
 })
 
 export default {
-  get logLevel () {
-    return currentLogLevel
+  get level () {
+    return currentLevel
   },
-  set logLevel (value) {
+  set level (value) {
     if (!Object.keys(logLevels).includes(value)) value = 'unknown'
-    return (currentLogLevel = value)
+    return (currentLevel = value)
   }
 }

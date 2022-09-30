@@ -73,12 +73,17 @@ class TurboReflex::Runner
     !!@reflex_performed
   end
 
+  def reflex_errored?
+    !!@reflex_errored
+  end
+
   def run
     return unless reflex_valid?
     return if reflex_performed?
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
   rescue => e
+    @reflex_errored = true
     message = "Error in #{reflex_name}! #{e.inspect}"
     Rails.logger.error message
     args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
@@ -97,7 +102,7 @@ class TurboReflex::Runner
   end
 
   def append_to_response
-    if reflex_performed?
+    if reflex_performed? && !reflex_errored?
       args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
       success_event = if reflex_element.try(:id).present?
         turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"

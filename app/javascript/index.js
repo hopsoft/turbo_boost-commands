@@ -64,17 +64,12 @@ delegates.register('submit', ['form'])
 delegates.register('click', ['*'])
 
 export default {
-  registerEvent: delegates.register,
-  get registeredEvents () {
+  logger,
+  registerEventDelegate: delegates.register,
+  get eventDelegates () {
     return { ...delegates.events }
   },
   get lifecycleEvents () {
     return [...Object.values(lifecycle.events)]
-  },
-  get logLevel () {
-    return logger.logLevel
-  },
-  set logLevel (value) {
-    return (logger.logLevel = value)
   }
 }
