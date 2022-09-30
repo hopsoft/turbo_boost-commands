@@ -1,4 +1,4 @@
-import { meta } from './elements'
+import elements from './elements'
 import lifecycle from './lifecycle'
 
 const frameSources = {}
@@ -7,11 +7,11 @@ const frameSources = {}
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target.closest('turbo-frame')
 
-  const detail = meta.element.detail || {}
+  const detail = elements.metaElement.detail || {}
   if (frame != detail.frame) return
 
   const { fetchOptions } = event.detail
-  fetchOptions.headers['TurboReflex-Token'] = meta.token
+  fetchOptions.headers['TurboReflex-Token'] = elements.metaElementToken
 })
 
 // fires after receiving a turbo HTTP response
@@ -19,11 +19,11 @@ addEventListener('turbo:before-fetch-response', event => {
   const frame = event.target.closest('turbo-frame')
   if (frame) frameSources[frame.id] = frame.src
 
-  const detail = meta.element.detail || {}
+  const detail = elements.metaElement.detail || {}
   if (frame != detail.frame) return
 
-  delete meta.element.dataset.busy
-  delete meta.element.detail
+  delete elements.metaElement.dataset.busy
+  delete elements.metaElement.detail
   lifecycle.dispatch(
     lifecycle.events.finish,
     detail.element || document,

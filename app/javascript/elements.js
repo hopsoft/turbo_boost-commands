@@ -1,15 +1,5 @@
 import lifecycle from './lifecycle'
 
-const meta = {
-  get element () {
-    return document.getElementById('turbo-reflex')
-  },
-
-  get token () {
-    return document.getElementById('turbo-reflex').getAttribute('content')
-  }
-}
-
 function findClosestReflex (element) {
   return element.closest('[data-turbo-reflex]')
 }
@@ -74,12 +64,17 @@ function buildAttributePayload (element) {
   return payload
 }
 
-export {
+export default {
   buildAttributePayload,
   findClosestReflex,
   findClosestFrame,
   findFrameId,
   findFrame,
   findFrameSrc,
-  meta
+  get metaElement () {
+    return document.getElementById('turbo-reflex')
+  },
+  get metaElementToken () {
+    return document.getElementById('turbo-reflex').getAttribute('content')
+  }
 }

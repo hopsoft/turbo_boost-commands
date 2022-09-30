@@ -4,4 +4,4 @@ function build (urlString) {
   return new URL(a)
 }
 
-export { build }
+export default { build }
