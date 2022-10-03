@@ -8,17 +8,14 @@
     <p class="my-8 text-xl text-white">
       You can also use TurboReflex without explicitly defining Turbo Frames.
     </p>
-    <p class="mt-4">
+    <p class="mt-4 mb-12">
       This feature is known as <span class="text-blue-500">RPC over HTTP</span>.
-      It eliminates the boilerplate and complexity imposed by Turbo Frames via a specialized frame dedicated to reflexes,
-      allowing you to <span class="underline underline-offset-4">focus on business logic instead of frames</span>.
-    </p>
-    <p class="mt-4 mb-8">
-    <em>And because it uses Turbo Frames under the hood, it guarantees robust and reliable reactivity over HTTP.</em>
+      It eliminates the boilerplate and complexity imposed by Turbo Frames which
+      allows you to <span class="underline underline-offset-4">focus on business logic instead of frames</span>.
     </p>
 
     <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-      data: { turbo_reflex: "CounterRpcReflex#increment", turbo_frame: "turbo-reflex-frame" } do %>
+      data: { turbo_reflex: "CounterRpcReflex#increment" } do %>
       RPC over HTTP
       <%= render flowbite(:notification_badge), value: session[:rpc_count].to_i if session[:rpc_count].to_i > 0 %>
     <% end %>

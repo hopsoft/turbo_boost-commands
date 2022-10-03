@@ -1,53 +1,12 @@
-import LifecycleEvents from './lifecycle_events'
+import schema from './schema.js'
+import lifecycle from './lifecycle'
 
 function findClosestReflex (element) {
-  return element.closest('[data-turbo-reflex]')
+  return element.closest(`[${schema.reflexAttribute}]`)
 }
 
 function findClosestFrame (element) {
   return element.closest('turbo-frame')
-}
-
-function findFrameId (element) {
-  let id = element.dataset.turboFrame
-  if (!id) {
-    const frame = findClosestFrame(element)
-    if (frame) id = frame.id
-  }
-  if (!id) {
-    console.error(
-      `The reflex element does not specify a frame!`,
-      `Please move the reflex element inside a <turbo-frame> or set the 'data-turbo-frame' attribute.`,
-      element
-    )
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrameId, element, {
-      element
-    })
-  }
-  return id
-}
-
-function findFrame (id) {
-  const frame = document.getElementById(id)
-  if (!frame) {
-    console.error(`The frame '${id}' does not exist!`)
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrame, document, { id })
-  }
-  return frame
-}
-
-function findFrameSrc (frame) {
-  const frameSrc = frame.dataset.turboReflexSrc || frame.src
-  if (!frameSrc) {
-    console.error(
-      `The the 'src' for <turbo-frame id='${frame.id}'> is unknown!`,
-      `TurboReflex uses 'src' to (re)render frame content after the reflex is invoked.`,
-      `Please set the 'src' or 'data-turbo-reflex-src' attribute on the <turbo-frame> element.`,
-      frame
-    )
-    LifecycleEvents.dispatch(LifecycleEvents.missingFrameSrc, frame, { frame })
-  }
-  return frameSrc
 }
 
 function assignElementValueToPayload (element, payload = {}) {
@@ -64,8 +23,16 @@ function assignElementValueToPayload (element, payload = {}) {
 }
 
 function buildAttributePayload (element) {
+  // truncate long values to optimize payload size
+  // TODO: revisit this decision
+  const maxAttributeLength = 100
+  const maxValueLength = 500
+
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
-    memo[attr.name] = attr.value
+    let value = attr.value
+    if (typeof value === 'string' && value.length > maxAttributeLength)
+      value = value.slice(0, maxAttributeLength) + '...'
+    memo[attr.name] = value
     return memo
   }, {})
 
@@ -74,14 +41,26 @@ function buildAttributePayload (element) {
   payload.disabled = element.disabled
   assignElementValueToPayload(element, payload)
 
+  if (
+    typeof payload.value === 'string' &&
+    payload.value.length > maxValueLength
+  )
+    payload.value = payload.value.slice(0, maxValueLength) + '...'
+
+  delete payload.class
+  delete payload[schema.reflexAttribute]
+  delete payload[schema.frameAttribute]
   return payload
 }
 
-export {
+export default {
+  buildAttributePayload,
   findClosestReflex,
   findClosestFrame,
-  findFrameId,
-  findFrame,
-  findFrameSrc,
-  buildAttributePayload
+  get metaElement () {
+    return document.getElementById('turbo-reflex')
+  },
+  get metaElementToken () {
+    return document.getElementById('turbo-reflex').getAttribute('content')
+  }
 }

@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-400-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-672-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -145,7 +145,6 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     +  <%= turbo_reflex_meta_tag %>
       </head>
       <body>
-    +  <%= turbo_reflex_frame_tag %>
       </body>
     </html>
     ```
@@ -207,12 +206,8 @@ TurboReflex.registerEvent('sl-change', ['sl-switch'])
 
 TurboReflex supports the following lifecycle events.
 
-- `turbo-reflex:before-start` - fires before reflex processing starts
 - `turbo-reflex:start` - fires before the reflex is sent to the server
 - `turbo-reflex:finish` - fires after the server has processed the reflex and responded
-- `turbo-reflex:missing-frame-id` - fires if the reflex cannot determine the target frame id
-- `turbo-reflex:missing-frame` - fires if the the reflex cannot locate the frame element
-- `turbo-reflex:missing-frame-src` - fires if the reflex cannot determine the frame's `src`
 - `turbo-reflex:error` - fires if an unexpected error occurs
 
 ### Targeting Frames
