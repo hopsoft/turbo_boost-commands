@@ -1,7 +1,8 @@
+import schema from './schema.js'
 import lifecycle from './lifecycle'
 
 function findClosestReflex (element) {
-  return element.closest('[data-turbo-reflex]')
+  return element.closest(`[${schema.reflexAttribute}]`)
 }
 
 function findClosestFrame (element) {

@@ -1,4 +1,5 @@
 import './turbo'
+import schema from './schema.js'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
@@ -59,6 +60,7 @@ delegates.register('submit', ['form'])
 delegates.register('click', ['*'])
 
 export default {
+  schema,
   logger,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
