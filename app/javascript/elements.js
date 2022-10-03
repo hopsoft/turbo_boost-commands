@@ -48,8 +48,8 @@ function buildAttributePayload (element) {
     payload.value = payload.value.slice(0, maxValueLength) + '...'
 
   delete payload.class
-  delete payload['data-turbo-reflex']
-  delete payload['data-turbo-frame']
+  delete payload[schema.reflexAttribute]
+  delete payload[schema.frameAttribute]
   return payload
 }
 
