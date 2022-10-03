@@ -12,6 +12,47 @@
 # * turbo_streams ..... A list of Turbo Streams to append to the response
 #
 class TurboReflex::Base
+  class << self
+    def response_hijackers
+      @response_hijackers ||= Set.new
+    end
+
+    def hijack_response(options = {})
+      response_hijackers << options.with_indifferent_access
+    end
+
+    def should_hijack_response?(reflex, method_name)
+      method_name = method_name.to_s
+      match = response_hijackers.find do |options|
+        only = options[:only] || []
+        only = [only] unless only.is_a?(Array)
+        only.map!(&:to_s)
+
+        except = options[:except] || []
+        except = [except] unless except.is_a?(Array)
+        except.map!(&:to_s)
+
+        options.blank? || only.include?(method_name) || except.exclude?(method_name)
+      end
+
+      return false if match.nil?
+
+      if match[:if].present?
+        case match[:if]
+        when Symbol then reflex.public_send(match[:if])
+        when Proc then reflex.instance_exec { match[:if].call reflex }
+        end
+      elsif match[:unless].present?
+        case match[:unless]
+        when Symbol then !reflex.public_send(match[:unless])
+        when Proc then !(reflex.instance_exec { match[:unless].call(reflex) })
+        end
+      else
+        true
+      end
+    end
+  end
+
   attr_reader :controller, :turbo_streams
 
   delegate :render, to: :renderer

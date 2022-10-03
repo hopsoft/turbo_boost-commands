@@ -6,10 +6,7 @@ import windowDriver from './window'
 function src (element, frame) {
   frame = frame || { dataset: {} }
   return (
-    element.href ||
-    frame.src ||
-    frame.dataset.turboReflexSrc ||
-    (frame ? null : location.href)
+    element.href || frame.src || frame.dataset.turboReflexSrc || location.href
   )
 }
 
@@ -22,7 +19,7 @@ function find (element) {
       name: 'form',
       reason: 'Element is a form.',
       frame,
-      src: null,
+      src: element.action,
       invokeReflex: formDriver.invokeReflex
     }
 

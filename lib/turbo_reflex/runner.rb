@@ -86,6 +86,7 @@ class TurboReflex::Runner
     return if reflex_performed?
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
+    hijack_response if reflex_class.should_hijack_response?(reflex_instance, reflex_method_name)
   rescue => e
     response.status = :internal_server_error
     @reflex_errored = true
@@ -165,23 +166,23 @@ class TurboReflex::Runner
   def append_success_event_to_response_body
     return unless reflex_succeeded?
     args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
-    success_event = if reflex_element.try(:id).present?
+    event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
-    append_to_response_body success_event
+    append_to_response_body event
   end
 
   def append_error_event_to_response_body(message)
     return unless reflex_errored?
     args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
-    error_event = if reflex_element.try(:id).present?
+    event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
-    append_to_response_body success_event
+    append_to_response_body event
   end
 
   def append_to_response_body(content)
