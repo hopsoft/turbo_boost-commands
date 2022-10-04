@@ -18,27 +18,16 @@ addEventListener('turbo:before-fetch-response', event => {
 
   if (frame) {
     frameSources[frame.id] = frame.src
-    const reflex = response.header('TurboReflex') === 'true'
-    const hijacked = response.header('TurboReflex-Hijacked') === 'true'
 
-    if (reflex) {
+    if (response.header('TurboReflex') === 'true') {
       if (response.statusCode < 200 || response.statusCode > 299) {
-        lifecycle.dispatch(
-          lifecycle.events.clientError,
-          window,
-          {
-            ...event.detail,
-            error: `Server returned a ${response.statusCode} status code! TurboReflex requires 2XX status codes.`
-          },
-          true
-        )
+        const error = `Server returned a ${response.statusCode} status code! TurboReflex requires 2XX status codes.`
+        lifecycle.dispatchClientError({ ...event.detail, error })
       }
 
-      if (hijacked) {
+      if (response.header('TurboReflex-Hijacked') === 'true') {
         event.preventDefault()
-        response.responseText.then(content =>
-          renderer.render(content, hijacked)
-        )
+        response.responseText.then(content => renderer.renderStreams(content))
       }
     }
   }

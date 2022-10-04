@@ -10,26 +10,22 @@ function aborted (event) {
 
 function errored (event) {
   const xhr = event.target
-  const hijacked = xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
-  renderer.render(xhr.responseText, hijacked)
-  lifecycle.dispatch(
-    lifecycle.events.clientError,
-    window,
-    {
-      xhr,
-      ...event.detail,
-      error: `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes.`
-    },
-    true
-  )
+
+  xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
+    ? renderer.renderStreams(xhr.responseText)
+    : renderer.render(xhr.responseText)
+
+  const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes.`
+  lifecycle.dispatchClientError({ xhr, ...event.detail, error })
 }
 
 function loaded (event) {
   const xhr = event.target
   if (xhr.status < 200 || xhr.status > 299) return errored(event)
   const content = xhr.responseText
-  const hijacked = xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
-  renderer.render(content, hijacked)
+  xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
+    ? renderer.renderStreams(xhr.responseText)
+    : renderer.render(xhr.responseText)
 }
 
 function invokeReflex (payload) {
