@@ -88,8 +88,10 @@ class TurboReflex::Runner
     reflex_instance.public_send reflex_method_name
     hijack_response if reflex_class.should_hijack_response?(reflex_instance, reflex_method_name)
   rescue => e
-    response.status = :internal_server_error
     @reflex_errored = true
+    reflex_instance.turbo_streams.clear
+    response.status = :internal_server_error
+    hijack_response
     message = "Error in #{reflex_name}! #{e.inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
@@ -102,6 +104,7 @@ class TurboReflex::Runner
   end
 
   def append_to_response
+    response.set_header "TurboReflex", true
     append_turbo_streams_to_response_body
     append_meta_tag_to_response_body
     append_success_event_to_response_body

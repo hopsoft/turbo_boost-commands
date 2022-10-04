@@ -24,13 +24,13 @@ import './controllers'
 // This ensures that libs which don't work with Turbo Drive...
 // (i.e. the body being replaced without reparsing scripts in <head>)
 // ...will continue to work.
-// function reloadScripts () {
-//   const head = document.querySelector('head')
-//   head.querySelectorAll('script').forEach(script => {
-//     script.remove()
-//     head.insertAdjacentHTML('beforeend', script.outerHTML)
-//     console.log('reload script', script.outerHTML)
-//   })
-// }
-// document.addEventListener('debounced:turbo:load', reloadScripts)
-// document.addEventListener('debounced:turbo-reflex:finish', reloadScripts)
+function reloadScripts () {
+  const head = document.querySelector('head')
+  head.querySelectorAll('script').forEach(script => {
+    script.remove()
+    head.insertAdjacentHTML('beforeend', script.outerHTML)
+    console.log('reload script', script.outerHTML)
+  })
+}
+document.addEventListener('debounced:turbo:load', reloadScripts)
+document.addEventListener('debounced:turbo-reflex:finish', reloadScripts)
