@@ -24,6 +24,10 @@ function dispatch (name, target = document, detail = {}, raise = false) {
   }
 }
 
+function dispatchClientError (detail = {}) {
+  dispatch(lifecycle.events.clientError, window, detail, true)
+}
+
 function finish (event) {
   event.detail.endedAt = new Date().getTime()
   event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
@@ -36,5 +40,6 @@ addEventListener(events.finish, event => activity.remove(event.detail.id), true)
 
 export default {
   dispatch,
+  dispatchClientError,
   events
 }

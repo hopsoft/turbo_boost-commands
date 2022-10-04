@@ -1,6 +1,7 @@
 import elements from '../elements'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
+import renderer from '../renderer'
 
 function aborted (event) {
   const xhr = event.target
@@ -9,43 +10,22 @@ function aborted (event) {
 
 function errored (event) {
   const xhr = event.target
-  lifecycle.dispatch(
-    lifecycle.events.clientError,
-    window,
-    {
-      xhr,
-      ...event.detail,
-      error: `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes. Server message: ${xhr.statusText}`
-    },
-    true
-  )
+
+  xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
+    ? renderer.renderStreams(xhr.responseText)
+    : renderer.renderDocument(xhr.responseText)
+
+  const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes.`
+  lifecycle.dispatchClientError({ xhr, ...event.detail, error })
 }
 
 function loaded (event) {
   const xhr = event.target
+  if (xhr.status < 200 || xhr.status > 299) return errored(event)
   const content = xhr.responseText
-  const hijacked = xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
-  if (xhr.status < 200 || xhr.status > 299) errored(event)
-
-  if (hijacked) {
-    const head = '<turbo-stream'
-    const tail = '</turbo-stream>'
-    const headIndex = content.indexOf(head)
-    const tailIndex = content.lastIndexOf(tail)
-    if (headIndex >= 0 && tailIndex >= 0) {
-      const streams = content.slice(headIndex, tailIndex + tail.length)
-      document.body.insertAdjacentHTML('beforeend', streams)
-    }
-  } else {
-    const head = '<html'
-    const tail = '</html'
-    const headIndex = content.indexOf(head)
-    const tailIndex = content.lastIndexOf(tail)
-    if (headIndex >= 0 && tailIndex >= 0) {
-      const html = content.slice(content.indexOf('>', headIndex) + 1, tailIndex)
-      document.documentElement.innerHTML = html
-    }
-  }
+  xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
+    ? renderer.renderStreams(xhr.responseText)
+    : renderer.renderDocument(xhr.responseText)
 }
 
 function invokeReflex (payload) {
