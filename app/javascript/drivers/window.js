@@ -13,7 +13,7 @@ function errored (event) {
 
   xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
     ? renderer.renderStreams(xhr.responseText)
-    : renderer.render(xhr.responseText)
+    : renderer.renderDocument(xhr.responseText)
 
   const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes.`
   lifecycle.dispatchClientError({ xhr, ...event.detail, error })
@@ -25,7 +25,7 @@ function loaded (event) {
   const content = xhr.responseText
   xhr.getResponseHeader('TurboReflex-Hijacked') === 'true'
     ? renderer.renderStreams(xhr.responseText)
-    : renderer.render(xhr.responseText)
+    : renderer.renderDocument(xhr.responseText)
 }
 
 function invokeReflex (payload) {

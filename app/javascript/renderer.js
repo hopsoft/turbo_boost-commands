@@ -1,4 +1,4 @@
-function render (content) {
+function renderDocument (content) {
   const head = '<html'
   const tail = '</html'
   const headIndex = content.indexOf(head)
@@ -20,4 +20,4 @@ function renderStreams (content) {
   }
 }
 
-export default { render, renderStreams }
+export default { renderDocument, renderStreams }
