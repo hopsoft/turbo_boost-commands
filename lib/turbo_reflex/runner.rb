@@ -77,8 +77,24 @@ class TurboReflex::Runner
     !!@reflex_errored
   end
 
+  def controller_action_prevented?
+    !!@controller_action_prevented
+  end
+
+  def response_body_rewritten?
+    !!@response_body_rewritten
+  end
+
   def reflex_succeeded?
     reflex_performed? && !reflex_errored?
+  end
+
+  def should_prevent_controller_action?
+    reflex_instance.should_prevent_controller_action? reflex_method_name
+  end
+
+  def should_rewrite_response_body?
+    reflex_instance.should_rewrite_response_body? reflex_method_name
   end
 
   def run
@@ -86,28 +102,38 @@ class TurboReflex::Runner
     return if reflex_performed?
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
-    hijack_response if reflex_class.should_hijack_response?(reflex_instance, reflex_method_name)
+    prevent_controller_action if should_prevent_controller_action?
   rescue => e
     @reflex_errored = true
     reflex_instance.turbo_streams.clear
-    response.status = :internal_server_error
-    hijack_response
+    prevent_controller_action
     message = "Error in #{reflex_name}! #{e.inspect}"
     Rails.logger.error message
+    response.status = :internal_server_error
     append_error_event_to_response_body message
   end
 
-  def hijack_response
-    response.set_header "TurboReflex-Hijacked", true
+  def prevent_controller_action
+    return unless should_prevent_controller_action?
+    @controller_action_prevented = true
     render html: "", layout: false
     append_to_response
+    response.set_header "TurboReflex", "Override"
+  end
+
+  def rewrite_response_body
+    return unless should_rewrite_response_body?
+    @response_body_rewritten = true
+    response.body = ""
+    append_to_response
+    response.set_header "TurboReflex", "Override"
   end
 
   def append_to_response
-    response.set_header "TurboReflex", true
     append_turbo_streams_to_response_body
     append_meta_tag_to_response_body
     append_success_event_to_response_body
+    response.set_header "TurboReflex", "Append"
   end
 
   def turbo_stream

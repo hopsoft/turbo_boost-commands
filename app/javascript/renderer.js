@@ -9,15 +9,8 @@ function renderDocument (content) {
   }
 }
 
-function renderStreams (content) {
-  const head = '<turbo-stream'
-  const tail = '</turbo-stream>'
-  const headIndex = content.indexOf(head)
-  const tailIndex = content.lastIndexOf(tail)
-  if (headIndex >= 0 && tailIndex >= 0) {
-    const streams = content.slice(headIndex, tailIndex + tail.length)
-    document.body.insertAdjacentHTML('beforeend', streams)
-  }
+function append (content) {
+  document.body.insertAdjacentHTML('beforeend', content)
 }
 
-export default { renderDocument, renderStreams }
+export default { append, renderDocument }

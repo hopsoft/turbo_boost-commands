@@ -61,9 +61,11 @@
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Setting Instance Variables](#setting-instance-variables)
-    - [Hijacking the Response](#hijacking-the-response)
+    - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
     - [Putting it All Together](#putting-it-all-together)
+      - [Running Locally](#running-locally)
+      - [Running in Docker](#running-in-docker)
   - [License](#license)
   - [Todos](#todos)
   - [Releasing](#releasing)
@@ -362,15 +364,15 @@ class PostsController < ApplicationController
 end
 ```
 
-### Hijacking the Response
+### Prevent Controller Action
 
-Sometimes you may want to hijack the normal Rails response from within a reflex.
+Sometimes you may want to prevent normal response handling.
 
 For example, consider the need for a related but separate form that updates a subset of user attributes.
 We'd like to avoid creating a non RESTful route,
 but aren't thrilled at the prospect of adding REST boilerplate for a new route, controller, action, etc...
 
-In that scenario we can reuse an existing route and hijack the response handling with a reflex.
+In that scenario we can reuse an existing route and prevent normal response handling with a reflex.
 
 Here's how to do it.
 
@@ -384,14 +386,14 @@ Here's how to do it.
 ```
 
 The form above will send a `PATCH` request to `users#update`,
-but we'll hijack the handling in the reflex so we never hit `users#update`.
+but we'll prevent normal request handling in the reflex so we don't run `users#update`.
 
 ```ruby
 # app/reflexes/user_reflex.html.erb
 class UserReflex < TurboReflex::Base
   def example
     # business logic, save record, etc...
-    controller.render html: "<turbo-frame id='user-alt'>We Hijacked the response!</turbo-frame>".html_safe
+    controller.render html: "<turbo-frame id='user-alt'>We prevented the normal response!</turbo-frame>".html_safe
   end
 end
 ```

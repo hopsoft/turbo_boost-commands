@@ -2,28 +2,52 @@
 
 # Reflex instances have access to the following methods and properties.
 #
-# * controller ........ The Rails controller processing the HTTP request
-# * element ........... A struct that represents the DOM element that triggered the reflex
-# * hijack_response ... Hijacks the response, must be called last (halts further request handling by the controller)
-# * params ............ Reflex specific params (frame_id, element, etc.)
-# * render ............ Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * renderer .......... An ActionController::Renderer
-# * turbo_stream ...... A Turbo Stream TagBuilder
-# * turbo_streams ..... A list of Turbo Streams to append to the response
+# * controller .................. The Rails controller processing the HTTP request
+# * element ..................... A struct that represents the DOM element that triggered the reflex
+# * params ...................... Reflex specific params (frame_id, element, etc.)
+# * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
+# * renderer .................... An ActionController::Renderer
+# * rewrite_response_body ....... Allows the rails controller/action to run (including rendering) but rewrites the response.body with TurboReflex streams
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
+# * turbo_stream ................ A Turbo Stream TagBuilder
+# * turbo_streams ............... A list of Turbo Streams to append to the response
 #
 class TurboReflex::Base
   class << self
-    def response_hijackers
-      @response_hijackers ||= Set.new
+    def preventers
+      @preventers ||= Set.new
     end
 
-    def hijack_response(options = {})
-      response_hijackers << options.with_indifferent_access
+    def rewriters
+      @rewriters ||= Set.new
     end
 
-    def should_hijack_response?(reflex, method_name)
+    def prevent_controller_action(options = {})
+      preventers << options.with_indifferent_access
+    end
+
+    def rewrite_response_body(options = {})
+      rewriters << options.with_indifferent_access
+    end
+
+    def should_prevent_controller_action?(reflex, method_name)
+      apply_behavior? :prevent_controller_action, reflex, method_name
+    end
+
+    def should_rewrite_response_body?(reflex, method_name)
+      apply_behavior? :rewrite_response_body, reflex, method_name
+    end
+
+    private
+
+    def apply_behavior?(behavior, reflex, method_name)
+      list = case behavior
+      when :prevent_controller_action then preventers
+      when :rewrite_response_body then rewriters
+      end
+
       method_name = method_name.to_s
-      match = response_hijackers.find do |options|
+      match = list.find do |options|
         only = options[:only] || []
         only = [only] unless only.is_a?(Array)
         only.map!(&:to_s)
@@ -56,7 +80,12 @@ class TurboReflex::Base
   attr_reader :controller, :turbo_streams
 
   delegate :render, to: :renderer
-  delegate :hijack_response, :turbo_stream, to: :@runner
+  delegate(
+    :controller_action_prevented?,
+    :response_body_rewritten?,
+    :turbo_stream,
+    to: :@runner
+  )
 
   def initialize(runner)
     @runner = runner
@@ -84,5 +113,13 @@ class TurboReflex::Base
 
   def renderer
     ActionController::Renderer.for controller.class, controller.request.env
+  end
+
+  def should_prevent_controller_action?(method_name)
+    self.class.should_prevent_controller_action? self, method_name
+  end
+
+  def should_rewrite_response_body?(method_name)
+    self.class.should_rewrite_response_body? self, method_name
   end
 end
