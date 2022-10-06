@@ -16,10 +16,6 @@ module TurboReflex::Controller
     )
   end
 
-  def turbo_reflex
-    turbo_reflex_runner.reflex_instance
-  end
-
   def turbo_reflex_runner
     @turbo_reflex_runner ||= TurboReflex::Runner.new(self)
   end
@@ -55,7 +51,7 @@ module TurboReflex::Controller
   end
 
   def append_turbo_reflex_to_response
-    return if turbo_reflex.should_rewrite_response_body?(reflex_runner.reflex_method_name)
+    return if turbo_relfex_runner.should_rewrite_response_body?
     turbo_reflex_runner.append_to_response
   end
 end
