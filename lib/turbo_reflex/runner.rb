@@ -105,35 +105,32 @@ class TurboReflex::Runner
     prevent_controller_action if should_prevent_controller_action?
   rescue => e
     @reflex_errored = true
-    reflex_instance.turbo_streams.clear
-    prevent_controller_action
-    message = "Error in #{reflex_name}! #{e.inspect}"
-    Rails.logger.error message
-    response.status = :internal_server_error
-    append_error_event_to_response_body message
+    prevent_controller_action_with_error e
   end
 
   def prevent_controller_action
-    return unless should_prevent_controller_action?
     @controller_action_prevented = true
     render html: "", layout: false
-    append_to_response
-    response.set_header "TurboReflex", "Override"
+    append_success_to_response headers: {TurboReflex: "Override"}
+  end
+
+  def prevent_controller_action_with_error(error)
+    @controller_action_prevented = true
+    render html: "", layout: false, status: :internal_server_error
+    append_error_to_response error, headers: {TurboReflex: "Override"}
   end
 
   def rewrite_response_body
-    return unless should_rewrite_response_body?
     @response_body_rewritten = true
     response.body = ""
-    append_to_response
-    response.set_header "TurboReflex", "Override"
+    append_success_to_response headers: {TurboReflex: "Override"}
   end
 
-  def append_to_response
-    append_turbo_streams_to_response_body
+  def update_response
     append_meta_tag_to_response_body
-    append_success_event_to_response_body
-    response.set_header "TurboReflex", "Append"
+    return unless reflex_succeeded?
+    return rewrite_response_body if should_rewrite_response_body?
+    append_success_to_response headers: {TurboReflex: "Append"}
   end
 
   def turbo_stream
@@ -181,9 +178,21 @@ class TurboReflex::Runner
     :unknown
   end
 
-  def append_turbo_streams_to_response_body
-    return unless reflex_succeeded?
-    return unless reflex_instance&.turbo_streams.present?
+  def append_success_to_response(headers: {})
+    append_success_event_to_response_body
+    append_streams_to_response_body
+    headers.each { |key, value| response.set_header key.to_s, value.to_s }
+  end
+
+  def append_error_to_response(error:, headers: {})
+    message = "Error in #{reflex_name}! #{error.inspect}"
+    Rails.logger.error message
+    append_error_event_to_response_body message
+    headers.each { |key, value| response.set_header key.to_s, value.to_s }
+  end
+
+  def append_streams_to_response_body
+    return unless reflex_instance.turbo_streams.present?
     append_to_response_body reflex_instance.turbo_streams.map(&:to_s).join.html_safe
   end
 
@@ -193,7 +202,6 @@ class TurboReflex::Runner
   end
 
   def append_success_event_to_response_body
-    return unless reflex_succeeded?
     args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
     event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
@@ -204,7 +212,6 @@ class TurboReflex::Runner
   end
 
   def append_error_event_to_response_body(message)
-    return unless reflex_errored?
     args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
     event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"

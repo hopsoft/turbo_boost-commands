@@ -5,7 +5,7 @@ module TurboReflex::Controller
 
   included do
     before_action :run_turbo_reflex
-    after_action :append_turbo_reflex_to_response
+    after_action :update_response_with_turbo_reflex
     helper_method(
       :turbo_reflex_meta_tag,
       :turbo_reflex_requested?,
@@ -50,8 +50,7 @@ module TurboReflex::Controller
     turbo_reflex_runner.run
   end
 
-  def append_turbo_reflex_to_response
-    return if turbo_relfex_runner.should_rewrite_response_body?
-    turbo_reflex_runner.append_to_response
+  def update_response_with_turbo_reflex
+    turbo_reflex_runner.update_response
   end
 end
