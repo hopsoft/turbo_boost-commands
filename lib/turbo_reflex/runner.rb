@@ -90,10 +90,12 @@ class TurboReflex::Runner
   end
 
   def should_prevent_controller_action?
+    return false unless reflex_performed?
     reflex_instance.should_prevent_controller_action? reflex_method_name
   end
 
   def should_rewrite_response_body?
+    return false unless reflex_performed?
     reflex_instance.should_rewrite_response_body? reflex_method_name
   end
 

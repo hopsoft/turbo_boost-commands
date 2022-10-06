@@ -44,6 +44,11 @@ module TurboReflex::Controller
     turbo_reflex_runner.response_body_rewritten?
   end
 
+  def render(...)
+    return super(...) unless turbo_reflex_runner.should_rewrite_response_body?
+    render html: "", layout: false
+  end
+
   protected
 
   def run_turbo_reflex
