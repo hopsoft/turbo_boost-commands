@@ -15,6 +15,10 @@
 class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
 
+  # prevent the Rails controller/action from running
+  # i.e. completely handle the response in the reflex
+  prevent_controller_action
+
   def increment
     session[:count] = session.fetch(:count, 0) + 1
     turbo_streams << turbo_stream.replace("counter", partial: "app/views/demos/_counter")
