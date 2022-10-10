@@ -1,26 +1,30 @@
 const events = {}
 let eventListener
 
-function register (eventName, tagNames) {
-  events[eventName] = tagNames
+function register (eventName, selectors) {
+  events[eventName] = selectors
   document.addEventListener(eventName, eventListener, true)
 }
 
-function isRegistered (eventName, tagName) {
-  tagName = tagName.toLowerCase()
-  return (
-    events[eventName].includes(tagName) ||
-    (!Object.values(events)
-      .flat()
-      .includes(tagName) &&
-      events[eventName].includes('*'))
-  )
+function isRegisteredForElement (eventName, element) {
+  const nate = events[eventName]
+  const selectors = [...events[eventName]]
+  let isRegistered = false
+
+  while (!isRegistered && selectors.length > 0) {
+    const selector = selectors.shift()
+    isRegistered = Array.from(document.querySelectorAll(selector)).includes(
+      element
+    )
+  }
+
+  return isRegistered
 }
 
 export default {
   events,
   register,
-  isRegistered,
+  isRegisteredForElement,
   set handler (fn) {
     eventListener = fn
   }

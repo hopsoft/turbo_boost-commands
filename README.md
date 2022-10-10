@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-694-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-768-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -194,14 +194,14 @@ It's possible to override these defaults like so.
 import TurboReflex from 'turbo_reflex'
 
 // restrict `click` monitoring to <a> and <button> elements
-TurboReflex.registerEvent('click', ['a', 'button'])
+TurboReflex.registerEvent('click', ['a[data-turbo-reflex]', 'button[data-turbo-reflex]'])
 ```
 
 You can also register custom events and elements.
 Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
 ```js
-TurboReflex.registerEvent('sl-change', ['sl-switch'])
+TurboReflex.registerEvent('sl-change', ['sl-switch[data-turbo-reflex]'])
 ```
 
 ### Lifecycle Events

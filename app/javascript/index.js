@@ -16,7 +16,7 @@ function invokeReflex (event) {
   try {
     element = elements.findClosestReflex(event.target)
     if (!element) return
-    if (!delegates.isRegistered(event.type, element.tagName)) return
+    if (!delegates.isRegisteredForElement(event.type, element)) return
 
     const driver = drivers.find(element)
 
@@ -55,9 +55,13 @@ function invokeReflex (event) {
 
 // wire things up and setup defaults for event delegation
 delegates.handler = invokeReflex
-delegates.register('change', ['input', 'select', 'textarea'])
-delegates.register('submit', ['form'])
-delegates.register('click', ['*'])
+delegates.register('change', [
+  'input[data-turbo-reflex]',
+  'select[data-turbo-reflex]',
+  'textarea[data-turbo-reflex]'
+])
+delegates.register('submit', ['form[data-turbo-reflex]'])
+delegates.register('click', ['[data-turbo-reflex]'])
 
 export default {
   schema,

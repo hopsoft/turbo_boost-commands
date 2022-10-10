@@ -12,6 +12,5 @@ class CounterReflex < TurboReflex::Base
   def increment
     # update the state held in sesion
     session[:count] = session.fetch(:count, 0) + 1
-    turbo_streams << turbo_stream.replace("rpc", partial: "demos/increment_rpc")
   end
 end
