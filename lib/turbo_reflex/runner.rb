@@ -58,6 +58,7 @@ class TurboReflex::Runner
 
   def reflex_method_name
     return nil unless reflex_requested?
+    return "noop" unless reflex_name.include?("#")
     reflex_name.split("#").last
   end
 
@@ -81,10 +82,6 @@ class TurboReflex::Runner
     !!@controller_action_prevented
   end
 
-  def response_body_rewritten?
-    !!@response_body_rewritten
-  end
-
   def reflex_succeeded?
     reflex_performed? && !reflex_errored?
   end
@@ -92,11 +89,6 @@ class TurboReflex::Runner
   def should_prevent_controller_action?
     return false unless reflex_performed?
     reflex_instance.should_prevent_controller_action? reflex_method_name
-  end
-
-  def should_rewrite_response_body?
-    return false unless reflex_performed?
-    reflex_instance.should_rewrite_response_body? reflex_method_name
   end
 
   def run
@@ -113,26 +105,19 @@ class TurboReflex::Runner
   def prevent_controller_action
     @controller_action_prevented = true
     render html: "", layout: false
-    append_success_to_response headers: {TurboReflex: "Override"}
+    append_success_to_response headers: {TurboReflex: "Append"}
   end
 
   def prevent_controller_action_with_error(error)
     @controller_action_prevented = true
     render html: "", layout: false, status: :internal_server_error
-    append_error_to_response error, headers: {TurboReflex: "Override"}
-  end
-
-  def rewrite_response_body
-    @response_body_rewritten = true
-    response.body = ""
-    append_success_to_response headers: {TurboReflex: "Override"}
+    append_error_to_response error, headers: {TurboReflex: "Append"}
   end
 
   def update_response
     append_meta_tag_to_response_body
     return unless reflex_succeeded?
-    return rewrite_response_body if should_rewrite_response_body?
-    append_success_to_response headers: {TurboReflex: "Append"}
+    append_success_to_response
   end
 
   def turbo_stream
@@ -173,7 +158,7 @@ class TurboReflex::Runner
   end
 
   def response_type
-    body = response.body.to_s.strip
+    body = controller.response_body.to_s.strip
     return :body if body.match?(/<\/\s*body.*>/i)
     return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
     return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
@@ -186,7 +171,7 @@ class TurboReflex::Runner
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
   end
 
-  def append_error_to_response(error:, headers: {})
+  def append_error_to_response(error, headers: {})
     message = "Error in #{reflex_name}! #{error.inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
@@ -231,7 +216,7 @@ class TurboReflex::Runner
     case response_type
     when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    else response.body << sanitized_content
+    else controller.response_body << sanitized_content
     end
   end
 end

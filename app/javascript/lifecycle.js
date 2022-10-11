@@ -25,13 +25,13 @@ function dispatch (name, target = document, detail = {}, raise = false) {
 }
 
 function dispatchClientError (detail = {}) {
-  dispatch(lifecycle.events.clientError, window, detail, true)
+  dispatch(events.clientError, window, detail, true)
 }
 
 function finish (event) {
   event.detail.endedAt = new Date().getTime()
   event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
-  setTimeout(() => dispatch(events.finish, event.target, event.detail), 10)
+  setTimeout(() => dispatch(events.finish, event.target, event.detail), 20)
 }
 
 addEventListener(events.serverError, finish)

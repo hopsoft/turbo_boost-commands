@@ -4,7 +4,7 @@ class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
 
   def increment
-    key = element.data_session_key
+    key = element.dataset.session_key
     session[key] = session.fetch(key, 0) + 1
   end
 end

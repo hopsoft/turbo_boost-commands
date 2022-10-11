@@ -37,6 +37,9 @@ function invokeReflex (event) {
 
     if (driver.name !== 'form') event.preventDefault()
 
+    window.turboReflexActive = true
+    setTimeout(() => (window.turboReflexActive = false), 10)
+
     switch (driver.name) {
       case 'form':
         return driver.invokeReflex(element, payload)

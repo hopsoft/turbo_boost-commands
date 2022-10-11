@@ -11,9 +11,12 @@ module TurboReflex::Controller
       :turbo_reflex_requested?,
       :turbo_reflex_performed?,
       :turbo_reflex_errored?,
-      :turbo_reflex_controller_action_prevented?,
-      :turbo_reflex_response_body_rewritten?
+      :turbo_reflex_controller_action_prevented?
     )
+  end
+
+  def turbo_reflex
+    turbo_reflex_runner.reflex_instance
   end
 
   def turbo_reflex_runner
@@ -40,13 +43,16 @@ module TurboReflex::Controller
     turbo_reflex_runner.controller_action_prevented?
   end
 
-  def turbo_reflex_response_body_rewritten?
-    turbo_reflex_runner.response_body_rewritten?
-  end
+  def render_turbo_reflex(html = "", status: nil)
+    should_redirect = if request.method.match?(/GET/i)
+      false
+    else
+      request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
+    end
 
-  def render(...)
-    return super(...) unless turbo_reflex_runner.should_rewrite_response_body?
-    render html: "", layout: false
+    response.set_header "TurboReflex", "Append"
+    status ||= :multiple_choices if should_redirect # HTTP 300
+    render html: html, layout: false, status: status || :ok
   end
 
   protected

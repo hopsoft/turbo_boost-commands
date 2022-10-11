@@ -6,19 +6,16 @@ function register (eventName, selectors) {
   document.addEventListener(eventName, eventListener, true)
 }
 
-function isRegisteredForElement (eventName, element) {
-  const nate = events[eventName]
-  const selectors = [...events[eventName]]
-  let isRegistered = false
-
-  while (!isRegistered && selectors.length > 0) {
-    const selector = selectors.shift()
-    isRegistered = Array.from(document.querySelectorAll(selector)).includes(
-      element
+function getRegisteredEventNameForElement (element) {
+  return Object.keys(events).find(eventName => {
+    return !!events[eventName].find(selector =>
+      Array.from(document.querySelectorAll(selector)).find(el => el === element)
     )
-  }
+  })
+}
 
-  return isRegistered
+function isRegisteredForElement (eventName, element) {
+  return eventName === getRegisteredEventNameForElement(element)
 }
 
 export default {
