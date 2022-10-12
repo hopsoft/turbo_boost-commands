@@ -99,9 +99,9 @@ class TurboReflex::Runner
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
     prevent_controller_action if should_prevent_controller_action?
-  rescue => e
+  rescue => error
     @reflex_errored = true
-    prevent_controller_action_with_error e
+    prevent_controller_action_with_error error
   end
 
   def prevent_controller_action
@@ -117,6 +117,8 @@ class TurboReflex::Runner
   end
 
   def update_response
+    return if @update_response_performed
+    @update_response_performed = true
     append_meta_tag_to_response_body
     return unless reflex_succeeded?
     append_success_to_response
@@ -174,7 +176,7 @@ class TurboReflex::Runner
   end
 
   def append_error_to_response(error, headers: {})
-    message = "Error in #{reflex_name}! #{error.inspect} #{e.backtrace[0, 4].inspect}"
+    message = "Error in #{reflex_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
