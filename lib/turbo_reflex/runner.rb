@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "sanitizer"
+
 class TurboReflex::Runner
   attr_reader :controller
 

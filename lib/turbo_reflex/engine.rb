@@ -2,9 +2,8 @@
 
 require "turbo-rails"
 require_relative "version"
-require_relative "sanitizer"
-require_relative "runner"
 require_relative "base"
+require_relative "controller_pack"
 
 class TurboReflex::Engine < ::Rails::Engine
   config.turbo_reflex = ActiveSupport::OrderedOptions.new

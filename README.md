@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-759-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-760-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -144,7 +144,7 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     # app/views/layouts/application.html.erb
     <html>
       <head>
-    +  <%= turbo_reflex_meta_tag %>
+    +  <%= turbo_reflex.meta_tag %>
       </head>
       <body>
       </body>

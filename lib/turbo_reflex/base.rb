@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Reflex base superclass.
+# All reflex instances should inherit from this class.
+#
 # Reflex instances have access to the following methods and properties.
 #
 # * controller .................. The Rails controller processing the HTTP request
