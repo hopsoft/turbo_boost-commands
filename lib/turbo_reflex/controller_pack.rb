@@ -19,12 +19,14 @@ class TurboReflex::ControllerPack
     to: :runner
   )
 
+  delegate :streams, to: :instance
+
   def initialize(controller)
     @controller = controller
     @runner = TurboReflex::Runner.new(controller)
   end
 
-  def reflex
+  def instance
     runner.reflex_instance
   end
 

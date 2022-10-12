@@ -57,6 +57,7 @@ class TurboReflex::Base
   end
 
   attr_reader :controller, :turbo_streams
+  alias_method :streams, :turbo_streams
 
   delegate :render, to: :renderer
   delegate(

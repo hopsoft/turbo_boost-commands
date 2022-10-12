@@ -174,7 +174,7 @@ class TurboReflex::Runner
   end
 
   def append_error_to_response(error, headers: {})
-    message = "Error in #{reflex_name}! #{error.inspect}"
+    message = "Error in #{reflex_name}! #{error.inspect} #{e.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
