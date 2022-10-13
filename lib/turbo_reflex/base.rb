@@ -5,6 +5,8 @@
 #
 # Reflex instances have access to the following methods and properties.
 #
+# * dom_id ...................... The Rails dom_id helper
+# * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * controller .................. The Rails controller processing the HTTP request
 # * element ..................... A struct that represents the DOM element that triggered the reflex
 # * params ...................... Reflex specific params (frame_id, element, etc.)
@@ -12,7 +14,7 @@
 # * renderer .................... An ActionController::Renderer
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
 # * turbo_stream ................ A Turbo Stream TagBuilder
-# * turbo_streams ............... A list of Turbo Streams to append to the response
+# * turbo_streams ............... A list of Turbo Streams to append to the response (also aliased as streams)
 #
 class TurboReflex::Base
   class << self
@@ -59,6 +61,7 @@ class TurboReflex::Base
   attr_reader :controller, :turbo_streams
   alias_method :streams, :turbo_streams
 
+  delegate :dom_id, to: :"controller.view_context"
   delegate :render, to: :renderer
   delegate(
     :controller_action_prevented?,
@@ -70,6 +73,10 @@ class TurboReflex::Base
     @runner = runner
     @controller = runner.controller
     @turbo_streams = Set.new
+  end
+
+  def dom_id_selector(...)
+    "##{dom_id(...)}"
   end
 
   # default reflex invoked when method not specified

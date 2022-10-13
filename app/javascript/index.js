@@ -59,12 +59,12 @@ function invokeReflex (event) {
 // wire things up and setup defaults for event delegation
 delegates.handler = invokeReflex
 delegates.register('change', [
-  'input[data-turbo-reflex]',
-  'select[data-turbo-reflex]',
-  'textarea[data-turbo-reflex]'
+  `input[${schema.reflexAttribute}]`,
+  `select[${schema.reflexAttribute}]`,
+  `textarea[${schema.reflexAttribute}]`
 ])
-delegates.register('submit', ['form[data-turbo-reflex]'])
-delegates.register('click', ['[data-turbo-reflex]'])
+delegates.register('submit', [`form[${schema.reflexAttribute}]`])
+delegates.register('click', [`[${schema.reflexAttribute}]`])
 
 export default {
   schema,

@@ -143,7 +143,7 @@ class TurboReflex::Runner
   end
 
   def new_token
-    @new_token ||= SecureRandom.urlsafe_base64(32)
+    @new_token ||= SecureRandom.urlsafe_base64(12)
   end
 
   def server_token
