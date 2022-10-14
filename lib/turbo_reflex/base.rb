@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-# Reflex base superclass.
-# All reflex instances should inherit from this class.
+# TurboReflex base superclass.
+# All TurboReflex classes should inherit from this class.
 #
-# Reflex instances have access to the following methods and properties.
+# Reflexes are executed via a before_action in the Rails controller lifecycle.
+# They have access to the following methods and properties.
 #
 # * dom_id ...................... The Rails dom_id helper
 # * dom_id_selector ............. Returns a CSS selector for a dom_id

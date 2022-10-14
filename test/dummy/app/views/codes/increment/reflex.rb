@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
-# Reflex instances have access to the following methods and properties.
+# TurboReflex base superclass.
+# All TurboReflex classes should inherit from this class.
 #
+# Reflexes are executed via a before_action in the Rails controller lifecycle.
+# They have access to the following methods and properties.
+#
+# * dom_id ...................... The Rails dom_id helper
+# * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * controller .................. The Rails controller processing the HTTP request
 # * element ..................... A struct that represents the DOM element that triggered the reflex
 # * params ...................... Reflex specific params (frame_id, element, etc.)
@@ -9,7 +15,7 @@
 # * renderer .................... An ActionController::Renderer
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
 # * turbo_stream ................ A Turbo Stream TagBuilder
-# * turbo_streams ............... A list of Turbo Streams to append to the response
+# * turbo_streams ............... A list of Turbo Streams to append to the response (also aliased as streams)
 #
 class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
