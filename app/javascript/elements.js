@@ -11,7 +11,7 @@ function findClosestFrame (element) {
 
 function assignElementValueToPayload (element, payload = {}) {
   if (element.tagName.toLowerCase() !== 'select')
-    return (payload.value = element.value)
+    return (payload.value = element.value || null)
 
   if (!element.multiple)
     return (payload.value = element.options[element.selectedIndex].value)
@@ -30,19 +30,17 @@ function buildAttributePayload (element) {
   }, {})
 
   payload.tag = element.tagName
-  payload.checked = element.checked
-  payload.disabled = element.disabled
+  payload.checked = !!element.checked
+  payload.disabled = !!element.disabled
   assignElementValueToPayload(element, payload)
 
-  if (
-    typeof payload.value === 'string' &&
-    payload.value.length > maxValueLength
-  )
-    payload.value = payload.value.slice(0, maxValueLength) + '...'
-
+  // reduce payload size to keep URL length smaller
   delete payload.class
+  delete payload.action
+  delete payload.href
   delete payload[schema.reflexAttribute]
   delete payload[schema.frameAttribute]
+
   return payload
 }
 

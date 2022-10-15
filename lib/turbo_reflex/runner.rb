@@ -101,27 +101,33 @@ class TurboReflex::Runner
     prevent_controller_action if should_prevent_controller_action?
   rescue => error
     @reflex_errored = true
-    prevent_controller_action_with_error error
+    prevent_controller_action error: error
   end
 
-  def prevent_controller_action
+  def prevent_controller_action(error: nil)
     @controller_action_prevented = true
-    render html: "", layout: false
-    append_success_to_response headers: {TurboReflex: "Append"}
-  end
 
-  def prevent_controller_action_with_error(error)
-    @controller_action_prevented = true
-    render html: "", layout: false, status: :internal_server_error
-    append_error_to_response error, headers: {TurboReflex: "Append"}
+    if error
+      render_response status: :internal_server_error
+      append_error_to_response error
+    else
+      render_response
+      append_success_to_response
+    end
   end
 
   def update_response
     return if @update_response_performed
     @update_response_performed = true
+
     append_meta_tag_to_response_body
-    return unless reflex_succeeded?
-    append_success_to_response
+    return if controller_action_prevented?
+    append_success_to_response if reflex_succeeded?
+  end
+
+  def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
+    headers.each { |key, value| response.set_header key.to_s, value.to_s }
+    controller.render html: html, layout: false, status: status || response_status
   end
 
   def turbo_stream
@@ -161,6 +167,16 @@ class TurboReflex::Runner
     unmasked_client_token == server_token
   end
 
+  def should_redirect?
+    return false if controller.request.method.match?(/GET/i)
+    controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
+  end
+
+  def response_status
+    return :multiple_choices if :should_redirect?
+    :ok
+  end
+
   def response_type
     body = controller.response_body.to_s.strip
     return :body if body.match?(/<\/\s*body.*>/i)
@@ -169,17 +185,15 @@ class TurboReflex::Runner
     :unknown
   end
 
-  def append_success_to_response(headers: {})
+  def append_success_to_response
     append_success_event_to_response_body
     append_streams_to_response_body
-    headers.each { |key, value| response.set_header key.to_s, value.to_s }
   end
 
-  def append_error_to_response(error, headers: {})
+  def append_error_to_response
     message = "Error in #{reflex_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
-    headers.each { |key, value| response.set_header key.to_s, value.to_s }
   end
 
   def append_streams_to_response_body

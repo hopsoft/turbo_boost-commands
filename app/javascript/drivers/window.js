@@ -15,13 +15,13 @@ function errored (event) {
     ? renderer.append(xhr.responseText)
     : renderer.replaceDocument(xhr.responseText)
 
-  const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX status codes.`
+  const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX-3XX status codes.`
   lifecycle.dispatchClientError({ xhr, ...event.detail, error })
 }
 
 function loaded (event) {
   const xhr = event.target
-  if (xhr.status < 200 || xhr.status > 299) return errored(event)
+  if (xhr.status < 200 || xhr.status > 399) return errored(event)
   const content = xhr.responseText
   xhr.getResponseHeader('TurboReflex') === 'Append'
     ? renderer.append(xhr.responseText)
