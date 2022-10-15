@@ -23,15 +23,8 @@ function assignElementValueToPayload (element, payload = {}) {
 }
 
 function buildAttributePayload (element) {
-  // truncate long values to optimize payload size
-  // TODO: revisit this decision
-  const maxAttributeLength = 100
-  const maxValueLength = 500
-
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
     let value = attr.value
-    if (typeof value === 'string' && value.length > maxAttributeLength)
-      value = value.slice(0, maxAttributeLength) + '...'
     memo[attr.name] = value
     return memo
   }, {})

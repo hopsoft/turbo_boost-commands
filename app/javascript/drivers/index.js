@@ -1,6 +1,7 @@
 import elements from '../elements'
 import formDriver from './form'
 import frameDriver from './frame'
+import methodDriver from './method'
 import windowDriver from './window'
 
 function src (element, frame) {
@@ -12,7 +13,7 @@ function src (element, frame) {
 
 function find (element) {
   let frame = elements.findClosestFrame(element)
-  const targetId = element.dataset.turboFrame
+  const { turboFrame, turboMethod } = element.dataset
 
   if (element.tagName.toLowerCase() === 'form')
     return {
@@ -23,9 +24,18 @@ function find (element) {
       invokeReflex: formDriver.invokeReflex
     }
 
+  if (turboMethod && turboMethod.length > 0)
+    return {
+      name: 'method',
+      reason: 'Element defines data-turbo-method.',
+      frame,
+      src: element.href,
+      invokeReflex: methodDriver.invokeReflex
+    }
+
   // element targets a frame that is not _self
-  if (targetId && targetId !== '_self') {
-    frame = document.getElementById(targetId)
+  if (turboFrame && turboFrame !== '_self') {
+    frame = document.getElementById(turboFrame)
     return {
       name: 'frame',
       reason: 'element targets a frame that is not _self',
@@ -36,7 +46,7 @@ function find (element) {
   }
 
   // element does NOT target a frame or targets _self and is contained by a frame
-  if ((!targetId || targetId === '_self') && frame)
+  if ((!turboFrame || turboFrame === '_self') && frame)
     return {
       name: 'frame',
       reason:

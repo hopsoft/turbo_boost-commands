@@ -35,12 +35,14 @@ function invokeReflex (event) {
     activity.add(payload)
     lifecycle.dispatch(lifecycle.events.start, element, payload)
 
-    if (driver.name !== 'form') event.preventDefault()
+    if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
     window.turboReflexActive = true
     setTimeout(() => (window.turboReflexActive = false), 10)
 
     switch (driver.name) {
+      case 'method':
+        return driver.invokeReflex(element, payload)
       case 'form':
         return driver.invokeReflex(element, payload)
       case 'frame':
@@ -63,6 +65,9 @@ delegates.register('change', [
   `select[${schema.reflexAttribute}]`,
   `textarea[${schema.reflexAttribute}]`
 ])
+// delegates.register('mousedown', [
+//   `[${schema.reflexAttribute}][${schema.methodAttribute}]`
+// ])
 delegates.register('submit', [`form[${schema.reflexAttribute}]`])
 delegates.register('click', [`[${schema.reflexAttribute}]`])
 
