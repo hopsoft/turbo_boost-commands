@@ -190,7 +190,7 @@ class TurboReflex::Runner
     append_streams_to_response_body
   end
 
-  def append_error_to_response
+  def append_error_to_response(error)
     message = "Error in #{reflex_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
