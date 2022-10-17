@@ -13,7 +13,7 @@
       <%= link_to nil, class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
         data: { turbo_reflex: "CounterReflex#increment", ui_state_key: :link_in_frame_count } do %>
         Basic Link
-        <%= render flowbite(:notification_badge), value: turbo_reflex.ui_state.fetch(:link_in_frame_count, 0), class: "!-right-4" if turbo_reflex.ui_state.fetch(:link_in_frame_count, 0).to_i > 0 %>
+        <%= render flowbite(:notification_badge), value: turbo_reflex.ui_state.fetch(:link_in_frame_count, 0), class: "!-right-4" if turbo_reflex.ui_state.fetch(:link_in_frame_count, 0) > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",

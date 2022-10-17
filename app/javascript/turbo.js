@@ -20,7 +20,10 @@ addEventListener('turbo:before-fetch-request', event => {
   }
   fetchOptions.headers['TurboReflex-Token'] = meta.token
   meta.uiStateChunks.forEach(
-    (chunk, i) => (fetchOptions.headers[`TurboReflex-UiState-${i}`] = chunk)
+    (chunk, i) =>
+      (fetchOptions.headers[
+        `TurboReflex-UiState-${i.toString().padStart(6, '0')}`
+      ] = chunk)
   )
 })
 
