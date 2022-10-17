@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 require_relative "sanitizer"
+require_relative "ui_state"
 
 class TurboReflex::Runner
-  attr_reader :controller
+  attr_reader :controller, :ui_state
 
   delegate_missing_to :controller
 
   def initialize(controller)
     @controller = controller
+    @ui_state = TurboReflex::UiState.new(request)
   end
 
   def meta_tag
@@ -17,7 +19,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false}
+      data: {busy: false, ui_state: ui_state.serialize}
     }
     view_context.tag("meta", options).html_safe
   end

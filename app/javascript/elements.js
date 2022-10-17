@@ -47,11 +47,5 @@ function buildAttributePayload (element) {
 export default {
   buildAttributePayload,
   findClosestReflex,
-  findClosestFrame,
-  get metaElement () {
-    return document.getElementById('turbo-reflex')
-  },
-  get metaElementToken () {
-    return document.getElementById('turbo-reflex').getAttribute('content')
-  }
+  findClosestFrame
 }

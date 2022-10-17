@@ -19,6 +19,5 @@
   },
   "scripts": {
     "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --outfile=app/assets/builds/turbo_reflex.js"
-  },
-  "dependencies": {}
+  }
 }

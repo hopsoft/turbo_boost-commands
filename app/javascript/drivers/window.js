@@ -1,4 +1,4 @@
-import elements from '../elements'
+import meta from '../meta'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
 import renderer from '../renderer'
@@ -40,7 +40,11 @@ function invokeReflex (payload) {
       'Accept',
       'text/vnd.turbo-reflex.html, text/html, application/xhtml+xml'
     )
-    xhr.setRequestHeader('TurboReflex-Token', elements.metaElementToken)
+    xhr.setRequestHeader('TurboReflex-Token', meta.token)
+    meta.uiStateChunks.forEach(
+      (chunk, i) => (fetchOptions.headers[`TurboReflex-UiState-${i}`] = chunk)
+    )
+
     xhr.addEventListener('abort', aborted)
     xhr.addEventListener('error', errored)
     xhr.addEventListener('load', loaded)

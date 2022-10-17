@@ -1,5 +1,4 @@
 import urls from '../urls'
-import elements from '../elements'
 
 function invokeReflex (frame, payload) {
   const src = payload.src

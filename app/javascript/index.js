@@ -3,6 +3,7 @@ import schema from './schema.js'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
+import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
@@ -37,8 +38,8 @@ function invokeReflex (event) {
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
-    window.turboReflexActive = true
-    setTimeout(() => (window.turboReflexActive = false), 10)
+    meta.busy = true
+    setTimeout(() => (meta.busy = false), 10)
 
     switch (driver.name) {
       case 'method':

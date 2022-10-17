@@ -69,6 +69,7 @@ class TurboReflex::Base
     :controller_action_prevented?,
     :render_response,
     :turbo_stream,
+    :ui_state,
     to: :@runner
   )
 

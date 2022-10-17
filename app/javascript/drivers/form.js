@@ -1,7 +1,7 @@
-import elements from '../elements'
+import meta from '../meta'
 
 function invokeReflex (form, payload = {}) {
-  payload.token = elements.metaElementToken
+  payload.token = meta.token
   const input = document.createElement('input')
   input.type = 'hidden'
   input.name = 'turbo_reflex'

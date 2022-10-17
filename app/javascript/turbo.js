@@ -1,4 +1,4 @@
-import elements from './elements'
+import meta from './meta'
 import renderer from './renderer'
 import lifecycle from './lifecycle'
 
@@ -8,7 +8,7 @@ const frameSources = {}
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target.closest('turbo-frame')
   const { fetchOptions } = event.detail
-  if (window.turboReflexActive) {
+  if (meta.busy) {
     let acceptHeaders = [
       'text/vnd.turbo-reflex.html',
       fetchOptions.headers['Accept']
@@ -17,8 +17,11 @@ addEventListener('turbo:before-fetch-request', event => {
       .filter(entry => entry && entry.trim().length > 0)
       .join(', ')
     fetchOptions.headers['Accept'] = acceptHeaders
-    fetchOptions.headers['TurboReflex-Token'] = elements.metaElementToken
   }
+  fetchOptions.headers['TurboReflex-Token'] = meta.token
+  meta.uiStateChunks.forEach(
+    (chunk, i) => (fetchOptions.headers[`TurboReflex-UiState-${i}`] = chunk)
+  )
 })
 
 // fires after receiving a turbo HTTP response
