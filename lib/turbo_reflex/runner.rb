@@ -10,7 +10,7 @@ class TurboReflex::Runner
 
   def initialize(controller)
     @controller = controller
-    @ui_state = TurboReflex::UiState.new(request)
+    @ui_state = TurboReflex::UiState.new(controller)
   end
 
   def meta_tag
@@ -125,6 +125,7 @@ class TurboReflex::Runner
     append_meta_tag_to_response_body
     return if controller_action_prevented?
     append_success_to_response if reflex_succeeded?
+    ui_state.set_cookie response
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
@@ -143,7 +144,7 @@ class TurboReflex::Runner
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
   def content_sanitizer
