@@ -116,6 +116,8 @@ class TurboReflex::Runner
       render_response
       append_success_to_response
     end
+
+    ui_state.set_cookie
   end
 
   def update_response
@@ -125,7 +127,7 @@ class TurboReflex::Runner
     append_meta_tag_to_response_body
     return if controller_action_prevented?
     append_success_to_response if reflex_succeeded?
-    ui_state.set_cookie response
+    ui_state.set_cookie
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})

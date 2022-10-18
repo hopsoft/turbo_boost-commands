@@ -71,7 +71,7 @@ class TurboReflex::UiState
     self.class.serialize hash
   end
 
-  def set_cookie(response)
+  def set_cookie
     return unless changed?
     cookies.each { |(key, _)| response.delete_cookie key.to_sym }
     serialized_chunks(signed: true).each_with_index do |chunk, index|

@@ -41,11 +41,11 @@ function invokeReflex (payload) {
       'text/vnd.turbo-reflex.html, text/html, application/xhtml+xml'
     )
     xhr.setRequestHeader('TurboReflex-Token', meta.token)
-    meta.uiStateBase64Chunks.forEach(
-      (chunk, i) =>
-        (fetchOptions.headers[
-          `TurboReflex-UiState-${i.toString().padStart(6, '0')}`
-        ] = chunk)
+    meta.uiStateBase64Chunks.forEach((chunk, i) =>
+      xhr.setRequestHeader(
+        `TurboReflex-UiState-${i.toString().padStart(6, '0')}`,
+        chunk
+      )
     )
 
     xhr.addEventListener('abort', aborted)
