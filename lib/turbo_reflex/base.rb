@@ -17,6 +17,7 @@
 # * prevent_controller_action .... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
 # * turbo_stream ................. A Turbo Stream TagBuilder
 # * turbo_streams ................ A list of Turbo Streams to append to the response (also aliased as streams)
+# * ui_state ..................... An object that stores ephemeral UI state
 #
 class TurboReflex::Base
   class << self
