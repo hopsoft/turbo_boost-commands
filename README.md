@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-694-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-917-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_reflex/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -61,9 +61,11 @@
     - [Server Side Reflexes](#server-side-reflexes)
     - [Appending Turbo Streams](#appending-turbo-streams)
     - [Setting Instance Variables](#setting-instance-variables)
-    - [Hijacking the Response](#hijacking-the-response)
+    - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
     - [Putting it All Together](#putting-it-all-together)
+      - [Running Locally](#running-locally)
+      - [Running in Docker](#running-in-docker)
   - [License](#license)
   - [Todos](#todos)
   - [Releasing](#releasing)
@@ -142,7 +144,7 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     # app/views/layouts/application.html.erb
     <html>
       <head>
-    +  <%= turbo_reflex_meta_tag %>
+    +  <%= turbo_reflex.meta_tag %>
       </head>
       <body>
       </body>
@@ -192,14 +194,14 @@ It's possible to override these defaults like so.
 import TurboReflex from 'turbo_reflex'
 
 // restrict `click` monitoring to <a> and <button> elements
-TurboReflex.registerEvent('click', ['a', 'button'])
+TurboReflex.registerEvent('click', ['a[data-turbo-reflex]', 'button[data-turbo-reflex]'])
 ```
 
 You can also register custom events and elements.
 Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
 ```js
-TurboReflex.registerEvent('sl-change', ['sl-switch'])
+TurboReflex.registerEvent('sl-change', ['sl-switch[data-turbo-reflex]'])
 ```
 
 ### Lifecycle Events
@@ -362,15 +364,15 @@ class PostsController < ApplicationController
 end
 ```
 
-### Hijacking the Response
+### Prevent Controller Action
 
-Sometimes you may want to hijack the normal Rails response from within a reflex.
+Sometimes you may want to prevent normal response handling.
 
 For example, consider the need for a related but separate form that updates a subset of user attributes.
 We'd like to avoid creating a non RESTful route,
 but aren't thrilled at the prospect of adding REST boilerplate for a new route, controller, action, etc...
 
-In that scenario we can reuse an existing route and hijack the response handling with a reflex.
+In that scenario we can reuse an existing route and prevent normal response handling with a reflex.
 
 Here's how to do it.
 
@@ -384,14 +386,14 @@ Here's how to do it.
 ```
 
 The form above will send a `PATCH` request to `users#update`,
-but we'll hijack the handling in the reflex so we never hit `users#update`.
+but we'll prevent normal request handling in the reflex so we don't run `users#update`.
 
 ```ruby
 # app/reflexes/user_reflex.html.erb
 class UserReflex < TurboReflex::Base
   def example
     # business logic, save record, etc...
-    controller.render html: "<turbo-frame id='user-alt'>We Hijacked the response!</turbo-frame>".html_safe
+    controller.render html: "<turbo-frame id='user-alt'>We prevented the normal response!</turbo-frame>".html_safe
   end
 end
 ```

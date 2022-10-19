@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
+require_relative "sanitizer"
+require_relative "ui_state"
+
 class TurboReflex::Runner
-  attr_reader :controller
+  attr_reader :controller, :ui_state
 
   delegate_missing_to :controller
 
   def initialize(controller)
     @controller = controller
+    @ui_state = TurboReflex::UiState.new(controller)
   end
 
   def meta_tag
@@ -15,7 +19,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false}
+      data: {busy: false, ui_state: ui_state.serialize}
     }
     view_context.tag("meta", options).html_safe
   end
@@ -58,6 +62,7 @@ class TurboReflex::Runner
 
   def reflex_method_name
     return nil unless reflex_requested?
+    return "noop" unless reflex_name.include?("#")
     reflex_name.split("#").last
   end
 
@@ -77,8 +82,17 @@ class TurboReflex::Runner
     !!@reflex_errored
   end
 
+  def controller_action_prevented?
+    !!@controller_action_prevented
+  end
+
   def reflex_succeeded?
     reflex_performed? && !reflex_errored?
+  end
+
+  def should_prevent_controller_action?
+    return false unless reflex_performed?
+    reflex_instance.should_prevent_controller_action? reflex_method_name
   end
 
   def run
@@ -86,28 +100,39 @@ class TurboReflex::Runner
     return if reflex_performed?
     @reflex_performed = true
     reflex_instance.public_send reflex_method_name
-    hijack_response if reflex_class.should_hijack_response?(reflex_instance, reflex_method_name)
-  rescue => e
+    prevent_controller_action if should_prevent_controller_action?
+  rescue => error
     @reflex_errored = true
-    reflex_instance.turbo_streams.clear
-    response.status = :internal_server_error
-    hijack_response
-    message = "Error in #{reflex_name}! #{e.inspect}"
-    Rails.logger.error message
-    append_error_event_to_response_body message
+    prevent_controller_action error: error
   end
 
-  def hijack_response
-    response.set_header "TurboReflex-Hijacked", true
-    render html: "", layout: false
-    append_to_response
+  def prevent_controller_action(error: nil)
+    @controller_action_prevented = true
+
+    if error
+      render_response status: :internal_server_error
+      append_error_to_response error
+    else
+      render_response
+      append_success_to_response
+    end
+
+    ui_state.set_cookie
   end
 
-  def append_to_response
-    response.set_header "TurboReflex", true
-    append_turbo_streams_to_response_body
+  def update_response
+    return if @update_response_performed
+    @update_response_performed = true
+
     append_meta_tag_to_response_body
-    append_success_event_to_response_body
+    return if controller_action_prevented?
+    append_success_to_response if reflex_succeeded?
+    ui_state.set_cookie
+  end
+
+  def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
+    headers.each { |key, value| response.set_header key.to_s, value.to_s }
+    controller.render html: html, layout: false, status: status || response_status
   end
 
   def turbo_stream
@@ -121,7 +146,7 @@ class TurboReflex::Runner
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
   def content_sanitizer
@@ -129,7 +154,7 @@ class TurboReflex::Runner
   end
 
   def new_token
-    @new_token ||= SecureRandom.urlsafe_base64(32)
+    @new_token ||= SecureRandom.urlsafe_base64(12)
   end
 
   def server_token
@@ -147,17 +172,37 @@ class TurboReflex::Runner
     unmasked_client_token == server_token
   end
 
+  def should_redirect?
+    return false if controller.request.method.match?(/GET/i)
+    controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
+  end
+
+  def response_status
+    return :multiple_choices if :should_redirect?
+    :ok
+  end
+
   def response_type
-    body = response.body.to_s.strip
+    body = controller.response_body.to_s.strip
     return :body if body.match?(/<\/\s*body.*>/i)
     return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
     return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
     :unknown
   end
 
-  def append_turbo_streams_to_response_body
-    return unless reflex_succeeded?
-    return unless reflex_instance&.turbo_streams.present?
+  def append_success_to_response
+    append_success_event_to_response_body
+    append_streams_to_response_body
+  end
+
+  def append_error_to_response(error)
+    message = "Error in #{reflex_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
+    Rails.logger.error message
+    append_error_event_to_response_body message
+  end
+
+  def append_streams_to_response_body
+    return unless reflex_instance.turbo_streams.present?
     append_to_response_body reflex_instance.turbo_streams.map(&:to_s).join.html_safe
   end
 
@@ -167,7 +212,6 @@ class TurboReflex::Runner
   end
 
   def append_success_event_to_response_body
-    return unless reflex_succeeded?
     args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
     event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
@@ -178,7 +222,6 @@ class TurboReflex::Runner
   end
 
   def append_error_event_to_response_body(message)
-    return unless reflex_errored?
     args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
     event = if reflex_element.try(:id).present?
       turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
@@ -196,7 +239,7 @@ class TurboReflex::Runner
     case response_type
     when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    else response.body << sanitized_content
+    else controller.response_body << sanitized_content
     end
   end
 end

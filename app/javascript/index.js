@@ -3,6 +3,7 @@ import schema from './schema.js'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
+import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
@@ -16,7 +17,7 @@ function invokeReflex (event) {
   try {
     element = elements.findClosestReflex(event.target)
     if (!element) return
-    if (!delegates.isRegistered(event.type, element.tagName)) return
+    if (!delegates.isRegisteredForElement(event.type, element)) return
 
     const driver = drivers.find(element)
 
@@ -35,9 +36,14 @@ function invokeReflex (event) {
     activity.add(payload)
     lifecycle.dispatch(lifecycle.events.start, element, payload)
 
-    if (driver.name !== 'form') event.preventDefault()
+    if (['frame', 'window'].includes(driver.name)) event.preventDefault()
+
+    meta.busy = true
+    setTimeout(() => (meta.busy = false), 10)
 
     switch (driver.name) {
+      case 'method':
+        return driver.invokeReflex(element, payload)
       case 'form':
         return driver.invokeReflex(element, payload)
       case 'frame':
@@ -55,9 +61,16 @@ function invokeReflex (event) {
 
 // wire things up and setup defaults for event delegation
 delegates.handler = invokeReflex
-delegates.register('change', ['input', 'select', 'textarea'])
-delegates.register('submit', ['form'])
-delegates.register('click', ['*'])
+delegates.register('change', [
+  `input[${schema.reflexAttribute}]`,
+  `select[${schema.reflexAttribute}]`,
+  `textarea[${schema.reflexAttribute}]`
+])
+// delegates.register('mousedown', [
+//   `[${schema.reflexAttribute}][${schema.methodAttribute}]`
+// ])
+delegates.register('submit', [`form[${schema.reflexAttribute}]`])
+delegates.register('click', [`[${schema.reflexAttribute}]`])
 
 export default {
   schema,

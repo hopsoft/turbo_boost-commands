@@ -1,10 +1,11 @@
 import urls from '../urls'
 
-function invokeReflex (frame, payload) {
+function invokeReflex (element, payload = {}) {
   const src = payload.src
   payload = { ...payload }
   delete payload.src
-  frame.src = urls.build(src, payload)
+  delete payload.href
+  element.setAttribute('href', urls.build(src, payload))
 }
 
 export default { invokeReflex }

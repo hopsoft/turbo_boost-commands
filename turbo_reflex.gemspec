@@ -30,6 +30,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest-reporters"
   s.add_development_dependency "net-smtp"
   s.add_development_dependency "pry-byebug"
+  s.add_development_dependency "pry-doc"
+  s.add_development_dependency "pry-rails"
   s.add_development_dependency "puma"
   s.add_development_dependency "rake"
   s.add_development_dependency "rexml"

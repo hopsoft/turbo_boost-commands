@@ -3,7 +3,7 @@
 class CounterRpcReflex < TurboReflex::Base
   delegate :session, to: :controller
 
-  hijack_response
+  prevent_controller_action
 
   def increment
     session[:rpc_count] = session.fetch(:rpc_count, 0) + 1

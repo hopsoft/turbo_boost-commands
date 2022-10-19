@@ -1,29 +1,37 @@
 # frozen_string_literal: true
 
-# Reflex instances have access to the following methods and properties.
+# TurboReflex base superclass.
+# All TurboReflex classes should inherit from this class.
 #
-# * controller ........ The Rails controller processing the HTTP request
-# * element ........... A struct that represents the DOM element that triggered the reflex
-# * hijack_response ... Hijacks the response, must be called last (halts further request handling by the controller)
-# * params ............ Reflex specific params (frame_id, element, etc.)
-# * render ............ Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * renderer .......... An ActionController::Renderer
-# * turbo_stream ...... A Turbo Stream TagBuilder
-# * turbo_streams ..... A list of Turbo Streams to append to the response
+# Reflexes are executed via a before_action in the Rails controller lifecycle.
+# They have access to the following methods and properties.
+#
+# * dom_id ....................... The Rails dom_id helper
+# * dom_id_selector .............. Returns a CSS selector for a dom_id
+# * controller ................... The Rails controller processing the HTTP request
+# * element ...................... A struct that represents the DOM element that triggered the reflex
+# * params ....................... Reflex specific params (frame_id, element, etc.)
+# * render ....................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
+# * render_response .............. Renders a full controller response
+# * renderer ..................... An ActionController::Renderer
+# * prevent_controller_action .... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
+# * turbo_stream ................. A Turbo Stream TagBuilder
+# * turbo_streams ................ A list of Turbo Streams to append to the response (also aliased as streams)
+# * ui_state ..................... An object that stores ephemeral UI state
 #
 class TurboReflex::Base
   class << self
-    def response_hijackers
-      @response_hijackers ||= Set.new
+    def preventers
+      @preventers ||= Set.new
     end
 
-    def hijack_response(options = {})
-      response_hijackers << options.with_indifferent_access
+    def prevent_controller_action(options = {})
+      preventers << options.with_indifferent_access
     end
 
-    def should_hijack_response?(reflex, method_name)
+    def should_prevent_controller_action?(reflex, method_name)
       method_name = method_name.to_s
-      match = response_hijackers.find do |options|
+      match = preventers.find do |options|
         only = options[:only] || []
         only = [only] unless only.is_a?(Array)
         only.map!(&:to_s)
@@ -32,7 +40,7 @@ class TurboReflex::Base
         except = [except] unless except.is_a?(Array)
         except.map!(&:to_s)
 
-        options.blank? || only.include?(method_name) || except.exclude?(method_name)
+        options.blank? || only.include?(method_name) || (except.present? && except.exclude?(method_name))
       end
 
       return false if match.nil?
@@ -54,14 +62,30 @@ class TurboReflex::Base
   end
 
   attr_reader :controller, :turbo_streams
+  alias_method :streams, :turbo_streams
 
+  delegate :dom_id, to: :"controller.view_context"
   delegate :render, to: :renderer
-  delegate :hijack_response, :turbo_stream, to: :@runner
+  delegate(
+    :controller_action_prevented?,
+    :render_response,
+    :turbo_stream,
+    :ui_state,
+    to: :@runner
+  )
 
   def initialize(runner)
     @runner = runner
     @controller = runner.controller
     @turbo_streams = Set.new
+  end
+
+  def dom_id_selector(...)
+    "##{dom_id(...)}"
+  end
+
+  # default reflex invoked when method not specified
+  def noop
   end
 
   def params
@@ -70,19 +94,25 @@ class TurboReflex::Base
 
   def element
     @element ||= begin
-      keys = params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym }
-      values = params[:element_attributes].values
-
-      unless keys.include? :value
-        keys << :value
-        values << nil
+      attributes = params[:element_attributes]
+      attrs = attributes.keys.each_with_object({}) do |key, memo|
+        memo[:dataset] ||= {}
+        if key.start_with?("data_")
+          memo[:dataset][key[5..].parameterize.underscore.to_sym] = attributes[key]
+        else
+          memo[key.parameterize.underscore.to_sym] = attributes[key]
+        end
       end
-
-      Struct.new(*keys).new(*values)
+      attrs[:dataset] = Struct.new(*attrs[:dataset].keys).new(*attrs[:dataset].values)
+      Struct.new(*attrs.keys).new(*attrs.values)
     end
   end
 
   def renderer
     ActionController::Renderer.for controller.class, controller.request.env
+  end
+
+  def should_prevent_controller_action?(method_name)
+    self.class.should_prevent_controller_action? self, method_name
   end
 end

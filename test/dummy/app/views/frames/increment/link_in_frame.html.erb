@@ -2,7 +2,7 @@
   <%= cache session[:link_in_frame_count].to_i do %>
     <%= render "frames/frame" do %>
       <%= render "stats/stats" do %>
-        <%= render "stats/stat", label: "Counter", value: session[:link_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+        <%= render "stats/stat", label: "Counter", value: turbo_reflex.ui_state.fetch(:link_in_frame_count, 0), class: "!bg-indigo-600 dark:!bg-indigo-900",
           value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
       <% end %>
 
@@ -11,9 +11,9 @@
       </p>
 
       <%= link_to nil, class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
-        data: { turbo_reflex: "CounterReflex#increment", session_key: :link_in_frame_count } do %>
+        data: { turbo_reflex: "CounterReflex#increment", ui_state_key: :link_in_frame_count } do %>
         Basic Link
-        <%= render flowbite(:notification_badge), value: session[:link_in_frame_count].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
+        <%= render flowbite(:notification_badge), value: turbo_reflex.ui_state.fetch(:link_in_frame_count, 0), class: "!-right-4" if turbo_reflex.ui_state.fetch(:link_in_frame_count, 0) > 0 %>
       <% end %>
 
       <%= render component(:code), language: :ruby, class: "text-sm",
