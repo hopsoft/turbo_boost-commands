@@ -1,5 +1,5 @@
 <%= turbo_frame_tag demo_frame_id(@template_path) do %>
-  <%= cache session[:link_in_frame_count].to_i do %>
+  <%= cache turbo_reflex.ui_state do %>
     <%= render "frames/frame" do %>
       <%= render "stats/stats" do %>
         <%= render "stats/stat", label: "Counter", value: turbo_reflex.ui_state.fetch(:link_in_frame_count, 0), class: "!bg-indigo-600 dark:!bg-indigo-900",

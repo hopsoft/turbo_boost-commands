@@ -82,6 +82,10 @@ class TurboReflex::UiState
     changes_applied
   end
 
+  def cache_key
+    "turbo-reflex/ui-state/#{Digest::MD5.base64digest hash.to_s}"
+  end
+
   private
 
   attr_reader :runner

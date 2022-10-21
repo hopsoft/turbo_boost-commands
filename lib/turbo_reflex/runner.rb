@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "errors"
 require_relative "sanitizer"
 require_relative "ui_state"
 
@@ -30,9 +31,26 @@ class TurboReflex::Runner
 
   def reflex_valid?
     return false unless reflex_requested?
-    return false unless valid_client_token?
-    return false unless reflex_instance.is_a?(TurboReflex::Base)
-    reflex_instance.respond_to? reflex_method_name
+
+    # validate class
+    unless reflex_instance.is_a?(TurboReflex::Base)
+      raise TurboReflex::InvalidClassError,
+        "`#{reflex_class_name}` is not a subclass of `TurboReflex::Base`!"
+    end
+
+    # validate method
+    unless reflex_instance.respond_to?(reflex_method_name)
+      raise TurboReflex::InvalidMethodError,
+        "`#{reflex_class_name}` does not define the public method `#{reflex_method_name}`!"
+    end
+
+    # validate csrf token
+    unless valid_client_token?
+      raise TurboReflex::InvalidTokenError,
+        "CSRF token mismatch! The request header `TurboReflex-Token: #{client_token}` does not match the expected value of `#{server_token}`."
+    end
+
+    true
   end
 
   def reflex_params
