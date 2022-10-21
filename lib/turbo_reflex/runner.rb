@@ -29,6 +29,7 @@ class TurboReflex::Runner
     reflex_params.present?
   end
 
+  # TODO: Update to append errors `after` the normal controller/action is finished.
   def reflex_valid?
     return false unless reflex_requested?
 
