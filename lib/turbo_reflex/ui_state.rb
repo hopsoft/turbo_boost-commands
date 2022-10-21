@@ -36,10 +36,11 @@ class TurboReflex::UiState
   attr_reader :hash
   define_attribute_methods :hash
   delegate :key_for, to: :"self.class"
-  delegate :request, :response, to: :controller
+  delegate :message_verifier, to: :runner
+  delegate :request, :response, to: :"runner.controller"
 
-  def initialize(controller)
-    @controller = controller
+  def initialize(runner)
+    @runner = runner
     self.hash = cookies_hash
   end
 
@@ -76,14 +77,14 @@ class TurboReflex::UiState
     cookies.each { |(key, _)| response.delete_cookie key.to_sym }
     serialized_chunks(signed: true).each_with_index do |chunk, index|
       key = :"turboreflex_uistate_#{index.to_s.rjust(6, "0")}"
-      response.set_cookie key, value: chunk
+      response.set_cookie key, value: chunk, expires: 2.weeks.from_now
     end
     changes_applied
   end
 
   private
 
-  attr_reader :controller
+  attr_reader :runner
 
   # UI state gets split into chunks and saved in an HTTP cookie.
   # Max size for an HTTP cookie is around 4k or 4,000 bytes.
@@ -110,9 +111,5 @@ class TurboReflex::UiState
   def cookies_hash
     value = cookies.map(&:last).join
     value.present? ? self.class.deserialize(value, message_verifier: message_verifier) : {}
-  end
-
-  def message_verifier
-    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 end
