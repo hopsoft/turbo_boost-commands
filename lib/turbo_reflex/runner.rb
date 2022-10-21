@@ -10,7 +10,7 @@ class TurboReflex::Runner
 
   def initialize(controller)
     @controller = controller
-    @ui_state = TurboReflex::UiState.new(controller)
+    @ui_state = TurboReflex::UiState.new(self)
   end
 
   def meta_tag
@@ -139,14 +139,14 @@ class TurboReflex::Runner
     @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 
+  def message_verifier
+    ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
+  end
+
   private
 
   def parsed_reflex_params
     @parsed_reflex_params ||= JSON.parse(params[:turbo_reflex])
-  end
-
-  def message_verifier
-    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
   def content_sanitizer
@@ -166,7 +166,6 @@ class TurboReflex::Runner
   end
 
   def valid_client_token?
-    return true # TODO: get this check working
     return false unless client_token.present?
     return false unless message_verifier.valid_message?(client_token)
     unmasked_client_token = message_verifier.verify(client_token)
