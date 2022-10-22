@@ -1,4 +1,5 @@
 import meta from './meta'
+import uiState from './ui_state'
 import renderer from './renderer'
 import lifecycle from './lifecycle'
 
@@ -19,7 +20,7 @@ addEventListener('turbo:before-fetch-request', event => {
     fetchOptions.headers['Accept'] = acceptHeaders
   }
   fetchOptions.headers['TurboReflex-Token'] = meta.token
-  meta.uiStateBase64Chunks.forEach(
+  uiState.base64Chunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[
         `TurboReflex-UiState-${i.toString().padStart(6, '0')}`

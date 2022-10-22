@@ -1,4 +1,5 @@
 import meta from '../meta'
+import uiState from '../ui_state'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
 import renderer from '../renderer'
@@ -41,7 +42,7 @@ function invokeReflex (payload) {
       'text/vnd.turbo-reflex.html, text/html, application/xhtml+xml'
     )
     xhr.setRequestHeader('TurboReflex-Token', meta.token)
-    meta.uiStateBase64Chunks.forEach((chunk, i) =>
+    uiState.base64Chunks.forEach((chunk, i) =>
       xhr.setRequestHeader(
         `TurboReflex-UiState-${i.toString().padStart(6, '0')}`,
         chunk

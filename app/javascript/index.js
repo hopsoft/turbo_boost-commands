@@ -7,6 +7,7 @@ import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
+import uiState from './ui_state'
 import urls from './urls'
 import uuids from './uuids'
 
@@ -72,7 +73,12 @@ delegates.register('change', [
 delegates.register('submit', [`form[${schema.reflexAttribute}]`])
 delegates.register('click', [`[${schema.reflexAttribute}]`])
 
+const TurboReflex = {}
+
+export { uiState }
+
 export default {
+  uiState,
   schema,
   logger,
   registerEventDelegate: delegates.register,
