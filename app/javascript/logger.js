@@ -1,20 +1,16 @@
-import lifecycle from './lifecycle'
+import { allEvents as events } from './events'
 
 let currentLevel = 'unknown'
 
 const logLevels = {
-  debug: Object.values(lifecycle.events),
-  info: Object.values(lifecycle.events),
-  warn: [
-    lifecycle.events.abort,
-    lifecycle.events.clientError,
-    lifecycle.events.serverError
-  ],
-  error: [lifecycle.events.clientError, lifecycle.events.serverError],
+  debug: Object.values(events),
+  info: Object.values(events),
+  warn: [events.abort, events.clientError, events.serverError],
+  error: [events.clientError, events.serverError],
   unknown: []
 }
 
-Object.values(lifecycle.events).forEach(name => {
+Object.values(events).forEach(name => {
   addEventListener(name, event => {
     if (logLevels[currentLevel].includes(event.type)) {
       const level = currentLevel === 'debug' ? 'log' : currentLevel

@@ -1,5 +1,6 @@
 import './turbo'
-import schema from './schema.js'
+import schema from './schema'
+import { dispatch } from './events'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
@@ -7,7 +8,7 @@ import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
-import uiState from './ui_state'
+import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
@@ -35,7 +36,7 @@ function invokeReflex (event) {
     }
 
     activity.add(payload)
-    lifecycle.dispatch(lifecycle.events.start, element, payload)
+    dispatch(lifecycle.events.start, element, payload)
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
@@ -53,7 +54,7 @@ function invokeReflex (event) {
         return driver.invokeReflex(payload)
     }
   } catch (error) {
-    lifecycle.dispatch(lifecycle.events.clientError, element, {
+    dispatch(lifecycle.events.clientError, element, {
       error,
       ...payload
     })
@@ -75,10 +76,8 @@ delegates.register('click', [`[${schema.reflexAttribute}]`])
 
 const TurboReflex = {}
 
-export { uiState }
-
 export default {
-  uiState,
+  state,
   schema,
   logger,
   registerEventDelegate: delegates.register,

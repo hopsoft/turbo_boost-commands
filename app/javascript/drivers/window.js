@@ -1,12 +1,13 @@
 import meta from '../meta'
-import uiState from '../ui_state'
+import state from '../state'
+import { dispatch } from '../events'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
 import renderer from '../renderer'
 
 function aborted (event) {
   const xhr = event.target
-  lifecycle.dispatch(lifecycle.events.abort, window, { xhr, ...event.detail })
+  dispatch(lifecycle.events.abort, document, { xhr, ...event.detail })
 }
 
 function errored (event) {
@@ -17,7 +18,13 @@ function errored (event) {
     : renderer.replaceDocument(xhr.responseText)
 
   const error = `Server returned a ${xhr.status} status code! TurboReflex requires 2XX-3XX status codes.`
-  lifecycle.dispatchClientError({ xhr, ...event.detail, error })
+
+  dispatch(
+    lifecycle.events.clientError,
+    document,
+    { xhr, ...event.detail, error },
+    true
+  )
 }
 
 function loaded (event) {
@@ -42,7 +49,7 @@ function invokeReflex (payload) {
       'text/vnd.turbo-reflex.html, text/html, application/xhtml+xml'
     )
     xhr.setRequestHeader('TurboReflex-Token', meta.token)
-    uiState.base64Chunks.forEach((chunk, i) =>
+    state.base64Chunks.forEach((chunk, i) =>
       xhr.setRequestHeader(
         `TurboReflex-UiState-${i.toString().padStart(6, '0')}`,
         chunk

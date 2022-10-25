@@ -15,7 +15,7 @@ class TurboReflex::ControllerPack
     :controller_action_prevented?,
     :meta_tag,
     :run,
-    :ui_state,
+    :state,
     :update_response,
     to: :runner
   )

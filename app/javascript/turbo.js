@@ -1,6 +1,7 @@
 import meta from './meta'
-import uiState from './ui_state'
+import state from './state'
 import renderer from './renderer'
+import { dispatch } from './events'
 import lifecycle from './lifecycle'
 
 const frameSources = {}
@@ -20,7 +21,7 @@ addEventListener('turbo:before-fetch-request', event => {
     fetchOptions.headers['Accept'] = acceptHeaders
   }
   fetchOptions.headers['TurboReflex-Token'] = meta.token
-  uiState.base64Chunks.forEach(
+  state.base64Chunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[
         `TurboReflex-UiState-${i.toString().padStart(6, '0')}`
@@ -38,7 +39,12 @@ addEventListener('turbo:before-fetch-response', event => {
   if (response.header('TurboReflex')) {
     if (response.statusCode < 200 || response.statusCode > 399) {
       const error = `Server returned a ${response.statusCode} status code! TurboReflex requires 2XX-3XX status codes.`
-      lifecycle.dispatchClientError({ ...event.detail, error })
+      dispatch(
+        lifecycle.events.clientError,
+        document,
+        { ...event.detail, error },
+        true
+      )
     }
 
     if (response.header('TurboReflex') === 'Append') {

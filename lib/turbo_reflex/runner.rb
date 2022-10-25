@@ -2,16 +2,16 @@
 
 require_relative "errors"
 require_relative "sanitizer"
-require_relative "ui_state"
+require_relative "state"
 
 class TurboReflex::Runner
-  attr_reader :controller, :ui_state
+  attr_reader :controller, :state
 
   delegate_missing_to :controller
 
   def initialize(controller)
     @controller = controller
-    @ui_state = TurboReflex::UiState.new(self)
+    @state = TurboReflex::State.new(self)
   end
 
   def meta_tag
@@ -20,7 +20,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false, ui_state: ui_state.serialize}
+      data: {busy: false, state: state.serialize}
     }
     view_context.tag("meta", options).html_safe
   end
@@ -135,7 +135,7 @@ class TurboReflex::Runner
       append_success_to_response
     end
 
-    ui_state.set_cookie
+    state.set_cookie
   end
 
   def update_response
@@ -145,7 +145,7 @@ class TurboReflex::Runner
     append_meta_tag_to_response_body
     return if controller_action_prevented?
     append_success_to_response if reflex_succeeded?
-    ui_state.set_cookie
+    state.set_cookie
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})

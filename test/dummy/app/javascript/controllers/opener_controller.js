@@ -1,5 +1,7 @@
-import { uiState as ui } from 'turbo_reflex'
+import TurboReflex from 'turbo_reflex'
 import { Controller } from '@hotwired/stimulus'
+
+const ui = TurboReflex.state.payload
 
 export default class extends Controller {
   static values = {
@@ -21,12 +23,12 @@ export default class extends Controller {
   }
 
   get state () {
-    if (!ui.data[this.key]) this.state = 'closed'
-    return ui.data[this.key]
+    if (!ui[this.key]) this.state = 'closed'
+    return ui[this.key]
   }
 
   set state (value) {
-    ui.update({ [this.key]: value })
+    ui[this.key] = value
   }
 
   get controlsTarget () {

@@ -11,7 +11,7 @@
 # - Applied data filters
 # - Number of data rows to display etc.
 #
-class TurboReflex::UiState
+class TurboReflex::State
   include ActiveModel::Dirty
 
   class << self

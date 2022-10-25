@@ -1,4 +1,4 @@
-import schema from './schema.js'
+import schema from './schema'
 import lifecycle from './lifecycle'
 
 function findClosestReflex (element) {
