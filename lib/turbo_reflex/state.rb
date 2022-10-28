@@ -52,6 +52,15 @@ class TurboReflex::State
 
     # Local in-memory cache with LRU eviction
     # TODO: Use a size-constrained local cache with real LRU eviction (perhaps https://github.com/SamSaffron/lru_redux)
+    #
+    # Cache data will be stored in an HTTP cookie so maintaining a small size is critical.
+    # We optimize size during serialization but should explore more ideas to help limit size.
+    #
+    # Some ideas to explore
+    # - [ ] Shorten key length and store translation in DOM on the turbo-reflex meta element
+    # - [ ] Remove blank values (might cause unexpected behavior)
+    # - [ ] Abandon cookies and only use DOM state sent to server as HTTP headers (confines state awareness to reflexes)
+    #
     @cache = ActiveSupport::Cache::MemoryStore.new(size: 16.kilobytes)
     # WARNING: Using internals of ActiveSupport::Cache::MemoryStore
     cache.instance_variable_set :@data, cookie_data
