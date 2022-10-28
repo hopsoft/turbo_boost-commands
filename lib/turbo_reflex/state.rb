@@ -50,7 +50,8 @@ class TurboReflex::State
   def initialize(runner)
     @runner = runner
 
-    # in memory cache with LRU eviction
+    # Local in-memory cache with LRU eviction
+    # TODO: Use a size-constrained local cache with real LRU eviction (perhaps https://github.com/SamSaffron/lru_redux)
     @cache = ActiveSupport::Cache::MemoryStore.new(size: 16.kilobytes)
     # WARNING: Using internals of ActiveSupport::Cache::MemoryStore
     cache.instance_variable_set :@data, cookie_data
