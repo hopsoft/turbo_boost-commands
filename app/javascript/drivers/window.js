@@ -51,7 +51,7 @@ function invokeReflex (payload) {
     xhr.setRequestHeader('TurboReflex-Token', meta.token)
     state.base64Chunks.forEach((chunk, i) =>
       xhr.setRequestHeader(
-        `TurboReflex-UiState-${i.toString().padStart(6, '0')}`,
+        `TurboReflex-State-${i.toString().padStart(4, '0')}`,
         chunk
       )
     )

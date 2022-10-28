@@ -23,6 +23,6 @@ module DemosHelper
   end
 
   def demo_turbo_frame_tag(template_path)
-    turbo_frame_tag demo_frame_id(template_path), src: frame_path(Base64.urlsafe_encode64(template_path)), loading: "lazy"
+    turbo_frame_tag demo_frame_id(template_path), src: frame_path(Base64.urlsafe_encode64(template_path))
   end
 end

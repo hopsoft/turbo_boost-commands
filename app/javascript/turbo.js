@@ -24,7 +24,7 @@ addEventListener('turbo:before-fetch-request', event => {
   state.base64Chunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[
-        `TurboReflex-UiState-${i.toString().padStart(6, '0')}`
+        `TurboReflex-State-${i.toString().padStart(4, '0')}`
       ] = chunk)
   )
 })

@@ -15,16 +15,23 @@ class TurboReflex::State
   include ActiveModel::Dirty
 
   class << self
-    def serialize(hash, message_verifier: nil)
-      return message_verifier.generate(hash.to_hash.to_json) if message_verifier
-      Base64.urlsafe_encode64 hash.to_hash.to_json, padding: false
+    def serialize(data, deflate: false)
+      return Base64.urlsafe_encode64(data.to_hash.to_json, padding: false) unless deflate
+
+      dump = Marshal.dump(data)
+      deflated = Zlib::Deflate.deflate(dump)
+      Base64.urlsafe_encode64 deflated
     end
 
-    def deserialize(value, message_verifier: nil)
-      return JSON.parse(message_verifier.verify(value)) if message_verifier&.valid_message?(value)
-      JSON.parse Base64.urlsafe_decode64(value)
+    def deserialize(string, inflate: false)
+      return {} if string.blank?
+      return JSON.parse(Base64.urlsafe_decode64(string)) unless inflate
+
+      decoded = Base64.urlsafe_decode64(string)
+      inflated = Zlib::Inflate.inflate(decoded)
+      Marshal.load inflated
     rescue => e
-      Rails.logger.error "TurboReflex was unable to deserialize UI State! value=#{value.inspect} error=#{e.inspect}"
+      Rails.logger.error "TurboReflex was unable to deserialize UI State! string=#{string.inspect} error=#{e.inspect}"
       {}
     end
 
@@ -33,87 +40,77 @@ class TurboReflex::State
     end
   end
 
-  attr_reader :hash
-  define_attribute_methods :hash
+  # For ActiveModel::Dirty tracking
+  attr_reader :cache
+  define_attribute_methods :cache
+
   delegate :key_for, to: :"self.class"
-  delegate :message_verifier, to: :runner
   delegate :request, :response, to: :"runner.controller"
 
   def initialize(runner)
     @runner = runner
-    self.hash = cookies_hash
-  end
 
-  def hash=(hash)
-    @hash = hash.with_indifferent_access
+    # in memory cache with LRU eviction
+    @cache = ActiveSupport::Cache::MemoryStore.new(size: 16.kilobytes)
+    # WARNING: Using internals of ActiveSupport::Cache::MemoryStore
+    cache.instance_variable_set :@data, cookie_data
+    cache.cleanup
+    # cache.prune 16.kilobytes # NOTE: don't call this because MemoryStore isn't actually LRU
   end
 
   def [](*keys)
-    hash[key_for(*keys)]
+    cache.read key_for(*keys)
   end
 
   def []=(*keys, value)
-    hash_will_change! if value != self[*keys]
-    hash[key_for(*keys)] = value
+    cache_will_change! if value != self[*keys]
+    cache.write key_for(*keys), value, expires_at: 1.day.from_now
     value
   end
 
   def fetch(*keys, default)
     value = self[*keys]
-    if value.nil? && default
-      hash_will_change!
-      value = self[*keys] = default
-    end
+    value = self[*keys] = default if value.nil? && default
     value
   end
 
-  def serialize(signed: false)
-    return self.class.serialize(hash, message_verifier: message_verifier) if signed
-    self.class.serialize hash
+  def cache_key
+    "turbo-reflex/ui-state/#{Digest::MD5.base64digest data(minimal: true).to_s}"
+  end
+
+  def serialize(deflate: false, minimal: false)
+    self.class.serialize data(minimal: minimal), deflate: deflate
   end
 
   def set_cookie
     return unless changed?
-    cookies.each { |(key, _)| response.delete_cookie key.to_sym }
-    serialized_chunks(signed: true).each_with_index do |chunk, index|
-      key = :"turboreflex_uistate_#{index.to_s.rjust(6, "0")}"
-      response.set_cookie key, value: chunk, expires: 2.weeks.from_now
-    end
+    response.set_cookie "turbo_reflex_state", value: serialize(deflate: true)
     changes_applied
-  end
-
-  def cache_key
-    "turbo-reflex/ui-state/#{Digest::MD5.base64digest hash.to_s}"
   end
 
   private
 
   attr_reader :runner
 
-  # UI state gets split into chunks and saved in an HTTP cookie.
-  # Max size for an HTTP cookie is around 4k or 4,000 bytes.
-  # A Base64 character is an 8-bit-padded ASCII character... or 1 byte
-  def serialized_chunks(signed: false)
-    serialize(signed: signed).scan(/.{1,2000}/)
+  # WARNING: Using internals of ActiveSupport::Cache::MemoryStore
+  def data(minimal: false)
+    d = cache.instance_variable_get(:@data)
+    return cache.read_multi(*d.keys) if minimal
+    d.deep_dup
   end
 
   def headers
-    request.headers.select { |(key, _)| key.match?(/TURBOREFLEX_UISTATE/i) }.sort
+    request.headers.select { |(key, _)| key.match?(/TURBOREFLEX_STATE/i) }.sort
   end
 
-  # UI State that exists on the client.
-  def headers_hash
+  # State that exists on the client.
+  def header_data
     value = headers.map(&:last).join
     value.present? ? self.class.deserialize(value) : {}
   end
 
-  def cookies
-    request.cookies.select { |(key, _)| key.match?(/TURBOREFLEX_UISTATE/i) }.sort
-  end
-
-  # UI State the server already knows about.
-  def cookies_hash
-    value = cookies.map(&:last).join
-    value.present? ? self.class.deserialize(value, message_verifier: message_verifier) : {}
+  # State that the server last rendered with.
+  def cookie_data
+    self.class.deserialize request.cookies["turbo_reflex_state"], inflate: true
   end
 end

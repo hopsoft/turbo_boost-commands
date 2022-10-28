@@ -74,12 +74,10 @@ delegates.register('change', [
 delegates.register('submit', [`form[${schema.reflexAttribute}]`])
 delegates.register('click', [`[${schema.reflexAttribute}]`])
 
-const TurboReflex = {}
-
-export default {
-  state,
-  schema,
+export default self.TurboReflex = {
   logger,
+  schema,
+  state: state.data,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
     return { ...delegates.events }

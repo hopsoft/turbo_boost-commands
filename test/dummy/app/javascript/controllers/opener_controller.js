@@ -1,17 +1,15 @@
 import TurboReflex from 'turbo_reflex'
 import { Controller } from '@hotwired/stimulus'
 
-const ui = TurboReflex.state.payload
-
 export default class extends Controller {
   static values = {
     controls: String
   }
 
   toggle () {
-    this.state = this.state === 'open' ? 'closed' : 'open'
+    this.visible = !this.visible
 
-    if (this.state === 'open') {
+    if (this.visible) {
       this.controlsTarget.classList.remove('hidden')
     } else {
       this.controlsTarget.classList.add('hidden')
@@ -19,16 +17,15 @@ export default class extends Controller {
   }
 
   get key () {
-    return this.controlsValue
+    return this.controlsValue + '/visible'
   }
 
-  get state () {
-    if (!ui[this.key]) this.state = 'closed'
-    return ui[this.key]
+  get visible () {
+    return TurboReflex.state[this.key]
   }
 
-  set state (value) {
-    ui[this.key] = value
+  set visible (value) {
+    TurboReflex.state[this.key] = value
   }
 
   get controlsTarget () {

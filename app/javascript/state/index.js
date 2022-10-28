@@ -2,8 +2,6 @@ import meta from '../meta'
 import observable from './observable'
 import { stateEvents as events } from '../events'
 
-let _payload
-
 export default {
   events,
 
@@ -17,9 +15,9 @@ export default {
     return base64.match(/.{1,2000}/g)
   },
 
-  get payload () {
+  get data () {
     const base64 = meta.element.dataset.state
     const json = atob(base64)
-    return (_payload = _payload || observable(JSON.parse(json)))
+    return observable(JSON.parse(json))
   }
 }

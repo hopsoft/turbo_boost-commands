@@ -20,7 +20,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false, state: state.serialize}
+      data: {busy: false, state: state.serialize(minimal: true)}
     }
     view_context.tag("meta", options).html_safe
   end
@@ -121,6 +121,7 @@ class TurboReflex::Runner
     prevent_controller_action if should_prevent_controller_action?
   rescue => error
     @reflex_errored = true
+    raise error if controller_action_prevented?
     prevent_controller_action error: error
   end
 
@@ -136,16 +137,16 @@ class TurboReflex::Runner
     end
 
     state.set_cookie
+    append_meta_tag_to_response_body
   end
 
   def update_response
+    return if controller_action_prevented?
     return if @update_response_performed
     @update_response_performed = true
-
-    append_meta_tag_to_response_body
-    return if controller_action_prevented?
-    append_success_to_response if reflex_succeeded?
     state.set_cookie
+    append_meta_tag_to_response_body
+    append_success_to_response if reflex_succeeded?
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
@@ -196,7 +197,7 @@ class TurboReflex::Runner
   end
 
   def response_status
-    return :multiple_choices if :should_redirect?
+    return :multiple_choices if should_redirect?
     :ok
   end
 

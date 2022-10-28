@@ -1,38 +1,44 @@
 import { dispatch, stateEvents as events } from '../events'
 
-function deleteHandler (property, options = { from: null, to: null }) {
-  dispatch(events.stateChange, document, { property, ...options })
+let state
+
+// TODO: make recursive
+function stateValue (key) {
+  const value = state[key]
+  if (Array.isArray(value)) return [...value]
+  if (typeof value === 'object') return { ...value }
+  return value
 }
 
-function setHandler (property, options = { from: null, to: null }) {
-  dispatch(events.stateChange, document, { property, ...options })
+function notify (key, changes = {}) {
+  dispatch(events.stateChange, document, { [key]: changes })
+  return true
 }
 
-function observable (
-  object,
-  options = { delete: deleteHandler, set: setHandler }
-) {
-  return new Proxy(object, {
-    deleteProperty (target, property) {
-      const from = target[property]
-      const to = null
-      delete target[property]
-      options.delete.call(this, property, { from, to })
-      return true
+function observable (object, stateKey) {
+  if (!object) return object
+
+  const proxy = new Proxy(object, {
+    deleteProperty (target, key) {
+      const from = stateValue(stateKey || key)
+      delete target[key]
+      const to = stateValue(stateKey || key)
+      return notify(stateKey || key, { from, to })
     },
 
-    set (target, property, value, receiver) {
-      const from = target[property]
-      const to = value
-
+    set (target, key, value, receiver) {
       if (Array.isArray(value) || typeof value === 'object')
-        value = new Proxy(value, options)
+        value = observable(value, stateKey || key)
 
-      target[property] = value
-      options.set.call(this, property, { from, to })
-      return true
+      const from = stateValue(stateKey || key)
+      target[key] = value
+      const to = stateValue(stateKey || key)
+      return notify(stateKey || key, { from, to })
     }
   })
+
+  state = state || proxy
+  return proxy
 }
 
 export default observable

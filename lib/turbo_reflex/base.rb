@@ -64,8 +64,7 @@ class TurboReflex::Base
   attr_reader :controller, :turbo_streams
   alias_method :streams, :turbo_streams
 
-  delegate :dom_id, to: :"controller.view_context"
-  delegate :render, to: :renderer
+  delegate :dom_id, :render, to: :"controller.view_context"
   delegate(
     :controller_action_prevented?,
     :render_response,
@@ -106,10 +105,6 @@ class TurboReflex::Base
       attrs[:dataset] = Struct.new(*attrs[:dataset].keys).new(*attrs[:dataset].values)
       Struct.new(*attrs.keys).new(*attrs.values)
     end
-  end
-
-  def renderer
-    ActionController::Renderer.for controller.class, controller.request.env
   end
 
   def should_prevent_controller_action?(method_name)
