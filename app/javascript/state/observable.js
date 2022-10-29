@@ -23,6 +23,7 @@ function observable (object, stateKey) {
       const from = stateValue(stateKey || key)
       delete target[key]
       const to = stateValue(stateKey || key)
+      this.changed = true
       return notify(stateKey || key, { from, to })
     },
 
@@ -33,6 +34,7 @@ function observable (object, stateKey) {
       const from = stateValue(stateKey || key)
       target[key] = value
       const to = stateValue(stateKey || key)
+      this.changed = true
       return notify(stateKey || key, { from, to })
     }
   })

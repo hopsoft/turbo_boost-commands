@@ -4,6 +4,7 @@ require "turbo-rails"
 require_relative "version"
 require_relative "base"
 require_relative "controller_pack"
+require_relative "cargo"
 
 class TurboReflex::Engine < ::Rails::Engine
   config.turbo_reflex = ActiveSupport::OrderedOptions.new

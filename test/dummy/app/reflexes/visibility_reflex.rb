@@ -21,6 +21,6 @@ class VisibilityReflex < TurboReflex::Base
   private
 
   def visible?
-    state.fetch element.dataset.id, :visible, false
+    !!state[element.dataset.id, :visible]
   end
 end

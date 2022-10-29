@@ -77,12 +77,14 @@ delegates.register('click', [`[${schema.reflexAttribute}]`])
 export default self.TurboReflex = {
   logger,
   schema,
-  state: state.data,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
     return { ...delegates.events }
   },
   get lifecycleEvents () {
     return [...Object.values(lifecycle.events)]
+  },
+  get state () {
+    return state.data
   }
 }

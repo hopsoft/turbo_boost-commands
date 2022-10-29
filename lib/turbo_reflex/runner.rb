@@ -20,7 +20,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false, state: state.serialize(minimal: true)}
+      data: {busy: false, state: state.payload}
     }
     view_context.tag("meta", options).html_safe
   end
