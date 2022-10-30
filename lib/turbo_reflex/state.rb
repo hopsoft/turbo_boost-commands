@@ -1,79 +1,108 @@
 # frozen_string_literal: true
 
-require_relative "cargo"
-
-# Class used to hold ephemeral state related to the rendered UI.
-#
-# Examples:
-#
-# - Sidebar open/closed state
-# - Tree view open/closed state
-# - Accordion collapsed/expanded state
-# - Customized layout / presentation
-# - Applied data filters
-# - Number of data rows to display etc.
-#
 class TurboReflex::State
-  include ActiveModel::Dirty
+  class << self
+    def serialize_base64(data)
+      Base64.urlsafe_encode64 data.to_json, padding: false
+    end
 
-  # For ActiveModel::Dirty tracking
-  define_attribute_methods :cargo
+    def deserialize_base64(string)
+      return {} if string.blank?
+      JSON.parse Base64.urlsafe_decode64(string)
+    end
 
-  delegate :request, :response, to: :"runner.controller"
+    def serialize(data)
+      dump = Marshal.dump(data)
+      deflated = Zlib::Deflate.deflate(dump, Zlib::BEST_COMPRESSION)
+      Base64.urlsafe_encode64 deflated
+    end
 
-  def initialize(runner)
-    @runner = runner
-    @cargo = TurboReflex::Cargo.new(cookie) # server state as stored in the cookie
-
-    # Merge client state into server state (i.e. optimistic state)
-    # NOTE: This is currently problematic when using lazily loaded Turbo Frames because of a race condition.
-    #       The browser applies the cookie immediately then emits a Turbo Frame request with the correct cookie
-    #       but this happens before Turbo Streams can update the <meta id="turbo-reflex"> tag with the latest
-    #       state so the previous state is sent with the request.
-    #
-    #       One possible solution is to only send client state stored in <meta id="turbo-reflex"> when it has been changed.
-    #       We currently use a Proxy to make client state observable, so this should be a reasonable option.
-    # client_state = TurboReflex::Cargo.deserialize_base64(header)
-    # client_state.each do |key, value|
-    #  cargo.write key, value if value && value != cargo.read(key)
-    # end
+    def deserialize(string)
+      return {} if string.blank?
+      decoded = Base64.urlsafe_decode64(string)
+      inflated = Zlib::Inflate.inflate(decoded)
+      Marshal.load inflated
+    end
   end
 
-  delegate :cache_key, :payload, to: :cargo
+  def initialize(ordinal_payload = nil)
+    @internal_keys = []
+    @internal_data = {}
 
-  def [](*keys, default: nil)
-    cargo.read(*keys, default: default)
+    self.class.deserialize(ordinal_payload).each do |(key, value)|
+      write key, value
+    end
   end
 
-  def []=(*keys, value)
-    cargo_will_change! if value != self[*keys]
-    cargo.write(*keys, value)
+  delegate :size, to: :internal_data
+
+  def cache_key
+    "turbo-reflex/ui-state/#{Digest::MD5.base64digest payload}"
   end
 
-  def set_cookie
-    return unless changed?
-    cargo.shrink!
-    cargo.prune!
-    response.set_cookie "_turbo_reflex_state", value: cargo.ordinal_payload, path: "/", expires: 1.day.from_now
-    changes_applied
+  def read(*keys, default: nil)
+    value = internal_data[key_for(*keys)]
+    value = write(*keys, default) if value.nil? && default
+    value
+  end
+
+  def write(*keys, value)
+    key = key_for(*keys)
+    internal_keys.delete key if internal_keys.include?(key)
+    internal_keys << key
+    internal_data[key] = value
+    value
+  end
+
+  def payload
+    self.class.serialize_base64 internal_data
+  end
+
+  def ordinal_payload
+    self.class.serialize internal_list
+  end
+
+  def shrink!
+    @internal_data = shrink(internal_data)
+    @internal_keys = internal_keys & internal_data.keys
+  end
+
+  def prune!(max_bytesize: 2.kilobytes)
+    return if internal_keys.blank?
+    return if internal_data.blank?
+
+    while ordinal_payload.bytesize > max_bytesize
+      internal_data.delete internal_keys.shift
+    end
   end
 
   private
 
-  attr_reader :runner
-  attr_reader :cargo
+  attr_reader :internal_keys
+  attr_reader :internal_data
 
-  def headers
-    request.headers.select { |(key, _)| key.match?(/TURBOREFLEX_STATE/i) }.sort
+  def internal_list
+    internal_keys.map { |key| [key, internal_data[key]] }
   end
 
-  # State that exists on the client.
-  def header
-    headers.map(&:last).join
+  def key_for(*keys)
+    keys.map { |key| key.try(:cache_key) || key.to_s }.join("/")
   end
 
-  # State that the server last rendered with.
-  def cookie
-    request.cookies["_turbo_reflex_state"]
+  def shrink(obj)
+    case obj
+    when Array
+      obj.each_with_object([]) do |value, memo|
+        value = shrink(value)
+        memo << value if value.present?
+      end
+    when Hash
+      obj.each_with_object({}) do |(key, value), memo|
+        value = shrink(value)
+        memo[key] = value if value.present?
+      end
+    else
+      obj
+    end
   end
 end

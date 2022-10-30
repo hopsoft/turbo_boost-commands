@@ -4,10 +4,14 @@ import { stateEvents as events } from '../events'
 
 let state
 
-addEventListener('DOMContentLoaded', () => {
+function loadState () {
   const json = atob(meta.element.dataset.state)
   state = observable(JSON.parse(json))
-})
+}
+
+addEventListener('DOMContentLoaded', loadState)
+addEventListener('turbo:load', loadState)
+addEventListener('turbo:frame-load', loadState)
 
 addEventListener(events.stateChange, event => {
   const { state } = event.detail
