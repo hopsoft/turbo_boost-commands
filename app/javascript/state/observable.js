@@ -3,23 +3,22 @@ import { dispatch, stateEvents as events } from '../events'
 
 let head
 
-function notify (state) {
-  dispatch(events.stateChange, meta.element, { state })
-  return true
-}
-
 function observable (object, parent = null) {
   if (!object || typeof object !== 'object') return object
 
   const proxy = new Proxy(object, {
     deleteProperty (target, key) {
+      dispatch(events.beforeStateChange, meta.element, { state: head })
       delete target[key]
-      return notify(head)
+      dispatch(events.stateChange, meta.element, { state: head })
+      return true
     },
 
     set (target, key, value, receiver) {
+      dispatch(events.beforeStateChange, meta.element, { state: head })
       target[key] = observable(value, this)
-      return notify(head)
+      dispatch(events.stateChange, meta.element, { state: head })
+      return true
     }
   })
 

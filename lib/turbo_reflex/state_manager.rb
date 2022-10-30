@@ -20,23 +20,18 @@ class TurboReflex::StateManager
   define_attribute_methods :state
 
   delegate :request, :response, to: :"runner.controller"
+  attr_reader :client_state
 
   def initialize(runner)
     @runner = runner
     @state = TurboReflex::State.new(cookie) # server state as stored in the cookie
 
     # Merge client state into server state (i.e. optimistic state)
-    # NOTE: This is currently problematic when using lazily loaded Turbo Frames because of a race condition.
-    #       The browser applies the cookie immediately then emits a Turbo Frame request with the correct cookie
-    #       but this happens before Turbo Streams can update the <meta id="turbo-reflex"> tag with the latest
-    #       state so the previous state is sent with the request.
-    #
-    #       One possible solution is to only send client state stored in <meta id="turbo-reflex"> when it has been changed.
-    #       We currently use a Proxy to make client state observable, so this should be a reasonable option.
-    # client_state = TurboReflex::State.deserialize_base64(header)
-    # client_state.each do |key, value|
-    #   state.write key, value if value && value != state.read(key)
-    # end
+    # NOTE: Client state HTTP headers are only sent if/when state has changed on the client (only the changes are sent).
+    #       This prevents race conditions (state mismatch) caused when frame and XHR requests emit immediately
+    #       before the <meta id="turbo-reflex"> has been updated with the latest state from the server.
+    @client_state = TurboReflex::State.deserialize_base64(header)
+    @client_state.each { |key, value| self[key] = value }
   end
 
   delegate :cache_key, :payload, to: :state
