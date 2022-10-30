@@ -21,7 +21,7 @@ addEventListener('turbo:before-fetch-request', event => {
     fetchOptions.headers['Accept'] = acceptHeaders
   }
   fetchOptions.headers['TurboReflex-Token'] = meta.token
-  state.base64Chunks.forEach(
+  state.payloadChunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[
         `TurboReflex-State-${i.toString().padStart(4, '0')}`

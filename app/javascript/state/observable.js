@@ -1,45 +1,36 @@
+import meta from '../meta'
 import { dispatch, stateEvents as events } from '../events'
 
-let state
+let head
 
-// TODO: make recursive
-function stateValue (key) {
-  const value = state[key]
-  if (Array.isArray(value)) return [...value]
-  if (typeof value === 'object') return { ...value }
-  return value
-}
-
-function notify (key, changes = {}) {
-  dispatch(events.stateChange, document, { [key]: changes })
+function notify (state) {
+  dispatch(events.stateChange, meta.element, { state })
   return true
 }
 
-function observable (object, stateKey) {
-  if (!object) return object
+function observable (object, parent = null) {
+  if (!object || typeof object !== 'object') return object
 
   const proxy = new Proxy(object, {
     deleteProperty (target, key) {
-      const from = stateValue(stateKey || key)
       delete target[key]
-      const to = stateValue(stateKey || key)
-      this.changed = true
-      return notify(stateKey || key, { from, to })
+      return notify(head)
     },
 
     set (target, key, value, receiver) {
-      if (Array.isArray(value) || typeof value === 'object')
-        value = observable(value, stateKey || key)
-
-      const from = stateValue(stateKey || key)
-      target[key] = value
-      const to = stateValue(stateKey || key)
-      this.changed = true
-      return notify(stateKey || key, { from, to })
+      target[key] = observable(value, this)
+      return notify(head)
     }
   })
 
-  state = state || proxy
+  if (Array.isArray(object)) {
+    object.forEach((value, index) => (object[index] = observable(value, proxy)))
+  } else if (typeof object === 'object') {
+    for (const [key, value] of Object.entries(object))
+      object[key] = observable(value, proxy)
+  }
+
+  if (!parent) head = proxy
   return proxy
 }
 
