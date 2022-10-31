@@ -27,7 +27,7 @@ class TurboReflex::State
 
   def initialize(ordinal_payload = nil)
     @internal_keys = []
-    @internal_data = {}
+    @internal_data = {}.with_indifferent_access
 
     self.class.deserialize(ordinal_payload).each do |(key, value)|
       write key, value
@@ -38,12 +38,6 @@ class TurboReflex::State
 
   def cache_key
     "turbo-reflex/ui-state/#{Digest::MD5.base64digest payload}"
-  end
-
-  def merge!(data = {})
-    return if data.blank?
-    internal_data.merge! data
-    internal_data.keys.each { |key| internal_keys.push(key) unless internal_keys.include?(key) }
   end
 
   def read(*keys, default: nil)
@@ -69,7 +63,7 @@ class TurboReflex::State
   end
 
   def shrink!
-    @internal_data = shrink(internal_data)
+    @internal_data = shrink(internal_data).with_indifferent_access
     @internal_keys = internal_keys & internal_data.keys
   end
 

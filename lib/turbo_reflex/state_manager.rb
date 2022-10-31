@@ -36,7 +36,6 @@ class TurboReflex::StateManager
   define_attribute_methods :state
 
   delegate :request, :response, to: :"runner.controller"
-  attr_reader :client_state
 
   def initialize(runner)
     @runner = runner
@@ -45,16 +44,16 @@ class TurboReflex::StateManager
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
     state_override_block = self.class.state_override_block(runner.controller)
     if state_override_block
-      state_override = runner.controller.instance_eval(&state_override_block)
-      state.merge! state_override
+      server_data = runner.controller.instance_eval(&state_override_block).with_indifferent_access
+      server_data.each { |key, val| self[key] = val }
     end
 
     # Merge client state into server state (i.e. optimistic state)
     # NOTE: Client state HTTP headers are only sent if/when state has changed on the client (only the changes are sent).
     #       This prevents race conditions (state mismatch) caused when frame and XHR requests emit immediately
     #       before the <meta id="turbo-reflex"> has been updated with the latest state from the server.
-    @client_state = TurboReflex::State.deserialize_base64(header)
-    state.merge! client_state
+    client_data = TurboReflex::State.deserialize_base64(header).with_indifferent_access
+    client_data.each { |key, val| self[key] = val }
   end
 
   delegate :cache_key, :payload, to: :state
