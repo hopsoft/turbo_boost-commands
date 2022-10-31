@@ -40,6 +40,12 @@ class TurboReflex::State
     "turbo-reflex/ui-state/#{Digest::MD5.base64digest payload}"
   end
 
+  def merge!(data = {})
+    return if data.blank?
+    internal_data.merge! data
+    internal_data.keys.each { |key| internal_keys.push(key) unless internal_keys.include?(key) }
+  end
+
   def read(*keys, default: nil)
     value = internal_data[key_for(*keys)]
     value = write(*keys, default) if value.nil? && default
@@ -71,8 +77,13 @@ class TurboReflex::State
     return if internal_keys.blank?
     return if internal_data.blank?
 
-    while ordinal_payload.bytesize > max_bytesize
-      internal_data.delete internal_keys.shift
+    percentage = max_bytesize > 0 ? ordinal_payload.bytesize / max_bytesize.to_f : 0
+    while percentage > 1
+      keys_to_keep = internal_keys.slice((internal_keys.length - (internal_keys.length / percentage).floor)..-1)
+      keys_to_remove = internal_keys - keys_to_keep
+      @internal_keys = keys_to_keep
+      keys_to_remove.each { |key| internal_data.delete key }
+      percentage = max_bytesize > 0 ? ordinal_payload.bytesize / max_bytesize.to_f : 0
     end
   end
 

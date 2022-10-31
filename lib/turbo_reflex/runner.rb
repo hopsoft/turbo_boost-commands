@@ -137,16 +137,16 @@ class TurboReflex::Runner
       append_success_to_response
     end
 
-    state_manager.set_cookie
-    append_meta_tag_to_response_body
+    append_meta_tag_to_response_body # called before `set_cookie` so all state is emitted to the DOM
+    state_manager.set_cookie # truncates state to stay within cookie size limits (4k)
   end
 
   def update_response
     return if controller_action_prevented?
     return if @update_response_performed
     @update_response_performed = true
-    state_manager.set_cookie
-    append_meta_tag_to_response_body
+    append_meta_tag_to_response_body # called before `set_cookie` so all state is emitted to the DOM
+    state_manager.set_cookie # truncates state to stay within cookie size limits (4k)
     append_success_to_response if reflex_succeeded?
   end
 

@@ -16,6 +16,22 @@ require_relative "state"
 class TurboReflex::StateManager
   include ActiveModel::Dirty
 
+  class << self
+    def state_override_blocks
+      @state_overrides ||= {}
+    end
+
+    def add_state_override_block(controller_name, block)
+      state_override_blocks[controller_name] = block
+    end
+
+    def state_override_block(controller)
+      return nil if state_override_blocks.blank?
+      ancestor = controller.class.ancestors.find { |a| state_override_blocks[a.name] }
+      state_override_blocks[ancestor.name]
+    end
+  end
+
   # For ActiveModel::Dirty tracking
   define_attribute_methods :state
 
@@ -26,12 +42,19 @@ class TurboReflex::StateManager
     @runner = runner
     @state = TurboReflex::State.new(cookie) # server state as stored in the cookie
 
+    # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
+    state_override_block = self.class.state_override_block(runner.controller)
+    if state_override_block
+      state_override = runner.controller.instance_eval(&state_override_block)
+      state.merge! state_override
+    end
+
     # Merge client state into server state (i.e. optimistic state)
     # NOTE: Client state HTTP headers are only sent if/when state has changed on the client (only the changes are sent).
     #       This prevents race conditions (state mismatch) caused when frame and XHR requests emit immediately
     #       before the <meta id="turbo-reflex"> has been updated with the latest state from the server.
     @client_state = TurboReflex::State.deserialize_base64(header)
-    @client_state.each { |key, value| self[key] = value }
+    state.merge! client_state
   end
 
   delegate :cache_key, :payload, to: :state
