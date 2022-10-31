@@ -9,9 +9,9 @@ class ApplicationController < ActionController::Base
   #
   # Rembember to persist this state during/after the controller and action have performed
   turbo_reflex_state do
-    # {example: SecureRandom.hex}
-    1000.times.each_with_object({}) do |index, memo|
-      memo[SecureRandom.hex] = index
-    end
+    {example: SecureRandom.hex}
+    # 1000.times.each_with_object({}) do |index, memo|
+    #   memo[SecureRandom.hex] = index
+    # end
   end
 end
