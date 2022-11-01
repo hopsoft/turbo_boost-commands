@@ -17,6 +17,12 @@ class TurboReflex::StateManager
   include ActiveModel::Dirty
 
   class << self
+    attr_writer :cookie_max_bytesize
+
+    def cookie_max_bytesize
+      @cookie_max_bytesize ||= 2.kilobytes
+    end
+
     def state_override_blocks
       @state_overrides ||= {}
     end
@@ -70,7 +76,7 @@ class TurboReflex::StateManager
   def set_cookie
     return unless changed?
     state.shrink!
-    state.prune!
+    state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
     response.set_cookie "_turbo_reflex_state", value: state.ordinal_payload, path: "/", expires: 1.day.from_now
     changes_applied
   end

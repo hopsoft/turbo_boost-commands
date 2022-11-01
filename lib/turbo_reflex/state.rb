@@ -35,9 +35,10 @@ class TurboReflex::State
   end
 
   delegate :size, to: :internal_data
+  delegate :include?, :has_key?, :key?, :member?, to: :internal_data
 
   def cache_key
-    "turbo-reflex/ui-state/#{Digest::MD5.base64digest payload}"
+    "turbo-reflex/ui-state/#{Base64.urlsafe_encode64 Digest::MD5.hexdigest(payload), padding: false}"
   end
 
   def read(*keys, default: nil)
@@ -102,7 +103,7 @@ class TurboReflex::State
         memo << value if value.present?
       end
     when Hash
-      obj.each_with_object({}) do |(key, value), memo|
+      obj.each_with_object({}.with_indifferent_access) do |(key, value), memo|
         value = shrink(value)
         memo[key] = value if value.present?
       end
