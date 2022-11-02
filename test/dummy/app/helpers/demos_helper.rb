@@ -3,6 +3,7 @@
 module DemosHelper
   def demo_index
     @demo_index ||= 0
+    @demo_index += 1
   end
 
   def demo_name

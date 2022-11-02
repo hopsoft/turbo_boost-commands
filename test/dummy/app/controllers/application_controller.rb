@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   self.turbo_reflex_state_cookie_max_bytesize = 1.kilobytes # defaults to 2.kilobytes
 
+  prepend_before_action -> { Current.state = turbo_reflex.state }
+
   # An example of how to override state with data stored on the server
   # Simply return a Hash of state data
   # Could be fetched from Redis, Postgres, etc...

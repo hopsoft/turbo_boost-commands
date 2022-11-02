@@ -2,7 +2,7 @@
   <%= cache session[:link_in_frame_count].to_i do %>
     <%= render "frames/frame" do %>
       <%= render "stats/stats" do %>
-        <%= render "stats/stat", label: "Counter", value: session[:link_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+        <%= render "stats/stat", label: "Counter", role: "counter", value: session[:link_in_frame_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
           value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
       <% end %>
 
@@ -32,7 +32,7 @@
       <div class="my-8"></div>
 
       <%= render component(:code), language: :html, class: "text-sm",
-        path: "Rendered HTML for: /demos/#{demo_index + 1}", source_path: "app/views/codes/increment/link_in_frame/show.html", erb: true %>
+        path: "Rendered HTML for: /demos/#{@demo_index}", source_path: "app/views/codes/increment/link_in_frame/show.html", erb: true %>
     <% end %>
   <% end %>
 <% end %>

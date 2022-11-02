@@ -10,6 +10,8 @@ const frameSources = {}
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target.closest('turbo-frame')
   const { fetchOptions } = event.detail
+
+  // reflex invoked and busy
   if (meta.busy) {
     let acceptHeaders = [
       'text/vnd.turbo-reflex.html',
@@ -19,8 +21,10 @@ addEventListener('turbo:before-fetch-request', event => {
       .filter(entry => entry && entry.trim().length > 0)
       .join(', ')
     fetchOptions.headers['Accept'] = acceptHeaders
+    fetchOptions.headers['TurboReflex-Token'] = meta.token
   }
-  fetchOptions.headers['TurboReflex-Token'] = meta.token
+
+  // always send state
   state.payloadChunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[

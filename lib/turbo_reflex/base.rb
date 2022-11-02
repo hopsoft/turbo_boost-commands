@@ -83,6 +83,10 @@ class TurboReflex::Base
     "##{dom_id(...)}"
   end
 
+  def morph(selector, html)
+    turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
+  end
+
   # default reflex invoked when method not specified
   def noop
   end
@@ -95,15 +99,19 @@ class TurboReflex::Base
     @element ||= begin
       attributes = params[:element_attributes]
       attrs = attributes.keys.each_with_object({}) do |key, memo|
+        memo[:aria] ||= {}
         memo[:dataset] ||= {}
         if key.start_with?("data_")
           memo[:dataset][key[5..].parameterize.underscore.to_sym] = attributes[key]
+        elsif key.start_with?("aria_")
+          memo[:aria][key[5..].parameterize.underscore.to_sym] = attributes[key]
         else
           memo[key.parameterize.underscore.to_sym] = attributes[key]
         end
       end
-      attrs[:dataset] = Struct.new(*attrs[:dataset].keys).new(*attrs[:dataset].values)
-      Struct.new(*attrs.keys).new(*attrs.values)
+      attrs[:aria] = OpenStruct.new(attrs[:aria])
+      attrs[:dataset] = OpenStruct.new(attrs[:dataset])
+      OpenStruct.new attrs
     end
   end
 
