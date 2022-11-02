@@ -230,7 +230,7 @@ class TurboReflex::Runner
 
   def append_meta_tag_to_response_body
     session[:turbo_reflex_token] = new_token
-    append_to_response_body turbo_stream.replace("turbo-reflex", meta_tag)
+    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-reflex")
   end
 
   def append_success_event_to_response_body

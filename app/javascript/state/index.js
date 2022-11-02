@@ -3,6 +3,7 @@ import observable from './observable'
 import { stateEvents as events } from '../events'
 
 let oldState, state, changedState
+let observer
 
 function loadState () {
   const json = atob(meta.element.dataset.state)
@@ -10,9 +11,19 @@ function loadState () {
   oldState = state = observable(JSON.parse(json))
 }
 
+function initObserver () {
+  if (observer) observer.disconnect()
+  observer = new MutationObserver(loadState)
+  observer.observe(meta.element, {
+    attributes: true,
+    attributeFilter: ['data-state']
+  })
+}
+
 addEventListener('DOMContentLoaded', loadState)
-addEventListener('turbo:load', loadState)
-addEventListener('turbo:frame-load', loadState)
+addEventListener('DOMContentLoaded', initObserver)
+addEventListener('turbo:load', initObserver)
+addEventListener('turbo:frame-load', initObserver)
 
 addEventListener(
   events.beforeStateChange,

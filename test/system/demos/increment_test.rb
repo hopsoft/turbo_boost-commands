@@ -6,41 +6,31 @@ class IncrementTest < ApplicationSystemTestCase
   test "click reflex-link once" do
     visit demo_url("increment")
 
-    meta = find_by_id("turbo-reflex", visible: false)
-    demo = find_by_id("link-in-frame-demo")
-    toggler = demo.find("[data-turbo-reflex='DemosReflex#toggle']")
-
-    assert_equal "", page.evaluate_script("document.cookie") # cookie not written because there hasn't been a state change yet
-    assert_equal "e30", meta["data-state"]
+    # before demo
+    assert_equal "", page.evaluate_script("document.cookie")
+    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
     assert_nil page.evaluate_script("TurboReflex.state.active_demo")
 
-    toggler.click
-
+    # open demo
+    find_by_id("link-in-frame-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
     assert_equal "_turbo_reflex_state=eNpj4Yhmi2b3VBJITC7JLEuNT0nNzWezYnN181QSysnMy9bNzNNNK0rMTWWzZggBABL_DJg%3D", page.evaluate_script("document.cookie")
+    assert_equal "eyJhY3RpdmVfZGVtbyI6ImxpbmstaW4tZnJhbWUifQ", find_by_id("turbo-reflex", visible: false)["data-state"]
     assert_equal "link-in-frame", page.evaluate_script("TurboReflex.state.active_demo")
-    assert_equal "eyJhY3RpdmVfZGVtbyI6ImxpbmstaW4tZnJhbWUifQ", meta["data-state"]
+    assert_equal 0, find_by_id("link-in-frame-demo").find("[data-role='counter']").text.to_i
+    assert_equal "N/A", find_by_id("link-in-frame-demo").find("[data-role='http-fingerprint']").text
+    assert_equal "N/A", find_by_id("link-in-frame-demo").find("[data-role='http-method']").text
 
-    counter = demo.find("[data-role='counter']")
-    fingerprint = demo.find("[data-role='http-fingerprint']")
-    method = demo.find("[data-role='http-method']")
+    # execute demo
+    find_by_id("link-in-frame-demo").find("[data-turbo-reflex='CounterReflex#increment']").click
+    assert_equal 1, find_by_id("link-in-frame-demo").find("[data-role='counter']").text.to_i
+    assert_not_equal "N/A", find_by_id("link-in-frame-demo").find("[data-role='http-fingerprint']").text
+    assert_equal "GET", find_by_id("link-in-frame-demo").find("[data-role='http-method']").text
 
-    assert_equal 0, counter.text.to_i
-    assert_equal "N/A", fingerprint.text
-    assert_equal "N/A", method.text
-
-    link = demo.find("[data-turbo-reflex='CounterReflex#increment']")
-    link.click
-
-    assert_equal 1, counter.text.to_i
-    assert_not_equal "N/A", fingerprint.text
-    assert_equal "GET", method.text
-
-    # TODO: Get hide demo working
-    # toggler.click
-
-    # assert_equal "", page.evaluate_script("document.cookie")
-    # assert_equal "e30", meta["data-state"]
-    # assert_nil page.evaluate_script("TurboReflex.state.active_demo")
+    # close demo
+    find_by_id("link-in-frame-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
+    assert_equal "_turbo_reflex_state=eNpj4YhmAAAA4gBo", page.evaluate_script("document.cookie")
+    assert_equal "eyJhY3RpdmVfZGVtbyI6bnVsbH0", find_by_id("turbo-reflex", visible: false)["data-state"]
+    assert_nil page.evaluate_script("TurboReflex.state.active_demo")
   end
 
   # test "click reflex-button once" do
