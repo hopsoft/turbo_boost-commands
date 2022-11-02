@@ -32,7 +32,7 @@
 
   <% "rpc-over-http".tap do |id| %>
     <%= render "demos/increment/demo", id: id, title: "Reflex without Turbo Frames <small class='mx-2 font-extralight text-blue-500'>(RPC over HTTP)</small>" do %>
-      <%= render "demos/increment/rpc" %>
+      <%= render "demos/increment/rpc" if Current.state[:active_demo] == id %>
     <% end %>
   <% end %>
 
