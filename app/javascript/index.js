@@ -1,5 +1,6 @@
 import './turbo'
-import schema from './schema.js'
+import schema from './schema'
+import { dispatch } from './events'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
@@ -7,6 +8,7 @@ import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
+import { state } from './state'
 import urls from './urls'
 import uuids from './uuids'
 
@@ -34,7 +36,7 @@ function invokeReflex (event) {
     }
 
     activity.add(payload)
-    lifecycle.dispatch(lifecycle.events.start, element, payload)
+    dispatch(lifecycle.events.start, element, payload)
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
@@ -52,7 +54,7 @@ function invokeReflex (event) {
         return driver.invokeReflex(payload)
     }
   } catch (error) {
-    lifecycle.dispatch(lifecycle.events.clientError, element, {
+    dispatch(lifecycle.events.clientError, element, {
       error,
       ...payload
     })
@@ -72,14 +74,17 @@ delegates.register('change', [
 delegates.register('submit', [`form[${schema.reflexAttribute}]`])
 delegates.register('click', [`[${schema.reflexAttribute}]`])
 
-export default {
-  schema,
+export default self.TurboReflex = {
   logger,
+  schema,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
     return { ...delegates.events }
   },
   get lifecycleEvents () {
     return [...Object.values(lifecycle.events)]
+  },
+  get state () {
+    return state
   }
 }

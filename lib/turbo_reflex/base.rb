@@ -6,18 +6,19 @@
 # Reflexes are executed via a before_action in the Rails controller lifecycle.
 # They have access to the following methods and properties.
 #
-# * dom_id ....................... The Rails dom_id helper
-# * dom_id_selector .............. Returns a CSS selector for a dom_id
-# * controller ................... The Rails controller processing the HTTP request
-# * element ...................... A struct that represents the DOM element that triggered the reflex
-# * params ....................... Reflex specific params (frame_id, element, etc.)
-# * render ....................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * render_response .............. Renders a full controller response
-# * renderer ..................... An ActionController::Renderer
-# * prevent_controller_action .... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
-# * turbo_stream ................. A Turbo Stream TagBuilder
-# * turbo_streams ................ A list of Turbo Streams to append to the response (also aliased as streams)
-# * ui_state ..................... An object that stores ephemeral UI state
+# * dom_id ...................... The Rails dom_id helper
+# * dom_id_selector ............. Returns a CSS selector for a dom_id
+# * controller .................. The Rails controller processing the HTTP request
+# * element ..................... A struct that represents the DOM element that triggered the reflex
+# * morph ....................... Appends a Turbo Stream to morph a DOM element
+# * params ...................... Reflex specific params (frame_id, element, etc.)
+# * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
+# * render_response ............. Renders a full controller response
+# * renderer .................... An ActionController::Renderer
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
+# * turbo_stream ................ A Turbo Stream TagBuilder
+# * turbo_streams ............... A list of Turbo Streams to append to the response (also aliased as streams)
+# * state ....................... An object that stores ephemeral `state`
 #
 class TurboReflex::Base
   class << self
@@ -64,13 +65,12 @@ class TurboReflex::Base
   attr_reader :controller, :turbo_streams
   alias_method :streams, :turbo_streams
 
-  delegate :dom_id, to: :"controller.view_context"
-  delegate :render, to: :renderer
+  delegate :dom_id, :render, to: :"controller.view_context"
   delegate(
     :controller_action_prevented?,
     :render_response,
     :turbo_stream,
-    :ui_state,
+    :state,
     to: :@runner
   )
 
@@ -82,6 +82,10 @@ class TurboReflex::Base
 
   def dom_id_selector(...)
     "##{dom_id(...)}"
+  end
+
+  def morph(selector, html)
+    turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
   end
 
   # default reflex invoked when method not specified
@@ -96,20 +100,20 @@ class TurboReflex::Base
     @element ||= begin
       attributes = params[:element_attributes]
       attrs = attributes.keys.each_with_object({}) do |key, memo|
+        memo[:aria] ||= {}
         memo[:dataset] ||= {}
         if key.start_with?("data_")
           memo[:dataset][key[5..].parameterize.underscore.to_sym] = attributes[key]
+        elsif key.start_with?("aria_")
+          memo[:aria][key[5..].parameterize.underscore.to_sym] = attributes[key]
         else
           memo[key.parameterize.underscore.to_sym] = attributes[key]
         end
       end
-      attrs[:dataset] = Struct.new(*attrs[:dataset].keys).new(*attrs[:dataset].values)
-      Struct.new(*attrs.keys).new(*attrs.values)
+      attrs[:aria] = OpenStruct.new(attrs[:aria])
+      attrs[:dataset] = OpenStruct.new(attrs[:dataset])
+      OpenStruct.new attrs
     end
-  end
-
-  def renderer
-    ActionController::Renderer.for controller.class, controller.request.env
   end
 
   def should_prevent_controller_action?(method_name)

@@ -2,6 +2,6 @@
 
 class DemosController < ApplicationController
   def show
-    render params[:id]
+    render "demos/#{params[:id]}/index"
   end
 end

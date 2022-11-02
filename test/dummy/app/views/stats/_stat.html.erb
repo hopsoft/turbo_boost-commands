@@ -1,4 +1,4 @@
 <%= tag.div class: token_list("flex flex-col bg-gray-200 dark:bg-gray-700 p-4 rounded text-center", local_assigns[:class]) do %>
-  <%= tag.dt value, class: token_list("text-3xl md:text-4xl font-extrabold text-center tracking-tight text-gray-600 dark:text-gray-300", local_assigns[:value_class]) %>
+  <%= tag.dt value, class: token_list("text-3xl md:text-4xl font-extrabold text-center tracking-tight text-gray-600 dark:text-gray-300", local_assigns[:value_class]), data: {role: local_assigns[:role]} %>
   <%= tag.dd label, class: token_list("font-light text-base text-gray-400 dark:text-gray-500 ", local_assigns[:label_class]) %>
 <% end %>

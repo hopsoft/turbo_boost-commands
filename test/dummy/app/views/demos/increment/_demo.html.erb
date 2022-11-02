@@ -1,0 +1,24 @@
+<%= tag.div id: el_id(id, :demo) do %>
+  <%= tag.h2 id: el_id(id, :label) do %>
+    <%= tag.button type: "button", aria: {visible: Current.state[:active_demo] == id, controls: id},
+      data: {
+        turbo_reflex: "DemosReflex#toggle",
+        controller: Current.state[:active_demo] == id ? "scroll-into-view" : nil
+      },
+      class: token_list("flex items-center justify-between w-full py-5 pl-2 pr-3 font-medium text-left border-b border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 bg-white hover:bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400",
+        "!bg-white !text-gray-900 dark:!bg-gray-900 dark:!text-white": Current.state[:active_demo] == id
+      ) do %>
+      <span class="flex items-center">
+        <code class="!font-thin mr-2 text-gray-400 dark:text-gray-600"><%= demo_index %></code>
+        <%= title.html_safe %>
+      </span>
+      <%= render Current.state[:active_demo] == id ? heroicon(:chevron_down) : heroicon(:chevron_right), solid: true, class: "w-5 h-5 shrink-0" %>
+    <% end %>
+  <% end %>
+  <%= tag.div id: id, class: token_list(hidden: Current.state[:active_demo] != id),
+    aria: { labelledby: el_id(id), visible: Current.state[:active_demo] == id } do %>
+    <%= tag.div class: "text-gray-500 dark:text-gray-400 font-light border-b border-gray-200 dark:border-gray-700 p-6 bg-gray-400 dark:bg-black" do %>
+      <%= yield %>
+    <% end %>
+  <% end %>
+<% end %>

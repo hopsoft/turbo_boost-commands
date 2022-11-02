@@ -1,10 +1,10 @@
 <%= tag.dl id: local_assigns.fetch(:id, "stats-#{SecureRandom.alphanumeric(12)}"),
   class: "grid gap-6 text-gray-900 sm:grid-cols-3 lg:grid-cols-5 dark:text-white" do %>
   <%= yield %>
-  <%= render "stats/stat", label: "HTTP Fingerpint", value: turbo_reflex.requested? ? SecureRandom.alphanumeric(6).upcase : "N/A",
+  <%= render "stats/stat", label: "HTTP Fingerprint", role: "http-fingerprint", value: turbo_reflex.requested? ? SecureRandom.alphanumeric(6).upcase : "N/A",
     class: token_list("!opacity-60": !turbo_reflex.requested?),
     value_class: "font-mono" %>
-  <%= render "stats/stat", label: "HTTP Method", value: turbo_reflex.requested? ? request.method : "N/A",
+  <%= render "stats/stat", label: "HTTP Method", role: "http-method", value: turbo_reflex.requested? ? request.method : "N/A",
     class: token_list("!opacity-60": !turbo_reflex.requested?),
     value_class: token_list("!text-sky-500": turbo_reflex.requested? && request.get?, "!text-fuchsia-500": turbo_reflex.requested? && !request.get?) %>
   <%= render "stats/stat", label: "Reflex Requested",

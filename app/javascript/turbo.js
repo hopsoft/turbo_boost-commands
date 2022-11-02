@@ -1,5 +1,7 @@
 import meta from './meta'
+import state from './state'
 import renderer from './renderer'
+import { dispatch } from './events'
 import lifecycle from './lifecycle'
 
 const frameSources = {}
@@ -8,6 +10,8 @@ const frameSources = {}
 addEventListener('turbo:before-fetch-request', event => {
   const frame = event.target.closest('turbo-frame')
   const { fetchOptions } = event.detail
+
+  // reflex invoked and busy
   if (meta.busy) {
     let acceptHeaders = [
       'text/vnd.turbo-reflex.html',
@@ -17,12 +21,14 @@ addEventListener('turbo:before-fetch-request', event => {
       .filter(entry => entry && entry.trim().length > 0)
       .join(', ')
     fetchOptions.headers['Accept'] = acceptHeaders
+    fetchOptions.headers['TurboReflex-Token'] = meta.token
   }
-  fetchOptions.headers['TurboReflex-Token'] = meta.token
-  meta.uiStateBase64Chunks.forEach(
+
+  // always send state
+  state.payloadChunks.forEach(
     (chunk, i) =>
       (fetchOptions.headers[
-        `TurboReflex-UiState-${i.toString().padStart(6, '0')}`
+        `TurboReflex-State-${i.toString().padStart(4, '0')}`
       ] = chunk)
   )
 })
@@ -37,7 +43,12 @@ addEventListener('turbo:before-fetch-response', event => {
   if (response.header('TurboReflex')) {
     if (response.statusCode < 200 || response.statusCode > 399) {
       const error = `Server returned a ${response.statusCode} status code! TurboReflex requires 2XX-3XX status codes.`
-      lifecycle.dispatchClientError({ ...event.detail, error })
+      dispatch(
+        lifecycle.events.clientError,
+        document,
+        { ...event.detail, error },
+        true
+      )
     }
 
     if (response.header('TurboReflex') === 'Append') {

@@ -2,16 +2,17 @@
 
 require_relative "errors"
 require_relative "sanitizer"
-require_relative "ui_state"
+require_relative "state_manager"
 
 class TurboReflex::Runner
-  attr_reader :controller, :ui_state
+  attr_reader :controller, :state_manager
+  alias_method :state, :state_manager
 
   delegate_missing_to :controller
 
   def initialize(controller)
     @controller = controller
-    @ui_state = TurboReflex::UiState.new(self)
+    @state_manager = TurboReflex::StateManager.new(self)
   end
 
   def meta_tag
@@ -20,7 +21,7 @@ class TurboReflex::Runner
       id: "turbo-reflex",
       name: "turbo-reflex",
       content: masked_token,
-      data: {busy: false, ui_state: ui_state.serialize}
+      data: {busy: false, state: state_manager.payload}
     }
     view_context.tag("meta", options).html_safe
   end
@@ -121,10 +122,12 @@ class TurboReflex::Runner
     prevent_controller_action if should_prevent_controller_action?
   rescue => error
     @reflex_errored = true
+    raise error if controller_action_prevented?
     prevent_controller_action error: error
   end
 
   def prevent_controller_action(error: nil)
+    return if controller_action_prevented?
     @controller_action_prevented = true
 
     if error
@@ -135,17 +138,18 @@ class TurboReflex::Runner
       append_success_to_response
     end
 
-    ui_state.set_cookie
+    append_meta_tag_to_response_body # called before `set_cookie` so all state is emitted to the DOM
+    state_manager.set_cookie # truncates state to stay within cookie size limits (4k)
   end
 
   def update_response
+    return if controller_action_prevented?
     return if @update_response_performed
     @update_response_performed = true
 
-    append_meta_tag_to_response_body
-    return if controller_action_prevented?
+    append_meta_tag_to_response_body # called before `set_cookie` so all state is emitted to the DOM
+    state_manager.set_cookie # truncates state to stay within cookie size limits (4k)
     append_success_to_response if reflex_succeeded?
-    ui_state.set_cookie
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
@@ -196,7 +200,7 @@ class TurboReflex::Runner
   end
 
   def response_status
-    return :multiple_choices if :should_redirect?
+    return :multiple_choices if should_redirect?
     :ok
   end
 
@@ -226,7 +230,7 @@ class TurboReflex::Runner
 
   def append_meta_tag_to_response_body
     session[:turbo_reflex_token] = new_token
-    append_to_response_body turbo_stream.replace("turbo-reflex", meta_tag)
+    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-reflex")
   end
 
   def append_success_event_to_response_body

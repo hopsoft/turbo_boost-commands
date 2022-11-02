@@ -10,7 +10,13 @@ load "rails/tasks/statistics.rake"
 
 Rake::TestTask.new do |test|
   test.libs << "test"
-  test.test_files = FileList["test/**/*_test.rb"]
+
+  test.test_files = if ARGV.length > 1
+    FileList[ARGV[1..]]
+  else
+    FileList["test/**/*_test.rb"]
+  end
+
   test.warning = false
 end
 

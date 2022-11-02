@@ -3,6 +3,20 @@
 module TurboReflex::Controller
   extend ActiveSupport::Concern
 
+  module ClassMethods
+    def turbo_reflex_state_cookie_max_bytesize
+      TurboReflex::StateManager.cookie_max_bytesize
+    end
+
+    def turbo_reflex_state_cookie_max_bytesize=(value)
+      TurboReflex::StateManager.cookie_max_bytesize = value
+    end
+
+    def turbo_reflex_state(&block)
+      TurboReflex::StateManager.add_state_override_block name, block
+    end
+  end
+
   included do
     before_action -> { turbo_reflex.run }
     after_action -> { turbo_reflex.update_response }

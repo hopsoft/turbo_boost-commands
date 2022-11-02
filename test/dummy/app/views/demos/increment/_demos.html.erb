@@ -1,0 +1,39 @@
+<div id="increment-demos" role="menu">
+
+  <% "link-in-frame".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Links in a Turbo Frame" do %>
+      <%= demo_turbo_frame_tag "frames/increment/link_in_frame" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+  <% "button-in-frame".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Buttons in a Turbo Frame" do %>
+      <%= demo_turbo_frame_tag "frames/increment/button_in_frame" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+  <% "form-in-frame".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Forms in a Turbo Frame" do %>
+      <%= demo_turbo_frame_tag "frames/increment/form_in_frame" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+  <% "elements-in-frame".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Other elements in a Turbo Frame" do %>
+      <%= demo_turbo_frame_tag "frames/increment/elements_in_frame" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+  <% "multiple-frames".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Multiple Turbo Frames <small class='mx-2 font-extralight opacity-60'>(with targeting)</small>" do %>
+      <%= demo_turbo_frame_tag "frames/increment/multiple_frame" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+  <% "rpc-over-http".tap do |id| %>
+    <%= render "demos/increment/demo", id: id, title: "Reflex without Turbo Frames <small class='mx-2 font-extralight text-blue-500'>(RPC over HTTP)</small>" do %>
+      <%= render "demos/increment/rpc" if Current.state[:active_demo] == id %>
+    <% end %>
+  <% end %>
+
+</div>
