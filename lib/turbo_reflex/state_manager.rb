@@ -41,6 +41,7 @@ class TurboReflex::StateManager
   # For ActiveModel::Dirty tracking
   define_attribute_methods :state
 
+  delegate :cookies, to: :runner
   delegate :request, :response, to: :"runner.controller"
 
   def initialize(runner)
@@ -77,7 +78,7 @@ class TurboReflex::StateManager
     return unless changed?
     state.shrink!
     state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
-    response.set_cookie "_turbo_reflex_state", value: state.ordinal_payload, path: "/", expires: 1.day.from_now
+    cookies["turbo_reflex.state"] = {value: state.ordinal_payload, path: "/", expires: 1.day.from_now}
     changes_applied
   end
 
@@ -97,6 +98,6 @@ class TurboReflex::StateManager
 
   # State that the server last rendered with.
   def cookie
-    request.cookies["_turbo_reflex_state"]
+    cookies["turbo_reflex.state"]
   end
 end
