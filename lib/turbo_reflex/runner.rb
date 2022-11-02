@@ -154,15 +154,20 @@ class TurboReflex::Runner
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
-    controller.render html: html, layout: false, status: status || response_status
+    render html: html, layout: false, status: status || response_status
   end
 
   def turbo_stream
-    @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(view_context)
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new session.id.to_s, digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
+  end
+
+  # Same implementation as ActionController::Base but with public visibility
+  def cookies
+    request.cookie_jar
   end
 
   private
@@ -180,7 +185,7 @@ class TurboReflex::Runner
   end
 
   def server_token
-    session[:turbo_reflex_token]
+    cookies.encrypted["turbo_reflex.token"]
   end
 
   def client_token
@@ -195,8 +200,8 @@ class TurboReflex::Runner
   end
 
   def should_redirect?
-    return false if controller.request.method.match?(/GET/i)
-    controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
+    return false if request.method.match?(/GET/i)
+    request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
   def response_status
@@ -205,7 +210,7 @@ class TurboReflex::Runner
   end
 
   def response_type
-    body = controller.response_body.to_s.strip
+    body = response_body.to_s.strip
     return :body if body.match?(/<\/\s*body.*>/i)
     return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
     return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
@@ -229,7 +234,7 @@ class TurboReflex::Runner
   end
 
   def append_meta_tag_to_response_body
-    session[:turbo_reflex_token] = new_token
+    cookies.encrypted["turbo_reflex.token"] = {value: new_token, path: "/"}
     append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-reflex")
   end
 
@@ -261,7 +266,7 @@ class TurboReflex::Runner
     case response_type
     when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    else controller.response_body << sanitized_content
+    else response_body << sanitized_content
     end
   end
 end
