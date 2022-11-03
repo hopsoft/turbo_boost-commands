@@ -42,7 +42,7 @@ class TurboReflex::State
   delegate :include?, :has_key?, :key?, :member?, to: :internal_data
 
   def cache_key
-    "turbo-reflex/ui-state/#{Base64.urlsafe_encode64 Digest::MD5.hexdigest(payload), padding: false}"
+    "turbo-reflex/ui-state/#{Digest::SHA2.base64digest(payload)}"
   end
 
   def read(*keys, default: nil)
