@@ -10,7 +10,7 @@ class TurboReflex::State
       return {} if string.blank?
       JSON.parse Base64.urlsafe_decode64(string)
     rescue => error
-      raise TurboReflex::StateDeserializationError, "Unable to decode and parse Base64 string! #{string}"
+      raise TurboReflex::StateDeserializationError, "Unable to decode and parse Base64 string! \"#{string}\" #{error.message}"
     end
 
     def serialize(data)
@@ -25,7 +25,7 @@ class TurboReflex::State
       inflated = Zlib::Inflate.inflate(decoded)
       Marshal.load inflated
     rescue => error
-      raise TurboReflex::StateDeserializationError, "Unable to decode, inflate, and load Base64 string! #{string}"
+      raise TurboReflex::StateDeserializationError, "Unable to decode, inflate, and load Base64 string! \"#{string}\" #{error.message}"
     end
   end
 
