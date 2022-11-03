@@ -62,7 +62,7 @@ class TurboReflex::StateManager
         server_data.each { |key, val| self[key] = val }
       end
     rescue => error
-      Rails.logger.error "Failed to apply TurboReflex::StateManager.state_override_block from #{runner.controller.class_name} to TurboReflex::State! #{error.message}"
+      Rails.logger.error "Failed to apply `state_override_block` configured in #{runner.controller.class.name} to TurboReflex::State! #{error.message}"
     end
 
     # Merge client state into server state (i.e. optimistic state)
