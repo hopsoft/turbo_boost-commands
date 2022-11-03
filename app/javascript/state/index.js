@@ -20,7 +20,7 @@ function initObserver () {
   })
 }
 
-addEventListener('DOMContentLoaded', loadState)
+meta.element ? loadState() : addEventListener('DOMContentLoaded', loadState)
 addEventListener('DOMContentLoaded', initObserver)
 addEventListener('turbo:load', initObserver)
 addEventListener('turbo:frame-load', initObserver)

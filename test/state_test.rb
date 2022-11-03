@@ -16,10 +16,10 @@ class StateTest < ActiveSupport::TestCase
   test "cache_key" do
     state = TurboReflex::State.new
     state.write :a, true
-    assert_equal "turbo-reflex/ui-state/ZWE2M2M1YjI2NTAxNGFiYmM3OWJiMjc0ZjJmMzc2Y2Q", state.cache_key
+    assert_equal "turbo-reflex/ui-state/t9zHl5rxmtVcEVvkRm8V08/3+rhLXTcgP7FUbCJMm34=", state.cache_key
 
     state.write :b, true
-    assert_equal "turbo-reflex/ui-state/ZmZmY2NiMTk4OTIyYzhlNmMzNzEzZjM3YTIyMzQxMGI", state.cache_key
+    assert_equal "turbo-reflex/ui-state/0OLmXON76R7B0VSh/mGsELbUQwtPwdhz+TbLg6Xn+1g=", state.cache_key
   end
 
   test "read and write" do

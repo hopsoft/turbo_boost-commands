@@ -9,4 +9,7 @@ module TurboReflex
 
   class InvalidTokenError < StandardError
   end
+
+  class StateDeserializationError < StandardError
+  end
 end

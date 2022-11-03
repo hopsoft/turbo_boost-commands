@@ -9,6 +9,8 @@ class TurboReflex::State
     def deserialize_base64(string)
       return {} if string.blank?
       JSON.parse Base64.urlsafe_decode64(string)
+    rescue => error
+      raise TurboReflex::StateDeserializationError, "Unable to decode and parse Base64 string! \"#{string}\" #{error.message}"
     end
 
     def serialize(data)
@@ -22,6 +24,8 @@ class TurboReflex::State
       decoded = Base64.urlsafe_decode64(string)
       inflated = Zlib::Inflate.inflate(decoded)
       Marshal.load inflated
+    rescue => error
+      raise TurboReflex::StateDeserializationError, "Unable to decode, inflate, and load Base64 string! \"#{string}\" #{error.message}"
     end
   end
 
@@ -38,7 +42,7 @@ class TurboReflex::State
   delegate :include?, :has_key?, :key?, :member?, to: :internal_data
 
   def cache_key
-    "turbo-reflex/ui-state/#{Base64.urlsafe_encode64 Digest::MD5.hexdigest(payload), padding: false}"
+    "turbo-reflex/ui-state/#{Digest::SHA2.base64digest(payload)}"
   end
 
   def read(*keys, default: nil)

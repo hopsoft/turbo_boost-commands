@@ -46,21 +46,35 @@ class TurboReflex::StateManager
 
   def initialize(runner)
     @runner = runner
-    @state = TurboReflex::State.new(cookie) # server state as stored in the cookie
+
+    begin
+      @state = TurboReflex::State.new(cookie) # server state as stored in the cookie
+    rescue => error
+      Rails.logger.error "Failed to construct TurboReflex::State! #{error.message}"
+      @state = TurboReflex::State.new
+    end
 
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
-    state_override_block = self.class.state_override_block(runner.controller)
-    if state_override_block
-      server_data = runner.controller.instance_eval(&state_override_block).with_indifferent_access
-      server_data.each { |key, val| self[key] = val }
+    begin
+      state_override_block = self.class.state_override_block(runner.controller)
+      if state_override_block
+        server_data = runner.controller.instance_eval(&state_override_block).with_indifferent_access
+        server_data.each { |key, val| self[key] = val }
+      end
+    rescue => error
+      Rails.logger.error "Failed to apply `state_override_block` configured in #{runner.controller.class.name} to TurboReflex::State! #{error.message}"
     end
 
     # Merge client state into server state (i.e. optimistic state)
     # NOTE: Client state HTTP headers are only sent if/when state has changed on the client (only the changes are sent).
     #       This prevents race conditions (state mismatch) caused when frame and XHR requests emit immediately
     #       before the <meta id="turbo-reflex"> has been updated with the latest state from the server.
-    client_data = TurboReflex::State.deserialize_base64(header).with_indifferent_access
-    client_data.each { |key, val| self[key] = val }
+    begin
+      client_data = TurboReflex::State.deserialize_base64(header).with_indifferent_access
+      client_data.each { |key, val| self[key] = val }
+    rescue => error
+      Rails.logger.error "Failed to apply client state from HTTP headers to TurboReflex::State! #{error.message}"
+    end
   end
 
   delegate :cache_key, :payload, to: :state
