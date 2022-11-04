@@ -1,6 +1,5 @@
 import activity from './activity'
 import { dispatch, lifecycleEvents as events } from './events'
-import meta from './meta'
 
 function finish (event) {
   event.detail.endedAt = new Date().getTime()
