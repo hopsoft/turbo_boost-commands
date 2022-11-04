@@ -25,12 +25,11 @@ addEventListener('turbo:before-fetch-request', event => {
   }
 
   // always send state
-  state.payloadChunks.forEach(
-    (chunk, i) =>
-      (fetchOptions.headers[
-        `TurboReflex-State-${i.toString().padStart(4, '0')}`
-      ] = chunk)
-  )
+  state.payloadChunks.forEach((chunk, i) => {
+    fetchOptions.headers[
+      `TurboReflex-State-${i.toString().padStart(4, '0')}`
+    ] = chunk
+  })
 })
 
 // fires after receiving a turbo HTTP response

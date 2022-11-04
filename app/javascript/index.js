@@ -8,7 +8,7 @@ import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
-import { state } from './state'
+import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
@@ -85,6 +85,6 @@ export default self.TurboReflex = {
     return [...Object.values(lifecycle.events)]
   },
   get state () {
-    return state
+    return state.current
   }
 }
