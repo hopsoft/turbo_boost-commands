@@ -8,7 +8,7 @@ export const lifecycleEvents = {
 }
 
 export const stateEvents = {
-  beforeStateChange: 'turbo-reflex:before-state-change',
+  stateLoad: 'turbo-reflex:state-load',
   stateChange: 'turbo-reflex:state-change'
 }
 

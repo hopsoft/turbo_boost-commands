@@ -8,14 +8,12 @@ function observable (object, parent = null) {
 
   const proxy = new Proxy(object, {
     deleteProperty (target, key) {
-      dispatch(events.beforeStateChange, meta.element, { state: head })
       delete target[key]
       dispatch(events.stateChange, meta.element, { state: head })
       return true
     },
 
     set (target, key, value, receiver) {
-      dispatch(events.beforeStateChange, meta.element, { state: head })
       target[key] = observable(value, this)
       dispatch(events.stateChange, meta.element, { state: head })
       return true

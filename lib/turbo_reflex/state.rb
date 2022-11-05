@@ -86,6 +86,11 @@ class TurboReflex::State
     end
   end
 
+  # Returns a copy of the data as a Hash
+  def to_h
+    internal_data.deep_dup
+  end
+
   private
 
   attr_reader :internal_keys

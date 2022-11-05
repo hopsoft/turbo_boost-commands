@@ -1,23 +1,32 @@
 import meta from '../meta'
 import observable from './observable'
-import { stateEvents as events } from '../events'
+import { dispatch, stateEvents as events } from '../events'
 
-let oldState, state, changedState
+let loadedState, currentState, changedState
 let observer
 
 function loadState () {
   const json = atob(meta.element.dataset.state)
   changedState = {}
-  oldState = state = observable(JSON.parse(json))
+  currentState = observable(JSON.parse(json))
+  loadedState = { ...currentState }
+  delete meta.element.dataset.clientStateChange
+  setTimeout(() =>
+    dispatch(events.stateLoad, meta.element, { state: currentState })
+  )
+}
+
+function metaMutated (mutations) {
+  if (meta.element.dataset.clientStateChange) return
+  mutations.forEach(m => {
+    if (m.attributeName === 'data-state') loadState()
+  })
 }
 
 function initObserver () {
-  if (observer) observer.disconnect()
-  observer = new MutationObserver(loadState)
-  observer.observe(meta.element, {
-    attributes: true,
-    attributeFilter: ['data-state']
-  })
+  if (observer) return
+  observer = new MutationObserver(metaMutated)
+  observer.observe(meta.element, { attributes: true })
 }
 
 if (meta.element) {
@@ -30,21 +39,20 @@ if (meta.element) {
 addEventListener('turbo:load', initObserver)
 addEventListener('turbo:frame-load', initObserver)
 
-addEventListener(
-  events.beforeStateChange,
-  event => (oldState = JSON.parse(JSON.stringify(state)))
-)
-
 addEventListener(events.stateChange, event => {
   changedState = {}
-  for (const [key, value] of Object.entries(state))
-    if (oldState[key] !== value) changedState[key] = value
-  meta.element.dataset.state = btoa(JSON.stringify(state))
+  for (const [key, value] of Object.entries(currentState))
+    if (loadedState[key] !== value) changedState[key] = value
+  meta.element.dataset.clientStateChange = true
+  meta.element.dataset.state = btoa(JSON.stringify(currentState))
 })
 
-export { state }
 export default {
   events,
+
+  get current () {
+    return currentState
+  },
 
   // The UI state changes are split into chunks and sent to the server in an HTTP request header.
   // Max size for an HTTP header is around 4k or 4,000 bytes.
