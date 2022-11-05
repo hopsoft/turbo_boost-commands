@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "pry-byebug"
   s.add_development_dependency "pry-doc"
   s.add_development_dependency "pry-rails"
-  s.add_development_dependency "puma", "~> 5.6.5" # pin until capybara catches up
+  s.add_development_dependency "puma"
   s.add_development_dependency "rake"
   s.add_development_dependency "rexml"
   s.add_development_dependency "rouge"
