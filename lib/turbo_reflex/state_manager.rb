@@ -59,8 +59,8 @@ class TurboReflex::StateManager
     # State the server used to render the page last time
     cookie_state_hash = state.to_h
 
-    # State managed by the server on the backend (redis, postgres, msql, etc.)
-    # App specific, SEE: `TurboReflex::StateManager.state_override_block`
+    # State managed by the server on the backend (redis cache etc.)
+    # SEE: `TurboReflex::StateManager.state_override_block`
     server_state_hash = {}
 
     # State the client expects... related to optimistic UI updates
