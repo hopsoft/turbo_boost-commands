@@ -26,6 +26,6 @@ class CounterReflex < TurboReflex::Base
 
   def increment
     session[:count] = session.fetch(:count, 0) + 1
-    turbo_streams << turbo_stream.replace("counter", partial: "app/views/demos/_counter")
+    turbo_streams << turbo_stream.replace("counter", partial: "demos/counter")
   end
 end
