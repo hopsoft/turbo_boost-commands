@@ -268,5 +268,7 @@ class TurboReflex::Runner
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
     else response_body << sanitized_content
     end
+  rescue => error
+    Rails.logger.error "TurboReflex::Runner failed to append to the response! #{error.message}"
   end
 end
