@@ -92,6 +92,10 @@ class TurboReflex::StateManager
     @cookie_data = cookie_state_hash
     @header_data = header_state_hash
     @server_data = server_state_hash
+  rescue => error
+    Rails.logger.error "Failed to construct TurboReflex::State! #{error.message}"
+  ensure
+    @state ||= TurboReflex::State.new
   end
 
   delegate :cache_key, :payload, to: :state
@@ -111,6 +115,8 @@ class TurboReflex::StateManager
     state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
     cookies.signed["turbo_reflex.state"] = {value: state.ordinal_payload, path: "/", expires: 1.day.from_now}
     changes_applied
+  rescue => error
+    Rails.logger.error "Failed to write the TurboReflex::State cookie! #{error.message}"
   end
 
   private
