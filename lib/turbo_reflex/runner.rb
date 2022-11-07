@@ -259,8 +259,8 @@ class TurboReflex::Runner
   end
 
   def append_to_response_body(content)
+    return unless %i[turbo_reflex turbo_stream html].any?(request.format)
     sanitized_content = content_sanitizer.sanitize(content).html_safe
-
     return if sanitized_content.blank?
 
     case response_type
