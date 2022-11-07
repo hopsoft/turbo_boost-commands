@@ -150,6 +150,8 @@ class TurboReflex::Runner
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
     state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
     append_success_to_response if reflex_succeeded?
+  rescue => error
+    Rails.logger.error "TurboReflex::Runner failed to update the response! #{error.message}"
   end
 
   def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
@@ -236,6 +238,8 @@ class TurboReflex::Runner
   def append_meta_tag_to_response_body
     cookies.encrypted["turbo_reflex.token"] = {value: new_token, path: "/"}
     append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-reflex")
+  rescue => error
+    Rails.logger.error "TurboReflex::Runner failed to append the meta tag to the response! #{error.message}"
   end
 
   def append_success_event_to_response_body
