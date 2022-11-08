@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "state"
+require_relative "provisional_state"
 
 # Class used to hold ephemeral state related to the rendered UI.
 #
@@ -109,8 +110,15 @@ class TurboReflex::StateManager
     state.write(*keys, value)
   end
 
+  def provisional_state
+    @provisional_state ||= TurboReflex::ProvisionalState.new(self)
+  end
+
+  alias_method :now, :provisional_state
+
   def write_cookie
     return unless changed?
+    clear_provisional_state!
     state.shrink!
     state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
     cookies.signed["turbo_reflex.state"] = {value: state.ordinal_payload, path: "/", expires: 1.day.from_now}
@@ -136,5 +144,10 @@ class TurboReflex::StateManager
   # State that the server last rendered with.
   def cookie
     cookies.signed["turbo_reflex.state"]
+  end
+
+  def clear_provisional_state!
+    provisional_state.keys.each { |key| state.write key, nil }
+    @provisional_state = nil
   end
 end

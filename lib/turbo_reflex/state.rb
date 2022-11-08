@@ -27,17 +27,22 @@ class TurboReflex::State
     rescue => error
       raise TurboReflex::StateDeserializationError, "Unable to decode, inflate, and load Base64 string! \"#{string}\" #{error.message}"
     end
+
+    def key_for(*keys)
+      keys.map { |key| key.try(:cache_key) || key.to_s }.join("/")
+    end
   end
 
   def initialize(ordinal_payload = nil)
     @internal_keys = []
     @internal_data = {}.with_indifferent_access
 
-    self.class.deserialize(ordinal_payload).each do |(key, value)|
+    deserialize(ordinal_payload).each do |(key, value)|
       write key, value
     end
   end
 
+  delegate :deserialize, :key_for, :serialize, :serialize_base64, to: "self.class"
   delegate :size, to: :internal_data
   delegate :include?, :has_key?, :key?, :member?, to: :internal_data
 
@@ -60,11 +65,11 @@ class TurboReflex::State
   end
 
   def payload
-    self.class.serialize_base64 internal_data
+    serialize_base64 internal_data
   end
 
   def ordinal_payload
-    self.class.serialize internal_list
+    serialize internal_list
   end
 
   def shrink!
@@ -98,10 +103,6 @@ class TurboReflex::State
 
   def internal_list
     internal_keys.map { |key| [key, internal_data[key]] }
-  end
-
-  def key_for(*keys)
-    keys.map { |key| key.try(:cache_key) || key.to_s }.join("/")
   end
 
   def shrink(obj)
