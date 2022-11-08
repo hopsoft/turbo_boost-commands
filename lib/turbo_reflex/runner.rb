@@ -212,7 +212,7 @@ class TurboReflex::Runner
   end
 
   def response_type
-    body = response_body.to_s.strip
+    body = (response_body.try(:join) || response_body.to_s).strip
     return :body if body.match?(/<\/\s*body.*>/i)
     return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
     return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
@@ -263,7 +263,7 @@ class TurboReflex::Runner
   end
 
   def append_to_response_body(content)
-    return unless %i[turbo_reflex turbo_stream html].any?(request.format)
+    return unless response.media_type == "text/html"
     sanitized_content = content_sanitizer.sanitize(content).html_safe
     return if sanitized_content.blank?
 
