@@ -1,11 +1,17 @@
 addEventListener(TurboReflex.events.start, event => {
-  event.target.classList.add('animate-pulse')
-  event.target.disabled = true
+  const element = event.target
+  element.dataset.disabled = element.disabled
+  element.classList.add('animate-pulse')
+  element.disabled = true
   document.body.classList.add('busy')
 })
 
 addEventListener(TurboReflex.events.finish, event => {
-  if (event.target.nodeType === Node.ELEMENT_NODE)
-    event.target.classList.remove('animate-pulse')
+  const element = event.target
+  if (element.nodeType === Node.ELEMENT_NODE) {
+    element.classList.remove('animate-pulse')
+    element.disabled = element.dataset.disabled
+    delete element.dataset.disabled
+  }
   document.body.classList.remove('busy')
 })

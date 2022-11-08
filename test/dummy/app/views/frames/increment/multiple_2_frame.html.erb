@@ -6,12 +6,12 @@
     <% end %>
 
     <div class="inline-flex relative mt-8 rounded-md shadow-sm" role="group">
-      <%= button_tag class: css("flowbite.button.group_left"),
+      <%= button_tag id: "increment-this-frame-button-2", class: css("flowbite.button.group_left"),
         data: { turbo_reflex: "CounterReflex#increment", session_key: :frame_2_count } do %>
         Increment this frame
       <% end %>
 
-      <%= button_tag class: css("flowbite.button.group_right"),
+      <%= button_tag id: "increment-other-frame-button-2", class: css("flowbite.button.group_right"),
         data: {
           turbo_reflex: "CounterReflex#increment",
           turbo_frame: demo_frame_id("frames/increment/multiple_1_frame"),
