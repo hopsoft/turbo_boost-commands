@@ -211,11 +211,16 @@ class TurboReflex::Runner
     :ok
   end
 
+  def html_requested?
+    %i[turbo_reflex turbo_stream html].any? request.format
+  end
+
   def response_type
-    body = response_body.to_s.strip
+    body = response_body.join.strip
     return :body if body.match?(/<\/\s*body.*>/i)
     return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
     return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
+    return :json if body.match?(/\A({|\[).*(}|\])\z/)
     :unknown
   end
 
@@ -263,11 +268,13 @@ class TurboReflex::Runner
   end
 
   def append_to_response_body(content)
-    return unless %i[turbo_reflex turbo_stream html].any?(request.format)
+    return unless html_requested?
     sanitized_content = content_sanitizer.sanitize(content).html_safe
+
     return if sanitized_content.blank?
 
     case response_type
+    when :json then nil # ignore
     when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
     when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
     else response_body << sanitized_content
