@@ -1,4 +1,5 @@
 addEventListener(TurboReflex.events.start, event => {
+  event.target.classList.add('animate-pulse')
   document.body.classList.add('busy')
 })
 
