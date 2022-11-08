@@ -1,17 +1,31 @@
-addEventListener(TurboReflex.events.start, event => {
-  const element = event.target
-  element.dataset.disabled = element.disabled
-  element.classList.add('animate-pulse')
-  element.disabled = true
+const delay = 250
+let activity
+let activeNode
+
+function showActivity () {
+  activeNode.dataset.disabled = activeNode.disabled
+  activeNode.classList.add('animate-bounce')
+  activeNode.disabled = true
   document.body.classList.add('busy')
+}
+
+function hideActivity () {
+  if (activeNode.nodeType === Node.ELEMENT_NODE) {
+    activeNode.classList.remove('animate-bounce')
+    activeNode.disabled = activeNode.dataset.disabled
+    delete activeNode.dataset.disabled
+  }
+  document.body.classList.remove('busy')
+}
+
+addEventListener(TurboReflex.events.start, event => {
+  activeNode = event.target
+  clearTimeout(activity)
+  activity = setTimeout(showActivity, delay)
 })
 
 addEventListener(TurboReflex.events.finish, event => {
-  const element = event.target
-  if (element.nodeType === Node.ELEMENT_NODE) {
-    element.classList.remove('animate-pulse')
-    element.disabled = element.dataset.disabled
-    delete element.dataset.disabled
-  }
-  document.body.classList.remove('busy')
+  activeNode = event.target
+  clearTimeout(activity)
+  hideActivity()
 })
