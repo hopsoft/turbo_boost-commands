@@ -5,6 +5,7 @@ import debounced from 'debounced'
 import TurboReady from 'turbo_ready'
 import 'turbo_reflex'
 import './controllers'
+import './activity'
 
 debounced.initialize({
   ...debounced.events,

@@ -1,6 +1,6 @@
 <%= tag.div id: el_id(id, :demo) do %>
   <%= tag.h2 id: el_id(id, :label) do %>
-    <%= tag.button type: "button", aria: {visible: Current.state[:active_demo] == id, controls: id},
+    <%= tag.button id: el_id(id, :button), type: "button", aria: {visible: Current.state[:active_demo] == id, controls: id},
       data: {
         turbo_reflex: "DemosReflex#toggle",
         controller: Current.state[:active_demo] == id ? "scroll-into-view" : nil
