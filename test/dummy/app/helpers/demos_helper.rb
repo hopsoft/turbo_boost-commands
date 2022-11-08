@@ -19,8 +19,10 @@ module DemosHelper
     controller_name == "demos" && action_name == "index"
   end
 
-  def demo_frame_id(template_path)
-    "frame-" + Base64.urlsafe_encode64(template_path)
+  def demo_frame_id(template_path, prefix = nil)
+    id = "frame-" + Base64.urlsafe_encode64(template_path)
+    id.prepend("#{prefix}-") if prefix.present?
+    id
   end
 
   def demo_turbo_frame_tag(template_path)

@@ -1,6 +1,6 @@
 import './turbo'
 import schema from './schema'
-import { dispatch } from './events'
+import { dispatch, allEvents as events } from './events'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
@@ -81,8 +81,8 @@ export default self.TurboReflex = {
   get eventDelegates () {
     return { ...delegates.events }
   },
-  get lifecycleEvents () {
-    return [...Object.values(lifecycle.events)]
+  get events () {
+    return { ...events }
   },
   get state () {
     return state.current
