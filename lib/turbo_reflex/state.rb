@@ -42,7 +42,7 @@ class TurboReflex::State
     end
   end
 
-  delegate :deserialize, :key_for, :serialize_base64, :serialize, to: "self.class"
+  delegate :deserialize, :key_for, :serialize, :serialize_base64, to: "self.class"
   delegate :size, to: :internal_data
   delegate :include?, :has_key?, :key?, :member?, to: :internal_data
 
