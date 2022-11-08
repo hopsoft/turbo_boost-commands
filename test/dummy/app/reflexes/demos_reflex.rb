@@ -4,7 +4,6 @@ class DemosReflex < TurboReflex::Base
   prevent_controller_action
 
   def toggle
-    sleep 3
     state[:active_demo] = visible? ? nil : element.aria.controls
     morph "##{demo_id}-demos", render("demos/#{demo_id}/demos")
   end
