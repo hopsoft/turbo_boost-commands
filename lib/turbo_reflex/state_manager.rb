@@ -68,6 +68,8 @@ class TurboReflex::StateManager
     # i.e. Changes made on the client before making this request
     header_state_hash = {}
 
+    binding.pry
+
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
     begin
       state_override_block = self.class.state_override_block(runner.controller)
@@ -147,7 +149,8 @@ class TurboReflex::StateManager
   end
 
   def clear_provisional_state!
-    provisional_state.keys.each { |key| state.write key, nil }
+    binding.pry
+    provisional_state.keys.each { |key| state.delete key }
     @provisional_state = nil
   end
 end

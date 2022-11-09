@@ -34,9 +34,7 @@ class TurboReflex::State
   end
 
   def initialize(ordinal_payload = nil)
-    @internal_keys = []
-    @internal_data = {}.with_indifferent_access
-
+    clear
     deserialize(ordinal_payload).each do |(key, value)|
       write key, value
     end
@@ -64,12 +62,23 @@ class TurboReflex::State
     value
   end
 
+  def delete(*keys)
+    key = key_for(*keys)
+    internal_keys.delete key
+    internal_data.delete key
+  end
+
   def payload
     serialize_base64 internal_data
   end
 
   def ordinal_payload
     serialize internal_list
+  end
+
+  def clear
+    @internal_keys = []
+    @internal_data = {}.with_indifferent_access
   end
 
   def shrink!
