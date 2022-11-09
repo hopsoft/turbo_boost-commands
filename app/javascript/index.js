@@ -86,5 +86,9 @@ export default self.TurboReflex = {
   },
   get state () {
     return state.current
+  },
+  // delta of state changes made on the client
+  get stateDelta () {
+    return state.delta
   }
 }
