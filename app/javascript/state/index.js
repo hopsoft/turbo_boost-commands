@@ -54,12 +54,16 @@ export default {
     return currentState
   },
 
+  get delta () {
+    return changedState
+  },
+
   // The UI state changes are split into chunks and sent to the server in an HTTP request header.
   // Max size for an HTTP header is around 4k or 4,000 bytes.
   // A Base64 character is an 8-bit-padded ASCII character... or 1 byte
   //
   // SEE: lib/state.rb - for info on how `state` is serialized/deserialized
   get payloadChunks () {
-    return btoa(JSON.stringify(changedState)).match(/.{1,2000}/g)
+    return btoa(JSON.stringify(currentState)).match(/.{1,2000}/g)
   }
 }
