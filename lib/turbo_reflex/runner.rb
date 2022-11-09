@@ -267,10 +267,16 @@ class TurboReflex::Runner
     sanitized_content = content_sanitizer.sanitize(content).html_safe
     return if sanitized_content.blank?
 
+    # TODO: setup negative lookahead instead of using match
     case response_type
-    when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
-    when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    else response_body << sanitized_content
+    when :body
+      match = response.body.match(/<\/\s*body.*>/i).to_s
+      response.body.sub!(match, match.prepend(sanitized_content))
+    when :frame
+      match = response.body.match(/<\/\s*turbo-frame.*>/i).to_s
+      response.body.sub!(match, match.prepend(sanitized_content))
+    else
+      response_body << sanitized_content
     end
   rescue => error
     Rails.logger.error "TurboReflex::Runner failed to append to the response! #{error.message}"
