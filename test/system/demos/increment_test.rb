@@ -30,7 +30,7 @@ class IncrementTest < ApplicationSystemTestCase
     # close demo
     find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
     assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
-    assert_equal "eyJhY3RpdmVfZGVtbyI6bnVsbH0", find_by_id("turbo-reflex", visible: false)["data-state"]
+    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
     assert_nil page.evaluate_script("TurboReflex.state.active_demo")
   end
 
@@ -61,7 +61,7 @@ class IncrementTest < ApplicationSystemTestCase
     # close demo
     find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
     assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
-    assert_equal "eyJhY3RpdmVfZGVtbyI6bnVsbH0", find_by_id("turbo-reflex", visible: false)["data-state"]
+    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
     assert_nil page.evaluate_script("TurboReflex.state.active_demo")
   end
 

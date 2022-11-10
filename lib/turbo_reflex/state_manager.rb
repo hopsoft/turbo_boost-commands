@@ -68,8 +68,6 @@ class TurboReflex::StateManager
     # i.e. Changes made on the client before making this request
     header_state_hash = {}
 
-    binding.pry
-
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
     begin
       state_override_block = self.class.state_override_block(runner.controller)
@@ -101,7 +99,7 @@ class TurboReflex::StateManager
     @state ||= TurboReflex::State.new
   end
 
-  delegate :cache_key, :payload, to: :state
+  delegate :cache_key, to: :state
 
   def [](*keys, default: nil)
     state.read(*keys, default: default)
@@ -118,12 +116,22 @@ class TurboReflex::StateManager
 
   alias_method :now, :provisional_state
 
-  def write_cookie
-    return unless changed?
+  def payload
+    clear_provisional_state!
+    state.shrink!
+    state.payload
+  end
+
+  def ordinal_payload
     clear_provisional_state!
     state.shrink!
     state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
-    cookies.signed["turbo_reflex.state"] = {value: state.ordinal_payload, path: "/", expires: 1.day.from_now}
+    state.ordinal_payload
+  end
+
+  def write_cookie
+    return unless changed?
+    cookies.signed["turbo_reflex.state"] = {value: ordinal_payload, path: "/", expires: 1.day.from_now}
     changes_applied
   rescue => error
     Rails.logger.error "Failed to write the TurboReflex::State cookie! #{error.message}"
@@ -149,7 +157,6 @@ class TurboReflex::StateManager
   end
 
   def clear_provisional_state!
-    binding.pry
     provisional_state.keys.each { |key| state.delete key }
     @provisional_state = nil
   end
