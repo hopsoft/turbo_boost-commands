@@ -213,9 +213,9 @@ class TurboReflex::Runner
 
   def response_type
     body = (response_body.try(:join) || response_body.to_s).strip
-    return :body if body.match?(/<\/\s*body.*>/i)
-    return :frame if body.match?(/<\/\s*turbo-frame.*>/i)
-    return :stream if body.match?(/<\/\s*turbo-stream.*>/i)
+    return :body if body.match?(/<\/\s*body/i)
+    return :frame if body.match?(/<\/\s*turbo-frame/i)
+    return :stream if body.match?(/<\/\s*turbo-stream/i)
     :unknown
   end
 
@@ -267,11 +267,18 @@ class TurboReflex::Runner
     sanitized_content = content_sanitizer.sanitize(content).html_safe
     return if sanitized_content.blank?
 
-    case response_type
-    when :body then response.body.sub!(/<\/\s*body.*>/i, "#{sanitized_content}</body>")
-    when :frame then response.body.sub!(/<\/\s*turbo-frame.*>/i, "#{sanitized_content}</turbo-frame>")
-    else response_body << sanitized_content
+    html = case response_type
+    when :body
+      match = response.body.match(/<\/\s*body/i).to_s
+      response.body.sub match, [sanitized_content, match].join
+    when :frame
+      match = response.body.match(/<\/\s*turbo-frame/i).to_s
+      response.body.sub match, [sanitized_content, match].join
+    else
+      [response.body, sanitized_content].join
     end
+
+    response.body = html
   rescue => error
     Rails.logger.error "TurboReflex::Runner failed to append to the response! #{error.message}"
   end
