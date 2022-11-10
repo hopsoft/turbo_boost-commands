@@ -107,7 +107,7 @@ class TurboReflex::StateManager
 
   def []=(*keys, value)
     state_will_change! if value != self[*keys]
-    state.write(*keys, value)
+    value.nil? ? state.delete(*keys) : state.write(*keys, value)
   end
 
   def provisional_state
@@ -116,14 +116,19 @@ class TurboReflex::StateManager
 
   alias_method :now, :provisional_state
 
+  def clear
+    provisional_state.clear
+    state.clear
+  end
+
   def payload
-    clear_provisional_state!
+    provisional_state.clear
     state.shrink!
     state.payload
   end
 
   def ordinal_payload
-    clear_provisional_state!
+    provisional_state.clear
     state.shrink!
     state.prune! max_bytesize: TurboReflex::StateManager.cookie_max_bytesize
     state.ordinal_payload
@@ -154,10 +159,5 @@ class TurboReflex::StateManager
   # State that the server last rendered with.
   def cookie
     cookies.signed["turbo_reflex.state"]
-  end
-
-  def clear_provisional_state!
-    provisional_state.keys.each { |key| state.delete key }
-    @provisional_state = nil
   end
 end

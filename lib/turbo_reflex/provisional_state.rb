@@ -20,6 +20,11 @@ class TurboReflex::ProvisionalState
     state_manager[key] = value
   end
 
+  def clear
+    keys.each { |key| state_manager[key] = nil }
+    keys.clear
+  end
+
   private
 
   attr_reader :state_manager

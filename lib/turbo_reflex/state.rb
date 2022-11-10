@@ -34,7 +34,9 @@ class TurboReflex::State
   end
 
   def initialize(ordinal_payload = nil)
-    clear
+    @internal_data = {}.with_indifferent_access
+    @internal_keys = []
+
     deserialize(ordinal_payload).each do |(key, value)|
       write key, value
     end
@@ -77,8 +79,8 @@ class TurboReflex::State
   end
 
   def clear
-    @internal_keys = []
-    @internal_data = {}.with_indifferent_access
+    internal_keys.clear
+    internal_data.clear
   end
 
   def shrink!
