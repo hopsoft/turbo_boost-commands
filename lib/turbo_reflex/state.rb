@@ -92,13 +92,13 @@ class TurboReflex::State
     return if internal_keys.blank?
     return if internal_data.blank?
 
-    percentage = max_bytesize > 0 ? ordinal_payload.bytesize / max_bytesize.to_f : 0
+    percentage = (max_bytesize > 0) ? ordinal_payload.bytesize / max_bytesize.to_f : 0
     while percentage > 1
       keys_to_keep = internal_keys.slice((internal_keys.length - (internal_keys.length / percentage).floor)..-1)
       keys_to_remove = internal_keys - keys_to_keep
       @internal_keys = keys_to_keep
       keys_to_remove.each { |key| internal_data.delete key }
-      percentage = max_bytesize > 0 ? ordinal_payload.bytesize / max_bytesize.to_f : 0
+      percentage = (max_bytesize > 0) ? ordinal_payload.bytesize / max_bytesize.to_f : 0
     end
   end
 
