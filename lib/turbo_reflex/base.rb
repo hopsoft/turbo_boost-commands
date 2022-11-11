@@ -100,15 +100,11 @@ class TurboReflex::Base
 
   def element
     @element ||= begin
-      attributes = params[:element_attributes].transform_keys do |key|
-        key.to_s.strip.parameterize.underscore.to_sym
-      end
-
-      attrs = attributes.select { |key, _| !key.start_with?("aria") && !key.start_with?("data") }
-      attrs[:aria] = TurboReflex::ElementAttributes.new(:aria, attributes: attributes)
-      attrs[:dataset] = TurboReflex::ElementAttributes.new(:data, attributes: attributes)
-
-      OpenStruct.new attrs
+      attributes = params[:element_attributes]
+      OpenStruct.new attributes.merge(
+        aria: TurboReflex::ElementAttributes.new(:aria, attributes: attributes),
+        dataset: TurboReflex::ElementAttributes.new(:data, attributes: attributes)
+      )
     end
   end
 
