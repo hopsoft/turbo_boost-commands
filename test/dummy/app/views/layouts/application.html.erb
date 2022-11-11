@@ -15,17 +15,16 @@
 
   <body class="bg-gray-50 dark:bg-gray-900">
     <%= render "layouts/navbar" %>
+    <%# render "layouts/sidebar" %>
 
     <div class="flex overflow-hidden pt-16">
-      <%= render "layouts/sidebar" %>
-
       <div id="main-content" class="overflow-y-auto relative w-full h-full bg-gray-50 dark:bg-gray-900">
         <%= render(flowbite(:breadcrumbs)) { yield :breadcrumbs } %>
         <%= yield %>
       </div>
     </div>
 
-    <%= render "layouts/footer" %>
+    <%= render "layouts/footer2" %>
 
     <script type="text/javascript">
       window.TailwindDefaults = <%= tailwind_defaults.to_json.html_safe %>;
