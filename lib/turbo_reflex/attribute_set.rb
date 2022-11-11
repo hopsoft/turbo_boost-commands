@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TurboReflex::ElementAttributes
+class TurboReflex::AttributeSet
   def initialize(prefix, attributes: {})
     prefix = prefix.to_s
 

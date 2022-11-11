@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "element_attributes"
+require_relative "attribute_set"
 
 # TurboReflex base superclass.
 # All TurboReflex classes should inherit from this class.
@@ -102,8 +102,8 @@ class TurboReflex::Base
     @element ||= begin
       attributes = params[:element_attributes]
       OpenStruct.new attributes.merge(
-        aria: TurboReflex::ElementAttributes.new(:aria, attributes: attributes),
-        dataset: TurboReflex::ElementAttributes.new(:data, attributes: attributes)
+        aria: TurboReflex::AttributeSet.new(:aria, attributes: attributes),
+        dataset: TurboReflex::AttributeSet.new(:data, attributes: attributes)
       )
     end
   end
