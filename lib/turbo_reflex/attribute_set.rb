@@ -17,10 +17,7 @@ class TurboReflex::AttributeSet
       next if respond_to?(name)
 
       self.class.define_method(name) { instance_variable_get :"@#{name}" }
-
-      if value.is_a?(TrueClass) || value.is_a?(FalseClass)
-        self.class.define_method("#{name}?") { public_send(name) }
-      end
+      self.class.define_method("#{name}?") { !!public_send(name) }
     end
   end
 end
