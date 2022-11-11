@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "attribute_set"
+
 # TurboReflex base superclass.
 # All TurboReflex classes should inherit from this class.
 #
@@ -99,20 +101,10 @@ class TurboReflex::Base
   def element
     @element ||= begin
       attributes = params[:element_attributes]
-      attrs = attributes.keys.each_with_object({}) do |key, memo|
-        memo[:aria] ||= {}
-        memo[:dataset] ||= {}
-        if key.start_with?("data_")
-          memo[:dataset][key[5..].parameterize.underscore.to_sym] = attributes[key]
-        elsif key.start_with?("aria_")
-          memo[:aria][key[5..].parameterize.underscore.to_sym] = attributes[key]
-        else
-          memo[key.parameterize.underscore.to_sym] = attributes[key]
-        end
-      end
-      attrs[:aria] = OpenStruct.new(attrs[:aria])
-      attrs[:dataset] = OpenStruct.new(attrs[:dataset])
-      OpenStruct.new attrs
+      OpenStruct.new attributes.merge(
+        aria: TurboReflex::AttributeSet.new(:aria, attributes: attributes),
+        dataset: TurboReflex::AttributeSet.new(:data, attributes: attributes)
+      )
     end
   end
 

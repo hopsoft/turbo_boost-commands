@@ -4,7 +4,7 @@ class DemosReflex < TurboReflex::Base
   prevent_controller_action
 
   def toggle
-    state.now[:active_demo] = visible? ? nil : element.aria.controls
+    state.now[:active_demo] = element.aria.visible? ? nil : element.aria.controls
     morph "##{demo_id}-demos", render("demos/#{demo_id}/demos")
   end
 
@@ -12,9 +12,5 @@ class DemosReflex < TurboReflex::Base
 
   def demo_id
     controller.params[:id]
-  end
-
-  def visible?
-    element.aria.visible == "true"
   end
 end
