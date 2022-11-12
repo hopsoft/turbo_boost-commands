@@ -112,6 +112,7 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
 - [rails](https://rubygems.org/gems/rails) `>=6.1`
 - [turbo-rails](https://rubygems.org/gems/turbo-rails) `>=1.1`
 - [@hotwired/turbo-rails](https://yarnpkg.com/package/@hotwired/turbo-rails) `>=7.1`
+- [ruby](https://github.com/ruby/ruby) `>=2.7`
 
 ## Setup
 
