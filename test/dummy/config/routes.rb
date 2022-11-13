@@ -5,6 +5,6 @@ Rails.application.routes.draw do
   resources :demos, only: %i[index show]
   resources :docs, only: %i[index show]
   resource :session, only: %i[destroy]
-  resource :pages, only: %i[index show]
-  root "pages#index"
+  resource :articles, only: %i[index show]
+  root "articles#index"
 end

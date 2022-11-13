@@ -1,0 +1,38 @@
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Demos", href: demos_path, active: true %>
+<% end %>
+
+<%= render "articles/hero" %>
+
+<aside aria-label="Related articles" class="pb-8 bg-white lg:py-24 dark:bg-gray-900">
+  <div class="px-4 mx-auto max-w-screen-xl">
+    <%= render "articles/preview", image: "undraw_press_play_re_85bj.svg", title: "Installation and setup", url: "#" do %>
+      Install the GEM and NPM package then configure
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_questions_re_1fy7.svg", title: "Reflexes explained", url: "#" do %>
+      Reflexes are simple Ruby classes that run during standard HTTP request handling
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_source_code_re_wd9m.svg", title: "Logging and debugging", url: "#" do %>
+      Native console log levels are supported which provide visibility into reflex activity
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_completed_steps_re_h9wc.svg", title: "Events and lifecycle", url: "#" do %>
+      6 lifecycle and 2 state management events provide hooks for extending behavior
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_circuit_sdmr.svg", title: "State management", url: "#" do %>
+      Rich support for working with state to render the current response and future requests
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_teamwork_hpdk.svg", title: "Putting it all together", url: "#" do %>
+      Learn to create rich, reliable, reactive SSR diven applications with Rails and Hotiwre
+    <% end %>
+
+    <%= render "articles/preview", image: "undraw_advanced_customization_re_wo6h.svg", title: "Advanced techniques", url: "#" do %>
+      Tips and tricks that will get you to the next level
+    <% end %>
+  </div>
+</aside>

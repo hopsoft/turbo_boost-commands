@@ -1,11 +1,11 @@
-<%= tag.nav id: "navbar", class: "fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700" do %>
+<%= tag.nav id: "navbar", class: "fixed z-30 w-full bg-gray-200 border-b border-gray-300 dark:bg-gray-800 dark:border-indigo-700" do %>
   <div class="py-3 px-3 lg:px-5 lg:pl-3">
     <div class="flex justify-between items-center">
       <!-- Navbar Left Side -->
       <div class="flex items-center">
         <%= link_to root_path, class: "flex ml-5" do %>
           <%= image_tag "turbo-reflex-mark.webp", class: "mr-2 h-8", alt: "TurboReady Logo" %>
-          <span class="mr-8 flex text-2xl tracking-tight whitespace-nowrap dark:text-white">
+          <span class="flex mr-8 text-2xl tracking-tight whitespace-nowrap dark:text-white">
             <span class="font-light opacity-70">Turbo</span><span class="font-bold text-emerald-500">Reflex</span>
             <small class="ml-px font-mono text-xs opacity-20">v<%= TurboReflex::VERSION %></small>
           </span>

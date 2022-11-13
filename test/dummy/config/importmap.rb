@@ -9,6 +9,7 @@ pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@7
 pin "@rails/actioncable/src", to: "https://ga.jspm.io/npm:@rails/actioncable@7.0.4/src/index.js"
 pin "alpinejs", to: "https://ga.jspm.io/npm:alpinejs@3.10.5/dist/module.esm.js"
 pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"
+pin "flowbite", to: "https://ga.jspm.io/npm:flowbite@1.5.3/dist/flowbite.js"
 pin "turbo_ready", to: "https://ga.jspm.io/npm:turbo_ready@0.1.2/app/javascript/index.js"
 
 # this pin works because of the link_tree directive in: test/dummy/app/assets/config/manifest.js
