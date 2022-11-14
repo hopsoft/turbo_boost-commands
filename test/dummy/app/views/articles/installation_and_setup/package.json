@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "turbo_ready": "^<%= TurboReady::VERSION %>",
     "turbo_reflex": "^<%= TurboReflex::VERSION %>"
   }
 }

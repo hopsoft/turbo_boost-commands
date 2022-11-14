@@ -13,7 +13,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="pb-48 bg-white dark:bg-gray-900">
+  <body class="bg-white dark:bg-gray-900">
     <%= render "layouts/navbar" %>
 
     <div class="flex overflow-hidden pt-16">
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <%= render "layouts/footer2" %>
+    <%= render "layouts/footer" %>
 
     <script type="text/javascript">
       window.TailwindDefaults = <%= tailwind_defaults.to_json.html_safe %>;

@@ -1,13 +1,12 @@
 <% content_for :breadcrumbs do %>
-  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
-  <%= render flowbite(:breadcrumb), html: "Demos", href: demos_path, active: true %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path, active: true %>
 <% end %>
 
 <%= render "articles/hero" %>
 
 <aside aria-label="Related articles" class="pb-8 bg-white lg:py-24 dark:bg-gray-900">
   <div class="px-4 mx-auto max-w-screen-xl">
-    <%= render "articles/preview", image: "undraw_press_play_re_85bj.svg", title: "Installation and setup", url: "#" do %>
+    <%= render "articles/preview", image: "undraw_press_play_re_85bj.svg", title: "Installation and setup", url: article_path(:installation_and_setup) do %>
       Install the GEM and NPM package then configure
     <% end %>
 

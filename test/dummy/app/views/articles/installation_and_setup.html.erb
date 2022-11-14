@@ -1,0 +1,66 @@
+<% content_for :breadcrumbs do %>
+  <%= render flowbite(:breadcrumb), html: "Home", href: root_path %>
+  <%= render flowbite(:breadcrumb), html: "Installation and Setup", href: article_path(:installation_and_setup), active: true %>
+<% end %>
+
+<main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
+  <div class="flex justify-between px-4 mx-auto">
+
+    <article class="mx-auto w-full max-w-5xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+      <header class="mb-4 lg:mb-6 not-format">
+        <address class="flex items-center mb-6 not-italic">
+          <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+            <img class="mr-4 w-16 h-16 rounded-full" src="https://pbs.twimg.com/profile_images/1577505899664625666/jqHYopAl_400x400.jpg" alt="Nate Hopkins">
+            <div>
+              <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white">Nate Hopkins (hopsoft)</a>
+              <p class="text-base font-light text-gray-500 dark:text-gray-400">Software Writer, Creator of TurboReflex</p>
+              <p class="text-base font-light text-gray-500 dark:text-gray-400"><time pubdate datetime="2022-11-14" title="November 14th, 2022">Nov. 14th, 2022</time></p>
+            </div>
+          </div>
+        </address>
+        <h1 class="mt-14 mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">Installation and Setup</h1>
+      </header>
+
+      <p class="lead">
+        How to install and configure TurboReflex in your Rails/Hotwire app.
+      </p>
+
+      <%= render flowbite(:alert), type: :dark, class: "flex items-center my-8" do %>
+        <%= render heroicon(:information_circle), class: "w-6 h-6 mr-2" %>
+        TurboReflex has a <%= link_to "peer dependency", "https://classic.yarnpkg.com/lang/en/docs/dependency-types/#toc-peerdependencies", class: css("flowbite.link.default", "mx-2") %>
+        on <%= link_to "TurboReady", "https://turboready.reflexready.com/", class: css("flowbite.link.default", "mx-2") %>
+        which means that TurboReady must also be installed and configured.
+      <% end %>
+
+      <p>
+        First add the GEMs to the project.
+        <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/bundle.sh", path: "In the terminal", erb: true %>
+        <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/articles/installation_and_setup/Gemfile", path: "Gemfile", erb: true %>
+      </p>
+
+      <p>
+        Next add the NPM packages to your <span class="font-mono text-gray-500">package.json</span> file.
+        <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/yarn.sh", path: "In the terminal", erb: true %>
+        <%= render component(:code), language: :json, class: "text-sm", source_path: "app/views/articles/installation_and_setup/package.json", path: "package.json", erb: true %>
+      </p>
+
+      <p>
+        Alternately, pin the JavaScript packages to your <span class="font-mono text-gray-500">config/importmap.rb</span> file.
+        <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/importmap.sh", path: "In the terminal", erb: true %>
+        <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/articles/installation_and_setup/importmap.rb", path: "config/importmap.rb", erb: true %>
+      </p>
+
+      <p>
+        Now add TurboReflex to your Rails app.
+        <%= render component(:code), language: :erb, class: "text-sm", source_path: "app/views/articles/installation_and_setup/application.html.erb", path: "app/views/layouts/application.html.erb" %>
+      </p>
+
+      <p>
+        Finally import both libraries into your JavaScript app and configure.
+        <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/articles/installation_and_setup/application.js", path: "app/javascript/application.js" %>
+      </p>
+
+      <h2 class="mb-4 text-2xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">Advanced Configuration</h1>
+    </article>
+  </div>
+</main>

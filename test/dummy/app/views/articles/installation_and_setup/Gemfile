@@ -1,2 +1,2 @@
-# Gemfile
+gem "turbo_ready", "~> <%= TurboReady::VERSION %>"
 gem "turbo_reflex", "~> <%= TurboReflex::VERSION %>"

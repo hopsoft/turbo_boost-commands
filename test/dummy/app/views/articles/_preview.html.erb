@@ -4,10 +4,10 @@
       <%= image_tag image, class: "mr-5 w-32 h-32 max-w-fullalign-middle bg-gray-200 dark:bg-gray-700 rounded-full", alt: title %>
     </span>
     <div class="flex flex-col justify-center">
-      <h2 class="mb-2 text-4xl font-bold leading-tight text-gray-900 dark:text-white">
+      <h2 class="mb-2 text-3xl font-bold leading-tight text-gray-900 dark:text-white">
         <%= title %>
       </h2>
-      <p class="mb-2 text-xl font-light text-gray-500 dark:text-gray-400">
+      <p class="mb-2 text-lg font-light text-gray-500 dark:text-gray-400">
         <%= yield %><span class="-ml-1">...</span>
         <%= tag.span "more", class: css("flowbite.link.default") %>
       </p>
