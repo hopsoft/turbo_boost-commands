@@ -135,7 +135,7 @@ class TurboReflex::StateManager
   end
 
   def write_cookie
-    return unless changed?
+    return unless changed? || cookie.blank?
     cookies.signed["turbo_reflex.state"] = {value: ordinal_payload, path: "/", expires: 1.day.from_now}
     changes_applied
   rescue => error
