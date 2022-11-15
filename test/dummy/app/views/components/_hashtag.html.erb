@@ -1,0 +1,6 @@
+<%= tag.div id: local_assigns[:id] || SecureRandom.alphanumeric(10), class: "highlight #{local_assigns[:class]}" do %>
+  <% if local_assigns[:source] %>
+  <% elsif local_assigns[:source_path] %>
+  <% end %>
+<% end %>
+<%= tag.div path, class: "monospace opacity-50 relative -top-7 right-1 -mb-8 text-right font-extralight" if local_assigns[:path] %>
