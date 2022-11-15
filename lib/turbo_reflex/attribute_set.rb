@@ -15,21 +15,25 @@ class TurboReflex::AttributeSet
       value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
       instance_variable_set "@#{name}", value
 
-      next if orig_respond_to?(name)
+      next if orig_respond_to_missing?(name, false)
 
       self.class.define_method(name) { instance_variable_get :"@#{name}" }
       self.class.define_method("#{name}?") { public_send(name).present? }
     end
   end
 
-  alias_method :orig_respond_to?, :respond_to?
+  def respond_to?(name, include_all = false)
+    respond_to_missing? name, include_all
+  end
+
+  alias_method :orig_respond_to_missing?, :respond_to_missing?
+
+  def respond_to_missing?(name, include_all)
+    true
+  end
 
   def method_missing(name, *args)
     return false if name.end_with?("?")
     nil
-  end
-
-  def respond_to?(name, include_all = false)
-    true
   end
 end
