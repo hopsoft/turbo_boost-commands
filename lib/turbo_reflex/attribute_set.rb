@@ -3,7 +3,7 @@
 class TurboReflex::AttributeSet
   def initialize(prefix, attributes: {})
     prefix = prefix.to_s
-    attrs = attributes.to_h.deep_transform_values(&:to_s)
+    attrs = attributes.to_h.transform_values(&:to_s)
 
     attrs.each do |key, value|
       key = key.to_s.strip
