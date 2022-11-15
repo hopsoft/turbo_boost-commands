@@ -25,7 +25,7 @@ class TurboReflex::AttributeSet
   alias_method :orig_respond_to?, :respond_to?
 
   def method_missing(name, *args)
-    return false if name.to_s.end_with?("?")
+    return false if name.end_with?("?")
     nil
   end
 
