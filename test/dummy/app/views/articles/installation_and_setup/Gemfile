@@ -1,2 +1,4 @@
+# frozen_string_literal: true
+
 gem "turbo_ready", "~> <%= TurboReady::VERSION %>"
 gem "turbo_reflex", "~> <%= TurboReflex::VERSION %>"

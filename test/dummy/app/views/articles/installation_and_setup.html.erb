@@ -3,10 +3,10 @@
   <%= render flowbite(:breadcrumb), html: "Installation and Setup", href: article_path(:installation_and_setup), active: true %>
 <% end %>
 
-<main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
+<main class="pt-8 pb-16 bg-white lg:pt-16 lg:pb-24 dark:bg-gray-900">
   <div class="flex justify-between px-4 mx-auto">
 
-    <article class="mx-auto w-full max-w-5xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+    <article class="mx-auto w-full max-w-5xl format format-sm format-blue sm:format-base lg:format-lg dark:format-invert">
       <header class="mb-4 lg:mb-6 not-format">
         <address class="flex items-center mb-6 not-italic">
           <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
@@ -18,9 +18,9 @@
             </div>
           </div>
         </address>
-        <h1 id="install" class="scroll-mt-24 mt-14 mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
+        <h1 id="install" class="mt-14 mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white scroll-mt-24">
           Installation and Setup
-          <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#install", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+          <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#install", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
         </h1>
       </header>
 
@@ -37,7 +37,7 @@
 
       <h3 id="gem" class="opacity-70 scroll-mt-24">
         First add the GEMs to the project
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#gem", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#gem", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
         <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/bundle.sh", path: "In the terminal", erb: true %>
@@ -46,7 +46,7 @@
 
       <h3 id="npm" class="opacity-70 scroll-mt-24">
         Next add the NPM packages to your package.json file
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#npm", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#npm", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
         <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/yarn.sh", path: "In the terminal", erb: true %>
@@ -55,7 +55,7 @@
 
       <h3 id="pin" class="opacity-70 scroll-mt-24">
         Alternately, pin the JavaScript packages to your config/importmap.rb file
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#pin", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#pin", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
         <%= render component(:code), language: :shell, class: "text-sm", source_path: "app/views/articles/installation_and_setup/importmap.sh", path: "In the terminal", erb: true %>
@@ -64,7 +64,7 @@
 
       <h3 id="meta" class="opacity-70 scroll-mt-24">
         Now add the TurboReflex meta tag to your Rails app
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#meta", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#meta", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
         <%= render component(:code), language: :erb, class: "text-sm", source_path: "app/views/articles/installation_and_setup/application.html.erb", path: "app/views/layouts/application.html.erb" %>
@@ -72,31 +72,41 @@
 
       <h3 id="import" class="opacity-70 scroll-mt-24">
         Finally import both libraries into your JavaScript app and configure
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#import", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#import", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
         <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/articles/installation_and_setup/application.js", path: "app/javascript/application.js" %>
       </p>
 
-      <h2 id="advanced" class="scroll-mt-24 mb-4 text-2xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
+      <h2 id="advanced" class="mb-4 text-2xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white scroll-mt-24">
         Advanced Configuration
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#advanced", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#advanced", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h2>
 
       <h3 id="event-delegates" class="opacity-70 scroll-mt-24">
         Event delegation and reflex triggers
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#event-delegates", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#event-delegates", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
-        ...
+        TurboReflex uses <%= link_to "event delegation", "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation", class: css("flowbite.link.default") %>
+        to determine what elements can trigger reflexes and when reflexes should be invoked.
+      </p>
+      <p>
+        Use the JavaScript console in a browser to view the default delegates.
+        <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/articles/installation_and_setup/delegates.js", path: "in the JavaScript console" %>
+      </p>
+      <p>
+        It's possible to register new delegates and override defaults.
+        <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/articles/installation_and_setup/register.js", path: "app/javascript/application.js" %>
       </p>
 
       <h3 id="schema" class="opacity-70 scroll-mt-24">
-        Schema and element attributes
-        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#schema", class: "opacity-40 hover:opacity-80 inline-block align-middle" %>
+        Schema
+        <%= link_to render(heroicon(:hashtag), class: "w-auto h-6"), "#schema", class: "opactiy-50 hover:opacity-80 inline-block align-middle" %>
       </h3>
       <p>
-        ...
+        It's possible to customize the schema that TurboReflex uses to identify important element attributes etc...
+        <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/articles/installation_and_setup/schema.js", path: "app/javascript/application.js" %>
       </p>
     </article>
   </div>
