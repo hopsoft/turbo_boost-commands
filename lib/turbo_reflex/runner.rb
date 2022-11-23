@@ -195,6 +195,7 @@ class TurboReflex::Runner
   end
 
   def valid_client_token?
+    return true unless Rails.configuration.turbo_reflex.validate_client_token
     return false unless client_token.present?
     return false unless message_verifier.valid_message?(client_token)
     unmasked_client_token = message_verifier.verify(client_token)
