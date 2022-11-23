@@ -13,7 +13,7 @@ module TurboReflex
   class Engine < ::Rails::Engine
     config.turbo_reflex = ActiveSupport::OrderedOptions.new
     config.turbo_reflex[:validate_client_token] = true
-    config.turbo_reflex[:cookie_max_bytesize] = ActionDispatch::Cookies::MAX_COOKIE_SIZE / 2
+    config.turbo_reflex[:max_cookie_size] = ActionDispatch::Cookies::MAX_COOKIE_SIZE / 2
 
     initializer "turbo_reflex.configuration" do
       Mime::Type.register "text/vnd.turbo-reflex.html", :turbo_reflex

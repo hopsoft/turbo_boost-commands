@@ -124,7 +124,7 @@ class TurboReflex::StateManager
   def ordinal_payload
     provisional_state.clear
     state.shrink!
-    state.prune! max_bytesize: TurboReflex.config.cookie_max_bytesize
+    state.prune! max_bytesize: TurboReflex.config.max_cookie_size
     state.ordinal_payload
   end
 
