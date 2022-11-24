@@ -91,10 +91,9 @@ class TurboReflex::Base
     return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
 
     options = options.symbolize_keys
-    ivars = {}
 
-    options[:assigns]&.each do |key, value|
-      ivars[key] = controller.instance_variable_get("@#{key}")
+    ivars = options[:assigns]&.each_with_object({}) do |(key, value), memo|
+      memo[key] = controller.instance_variable_get("@#{key}")
       controller.instance_variable_set "@#{key}", value
     end
 
