@@ -92,7 +92,7 @@ class TurboReflex::Base
 
     options = options.symbolize_keys
     options[:assigns].try(:each) { |key, val| controller.instance_variable_set "@#{key}", val }
-    controller.view_context.render(options.except(:assigns), &block)
+    controller.view_context.render(options.except(:assigns), locals, &block)
   end
 
   def morph(selector, html)
