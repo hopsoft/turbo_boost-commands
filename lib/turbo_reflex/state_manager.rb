@@ -63,25 +63,29 @@ class TurboReflex::StateManager
     header_state_hash = {}
 
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
-    begin
-      state_override_block = self.class.state_override_block(runner.controller)
-      if state_override_block
-        server_state_hash = runner.controller.instance_eval(&state_override_block).with_indifferent_access
-        server_state_hash.each { |key, val| self[key] = val }
+    if TurboReflex.config.apply_server_state_overrides
+      begin
+        state_override_block = self.class.state_override_block(runner.controller)
+        if state_override_block
+          server_state_hash = runner.controller.instance_eval(&state_override_block).with_indifferent_access
+          server_state_hash.each { |key, val| self[key] = val }
+        end
+      rescue => error
+        Rails.logger.error "Failed to apply `state_override_block` configured in #{runner.controller.class.name} to TurboReflex::State! #{error.message}"
       end
-    rescue => error
-      Rails.logger.error "Failed to apply `state_override_block` configured in #{runner.controller.class.name} to TurboReflex::State! #{error.message}"
     end
 
-    # Merge client state into server state (i.e. optimistic state)
+    # Apply client state overrides (i.e. optimistic state)
     # NOTE: Client state HTTP headers are only sent if/when state has changed on the client (only the changes are sent).
     #       This prevents race conditions (state mismatch) caused when frame and XHR requests emit immediately
     #       before the <meta id="turbo-reflex"> has been updated with the latest state from the server.
-    begin
-      header_state_hash = TurboReflex::State.deserialize_base64(header).with_indifferent_access
-      header_state_hash.each { |key, val| self[key] = val }
-    rescue => error
-      Rails.logger.error "Failed to apply client state from HTTP headers to TurboReflex::State! #{error.message}"
+    if TurboReflex.config.apply_client_state_overrides
+      begin
+        header_state_hash = TurboReflex::State.deserialize_base64(header).with_indifferent_access
+        header_state_hash.each { |key, val| self[key] = val }
+      rescue => error
+        Rails.logger.error "Failed to apply client state from HTTP headers to TurboReflex::State! #{error.message}"
+      end
     end
 
     @cookie_data = cookie_state_hash
