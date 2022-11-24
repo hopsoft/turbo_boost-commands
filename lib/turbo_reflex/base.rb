@@ -67,7 +67,7 @@ class TurboReflex::Base
   attr_reader :controller, :turbo_streams
   alias_method :streams, :turbo_streams
 
-  delegate :dom_id, :render, to: :"controller.view_context"
+  delegate :dom_id, to: :"controller.view_context"
   delegate(
     :controller_action_prevented?,
     :render_response,
@@ -84,6 +84,22 @@ class TurboReflex::Base
 
   def dom_id_selector(...)
     "##{dom_id(...)}"
+  end
+
+  # Same method signature as ActionView::Rendering#render (i.e. controller.view_context.render)
+  def render(options = {}, locals = {}, &block)
+    return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
+
+    options = options.symbolize_keys
+
+    ivars = options[:assigns]&.each_with_object({}) do |(key, value), memo|
+      memo[key] = controller.instance_variable_get("@#{key}")
+      controller.instance_variable_set "@#{key}", value
+    end
+
+    controller.view_context.render(options.except(:assigns), locals, &block)
+  ensure
+    ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
   end
 
   def morph(selector, html)
