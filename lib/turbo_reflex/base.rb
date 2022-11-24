@@ -91,8 +91,16 @@ class TurboReflex::Base
     return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
 
     options = options.symbolize_keys
-    options[:assigns].try(:each) { |key, val| controller.instance_variable_set "@#{key}", val }
+    ivars = {}
+
+    options[:assigns]&.each do |key, value|
+      ivars[key] = controller.instance_variable_get("@#{key}")
+      controller.instance_variable_set "@#{key}", value
+    end
+
     controller.view_context.render(options.except(:assigns), locals, &block)
+  ensure
+    ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
   end
 
   def morph(selector, html)
