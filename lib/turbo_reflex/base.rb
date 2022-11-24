@@ -88,14 +88,10 @@ class TurboReflex::Base
 
   # Same method signature as ActionView::Rendering#render (i.e. controller.view_context.render)
   def render(options = {}, locals = {}, &block)
-    options = {partial: options.to_s} unless options.is_a?(Hash)
+    return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
+
     options = options.symbolize_keys
-    options[:locals] ||= {}
-    options[:locals].merge! locals
-
-    assigns = options[:assigns] || {}
-    assigns.each { |key, value| controller.instance_variable_set "@#{key}", value }
-
+    options[:assigns].try(:each) { |key, val| controller.instance_variable_set "@#{key}", val }
     controller.view_context.render(options.except(:assigns), &block)
   end
 
