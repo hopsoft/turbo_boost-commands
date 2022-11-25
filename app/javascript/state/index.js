@@ -3,9 +3,10 @@ import observable from './observable'
 import { dispatch, stateEvents as events } from '../events'
 
 let loadedState, currentState, changedState
-let observer
+let loadStateTimeout
 
 function loadState () {
+  if (!meta.element) return loadStateLater()
   const json = atob(meta.element.dataset.state)
   changedState = {}
   currentState = observable(JSON.parse(json))
@@ -16,28 +17,18 @@ function loadState () {
   )
 }
 
-function metaMutated (mutations) {
-  if (meta.element.dataset.clientStateChange) return
-  mutations.forEach(m => {
-    if (m.attributeName === 'data-state') loadState()
-  })
+function loadStateLater () {
+  clearTimeout(loadStateTimeout)
+  loadStateTimeout = setTimeout(loadState, 10)
 }
 
-function initObserver () {
-  if (observer) return
-  observer = new MutationObserver(metaMutated)
-  observer.observe(meta.element, { attributes: true })
-}
+if (!loadedState) loadState()
 
-if (meta.element) {
-  loadState()
-  initObserver()
-} else {
-  addEventListener('DOMContentLoaded', loadState)
-  addEventListener('DOMContentLoaded', initObserver)
-}
-addEventListener('turbo:load', initObserver)
-addEventListener('turbo:frame-load', initObserver)
+addEventListener('DOMContentLoaded', loadStateLater)
+addEventListener('load', loadStateLater)
+addEventListener('turbo:load', loadStateLater)
+addEventListener('turbo:frame-load', loadStateLater)
+addEventListener('turbo-reflex:success', loadStateLater)
 
 addEventListener(events.stateChange, event => {
   changedState = {}
