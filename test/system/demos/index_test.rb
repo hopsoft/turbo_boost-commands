@@ -5,6 +5,7 @@ require "application_system_test_case"
 class DemosTest < ApplicationSystemTestCase
   test "turbo reflex loaded and configured" do
     visit demos_url
+    sleep 0.1
     assert_equal "object", page.evaluate_script("typeof TurboReflex")
     assert_equal "object", page.evaluate_script("typeof TurboReflex.schema")
     assert_equal "object", page.evaluate_script("typeof TurboReflex.eventDelegates")
@@ -20,6 +21,7 @@ class DemosTest < ApplicationSystemTestCase
 
   test "turbo reflex client state" do
     visit demos_url
+    sleep 0.1
     meta = find_by_id("turbo-reflex", visible: false)
 
     assert_equal "e30", meta["data-state"]
