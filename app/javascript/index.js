@@ -1,3 +1,4 @@
+import 'turbo_ready'
 import './turbo'
 import schema from './schema'
 import { dispatch, allEvents as events } from './events'
@@ -74,7 +75,7 @@ delegates.register('change', [
 delegates.register('submit', [`form[${schema.reflexAttribute}]`])
 delegates.register('click', [`[${schema.reflexAttribute}]`])
 
-export default self.TurboReflex = {
+self.TurboReflex = {
   logger,
   schema,
   registerEventDelegate: delegates.register,
@@ -92,3 +93,5 @@ export default self.TurboReflex = {
     return state.delta
   }
 }
+
+export default self.TurboReflex

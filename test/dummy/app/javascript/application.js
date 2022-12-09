@@ -2,7 +2,6 @@
 
 import '@hotwired/turbo-rails'
 import debounced from 'debounced'
-import TurboReady from 'turbo_ready'
 import 'turbo_reflex'
 import './controllers'
 import './activity'
@@ -12,9 +11,6 @@ debounced.initialize({
   'turbo:load': { wait: 150 },
   'turbo-reflex:finish': { wait: 150 }
 })
-
-TurboReady.initialize(Turbo.StreamActions)
-self.TurboReady = TurboReady
 
 TurboReflex.logger.level = 'debug'
 
