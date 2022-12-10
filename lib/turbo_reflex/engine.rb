@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "turbo-rails"
+require "turbo_ready"
 require_relative "version"
 require_relative "base"
 require_relative "controller_pack"

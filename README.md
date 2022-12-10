@@ -120,7 +120,7 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
 
     ```diff
     # Gemfile
-    +gem "turbo_ready", "~> VERSION"
+    gem "turbo-rails", ">= 1.1", "< 2"
     +gem "turbo_reflex", "~> VERSION"
     ```
 
@@ -128,7 +128,6 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     # package.json
     "dependencies": {
       "@hotwired/turbo-rails": ">=7.2",
-    +  "turbo_ready": "^VERSION",
     +  "turbo_reflex": "^VERSION"
     ```
 
@@ -139,7 +138,6 @@ TurboReflex is a lightweight Turbo Frame extension... which means that reactivit
     ```diff
     # app/javascript/application.js
     import '@hotwired/turbo-rails'
-    +import 'turbo_ready'
     +import 'turbo_reflex'
     ```
 
