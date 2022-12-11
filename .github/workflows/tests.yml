@@ -6,7 +6,7 @@ on:
       - '*'
   push:
     branches:
-      - master
+      - main
 
 jobs:
   ruby_test:
@@ -16,7 +16,7 @@ jobs:
       matrix:
         ruby-version: ['2.7', '3.0', '3.1']
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v3
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:

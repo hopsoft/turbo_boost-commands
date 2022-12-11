@@ -6,7 +6,7 @@ on:
       - '*'
   push:
     branches:
-      - master
+      - main
 
 jobs:
   standard:
@@ -16,7 +16,7 @@ jobs:
       matrix:
         ruby-version: ['3.1']
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v3
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
@@ -34,4 +34,3 @@ jobs:
         bundle install --jobs 4 --retry 3
     - name: Run StandardRB
       run: bundle exec standardrb --format progress
-

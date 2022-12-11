@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.metadata["homepage_uri"] = s.homepage
   s.metadata["source_code_uri"] = s.homepage
-  s.metadata["changelog_uri"] = s.homepage + "/blob/master/CHANGELOG.md"
+  s.metadata["changelog_uri"] = s.homepage + "/blob/main/CHANGELOG.md"
 
   s.files = Dir["app/**/*", "bin/*", "config/*", "lib/**/*.rb", "[A-Z]*"]
 
