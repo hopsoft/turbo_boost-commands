@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# TurboReflex base superclass.
+# All TurboReflex classes should inherit from this class.
+#
 # Reflexes are executed via a before_action in the Rails controller lifecycle.
 # They have access to the following methods and properties.
 #
@@ -12,10 +15,13 @@
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
 # * render_response ............. Renders a full controller response
 # * renderer .................... An ActionController::Renderer
-# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
 # * turbo_stream ................ A Turbo Stream TagBuilder
 # * turbo_streams ............... A list of Turbo Streams to append to the response (also aliased as streams)
 # * state ....................... An object that stores ephemeral `state`
+#
+# They also have access to the following class methods:
+#
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
 #
 class CounterReflex < TurboReflex::Base
   delegate :session, to: :controller
