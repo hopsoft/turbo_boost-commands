@@ -82,10 +82,7 @@ function invokeReflex (event) {
     }
   } catch (error) {
     dispatch(lifecycle.events.clientError, element, {
-      detail: {
-        ...payload,
-        error
-      }
+      detail: { ...payload, error }
     })
   }
 }

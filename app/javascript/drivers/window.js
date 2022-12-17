@@ -24,7 +24,7 @@ function errored (event) {
   dispatch(
     lifecycle.events.clientError,
     document,
-    { detail: { ...event.detail, xhr, error } },
+    { detail: { ...event.detail, error, xhr } },
     true
   )
 }
