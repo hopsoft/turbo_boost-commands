@@ -13,7 +13,9 @@ function loadState () {
   loadedState = { ...currentState }
   delete meta.element.dataset.clientStateChange
   setTimeout(() =>
-    dispatch(events.stateLoad, meta.element, { state: currentState })
+    dispatch(events.stateLoad, meta.element, {
+      detail: { state: currentState }
+    })
   )
 }
 
