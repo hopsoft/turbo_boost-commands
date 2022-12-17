@@ -45,11 +45,12 @@ function invokeReflex (event) {
       cancelable: true,
       detail: payload
     })
+
     if (startEvent.defaultPrevented)
       return dispatch(lifecycle.events.abort, element, {
         detail: {
-          ...startEvent.detail,
-          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked reflex invocation!`
+          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked reflex invocation!`,
+          source: startEvent
         }
       })
 
