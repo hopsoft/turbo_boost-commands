@@ -15,6 +15,7 @@ export const stateEvents = {
 export const allEvents = { ...lifecycleEvents, ...stateEvents }
 
 export function dispatch (name, target, options = {}, raise = false) {
+  options = options || {}
   options.detail = options.detail || {}
   try {
     target = target || document
