@@ -5,6 +5,7 @@ require "turbo_ready"
 require_relative "version"
 require_relative "base"
 require_relative "controller_pack"
+require_relative "../../app/controllers/concerns/turbo_reflex/controller"
 
 module TurboReflex
   def self.config
