@@ -13,6 +13,16 @@ import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
+function buildReflexPayload (id, element) {
+  return {
+    id, // reflex id
+    name: element.dataset.turboReflex, // reflex name
+    elementId: element.id.length > 0 ? element.id : null,
+    elementAttributes: elements.buildAttributePayload(element),
+    startedAt: new Date().getTime()
+  }
+}
+
 function invokeReflex (event) {
   let element
   let payload = {}
@@ -22,22 +32,38 @@ function invokeReflex (event) {
     if (!element) return
     if (!delegates.isRegisteredForElement(event.type, element)) return
 
-    const driver = drivers.find(element)
-
-    // payload sent to server (also used for lifecycle event.detail)
-    payload = {
-      id: `reflex-${uuids.v4()}`,
-      name: element.dataset.turboReflex,
+    const reflexId = `reflex-${uuids.v4()}`
+    let driver = drivers.find(element)
+    let payload = {
+      ...buildReflexPayload(reflexId, element),
       driver: driver.name,
-      src: driver.src,
       frameId: driver.frame ? driver.frame.id : null,
-      elementId: element.id.length > 0 ? element.id : null,
-      elementAttributes: elements.buildAttributePayload(element),
-      startedAt: new Date().getTime()
+      src: driver.src
+    }
+
+    const startEvent = dispatch(lifecycle.events.start, element, {
+      cancelable: true,
+      detail: payload
+    })
+
+    if (startEvent.defaultPrevented)
+      return dispatch(lifecycle.events.abort, element, {
+        detail: {
+          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked reflex invocation!`,
+          source: startEvent
+        }
+      })
+
+    // the element and thus the driver may have changed based on the start event handler(s)
+    driver = drivers.find(element)
+    payload = {
+      ...buildReflexPayload(reflexId, element),
+      driver: driver.name,
+      frameId: driver.frame ? driver.frame.id : null,
+      src: driver.src
     }
 
     activity.add(payload)
-    dispatch(lifecycle.events.start, element, payload)
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
@@ -56,8 +82,7 @@ function invokeReflex (event) {
     }
   } catch (error) {
     dispatch(lifecycle.events.clientError, element, {
-      error,
-      ...payload
+      detail: { ...payload, error }
     })
   }
 }

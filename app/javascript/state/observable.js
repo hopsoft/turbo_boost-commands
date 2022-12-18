@@ -9,13 +9,13 @@ function observable (object, parent = null) {
   const proxy = new Proxy(object, {
     deleteProperty (target, key) {
       delete target[key]
-      dispatch(events.stateChange, meta.element, { state: head })
+      dispatch(events.stateChange, meta.element, { detail: { state: head } })
       return true
     },
 
     set (target, key, value, receiver) {
       target[key] = observable(value, this)
-      dispatch(events.stateChange, meta.element, { state: head })
+      dispatch(events.stateChange, meta.element, { detail: { state: head } })
       return true
     }
   })

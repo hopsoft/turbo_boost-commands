@@ -7,7 +7,9 @@ import renderer from '../renderer'
 
 function aborted (event) {
   const xhr = event.target
-  dispatch(lifecycle.events.abort, document, { xhr, ...event.detail })
+  dispatch(lifecycle.events.abort, document, {
+    detail: { ...event.detail, xhr }
+  })
 }
 
 function errored (event) {
@@ -22,7 +24,7 @@ function errored (event) {
   dispatch(
     lifecycle.events.clientError,
     document,
-    { xhr, ...event.detail, error },
+    { detail: { ...event.detail, error, xhr } },
     true
   )
 }

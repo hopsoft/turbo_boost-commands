@@ -14,17 +14,11 @@ export const stateEvents = {
 
 export const allEvents = { ...lifecycleEvents, ...stateEvents }
 
-export function dispatch (name, target = document, detail = {}, raise = false) {
-  try {
-    target = target || document
-    const event = new CustomEvent(name, {
-      detail,
-      cancelable: false,
-      bubbles: true
-    })
-    target.dispatchEvent(event)
-  } catch (error) {
-    if (raise) throw error
-    dispatch(lifecycleEvents.clientError, target, { error, ...detail }, true)
-  }
+export function dispatch (name, target, options = {}) {
+  options = options || {}
+  options.detail = options.detail || {}
+  target = target || document
+  const evt = new CustomEvent(name, { ...options, bubbles: true })
+  target.dispatchEvent(evt)
+  return evt
 }

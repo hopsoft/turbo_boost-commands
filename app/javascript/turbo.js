@@ -45,7 +45,7 @@ addEventListener('turbo:before-fetch-response', event => {
       dispatch(
         lifecycle.events.clientError,
         document,
-        { ...event.detail, error },
+        { detail: { ...event.detail, error } },
         true
       )
     }
