@@ -272,7 +272,7 @@ Here's an example.
 <a data-turbo-reflex="DemoReflex#example">
 ```
 
-Server side reflexes can live anywhere in your app; however, we recommend you keep them in the `app` directory.
+Server side reflexes can live anywhere in your app; however, we recommend you keep them in the `app/reflexes` directory.
 
 ```diff
  |- app
