@@ -2806,10 +2806,10 @@ tsutils@^3.17.1:
   dependencies:
     tslib "^1.8.1"
 
-"turbo_ready@>= 0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/turbo_ready/-/turbo_ready-0.1.3.tgz#e54cd1539a0808307d8e68dbfe5c507af48baf72"
-  integrity sha512-fglj2qohy7llj9Jxj/g9S//uZefE2NdORrRaxu3ZHwLLb7Rge+brgSzDfc6/doa+BReIXwiwd8Yql1k2bGsopg==
+"turbo_ready@>= 0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/turbo_ready/-/turbo_ready-0.1.4.tgz#aa0f21f2f66ef994a8fed0974a655dda651aacb9"
+  integrity sha512-ARivY4usWLC12igu+UmEM3a3FHO3RX+XAdQAf3NQZvafCOhJoCD/WpOrDpHHYnUyfO4PeyZM+7q4UobRmJsdNQ==
   dependencies:
     "@alpinejs/morph" ">=3.10.4"
     alpinejs ">=3.10.4"
