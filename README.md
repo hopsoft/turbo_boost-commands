@@ -244,19 +244,19 @@ Just specify the `data-turbo-reflex` attribute on the form.
 ```erb
 # app/views/posts/post.html.erb
 <%= turbo_frame_tag dom_id(@post) do %>
-  <%= form_with model: @post, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
+  <%= form_with model: @post, data: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
 <%= turbo_frame_tag dom_id(@post) do %>
-  <%= form_for @post, remote: true, html: { turbo_reflex: "ExampleReflex#work" } do |form| %>
+  <%= form_for @post, remote: true, data: { turbo_reflex: "ExampleReflex#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
 <%= form_with model: @post,
-  html: { turbo_frame: dom_id(@post), turbo_reflex: "ExampleReflex#work" } do |form| %>
+  data: { turbo_frame: dom_id(@post), turbo_reflex: "ExampleReflex#work" } do |form| %>
   ...
 <% end %>
 ```
@@ -272,7 +272,7 @@ Here's an example.
 <a data-turbo-reflex="DemoReflex#example">
 ```
 
-Server side reflexes can live anywhere in your app; however, we recommend you keep them in the `app` directory.
+Server side reflexes can live anywhere in your app; however, we recommend you keep them in the `app/reflexes` directory.
 
 ```diff
  |- app
