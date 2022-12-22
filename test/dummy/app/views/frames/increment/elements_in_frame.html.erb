@@ -8,30 +8,30 @@
         <% end %>
 
         <p class="my-8">
-          You can attach reflexes to any element.
+          You can attach commands to any element.
         </p>
 
         <div class="inline-block relative mb-4">
-          <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_reflex: "CounterReflex#increment", session_key: session_key } %>
+          <%= tag.p "P Tag", class: "cursor-pointer", data: { command: "CounterCommand#increment", session_key: session_key } %>
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         </div>
 
         <br>
 
-        <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { turbo_reflex: "CounterReflex#increment", session_key: session_key } do %>
+        <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { command: "CounterCommand#increment", session_key: session_key } do %>
           DIV Tag
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         <% end %>
 
         <br>
 
-        <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { turbo_reflex: "CounterReflex#increment", session_key: session_key } do %>
+        <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { command: "CounterCommand#increment", session_key: session_key } do %>
           SPAN Tag
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         <% end %>
 
         <%= render component(:code), language: :ruby, class: "text-sm",
-          path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/reflex.rb" %>
+          path: "app/commands/counter_command.rb", source_path: "app/views/codes/increment/command.rb" %>
 
         <div class="my-8"></div>
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DemosReflex < TurboReflex::Base
+class DemosCommand < TurboBoost::Commands::Command
   prevent_controller_action
 
   def toggle

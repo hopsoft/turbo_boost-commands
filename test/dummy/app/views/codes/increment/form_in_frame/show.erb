@@ -3,11 +3,11 @@
   <%= session[:count].to_i %>
 
   <%
-    # The turbo_reflex data attribute instructs the client to perform a reflex when submitted
+    # The command data attribute instructs the client to perform a remote command when submitted
     # in addition to normal form handling
   %>
   <%= form_with url: demo_path(params[:id]), method: :patch,
-    data: { turbo_reflex: "CounterReflex#increment" } do |form| %>
+    data: { command: "CounterCommand#increment" } do |form| %>
     <%= form.submit "Submit Form" %>
   <% end %>
 <% end %>

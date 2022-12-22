@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CounterRpcReflex < TurboReflex::Base
+class CounterRpcCommand < TurboBoost::Commands::Command
   delegate :session, to: :controller
 
   prevent_controller_action

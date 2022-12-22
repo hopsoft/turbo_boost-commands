@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-# TurboReflex base superclass.
-# All TurboReflex classes should inherit from this class.
+# TurboBoost::Commands::Command superclass.
+# All command classes should inherit from this class.
 #
-# Reflexes are executed via a before_action in the Rails controller lifecycle.
+# Commands are executed via a before_action in the Rails controller lifecycle.
 # They have access to the following methods and properties.
 #
 # * dom_id ...................... The Rails dom_id helper
 # * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * controller .................. The Rails controller processing the HTTP request
-# * element ..................... A struct that represents the DOM element that triggered the reflex
+# * element ..................... A struct that represents the DOM element that triggered the command
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
-# * params ...................... Reflex specific params (frame_id, element, etc.)
+# * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
 # * render_response ............. Renders a full controller response
 # * renderer .................... An ActionController::Renderer
@@ -21,13 +21,19 @@
 #
 # They also have access to the following class methods:
 #
-# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
-class CounterReflex < TurboReflex::Base
+class CounterCommand < TurboBoost::Commands::Command
   delegate :session, to: :controller
 
+  # prevent the Rails controller/action from running
+  # i.e. completely handle the response in the command
+  prevent_controller_action
+
+  # triggered client-side by elements with `data-command="CounterCommand#increment"`
+  # performed server-side by an implicit controller before_action
   def increment
-    key = "frame-#{controller.params[:id]}-count"
-    session[key] = session.fetch(key, 0) + 1
+    # update the state held in sesion
+    session[:count] = session.fetch(:count, 0) + 1
   end
 end

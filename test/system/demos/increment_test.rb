@@ -8,27 +8,27 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     # before demo
-    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
-    assert_nil page.evaluate_script("TurboReflex.state.active_demo")
+    assert_equal "e30", find_by_id("turbo-boost", visible: false)["data-state"]
+    assert_nil page.evaluate_script("TurboBoost.state.active_demo")
 
     # open demo
-    find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
-    assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
+    find_by_id("#{name}-demo").find("[data-command='DemosCommand#toggle']").click
+    assert page.evaluate_script("document.cookie").include?("turbo_boost.state")
     assert_equal 0, find_by_id("#{name}-demo").find("[data-role='counter']").text.to_i
     assert_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-fingerprint']").text
     assert_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-method']").text
 
     # execute demo
-    find_by_id("#{name}-demo").find("[data-turbo-reflex='CounterReflex#increment']").click
+    find_by_id("#{name}-demo").find("[data-command='CounterCommand#increment']").click
     assert_equal 1, find_by_id("#{name}-demo").find("[data-role='counter']").text.to_i
     assert_not_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-fingerprint']").text
     assert_equal "GET", find_by_id("#{name}-demo").find("[data-role='http-method']").text
 
     # close demo
-    find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
-    assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
-    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
-    assert_nil page.evaluate_script("TurboReflex.state.active_demo")
+    find_by_id("#{name}-demo").find("[data-command='DemosCommand#toggle']").click
+    assert page.evaluate_script("document.cookie").include?("turbo_boost.state")
+    assert_equal "e30", find_by_id("turbo-boost", visible: false)["data-state"]
+    assert_nil page.evaluate_script("TurboBoost.state.active_demo")
   end
 
   test "button-in-frame basic" do
@@ -36,26 +36,26 @@ class IncrementTest < ApplicationSystemTestCase
     visit demo_url("increment")
 
     # before demo
-    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
-    assert_nil page.evaluate_script("TurboReflex.state.active_demo")
+    assert_equal "e30", find_by_id("turbo-boost", visible: false)["data-state"]
+    assert_nil page.evaluate_script("TurboBoost.state.active_demo")
 
     # open demo
-    find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
-    assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
+    find_by_id("#{name}-demo").find("[data-command='DemosCommand#toggle']").click
+    assert page.evaluate_script("document.cookie").include?("turbo_boost.state")
     assert_equal 0, find_by_id("#{name}-demo").find("[data-role='counter']").text.to_i
     assert_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-fingerprint']").text
     assert_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-method']").text
 
     # execute demo
-    find_by_id("#{name}-demo").all("[data-turbo-reflex='CounterReflex#increment']").first.click
+    find_by_id("#{name}-demo").all("[data-command='CounterCommand#increment']").first.click
     assert_equal 1, find_by_id("#{name}-demo").find("[data-role='counter']").text.to_i
     assert_not_equal "N/A", find_by_id("#{name}-demo").find("[data-role='http-fingerprint']").text
     assert_equal "GET", find_by_id("#{name}-demo").find("[data-role='http-method']").text
 
     # close demo
-    find_by_id("#{name}-demo").find("[data-turbo-reflex='DemosReflex#toggle']").click
-    assert page.evaluate_script("document.cookie").include?("turbo_reflex.state")
-    assert_equal "e30", find_by_id("turbo-reflex", visible: false)["data-state"]
-    assert_nil page.evaluate_script("TurboReflex.state.active_demo")
+    find_by_id("#{name}-demo").find("[data-command='DemosCommand#toggle']").click
+    assert page.evaluate_script("document.cookie").include?("turbo_boost.state")
+    assert_equal "e30", find_by_id("turbo-boost", visible: false)["data-state"]
+    assert_nil page.evaluate_script("TurboBoost.state.active_demo")
   end
 end

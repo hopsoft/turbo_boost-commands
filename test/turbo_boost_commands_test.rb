@@ -2,8 +2,8 @@
 
 require "test_helper"
 
-class TurboReflexTest < ActiveSupport::TestCase
+class TurboBoostCommandsTest < ActiveSupport::TestCase
   test "it has a version number" do
-    assert TurboReflex::VERSION
+    assert TurboBoost::Commands::VERSION
   end
 end

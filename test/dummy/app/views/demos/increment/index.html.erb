@@ -15,22 +15,22 @@
 
   <%= render flowbite(:alert), type: :info, class: "flex items-center" do %>
     <%= render heroicon(:information_circle), class: "w-6 h-6 mr-2" %>
-    See the <%= link_to "Get Started", doc_path(:start), class: css("flowbite.link.default", "mx-1") %> guide to learn how to install and setup TurboReflex.
+    See the <%= link_to "Get Started", doc_path(:start), class: css("flowbite.link.default", "mx-1") %> guide to learn how to install and setup TurboBoost Commands.
   <% end %>
 
   <p class="my-10 text-2xl text-white">
-    These demos introduce TurboReflex and show you how to use it in a Rails/Hotwire app.
+    These demos introduce TurboBoost Commands and show you how to use them in a Rails/Hotwire app.
   </p>
 
   <p class="my-6">
-    Reflexes are simple Ruby classes that can be triggered by client-side events in a web browser.
+    Commands are simple Ruby classes that can be triggered by client-side events in a web browser.
     They are executed server-side by a
     <%= link_to "before filter", "https://guides.rubyonrails.org/action_controller_overview.html#filters", target: "_blank", rel: "noopener", class: css("flowbite.link.paragraph") %>
     in your Rails controllers.
   </p>
   <p class="my-4 font-light">
-    The first several examples demonstrate how to use reflexes with Turbo Frames.
-    <span class="text-blue-500">The last example demonstrates how to use reflexes <strong class="underline underline-offset-8">without frames</strong>.</span>
+    The first several examples demonstrate how to use commands with Turbo Frames.
+    <span class="text-blue-500">The last example demonstrates how to use commands <strong class="underline underline-offset-8">without frames</strong>.</span>
     <em>A technique that can significantly simplify your Hotwire code.</em>
   </p>
 

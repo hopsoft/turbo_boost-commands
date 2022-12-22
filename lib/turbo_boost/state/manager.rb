@@ -109,7 +109,7 @@ class TurboBoost::State::Manager
   end
 
   def provisional_state
-    @provisional_state ||= TurboBoost::ProvisionalState.new(self)
+    @provisional_state ||= TurboBoost::State::ProvisionalState.new(self)
   end
 
   alias_method :now, :provisional_state

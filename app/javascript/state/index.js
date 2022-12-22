@@ -57,6 +57,6 @@ export default {
   //
   // SEE: lib/state.rb - for info on how `state` is serialized/deserialized
   get payloadChunks () {
-    return btoa(JSON.stringify(currentState)).match(/.{1,2000}/g)
+    return btoa(JSON.stringify(changedState)).match(/.{1,2000}/g)
   }
 }

@@ -1,7 +1,7 @@
 import '@turbo-boost/streams'
 import './turbo'
 import schema from './schema'
-import { dispatch, allEvents as events } from './events'
+import { dispatch, commandEvents, stateEvents } from './events'
 import activity from './activity'
 import delegates from './delegates'
 import drivers from './drivers'
@@ -41,15 +41,15 @@ function invokeCommand (event) {
       src: driver.src
     }
 
-    const startEvent = dispatch(lifecycle.events.start, element, {
+    const startEvent = dispatch(commandEvents.start, element, {
       cancelable: true,
       detail: payload
     })
 
     if (startEvent.defaultPrevented)
-      return dispatch(lifecycle.events.abort, element, {
+      return dispatch(commandEvents.abort, element, {
         detail: {
-          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked command invocation!`,
+          message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
           source: startEvent
         }
       })
@@ -81,7 +81,7 @@ function invokeCommand (event) {
         return driver.invokeCommand(payload)
     }
   } catch (error) {
-    dispatch(lifecycle.events.clientError, element, {
+    dispatch(commandEvents.clientError, element, {
       detail: { ...payload, error }
     })
   }
@@ -97,24 +97,29 @@ delegates.register('change', [
 delegates.register('submit', [`form[${schema.commandAttribute}]`])
 delegates.register('click', [`[${schema.commandAttribute}]`])
 
-self.TurboBoost = TurboBoost || {}
+self.TurboBoost = self.TurboBoost || {}
+
+self.TurboBoost = {
+  ...self.TurboBoost,
+
+  stateEvents,
+
+  get state () {
+    return state.current
+  },
+
+  get stateDelta () {
+    return state.delta
+  }
+}
 
 self.TurboBoost.Commands = {
   logger,
   schema,
+  events: commandEvents,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
     return { ...delegates.events }
-  },
-  get events () {
-    return { ...events }
-  },
-  get state () {
-    return state.current
-  },
-  // delta of state changes made on the client
-  get stateDelta () {
-    return state.delta
   }
 }
 

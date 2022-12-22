@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CounterReflex < TurboReflex::Base
+class CounterCommand < TurboBoost::Commands::Command
   delegate :session, to: :controller
 
   def increment

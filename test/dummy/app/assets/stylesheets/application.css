@@ -1,5 +1,13 @@
 @import "pygments";
 
+html.dark .light-mode {
+  display: none;
+}
+
+html.light .dark-mode {
+  display: none;
+}
+
 body.busy, body.busy * {
   cursor: wait !important
 }
