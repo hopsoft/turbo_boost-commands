@@ -11,7 +11,7 @@ function remove (id) {
 export default {
   add,
   remove,
-  get reflexes () {
+  get commands () {
     return [...Object.values(active)]
   },
   get length () {

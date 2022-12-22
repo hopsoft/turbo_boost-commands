@@ -1,4 +1,4 @@
-import 'turbo_ready'
+import '@turbo-boost/streams'
 import './turbo'
 import schema from './schema'
 import { dispatch, allEvents as events } from './events'
@@ -13,29 +13,29 @@ import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
-function buildReflexPayload (id, element) {
+function buildCommandPayload (id, element) {
   return {
-    id, // reflex id
-    name: element.dataset.turboReflex, // reflex name
+    id, // uniquely identifies the command
+    name: element.dataset.command,
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
     startedAt: new Date().getTime()
   }
 }
 
-function invokeReflex (event) {
+function invokeCommand (event) {
   let element
   let payload = {}
 
   try {
-    element = elements.findClosestReflex(event.target)
+    element = elements.findClosestCommand(event.target)
     if (!element) return
     if (!delegates.isRegisteredForElement(event.type, element)) return
 
-    const reflexId = `reflex-${uuids.v4()}`
+    const commandId = `command-${uuids.v4()}`
     let driver = drivers.find(element)
     let payload = {
-      ...buildReflexPayload(reflexId, element),
+      ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
       src: driver.src
@@ -49,7 +49,7 @@ function invokeReflex (event) {
     if (startEvent.defaultPrevented)
       return dispatch(lifecycle.events.abort, element, {
         detail: {
-          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked reflex invocation!`,
+          message: `An event handler for '${lifecycle.events.start}' prevented default behavior and blocked command invocation!`,
           source: startEvent
         }
       })
@@ -57,7 +57,7 @@ function invokeReflex (event) {
     // the element and thus the driver may have changed based on the start event handler(s)
     driver = drivers.find(element)
     payload = {
-      ...buildReflexPayload(reflexId, element),
+      ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
       src: driver.src
@@ -72,13 +72,13 @@ function invokeReflex (event) {
 
     switch (driver.name) {
       case 'method':
-        return driver.invokeReflex(element, payload)
+        return driver.invokeCommand(element, payload)
       case 'form':
-        return driver.invokeReflex(element, payload)
+        return driver.invokeCommand(element, payload)
       case 'frame':
-        return driver.invokeReflex(driver.frame, payload)
+        return driver.invokeCommand(driver.frame, payload)
       case 'window':
-        return driver.invokeReflex(payload)
+        return driver.invokeCommand(payload)
     }
   } catch (error) {
     dispatch(lifecycle.events.clientError, element, {
@@ -88,19 +88,18 @@ function invokeReflex (event) {
 }
 
 // wire things up and setup defaults for event delegation
-delegates.handler = invokeReflex
+delegates.handler = invokeCommand
 delegates.register('change', [
-  `input[${schema.reflexAttribute}]`,
-  `select[${schema.reflexAttribute}]`,
-  `textarea[${schema.reflexAttribute}]`
+  `input[${schema.commandAttribute}]`,
+  `select[${schema.commandAttribute}]`,
+  `textarea[${schema.commandAttribute}]`
 ])
-// delegates.register('mousedown', [
-//   `[${schema.reflexAttribute}][${schema.methodAttribute}]`
-// ])
-delegates.register('submit', [`form[${schema.reflexAttribute}]`])
-delegates.register('click', [`[${schema.reflexAttribute}]`])
+delegates.register('submit', [`form[${schema.commandAttribute}]`])
+delegates.register('click', [`[${schema.commandAttribute}]`])
 
-self.TurboReflex = {
+self.TurboBoost = TurboBoost || {}
+
+self.TurboBoost.Commands = {
   logger,
   schema,
   registerEventDelegate: delegates.register,
@@ -119,4 +118,4 @@ self.TurboReflex = {
   }
 }
 
-export default self.TurboReflex
+export default self.TurboBoost.Commands

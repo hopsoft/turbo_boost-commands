@@ -1,8 +1,8 @@
 import schema from './schema'
 import lifecycle from './lifecycle'
 
-function findClosestReflex (element) {
-  return element.closest(`[${schema.reflexAttribute}]`)
+function findClosestCommand (element) {
+  return element.closest(`[${schema.commandAttribute}]`)
 }
 
 function findClosestFrame (element) {
@@ -38,7 +38,7 @@ function buildAttributePayload (element) {
   delete payload.class
   delete payload.action
   delete payload.href
-  delete payload[schema.reflexAttribute]
+  delete payload[schema.commandAttribute]
   delete payload[schema.frameAttribute]
 
   return payload
@@ -46,6 +46,6 @@ function buildAttributePayload (element) {
 
 export default {
   buildAttributePayload,
-  findClosestReflex,
+  findClosestCommand,
   findClosestFrame
 }

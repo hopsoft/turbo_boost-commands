@@ -1,6 +1,6 @@
 class Meta {
   get element () {
-    return document.querySelector('meta[name="turbo-reflex"]')
+    return document.querySelector('meta[name="turbo-boost"]')
   }
 
   get token () {

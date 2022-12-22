@@ -1,6 +1,6 @@
 import meta from '../meta'
 import observable from './observable'
-import { dispatch, stateEvents as events } from '../events'
+import { dispatch, commandEvents, stateEvents } from '../events'
 
 let loadedState, currentState, changedState
 let loadStateTimeout
@@ -13,7 +13,7 @@ function loadState () {
   loadedState = { ...currentState }
   delete meta.element.dataset.clientStateChange
   setTimeout(() =>
-    dispatch(events.stateLoad, meta.element, {
+    dispatch(stateEvents.stateLoad, meta.element, {
       detail: { state: currentState }
     })
   )
@@ -30,9 +30,9 @@ addEventListener('DOMContentLoaded', loadStateLater)
 addEventListener('load', loadStateLater)
 addEventListener('turbo:load', loadStateLater)
 addEventListener('turbo:frame-load', loadStateLater)
-addEventListener('turbo-reflex:success', loadStateLater)
+addEventListener(commandEvents.success, loadStateLater)
 
-addEventListener(events.stateChange, event => {
+addEventListener(stateEvents.stateChange, event => {
   changedState = {}
   for (const [key, value] of Object.entries(currentState))
     if (loadedState[key] !== value) changedState[key] = value
@@ -41,7 +41,7 @@ addEventListener(events.stateChange, event => {
 })
 
 export default {
-  events,
+  events: stateEvents,
 
   get current () {
     return currentState

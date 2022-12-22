@@ -2,8 +2,8 @@
 
 require_relative "runner"
 
-class TurboReflex::ControllerPack
-  attr_reader :controller, :runner, :reflex
+class TurboBoost::Commands::ControllerPack
+  attr_reader :controller, :runner, :command
 
   delegate(
     :request,
@@ -20,27 +20,27 @@ class TurboReflex::ControllerPack
     to: :runner
   )
 
-  delegate_missing_to :reflex
+  delegate_missing_to :command
 
   def initialize(controller)
     @controller = controller
-    @runner = TurboReflex::Runner.new(controller)
-    @reflex = runner.reflex_instance
+    @runner = TurboBoost::Commands::Runner.new(controller)
+    @command = runner.command_instance
   end
 
   def requested?
-    runner.reflex_requested?
+    runner.command_requested?
   end
 
   def performed?
-    runner.reflex_performed?
+    runner.command_performed?
   end
 
   def errored?
-    runner.reflex_errored?
+    runner.command_errored?
   end
 
   def render(...)
-    reflex.render_response(...)
+    command.render_response(...)
   end
 end

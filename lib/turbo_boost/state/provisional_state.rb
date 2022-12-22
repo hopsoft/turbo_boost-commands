@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "state"
+require_relative "../state"
 
-class TurboReflex::ProvisionalState
+class TurboBoost::State::ProvisionalState
   def initialize(state_manager)
     @state_manager = state_manager
     @keys = Set.new
@@ -15,7 +15,7 @@ class TurboReflex::ProvisionalState
   end
 
   def []=(*keys, value)
-    key = TurboReflex::State.key_for(*keys)
+    key = TurboBoost::State.key_for(*keys)
     value.nil? ? self.keys.delete(key) : self.keys.add(key)
     state_manager[key] = value
   end

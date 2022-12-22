@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require_relative "../errors"
 require_relative "errors"
 require_relative "sanitizer"
-require_relative "state_manager"
+require_relative "../state/manager"
 
-class TurboReflex::Runner
+class TurboBoost::Commands::Runner
   attr_reader :controller, :state_manager
   alias_method :state, :state_manager
 
@@ -12,116 +13,116 @@ class TurboReflex::Runner
 
   def initialize(controller)
     @controller = controller
-    @state_manager = TurboReflex::StateManager.new(self)
+    @state_manager = TurboBoost::State::Manager.new(self)
   end
 
   def meta_tag
     masked_token = message_verifier.generate(new_token)
     options = {
-      id: "turbo-reflex",
-      name: "turbo-reflex",
+      id: "turbo-boost",
+      name: "turbo-boost",
       content: masked_token,
       data: {busy: false, state: state_manager.payload}
     }
     view_context.tag("meta", options).html_safe
   end
 
-  def reflex_requested?
-    reflex_params.present?
+  def command_requested?
+    command_params.present?
   end
 
-  def reflex_valid?
-    return false unless reflex_requested?
+  def command_valid?
+    return false unless command_requested?
 
     # validate class
-    unless reflex_instance.is_a?(TurboReflex::Base)
-      raise TurboReflex::InvalidClassError,
-        "`#{reflex_class_name}` is not a subclass of `TurboReflex::Base`!"
+    unless command_instance.is_a?(TurboBoost::Commands::Command)
+      raise TurboBoost::Commands::InvalidClassError,
+        "`#{command_class_name}` is not a subclass of `TurboBoost::Commands::Command`!"
     end
 
     # validate method
-    unless reflex_instance.respond_to?(reflex_method_name)
-      raise TurboReflex::InvalidMethodError,
-        "`#{reflex_class_name}` does not define the public method `#{reflex_method_name}`!"
+    unless command_instance.respond_to?(command_method_name)
+      raise TurboBoost::Commands::InvalidMethodError,
+        "`#{command_class_name}` does not define the public method `#{command_method_name}`!"
     end
 
     # validate csrf token
     unless valid_client_token?
-      raise TurboReflex::InvalidTokenError,
-        "CSRF token mismatch! The request header `TurboReflex-Token: #{client_token}` does not match the expected value of `#{server_token}`."
+      raise TurboBoost::Commands::InvalidTokenError,
+        "CSRF token mismatch! The request header `TurboBoost-Token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
     true
   end
 
-  def reflex_params
-    return ActionController::Parameters.new if params[:turbo_reflex].nil?
-    @reflex_params ||= begin
-      payload = parsed_reflex_params.deep_transform_keys(&:underscore)
+  def command_params
+    return ActionController::Parameters.new if params[:turbo_boost_command].nil?
+    @command_params ||= begin
+      payload = parsed_command_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
     end
   end
 
-  def reflex_element
-    return nil if reflex_params.blank?
-    @reflex_element ||= Struct
-      .new(*reflex_params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
-      .new(*reflex_params[:element_attributes].values)
+  def command_element
+    return nil if command_params.blank?
+    @command_element ||= Struct
+      .new(*command_params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
+      .new(*command_params[:element_attributes].values)
   end
 
-  def reflex_name
-    return nil unless reflex_requested?
-    reflex_params[:name]
+  def command_name
+    return nil unless command_requested?
+    command_params[:name]
   end
 
-  def reflex_class_name
-    return nil unless reflex_requested?
-    reflex_name.split("#").first
+  def command_class_name
+    return nil unless command_requested?
+    command_name.split("#").first
   end
 
-  def reflex_method_name
-    return nil unless reflex_requested?
-    return "noop" unless reflex_name.include?("#")
-    reflex_name.split("#").last
+  def command_method_name
+    return nil unless command_requested?
+    return "noop" unless command_name.include?("#")
+    command_name.split("#").last
   end
 
-  def reflex_class
-    @reflex_class ||= reflex_class_name&.safe_constantize
+  def command_class
+    @command_class ||= command_class_name&.safe_constantize
   end
 
-  def reflex_instance
-    @reflex_instance ||= reflex_class&.new(self)
+  def command_instance
+    @command_instance ||= command_class&.new(self)
   end
 
-  def reflex_performed?
-    !!@reflex_performed
+  def command_performed?
+    !!@command_performed
   end
 
-  def reflex_errored?
-    !!@reflex_errored
+  def command_errored?
+    !!@command_errored
   end
 
   def controller_action_prevented?
     !!@controller_action_prevented
   end
 
-  def reflex_succeeded?
-    reflex_performed? && !reflex_errored?
+  def command_succeeded?
+    command_performed? && !command_errored?
   end
 
   def should_prevent_controller_action?
-    return false unless reflex_performed?
-    reflex_instance.should_prevent_controller_action? reflex_method_name
+    return false unless command_performed?
+    command_instance.should_prevent_controller_action? command_method_name
   end
 
   def run
-    return unless reflex_valid?
-    return if reflex_performed?
-    @reflex_performed = true
-    reflex_instance.public_send reflex_method_name
+    return unless command_valid?
+    return if command_performed?
+    @command_performed = true
+    command_instance.public_send command_method_name
     prevent_controller_action if should_prevent_controller_action?
   rescue => error
-    @reflex_errored = true
+    @command_errored = true
     raise error if controller_action_prevented?
     prevent_controller_action error: error
   end
@@ -149,12 +150,12 @@ class TurboReflex::Runner
 
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
     state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
-    append_success_to_response if reflex_succeeded?
+    append_success_to_response if command_succeeded?
   rescue => error
-    Rails.logger.error "TurboReflex::Runner failed to update the response! #{error.message}"
+    Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
   end
 
-  def render_response(html: "", status: nil, headers: {TurboReflex: :Append})
+  def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
     render html: html, layout: false, status: status || response_status
   end
@@ -174,12 +175,12 @@ class TurboReflex::Runner
 
   private
 
-  def parsed_reflex_params
-    @parsed_reflex_params ||= JSON.parse(params[:turbo_reflex])
+  def parsed_command_params
+    @parsed_command_params ||= JSON.parse(params[:turbo_boost_command])
   end
 
   def content_sanitizer
-    TurboReflex::Sanitizer.instance
+    TurboBoost::Commands::Sanitizer.instance
   end
 
   def new_token
@@ -187,15 +188,15 @@ class TurboReflex::Runner
   end
 
   def server_token
-    cookies.encrypted["turbo_reflex.token"]
+    cookies.encrypted["turbo_boost.token"]
   end
 
   def client_token
-    (request.headers["TurboReflex-Token"] || reflex_params[:token]).to_s
+    (request.headers["TurboBoost-Token"] || command_params[:token]).to_s
   end
 
   def valid_client_token?
-    return true unless Rails.configuration.turbo_reflex.validate_client_token
+    return true unless Rails.configuration.turbo_boost_commands.validate_client_token
     return false unless client_token.present?
     return false unless message_verifier.valid_message?(client_token)
     unmasked_client_token = message_verifier.verify(client_token)
@@ -226,27 +227,27 @@ class TurboReflex::Runner
   end
 
   def append_error_to_response(error)
-    message = "Error in #{reflex_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
+    message = "Error in #{command_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
   end
 
   def append_streams_to_response_body
-    return unless reflex_instance.turbo_streams.present?
-    append_to_response_body reflex_instance.turbo_streams.map(&:to_s).join.html_safe
+    return unless command_instance.turbo_streams.present?
+    append_to_response_body command_instance.turbo_streams.map(&:to_s).join.html_safe
   end
 
   def append_meta_tag_to_response_body
-    cookies.encrypted["turbo_reflex.token"] = {value: new_token, path: "/"}
-    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-reflex")
+    cookies.encrypted["turbo_boost.token"] = {value: new_token, path: "/"}
+    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-boost")
   rescue => error
-    Rails.logger.error "TurboReflex::Runner failed to append the meta tag to the response! #{error.message}"
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append the meta tag to the response! #{error.message}"
   end
 
   def append_success_event_to_response_body
-    args = ["turbo-reflex:success", {bubbles: true, cancelable: false, detail: parsed_reflex_params}]
-    event = if reflex_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+    args = ["turbo-boost:command:success", {bubbles: true, cancelable: false, detail: parsed_command_params}]
+    event = if command_element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
@@ -254,9 +255,9 @@ class TurboReflex::Runner
   end
 
   def append_error_event_to_response_body(message)
-    args = ["turbo-reflex:server-error", {bubbles: true, cancelable: false, detail: parsed_reflex_params.merge(error: message)}]
-    event = if reflex_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{reflex_element.id}"
+    args = ["turbo-boost:command:server-error", {bubbles: true, cancelable: false, detail: parsed_command_params.merge(error: message)}]
+    event = if command_element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
@@ -281,6 +282,6 @@ class TurboReflex::Runner
 
     response.body = html
   rescue => error
-    Rails.logger.error "TurboReflex::Runner failed to append to the response! #{error.message}"
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"
   end
 end

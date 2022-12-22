@@ -1,15 +1,9 @@
 # frozen_string_literal: true
 
-module TurboReflex
+module TurboBoost::Commands
   class InvalidClassError < StandardError
   end
 
   class InvalidMethodError < StandardError
-  end
-
-  class InvalidTokenError < StandardError
-  end
-
-  class StateDeserializationError < StandardError
   end
 end

@@ -1,6 +1,6 @@
-# fly.toml file generated for turbo-reflex on 2022-09-19T05:16:01-06:00
+# fly.toml file generated for turbo-boost-commands on 2022-09-19T05:16:01-06:00
 
-app = "turbo-reflex"
+app = "turbo-boost-commands"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

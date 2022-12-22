@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TurboReflex::Sanitizer
+class TurboBoost::Commands::Sanitizer
   include Singleton
   include ActionView::Helpers::SanitizeHelper
 

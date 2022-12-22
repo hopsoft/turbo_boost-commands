@@ -1,17 +1,22 @@
 import activity from './activity'
-import { dispatch, lifecycleEvents as events } from './events'
+import { dispatch, commandEvents } from './events'
 
 function finish (event) {
   event.detail.endedAt = new Date().getTime()
   event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
   setTimeout(
-    () => dispatch(events.finish, event.target, { detail: event.detail }),
+    () =>
+      dispatch(commandEvents.finish, event.target, { detail: event.detail }),
     25
   )
 }
 
-addEventListener(events.serverError, finish)
-addEventListener(events.success, finish)
-addEventListener(events.finish, event => activity.remove(event.detail.id), true)
+addEventListener(commandEvents.serverError, finish)
+addEventListener(commandEvents.success, finish)
+addEventListener(
+  commandEvents.finish,
+  event => activity.remove(event.detail.id),
+  true
+)
 
-export default { events }
+export default { events: commandEvents }

@@ -2,18 +2,18 @@
 
 require_relative "attribute_set"
 
-# TurboReflex base superclass.
-# All TurboReflex classes should inherit from this class.
+# TurboBoost::Commands::Command superclass.
+# All command classes should inherit from this class.
 #
-# Reflexes are executed via a before_action in the Rails controller lifecycle.
+# Commands are executed via a before_action in the Rails controller lifecycle.
 # They have access to the following methods and properties.
 #
 # * dom_id ...................... The Rails dom_id helper
 # * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * controller .................. The Rails controller processing the HTTP request
-# * element ..................... A struct that represents the DOM element that triggered the reflex
+# * element ..................... A struct that represents the DOM element that triggered the command
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
-# * params ...................... Reflex specific params (frame_id, element, etc.)
+# * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
 # * render_response ............. Renders a full controller response
 # * renderer .................... An ActionController::Renderer
@@ -23,9 +23,9 @@ require_relative "attribute_set"
 #
 # They also have access to the following class methods:
 #
-# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the reflex handles the response entirely)
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
-class TurboReflex::Base
+class TurboBoost::Commands::Command
   class << self
     def preventers
       @preventers ||= Set.new
@@ -35,7 +35,7 @@ class TurboReflex::Base
       preventers << options.with_indifferent_access
     end
 
-    def should_prevent_controller_action?(reflex, method_name)
+    def should_prevent_controller_action?(command, method_name)
       method_name = method_name.to_s
       match = preventers.find do |options|
         only = options[:only] || []
@@ -53,13 +53,13 @@ class TurboReflex::Base
 
       if match[:if].present?
         case match[:if]
-        when Symbol then reflex.public_send(match[:if])
-        when Proc then reflex.instance_exec { match[:if].call reflex }
+        when Symbol then command.public_send(match[:if])
+        when Proc then command.instance_exec { match[:if].call command }
         end
       elsif match[:unless].present?
         case match[:unless]
-        when Symbol then !reflex.public_send(match[:unless])
-        when Proc then !(reflex.instance_exec { match[:unless].call(reflex) })
+        when Symbol then !command.public_send(match[:unless])
+        when Proc then !(command.instance_exec { match[:unless].call(command) })
         end
       else
         true
@@ -109,20 +109,20 @@ class TurboReflex::Base
     turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
   end
 
-  # default reflex invoked when method not specified
+  # default command invoked when method not specified
   def noop
   end
 
   def params
-    @runner.reflex_params
+    @runner.command_params
   end
 
   def element
     @element ||= begin
       attributes = params[:element_attributes]
       OpenStruct.new attributes.merge(
-        aria: TurboReflex::AttributeSet.new(:aria, attributes: attributes),
-        dataset: TurboReflex::AttributeSet.new(:data, attributes: attributes)
+        aria: TurboBoost::Commands::AttributeSet.new(:aria, attributes: attributes),
+        dataset: TurboBoost::Commands::AttributeSet.new(:data, attributes: attributes)
       )
     end
   end

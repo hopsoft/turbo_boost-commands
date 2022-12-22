@@ -1,6 +1,6 @@
 import urls from '../urls'
 
-function invokeReflex (element, payload = {}) {
+function invokeCommand (element, payload = {}) {
   const src = payload.src
   payload = { ...payload }
   delete payload.src
@@ -8,4 +8,4 @@ function invokeReflex (element, payload = {}) {
   element.setAttribute('href', urls.build(src, payload))
 }
 
-export default { invokeReflex }
+export default { invokeCommand }

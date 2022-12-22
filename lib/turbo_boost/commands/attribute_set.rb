@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TurboReflex::AttributeSet
+class TurboBoost::Commands::AttributeSet
   def initialize(prefix, attributes: {})
     prefix = prefix.to_s
     attrs = attributes.to_h.transform_values(&:to_s)

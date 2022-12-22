@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "lib/turbo_reflex/version"
+require_relative "lib/turbo_boost/commands/version"
 
 Gem::Specification.new do |s|
-  s.name = "turbo_reflex"
-  s.version = TurboReflex::VERSION
+  s.name = "turbo_boost-commands"
+  s.version = TurboBoost::Commands::VERSION
   s.authors = ["Nate Hopkins (hopsoft)"]
   s.email = ["natehop@gmail.com"]
-  s.homepage = "https://github.com/hopsoft/turbo_reflex"
-  s.summary = "Reflexes for Turbo Frames that help you build robust reactive applications"
-  s.description = "TurboReflex extends Turbo Frames and adds support for client triggered reflexes (think RPC) which let you sprinkle in functionality and skip the REST boilerplate."
+  s.homepage = "https://github.com/hopsoft/turbo_boost-commands"
+  s.summary = "Declarative commands that run on the server (RPC) for the markup you already have... helping you build robust reactive applications with Rails & Hotwire"
+  s.description = s.summary
   s.license = "MIT"
 
   s.metadata["homepage_uri"] = s.homepage
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"
-  s.add_dependency "turbo_ready", ">= 0.1.4"
+  s.add_dependency "turbo_boost-streams", ">= 0.0.1"
 
   s.add_development_dependency "capybara"
   s.add_development_dependency "cuprite"
