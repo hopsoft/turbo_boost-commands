@@ -20,11 +20,11 @@ bundle config set --global --without test
 RUN npm install -g yarn
 
 # get application code
-RUN rm -rf /opt/turbo_reflex
-RUN git clone --origin github --branch main --depth 1 https://github.com/hopsoft/turbo_reflex.git /opt/turbo_reflex
+RUN rm -rf /opt/turbo_boost-commands
+RUN git clone --origin github --branch main --depth 1 https://github.com/hopsoft/turbo_boost-commands.git /opt/turbo_boost-commands
 
 # install application dependencies 1st time
-WORKDIR /opt/turbo_reflex
+WORKDIR /opt/turbo_boost-commands
 RUN yarn
 RUN bundle
 

@@ -2,17 +2,18 @@
 
 import '@hotwired/turbo-rails'
 import debounced from 'debounced'
-import 'turbo_reflex'
+import '@turbo-boost/commands'
 import './controllers'
 import './activity'
 
 debounced.initialize({
   ...debounced.events,
   'turbo:load': { wait: 150 },
-  'turbo-reflex:finish': { wait: 150 }
+  'turbo-boost:command:success': { wait: 150 },
+  'turbo-boost:command:finish': { wait: 150 }
 })
 
-TurboReflex.logger.level = 'debug'
+TurboBoost.Commands.logger.level = 'debug'
 
 // Force all scripts in <head> to reload/reparse after a Turbo visit.
 // This ensures that libs which don't work with Turbo Drive...

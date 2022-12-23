@@ -1,16 +1,16 @@
 <%= tag.dl id: local_assigns.fetch(:id, "stats-#{SecureRandom.alphanumeric(12)}"),
   class: "grid gap-6 text-gray-900 sm:grid-cols-3 lg:grid-cols-5 dark:text-white" do %>
   <%= yield %>
-  <%= render "stats/stat", label: "HTTP Fingerprint", role: "http-fingerprint", value: turbo_reflex.requested? ? SecureRandom.alphanumeric(6).upcase : "N/A",
-    class: token_list("!opacity-60": !turbo_reflex.requested?),
+  <%= render "stats/stat", label: "HTTP Fingerprint", role: "http-fingerprint", value: turbo_boost.command_requested? ? SecureRandom.alphanumeric(6).upcase : "N/A",
+    class: token_list("!opacity-60": !turbo_boost.command_requested?),
     value_class: "font-mono" %>
-  <%= render "stats/stat", label: "HTTP Method", role: "http-method", value: turbo_reflex.requested? ? request.method : "N/A",
-    class: token_list("!opacity-60": !turbo_reflex.requested?),
-    value_class: token_list("!text-sky-500": turbo_reflex.requested? && request.get?, "!text-fuchsia-500": turbo_reflex.requested? && !request.get?) %>
-  <%= render "stats/stat", label: "Reflex Requested",
-    class: token_list("!opacity-60": !turbo_reflex.requested?),
-    value: turbo_reflex.requested? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
-  <%= render "stats/stat", label: "Reflex Performed",
-    class: token_list("!opacity-60": !turbo_reflex.performed?),
-    value: turbo_reflex.performed? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
+  <%= render "stats/stat", label: "HTTP Method", role: "http-method", value: turbo_boost.command_requested? ? request.method : "N/A",
+    class: token_list("!opacity-60": !turbo_boost.command_requested?),
+    value_class: token_list("!text-sky-500": turbo_boost.command_requested? && request.get?, "!text-fuchsia-500": turbo_boost.command_requested? && !request.get?) %>
+  <%= render "stats/stat", label: "Command Requested",
+    class: token_list("!opacity-60": !turbo_boost.command_requested?),
+    value: turbo_boost.command_requested? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
+  <%= render "stats/stat", label: "Command Performed",
+    class: token_list("!opacity-60": !turbo_boost.command_performed?),
+    value: turbo_boost.command_performed? ? render(heroicon(:check_circle), solid: true, class: "-mt-2 text-emerald-500 h-10 w-auto inline") : render(heroicon(:x_circle), class: "-mt-2 text-red-500 h-10 w-auto inline") %>
 <% end %>

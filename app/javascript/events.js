@@ -1,18 +1,18 @@
-export const lifecycleEvents = {
-  start: 'turbo-reflex:start',
-  success: 'turbo-reflex:success',
-  finish: 'turbo-reflex:finish',
-  abort: 'turbo-reflex:abort',
-  clientError: 'turbo-reflex:client-error',
-  serverError: 'turbo-reflex:server-error'
+export const commandEvents = {
+  start: 'turbo-boost:command:start',
+  success: 'turbo-boost:command:success',
+  finish: 'turbo-boost:command:finish',
+  abort: 'turbo-boost:command:abort',
+  clientError: 'turbo-boost:command:client-error',
+  serverError: 'turbo-boost:command:server-error'
 }
 
 export const stateEvents = {
-  stateLoad: 'turbo-reflex:state-load',
-  stateChange: 'turbo-reflex:state-change'
+  stateLoad: 'turbo-boost:state:load',
+  stateChange: 'turbo-boost:state:change'
 }
 
-export const allEvents = { ...lifecycleEvents, ...stateEvents }
+export const allEvents = { ...commandEvents, ...stateEvents }
 
 export function dispatch (name, target, options = {}) {
   options = options || {}

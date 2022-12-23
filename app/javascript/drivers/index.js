@@ -7,7 +7,7 @@ import windowDriver from './window'
 function src (element, frame) {
   frame = frame || { dataset: {} }
   return (
-    element.href || frame.src || frame.dataset.turboReflexSrc || location.href
+    element.href || frame.src || frame.dataset.turboBoostSrc || location.href
   )
 }
 
@@ -21,7 +21,7 @@ function find (element) {
       reason: 'Element is a form.',
       frame,
       src: element.action,
-      invokeReflex: formDriver.invokeReflex
+      invokeCommand: formDriver.invokeCommand
     }
 
   if (turboMethod && turboMethod.length > 0)
@@ -30,7 +30,7 @@ function find (element) {
       reason: 'Element defines data-turbo-method.',
       frame,
       src: element.href,
-      invokeReflex: methodDriver.invokeReflex
+      invokeCommand: methodDriver.invokeCommand
     }
 
   // element targets a frame that is not _self
@@ -41,7 +41,7 @@ function find (element) {
       reason: 'element targets a frame that is not _self',
       frame,
       src: src(element, frame),
-      invokeReflex: frameDriver.invokeReflex
+      invokeCommand: frameDriver.invokeCommand
     }
   }
 
@@ -53,7 +53,7 @@ function find (element) {
         'element does NOT target a frame or targets _self and is contained by a frame',
       frame,
       src: src(element, frame),
-      invokeReflex: frameDriver.invokeReflex
+      invokeCommand: frameDriver.invokeCommand
     }
 
   // element matches one or more of the following conditions
@@ -66,7 +66,7 @@ function find (element) {
       'element matches one or more of the following conditions (targets _top, does NOT target a frame, is NOT contained by a frame)',
     frame: null,
     src: src(element),
-    invokeReflex: windowDriver.invokeReflex
+    invokeCommand: windowDriver.invokeCommand
   }
 }
 

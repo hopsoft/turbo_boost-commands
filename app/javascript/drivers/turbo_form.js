@@ -1,10 +1,10 @@
 import meta from '../meta'
 
-function invokeReflex (form, payload = {}) {
+function invokeCommand (form, payload = {}) {
   payload.token = meta.token
   const input = document.createElement('input')
   input.type = 'hidden'
-  input.name = 'turbo_reflex'
+  input.name = 'turbo_boost_command'
   input.value = JSON.stringify(payload)
   form.appendChild(input)
 
@@ -14,4 +14,4 @@ function invokeReflex (form, payload = {}) {
   frame.src = urls.build(src, payload)
 }
 
-export default { invokeReflex }
+export default { invokeCommand }

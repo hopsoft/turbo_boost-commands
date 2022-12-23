@@ -6,7 +6,7 @@
     <% end %>
 
     <p class="my-8 text-xl text-white">
-      You can also use TurboReflex without explicitly defining Turbo Frames.
+      You can also use TurboBoost Commands without explicitly defining Turbo Frames.
     </p>
     <p class="mt-4 mb-12">
       This feature is known as <span class="text-blue-500">RPC over HTTP</span>.
@@ -15,13 +15,13 @@
     </p>
 
     <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-      data: { turbo_reflex: "CounterRpcReflex#increment" } do %>
+      data: { command: "CounterRpcCommand#increment" } do %>
       RPC over HTTP
       <%= render flowbite(:notification_badge), value: session[:rpc_count].to_i if session[:rpc_count].to_i > 0 %>
     <% end %>
 
     <%= render component(:code), language: :ruby, class: "text-sm",
-      path: "app/reflexes/counter_reflex.rb", source_path: "app/views/codes/increment/rpc_over_http/reflex.rb" %>
+      path: "app/commands/counter_command.rb", source_path: "app/views/codes/increment/rpc_over_http/command.rb" %>
 
     <div class="my-8"></div>
 

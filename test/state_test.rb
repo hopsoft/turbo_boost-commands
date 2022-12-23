@@ -4,7 +4,7 @@ require "test_helper"
 
 class StateTest < ActiveSupport::TestCase
   test "empty state" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     assert_equal 0, state.size
     assert_equal 3, state.payload.bytesize
     assert_equal 16, state.ordinal_payload.bytesize
@@ -14,23 +14,23 @@ class StateTest < ActiveSupport::TestCase
   end
 
   test "cache_key" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     state.write :a, true
-    assert_equal "turbo-reflex/ui-state/t9zHl5rxmtVcEVvkRm8V08/3+rhLXTcgP7FUbCJMm34=", state.cache_key
+    assert_equal "turbo-boost/ui-state/t9zHl5rxmtVcEVvkRm8V08/3+rhLXTcgP7FUbCJMm34=", state.cache_key
 
     state.write :b, true
-    assert_equal "turbo-reflex/ui-state/0OLmXON76R7B0VSh/mGsELbUQwtPwdhz+TbLg6Xn+1g=", state.cache_key
+    assert_equal "turbo-boost/ui-state/0OLmXON76R7B0VSh/mGsELbUQwtPwdhz+TbLg6Xn+1g=", state.cache_key
   end
 
   test "read and write" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     state.write :example, "value"
     assert state.key?(:example)
     assert_equal "value", state.read(:example)
   end
 
   test "shrink! removes falsy and blank entries" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     state.write :a, false
     state.write :b, ""
     state.write :c, "   "
@@ -55,7 +55,7 @@ class StateTest < ActiveSupport::TestCase
   end
 
   test "shrink! removes nested falsy and blank entries" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     state.write :a, [true, 1, nil, {x: nil, y: [], z: nil}]
     state.write :b, {x: true, y: 1, z: nil}
 
@@ -73,7 +73,7 @@ class StateTest < ActiveSupport::TestCase
   end
 
   test "prune! optimizes payload sizes (ordinal_payload is stored in an HTTP cookie)" do
-    state = TurboReflex::State.new
+    state = TurboBoost::State.new
     1000.times { state.write SecureRandom.uuid, SecureRandom.uuid }
 
     target_size = 2.kilobytes

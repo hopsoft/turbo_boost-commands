@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DemosController < ApplicationController
-  # reflexes are invoked implicitly by a before_action
+  # commands are invoked implicitly by a before_action
 
   def show
     # controller logic...
