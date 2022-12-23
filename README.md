@@ -103,7 +103,7 @@ Commands are executed via Rails a `before_action` which means that reactivity ru
 _**Web sockets are NOT used for the reactive critical path!** 🎉_
 This also means that standard Rails mechanics drive their behavior.
 
-Also, commands can be tested in isolation or via Rails controller, integration, and system tests.
+Commands can be tested in isolation as well as with standard Rails controller, integration, and system tests.
 
 ## Sponsors
 
