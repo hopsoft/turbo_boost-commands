@@ -1,11 +1,12 @@
-# fly.toml file generated for turbo-boost-commands on 2022-09-19T05:16:01-06:00
+# fly.toml file generated for turboboost-commands on 2022-12-23T12:55:35-07:00
 
-app = "turbo-boost-commands"
+app = "turboboost-commands"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
 [env]
+  RAILS_RELATIVE_URL_ROOT = "/turboboost/commands"
 
 [experimental]
   allowed_public_ports = []
