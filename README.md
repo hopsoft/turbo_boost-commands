@@ -485,7 +485,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 1. Run `rake build` and `yarn build`
 1. Commit and push changes to GitHub
 1. Run `rake release`
-1. Run `yarn publish --no-git-tag-version`
+1. Run `yarn publish --no-git-tag-version --access public`
 1. Yarn will prompt you for the new version. Pre-release versions use `-preN`
 1. Commit and push any changes to GitHub
 1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases)) and generate the changelog for the stable release for it
