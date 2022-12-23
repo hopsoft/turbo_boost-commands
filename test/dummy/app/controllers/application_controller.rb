@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  prepend_before_action -> { Current.state = turbo_boost_command.state }
+  prepend_before_action -> { Current.state = turbo_boost.state }
 
   # An example of how to override state with data stored on the server
   # Simply return a Hash of state data

@@ -3,7 +3,7 @@
 require_relative "runner"
 
 class TurboBoost::Commands::ControllerPack
-  attr_reader :controller, :runner, :command
+  attr_reader :command, :controller, :runner
 
   delegate(
     :request,
@@ -12,6 +12,9 @@ class TurboBoost::Commands::ControllerPack
   )
 
   delegate(
+    :command_requested?,
+    :command_performed?,
+    :command_errored?,
     :controller_action_prevented?,
     :meta_tag,
     :run,
@@ -26,18 +29,6 @@ class TurboBoost::Commands::ControllerPack
     @controller = controller
     @runner = TurboBoost::Commands::Runner.new(controller)
     @command = runner.command_instance
-  end
-
-  def requested?
-    runner.command_requested?
-  end
-
-  def performed?
-    runner.command_performed?
-  end
-
-  def errored?
-    runner.command_errored?
   end
 
   def render(...)

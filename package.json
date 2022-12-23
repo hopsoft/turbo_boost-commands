@@ -1,7 +1,7 @@
 {
   "name": "@turbo-boost/commands",
   "version": "0.0.0",
-  "description": "Declarative commands that run on the server (RPC) for the markup you already have... helping you build robust reactive applications with Rails & Hotwire",
+  "description": "Commands to help you build robust reactive applications with Rails & Hotwire.",
   "main": "app/javascript/index.js",
   "repository": "https://github.com/hopsoft/turbo_boost-commands",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",

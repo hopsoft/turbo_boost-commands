@@ -5,17 +5,17 @@ module TurboBoost::Commands::Controller
 
   module ClassMethods
     def turbo_boost_state(&block)
-      TurboBoost::Commands::StateManager.add_state_override_block name, block
+      TurboBoost::State::Manager.add_state_override_block name, block
     end
   end
 
   included do
-    before_action -> { turbo_boost_command.run }
-    after_action -> { turbo_boost_command.update_response }
-    helper_method :turbo_boost_command
+    before_action -> { turbo_boost.run }
+    after_action -> { turbo_boost.update_response }
+    helper_method :turbo_boost
   end
 
-  def turbo_boost_command
-    @turbo_boost_command ||= TurboBoost::Commands::ControllerPack.new(self)
+  def turbo_boost
+    @turbo_boost ||= TurboBoost::Commands::ControllerPack.new(self)
   end
 end

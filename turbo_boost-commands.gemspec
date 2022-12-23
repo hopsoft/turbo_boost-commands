@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors = ["Nate Hopkins (hopsoft)"]
   s.email = ["natehop@gmail.com"]
   s.homepage = "https://github.com/hopsoft/turbo_boost-commands"
-  s.summary = "Declarative commands that run on the server (RPC) for the markup you already have... helping you build robust reactive applications with Rails & Hotwire"
+  s.summary = "Commands to help you build robust reactive applications with Rails & Hotwire."
   s.description = s.summary
   s.license = "MIT"
 
