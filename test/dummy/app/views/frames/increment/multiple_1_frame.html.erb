@@ -7,13 +7,13 @@
 
     <div class="inline-flex relative mt-8 rounded-md shadow-sm" role="group">
       <%= button_tag id: "increment-this-frame-button-1", class: css("flowbite.button.group_left"),
-        data: { command: "CounterCommand#increment", session_key: :frame_1_count } do %>
+        data: { turbo_command: "CounterCommand#increment", session_key: :frame_1_count } do %>
         Increment this frame
       <% end %>
 
       <%= button_tag id: "increment-other-frame-button-1", class: css("flowbite.button.group_right"),
         data: {
-          command: "CounterCommand#increment",
+          turbo_command: "CounterCommand#increment",
           turbo_frame: demo_frame_id("frames/increment/multiple_2_frame"),
           session_key: :frame_2_count
         } do %>

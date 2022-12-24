@@ -3,7 +3,7 @@
   <%= session[:count].to_i %>
 
   <%# The command data attribute instructs the client to perform a remote command when clicked %>
-  <%= tag.p "P Tag", data: { command: "CounterCommand#increment" } %>
-  <%= tag.div "DIV Tag", data: { command: "CounterCommand#increment" } %>
-  <%= tag.span "SPAN Tag", data: { command: "CounterCommand#increment" } %>
+  <%= tag.p "P Tag", data: { turbo_command: "CounterCommand#increment" } %>
+  <%= tag.div "DIV Tag", data: { turbo_command: "CounterCommand#increment" } %>
+  <%= tag.span "SPAN Tag", data: { turbo_command: "CounterCommand#increment" } %>
 <% end %>

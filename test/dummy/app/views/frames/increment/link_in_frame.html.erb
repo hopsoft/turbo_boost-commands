@@ -12,7 +12,7 @@
         </p>
 
         <%= link_to nil, id: demo_frame_id(@template_path, :trigger), class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
-          data: { command: "CounterCommand#increment", session_key: session_key } do %>
+          data: { turbo_command: "CounterCommand#increment", session_key: session_key } do %>
           Basic Link
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
         <% end %>

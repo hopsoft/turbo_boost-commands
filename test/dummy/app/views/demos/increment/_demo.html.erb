@@ -2,7 +2,7 @@
   <%= tag.h2 id: el_id(id, :label) do %>
     <%= tag.button id: el_id(id, :button), type: "button", aria: {visible: Current.state[:active_demo] == id, controls: id},
       data: {
-        command: "DemosCommand#toggle",
+        turbo_command: "DemosCommand#toggle",
         controller: Current.state[:active_demo] == id ? "scroll-into-view" : nil
       },
       class: token_list("flex items-center justify-between w-full py-5 pl-2 pr-3 font-medium text-left border-b border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 bg-white hover:bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400",

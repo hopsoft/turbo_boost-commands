@@ -7,7 +7,7 @@
     # in addition to normal form handling
   %>
   <%= form_with url: demo_path(params[:id]), method: :patch,
-    data: { command: "CounterCommand#increment" } do |form| %>
+    data: { turbo_command: "CounterCommand#increment" } do |form| %>
     <%= form.submit "Submit Form" %>
   <% end %>
 <% end %>

@@ -181,7 +181,7 @@ This example illustrates how to use TurboBoost Commands to manage upvotes on a P
     ```erb
     <!-- app/views/posts/show.html.erb -->
     <%= turbo_frame_tag dom_id(@post) do %>
-      <a href="#" data-command="PostCommand#upvote">Upvote</a>
+      <a href="#" data-turbo-command="PostCommand#upvote">Upvote</a>
       Upvote Count: <%= @post.votes %>
     <% end %>
     ```
@@ -213,14 +213,14 @@ It's possible to override these defaults like so.
 
 ```js
 // restrict `click` monitoring to <a> and <button> elements
-TurboBoost.Commands.registerEventDelegate('click', ['a[data-command]', 'button[data-command]'])
+TurboBoost.Commands.registerEventDelegate('click', ['a[data-turbo-command]', 'button[data-command]'])
 ```
 
 You can also register custom events and elements.
 Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
 ```js
-TurboBoost.Commands.registerEventDelegate('sl-change', ['sl-switch[data-command]'])
+TurboBoost.Commands.registerEventDelegate('sl-change', ['sl-switch[data-turbo-command]'])
 ```
 
 ### Lifecycle Events
@@ -240,7 +240,7 @@ but you can also explicitly target other frames just like you normally would wit
 
     ```erb
     <input type="checkbox"
-      data-command="ExampleCommand#work"
+      data-turbo-command="ExampleCommand#work"
       data-turbo-frame="some-frame-id">
     ```
 
@@ -248,44 +248,44 @@ but you can also explicitly target other frames just like you normally would wit
 
     ```erb
     <turbo-frame id="example-frame">
-      <input type="checkbox" data-command="ExampleCommand#work">
+      <input type="checkbox" data-turbo-command="ExampleCommand#work">
     </turbo-frame>
     ```
 
 ### Working with Forms
 
 TurboBoost Commands work great with Rails forms.
-Just specify the `data-command` attribute on the form.
+Just specify the `data-turbo-command` attribute on the form.
 
 ```erb
 # app/views/posts/post.html.erb
 <%= turbo_frame_tag dom_id(@post) do %>
-  <%= form_with model: @post, data: { command: "ExampleCommand#work" } do |form| %>
+  <%= form_with model: @post, data: { turbo_command: "ExampleCommand#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
 <%= turbo_frame_tag dom_id(@post) do %>
-  <%= form_for @post, remote: true, data: { command: "ExampleCommand#work" } do |form| %>
+  <%= form_for @post, remote: true, data: { turbo_command: "ExampleCommand#work" } do |form| %>
     ...
   <% end %>
 <% end %>
 
 <%= form_with model: @post,
-  data: { turbo_frame: dom_id(@post), command: "ExampleCommand#work" } do |form| %>
+  data: { turbo_frame: dom_id(@post), turbo_command: "ExampleCommand#work" } do |form| %>
   ...
 <% end %>
 ```
 
 ### Server Side Commands
 
-The client side DOM attribute `data-command` indicates what Ruby class and method to invoke.
+The client side DOM attribute `data-turbo-command` indicates what Ruby class and method to invoke.
 *The attribute value is specified with RDoc notation. i.e. `ClassName#method_name`*
 
 Here's an example.
 
 ```erb
-<a data-command="DemoCommand#example">
+<a data-turbo-command="DemoCommand#example">
 ```
 
 Server side commands can live anywhere in your app; however, we recommend you keep them in the `app/commands` directory.
@@ -364,7 +364,7 @@ Here's an example that shows how to do this.
 ```erb
 <!-- app/views/posts/index.html.erb -->
 <%= turbo_frame_tag dom_id(@posts) do %>
-  <%= check_box_tag :all, :all, @all, data: { command: "PostsCommand#toggle_all" } %>
+  <%= check_box_tag :all, :all, @all, data: { turbo_command: "PostsCommand#toggle_all" } %>
   View All
 
   <% @posts.each do |post| %>
@@ -408,7 +408,7 @@ Here's how to do it.
 ```erb
 <!-- app/views/users/show.html.erb -->
 <%= turbo_frame_tag "user-alt" do %>
-  <%= form_with model: @user, data: { command: "UserCommand#example" } do |form| %>
+  <%= form_with model: @user, data: { turbo_command: "UserCommand#example" } do |form| %>
     ...
   <% end %>
 <% end %>

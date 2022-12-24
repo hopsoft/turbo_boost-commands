@@ -3,7 +3,7 @@
   <%= session[:count].to_i %>
 
   <%# The command data attribute instructs the client to perform a remote command when clicked %>
-  <%= button_tag data: { command: "CounterCommand#increment" } do %>
+  <%= button_tag data: { turbo_command: "CounterCommand#increment" } do %>
     RPC over HTTP
   <% end %>
 </div>

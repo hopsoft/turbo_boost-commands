@@ -1,7 +1,7 @@
 const schema = {
   frameAttribute: 'data-turbo-frame',
   methodAttribute: 'data-turbo-method',
-  commandAttribute: 'data-command'
+  commandAttribute: 'data-turbo-command'
 }
 
 export default { ...schema }

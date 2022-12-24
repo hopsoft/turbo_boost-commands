@@ -7,5 +7,5 @@
     # in addition to normal form handling
   %>
   <%= button_to "Form Button (button_to)", demo_path(params[:id]), method: :patch,
-    form: { data: { command: "CounterCommand#increment" } } %>
+    form: { data: { turbo_command: "CounterCommand#increment" } } %>
 <% end %>

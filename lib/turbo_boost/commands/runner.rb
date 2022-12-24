@@ -72,6 +72,7 @@ class TurboBoost::Commands::Runner
 
   def command_name
     return nil unless command_requested?
+    # binding.pry
     command_params[:name]
   end
 
