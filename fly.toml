@@ -6,7 +6,8 @@ kill_timeout = 5
 processes = []
 
 [env]
-  RAILS_RELATIVE_URL_ROOT = "/turboboost/commands"
+  # Must match the proxy config in the smallteam-tech/proxy repo
+  RAILS_RELATIVE_URL_ROOT = "/@turbo-boost/commands"
 
 [experimental]
   allowed_public_ports = []
