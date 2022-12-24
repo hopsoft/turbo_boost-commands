@@ -13,7 +13,7 @@
 
         <%= form_with url: frame_path(params[:id]), method: :patch,
           class: "mb-8",
-          data: { command: "CounterCommand#increment", session_key: session_key } do |form| %>
+          data: { turbo_command: "CounterCommand#increment", session_key: session_key } do |form| %>
           <div class="inline-block relative">
             <%= form.submit "Submit Form", class: css("flowbite.button.cyan_to_blue", "cursor-pointer") %>
             <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-0" if session[:form_in_frame_count].to_i > 0 %>

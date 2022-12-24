@@ -15,7 +15,7 @@
     </p>
 
     <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-      data: { command: "CounterRpcCommand#increment" } do %>
+      data: { turbo_command: "CounterRpcCommand#increment" } do %>
       RPC over HTTP
       <%= render flowbite(:notification_badge), value: session[:rpc_count].to_i if session[:rpc_count].to_i > 0 %>
     <% end %>

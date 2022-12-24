@@ -16,7 +16,7 @@ import uuids from './uuids'
 function buildCommandPayload (id, element) {
   return {
     id, // uniquely identifies the command
-    name: element.dataset.command,
+    name: element.getAttribute(schema.commandAttribute),
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
     startedAt: new Date().getTime()
@@ -32,7 +32,7 @@ function invokeCommand (event) {
     if (!element) return
     if (!delegates.isRegisteredForElement(event.type, element)) return
 
-    const commandId = `command-${uuids.v4()}`
+    const commandId = `turbo-command-${uuids.v4()}`
     let driver = drivers.find(element)
     let payload = {
       ...buildCommandPayload(commandId, element),

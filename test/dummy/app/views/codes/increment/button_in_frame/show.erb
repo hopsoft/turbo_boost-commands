@@ -4,5 +4,5 @@
 
   <%# The command data attribute instructs the client to perform a remote command when clicked %>
   <%= button_tag "Basic Button",
-    data: { command: "CounterCommand#increment" } %>
+    data: { turbo_command: "CounterCommand#increment" } %>
 <% end %>

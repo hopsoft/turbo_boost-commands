@@ -30,7 +30,7 @@ class CounterCommand < TurboBoost::Commands::Command
   # i.e. completely handle the response in the command
   prevent_controller_action
 
-  # triggered client-side by elements with `data-command="CounterCommand#increment"`
+  # triggered client-side by elements with `data-turbo-command="CounterCommand#increment"`
   # performed server-side by an implicit controller before_action
   def increment
     # update the state held in sesion

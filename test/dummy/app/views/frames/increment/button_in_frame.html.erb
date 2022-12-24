@@ -12,7 +12,7 @@
         </p>
 
         <%= button_tag class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-          data: { command: "CounterCommand#increment", session_key: session_key } do %>
+          data: { turbo_command: "CounterCommand#increment", session_key: session_key } do %>
           Basic Button
           <%= render flowbite(:notification_badge), value: session[session_key].to_i if session[session_key].to_i > 0 %>
         <% end %>
@@ -39,7 +39,7 @@
 
         <%= button_to frame_path(params[:id]), method: :patch,
           class: css("flowbite.button.cyan_to_blue", "block mb-8 ml-0 relative"),
-          form: { data: { command: "CounterCommand#increment", session_key: session_key } } do %>
+          form: { data: { turbo_command: "CounterCommand#increment", session_key: session_key } } do %>
           Form Button <small class="ml-2 font-mono opacity-50">button_to</small>
           <%= render flowbite(:notification_badge), value: session[session_key].to_i if session[session_key].to_i > 0 %>
         <% end %>

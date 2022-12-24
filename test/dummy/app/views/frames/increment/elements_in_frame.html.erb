@@ -12,20 +12,20 @@
         </p>
 
         <div class="inline-block relative mb-4">
-          <%= tag.p "P Tag", class: "cursor-pointer", data: { command: "CounterCommand#increment", session_key: session_key } %>
+          <%= tag.p "P Tag", class: "cursor-pointer", data: { turbo_command: "CounterCommand#increment", session_key: session_key } %>
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         </div>
 
         <br>
 
-        <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { command: "CounterCommand#increment", session_key: session_key } do %>
+        <%= tag.div class: "cursor-pointer mb-4 relative inline-block", data: { turbo_command: "CounterCommand#increment", session_key: session_key } do %>
           DIV Tag
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         <% end %>
 
         <br>
 
-        <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { command: "CounterCommand#increment", session_key: session_key } do %>
+        <%= tag.span class: "cursor-pointer mb-12 inline-block relative", data: { turbo_command: "CounterCommand#increment", session_key: session_key } do %>
           SPAN Tag
           <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[session_key].to_i > 0 %>
         <% end %>
