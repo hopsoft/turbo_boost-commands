@@ -83,7 +83,7 @@
 
 ## Why TurboBoost Commands?
 
-Commands to help you build robust reactive applications with Rails & Hotwire.
+Commands help you build robust reactive applications with Rails & Hotwire.
 They allow you to declaratively specify server methods that will execute whenever client side events are triggered by users.
 
 TurboBoost Commands work with Hotwire's Turbo Frames.
@@ -108,7 +108,7 @@ Namely,
 
 *The primary distinction being that __state is wholly managed by the server__.*
 
-Commands are executed via Rails a `before_action` which means that reactivity runs over HTTP.
+Commands are executed via a Rails `before_action` which means that reactivity runs over HTTP.
 _**Web sockets are NOT used for the reactive critical path!** 🎉_
 This also means that standard Rails mechanics drive their behavior.
 
