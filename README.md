@@ -37,6 +37,12 @@
     <a href="https://github.com/hopsoft/turbo_boost-commands/actions/workflows/tests.yml">
       <img alt="Tests" src="https://github.com/hopsoft/turbo_boost-commands/actions/workflows/tests.yml/badge.svg" />
     </a>
+    <a href="https://github.com/hopsoft/turbo_boost-commands/discussions" target="_blank">
+      <img alt="GitHub Discussions" src="https://img.shields.io/github/discussions/hopsoft/turbo_boost-commands?color=168AFE&logo=github">
+    </a>
+    <a href="https://github.com/sponsors/hopsoft">
+      <img alt="Sponsors" src="https://img.shields.io/github/sponsors/hopsoft?color=eb4aaa&logo=GitHub%20Sponsors" />
+    </a>
     <a href="https://twitter.com/hopsoft">
       <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/hopsoft?logo=twitter&style=social">
     </a>
@@ -66,6 +72,9 @@
     - [Putting it All Together](#putting-it-all-together)
       - [Running Locally](#running-locally)
       - [Running in Docker](#running-in-docker)
+  - [Community](#community)
+    - [Discussions](#discussions)
+    - [Twitter](#twitter)
   - [Releasing](#releasing)
   - [About TurboBoost](#about-turboboost)
   - [License](#license)
@@ -471,6 +480,20 @@ docker compose up -d
 
 You can review the implementation in [`test/dummy/app`](https://github.com/hopsoft/turbo_boost-commands/tree/main/test/dummy).
 *Feel free to add some demos and submit a pull request while you're in there.*
+
+## Community
+
+### Discussions
+
+Feel free to add to the conversation here on [GitHub Discussions](https://github.com/hopsoft/turbo_boost-commands/discussions).
+
+### Twitter
+
+Connect with the core team on Twitter.
+
+<a href="https://twitter.com/hopsoft" target="_blank">
+  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/hopsoft?logo=twitter&style=social">
+</a>
 
 ## Releasing
 
