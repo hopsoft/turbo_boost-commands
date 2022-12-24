@@ -66,9 +66,9 @@
     - [Putting it All Together](#putting-it-all-together)
       - [Running Locally](#running-locally)
       - [Running in Docker](#running-in-docker)
-  - [License](#license)
-  - [Todos](#todos)
   - [Releasing](#releasing)
+  - [About TurboBoost](#about-turboboost)
+  - [License](#license)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
@@ -472,10 +472,6 @@ docker compose up -d
 You can review the implementation in [`test/dummy/app`](https://github.com/hopsoft/turbo_boost-commands/tree/main/test/dummy).
 *Feel free to add some demos and submit a pull request while you're in there.*
 
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
 ## Releasing
 
 1. Run `yarn upgrade` and `bundle update` to pick up the latest
@@ -488,3 +484,16 @@ The gem is available as open source under the terms of the [MIT License](https:/
 1. Yarn will prompt you for the new version. Pre-release versions use `-preN`
 1. Commit and push any changes to GitHub
 1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases)) and generate the changelog for the stable release for it
+
+## About TurboBoost
+
+TurboBoost is a suite of projects that enhance Rails and Hotwire to make building server rendered reactive applications simpler and more powerful.
+Be sure to check out all of the various the libraries.
+
+- [Streams](https://github.com/hopsoft/turbo_boost-streams)
+- [Commands](https://github.com/hopsoft/turbo_boost-commands)
+- Coming soon...
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
