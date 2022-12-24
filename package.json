@@ -7,7 +7,7 @@
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@turbo-boost/streams": ">= 0.0.1"
+    "@turbo-boost/streams": ">= 0.0.2"
   },
   "peerDependencies": {
     "@hotwired/turbo-rails": ">= 7.2.0"

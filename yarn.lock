@@ -256,10 +256,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@turbo-boost/streams@>= 0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@turbo-boost/streams/-/streams-0.0.1.tgz#c6f91a8a2e42d5faeebda7ecd3c996300f6de5d1"
-  integrity sha512-oWNsmfQKo1RSo+X5yK95JqG4KrilZ3xT3al7LSyVSd6D5fejsVZl0M3zhjLWNqO0GS1W8CjN0yd6NdL5nP6VZQ==
+"@turbo-boost/streams@>= 0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@turbo-boost/streams/-/streams-0.0.2.tgz#98c0facf6b2cb4a14fc47dfeedc734cce36b76a7"
+  integrity sha512-qZ6Nh+jLwkJEqTn7qLmoSw1MdgwCFbc/NrdMPyp0IS//A3skqYpwY3R8BlEB/Ez/nuIvH4eTsPjorY9HdR6BPQ==
   dependencies:
     "@alpinejs/morph" ">=3.10.4"
     alpinejs ">=3.10.4"

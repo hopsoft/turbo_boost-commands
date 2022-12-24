@@ -7,9 +7,9 @@ pin "@hotwired/stimulus", to: "https://ga.jspm.io/npm:@hotwired/stimulus@3.2.1/d
 pin "@hotwired/turbo", to: "https://ga.jspm.io/npm:@hotwired/turbo@7.2.4/dist/turbo.es2017-esm.js"
 pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@7.2.4/app/javascript/turbo/index.js"
 pin "@rails/actioncable/src", to: "https://ga.jspm.io/npm:@rails/actioncable@7.0.4/src/index.js"
+pin "@turbo-boost/streams", to: "https://ga.jspm.io/npm:@turbo-boost/streams@0.0.2/app/javascript/index.js"
 pin "alpinejs", to: "https://ga.jspm.io/npm:alpinejs@3.10.5/dist/module.esm.js"
 pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"
-pin "turbo_ready", to: "https://ga.jspm.io/npm:turbo_ready@0.1.3/app/javascript/index.js"
 
 # this pin works because of the link_tree directive in: test/dummy/app/assets/config/manifest.js
 # that points to the relative path of the build directory for turbo_boost-commands.js
