@@ -10,9 +10,11 @@ require_relative "attribute_set"
 #
 # * controller .................. The Rails controller processing the HTTP request
 # * css_id_selector ............. Returns a CSS selector for an element `id` i.e. prefixes with `#`
+# * dehydrate ................... Deep dehydration of a `value` so that it can travel across process boundaries
 # * dom_id ...................... The Rails dom_id helper
 # * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * element ..................... A struct that represents the DOM element that triggered the command
+# * hydrate ..................... Deep (re)hydratation of a `value` that can travel across process boundaries
 # * idiomatic_partial_path ...... Converts a file system path to an idiomatic Rails partial path
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
 # * params ...................... Commands specific params (frame_id, element, etc.)
@@ -28,6 +30,8 @@ require_relative "attribute_set"
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
 class TurboBoost::Commands::Command
+  include TurboBoost::Commands::AttributeHydration
+
   class << self
     def idiomatic_partial_path(partial_path)
       partial_path.to_s.gsub("/_", "/").split(".").first
