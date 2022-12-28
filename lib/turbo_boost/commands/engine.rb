@@ -25,6 +25,7 @@ module TurboBoost::Commands
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
 
       ActiveSupport.on_load(:action_controller_base) do
+        # `self` is ActionController::Base
         include TurboBoost::Commands::Controller
       end
     end
