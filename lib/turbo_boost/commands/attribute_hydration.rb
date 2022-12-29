@@ -37,7 +37,7 @@ module TurboBoost::Commands::AttributeHydration
       if value.respond_to?(:to_sgid_param)
         value.try(:persisted?) ? value.to_sgid_param : nil
       else
-        value&.to_s
+        value
       end
     end
   rescue => error
