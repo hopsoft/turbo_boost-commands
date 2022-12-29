@@ -5,6 +5,9 @@ require_relative "attribute_hydration"
 class TurboBoost::Commands::AttributeSet
   include TurboBoost::Commands::AttributeHydration
 
+  # These methods enable Ruby pattern matching
+  delegate :deconstruct, :deconstruct_keys, to: :to_h
+
   def initialize(attributes = {}, prefix: nil)
     prefix = prefix.to_s
     attrs = attributes.to_h.transform_values do |value|

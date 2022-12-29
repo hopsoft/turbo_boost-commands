@@ -13,7 +13,6 @@
 # * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * element ..................... A struct that represents the DOM element that triggered the command
 # * hydrate ..................... Deep (re)hydratation of a `value` that can travel across process boundaries
-# * idiomatic_partial_path ...... Converts a file system path to an idiomatic Rails partial path
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
 # * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)

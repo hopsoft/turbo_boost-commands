@@ -15,7 +15,6 @@ require_relative "attribute_set"
 # * dom_id_selector ............. Returns a CSS selector for a dom_id
 # * element ..................... A struct that represents the DOM element that triggered the command
 # * hydrate ..................... Deep (re)hydratation of a `value` that can travel across process boundaries
-# * idiomatic_partial_path ...... Converts a file system path to an idiomatic Rails partial path
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
 # * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
@@ -33,10 +32,6 @@ class TurboBoost::Commands::Command
   include TurboBoost::Commands::AttributeHydration
 
   class << self
-    def idiomatic_partial_path(partial_path)
-      partial_path.to_s.gsub("/_", "/").split(".").first
-    end
-
     def css_id_selector(id)
       return id if id.to_s.start_with?("#")
       "##{id}"
@@ -85,7 +80,7 @@ class TurboBoost::Commands::Command
   attr_reader :controller, :turbo_streams
   alias_method :streams, :turbo_streams
 
-  delegate :css_id_selector, :idiomatic_partial_path, to: :"self.class"
+  delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
   delegate(
     :controller_action_prevented?,
@@ -110,7 +105,6 @@ class TurboBoost::Commands::Command
     return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
 
     options = options.symbolize_keys
-    options[:partial] = idiomatic_partial_path(options[:partial]) if options[:partial].present?
 
     ivars = options[:assigns]&.each_with_object({}) do |(key, value), memo|
       memo[key] = controller.instance_variable_get("@#{key}")
