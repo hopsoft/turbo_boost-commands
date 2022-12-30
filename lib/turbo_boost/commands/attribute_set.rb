@@ -13,6 +13,7 @@ class TurboBoost::Commands::AttributeSet
     attrs = attributes.to_h.transform_values do |value|
       value.is_a?(self.class) ? value : value.to_s
     end
+    attrs = hydrate(attrs)
 
     attrs.each do |key, value|
       key = key.to_s.strip
@@ -25,7 +26,6 @@ class TurboBoost::Commands::AttributeSet
       # type casting
       value = value.to_i if value.to_s.match?(/\A\d+\z/)
       value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
-      value = hydrate(value, json: true) if name.match?(/\Aassigns|locals\z/)
 
       instance_variable_set "@#{name}", value
 

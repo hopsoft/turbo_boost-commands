@@ -2,7 +2,18 @@
   "name": "@turbo-boost/commands",
   "version": "0.0.2",
   "description": "Commands to help you build robust reactive applications with Rails & Hotwire.",
-  "main": "app/javascript/index.js",
+  "keywords": [
+    "hotwire",
+    "hotwired",
+    "rails",
+    "turbo",
+    "turbo-boost"
+  ],
+  "type": "module",
+  "exports": "app/javascript/builds/@turbo-boost/commands.js",
+  "files": [
+    "app/assets/builds"
+  ],
   "repository": "https://github.com/hopsoft/turbo_boost-commands",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
@@ -20,7 +31,6 @@
     "rustywind": "^0.15.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --target=es2017 --analyze --outfile=app/assets/builds/@turbo-boost/commands.mjs"
-  },
-  "module": "app/assets/builds/@turbo-boost/commands.mjs"
+    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --target=es2017 --analyze --outfile=app/assets/builds/@turbo-boost/commands.js"
+  }
 }

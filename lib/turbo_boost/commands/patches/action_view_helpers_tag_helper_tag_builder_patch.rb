@@ -3,22 +3,37 @@
 require_relative "../attribute_hydration"
 
 module TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
-  include TurboBoost::Commands::AttributeHydration
+  # TODO: revisit tag_option to see it might work for all scenarios
+  # ATTRIBUTE_PATTERN = /assigns|locals/i
+
+  # def tag_option(key, value, ...)
+  #  value = dehydrate(value) if key.match?(ATTRIBUTE_PATTERN)
+  #  super(key, value, ...)
+  # end
 
   def tag_options(options, ...)
-    dehydrate_option!(options, key: :data) if options.present?
+    dehydrate_options!(options, key: :data)
     super(options, ...)
   end
 
   private
 
-  def dehydrate_option!(options, key:)
-    dehydrate_option(options, key: key.to_sym) || dehydrate_option(options, key: key.to_s)
-  end
+  def dehydrate_options!(options, key:)
+    return unless options.is_a?(Hash)
 
-  def dehydrate_option(options, key:)
-    return false unless options.key?(key)
-    options[key] = dehydrate(options[key])
-    true
+    dataset_key = :data if options.key?(:data)
+    dataset_key ||= "data" if options.key?("data")
+    return unless dataset_key
+
+    data = options[dataset_key]
+    return unless data.is_a?(Hash)
+
+    command_key = :turbo_command if data.key?(:turbo_command)
+    command_key = "turbo_command" if data.key?("turbo_command")
+    return unless command_key
+
+    options.transform_keys!(&:to_sym)
+    options[:rel] = "nofollow"
+    options.each { |key, value| options[key] = TurboBoost::Commands::AttributeHydration.dehydrate(value) }
   end
 end

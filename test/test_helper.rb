@@ -22,6 +22,7 @@ end
 
 class ActiveSupport::TestCase
   include ActiveJob::TestHelper
+  fixtures :all
 end
 
 class ActionDispatch::IntegrationTest

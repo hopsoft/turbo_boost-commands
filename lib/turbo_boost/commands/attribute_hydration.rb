@@ -1,26 +1,31 @@
 # frozen_string_literal: true
 
 module TurboBoost::Commands::AttributeHydration
+  extend self
+
+  # simple regular expressions checked before attempting specific hydration strategies
+  JSON_REGEX = /.*(\[|\{).*(\}|\]).*/
+  SGID_PARAM_REGEX = /.{100,}/i
+
   def hydrate(value, json: false)
     value = JSON.parse(value).with_indifferent_access if json
-    hydrated = case value
+    case value
     when Array
       value.map { |val| hydrate(val) }
     when Hash
       value.each_with_object({}.with_indifferent_access) do |(key, val), memo|
         memo[key] = hydrate(val)
       end
+    when String
+      hydrated_value = hydrate(value, json: true) if value.match?(JSON_REGEX)
+      hydrated_value ||= GlobalID::Locator.locate_signed(value) if value.match?(SGID_PARAM_REGEX)
+      hydrated_value || value
     else
-      begin
-        GlobalID::Locator.locate_signed(value)
-      rescue
-        value
-      end
+      value
     end
   rescue => error
     Rails.logger.error "Failed to hydrate value! #{value}; #{error}"
-  ensure
-    hydrated.blank? ? nil : hydrated
+    value
   end
 
   def dehydrate(value, json: false)
