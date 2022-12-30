@@ -128,7 +128,7 @@ class TurboBoost::Commands::Command
 
   def element
     @element ||= begin
-      attributes = params[:element_attributes]
+      attributes = params[:element_attributes].to_h
       TurboBoost::Commands::AttributeSet.new(attributes.merge(
         aria: TurboBoost::Commands::AttributeSet.new(attributes, prefix: "aria"),
         data: TurboBoost::Commands::AttributeSet.new(attributes, prefix: "data")
