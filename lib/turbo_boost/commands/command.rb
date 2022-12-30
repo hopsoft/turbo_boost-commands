@@ -112,7 +112,7 @@ class TurboBoost::Commands::Command
     ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
   end
 
-  def morph(html, id: nil, selector: nil)
+  def morph(html:, id: nil, selector: nil)
     selector ||= css_id_selector(id)
     turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
   end

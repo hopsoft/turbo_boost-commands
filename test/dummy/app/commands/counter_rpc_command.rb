@@ -7,6 +7,6 @@ class CounterRpcCommand < TurboBoost::Commands::Command
 
   def increment
     session[:rpc_count] = session.fetch(:rpc_count, 0) + 1
-    morph render("demos/increment/rpc"), id: "rpc"
+    morph id: "rpc", html: render("demos/increment/rpc")
   end
 end
