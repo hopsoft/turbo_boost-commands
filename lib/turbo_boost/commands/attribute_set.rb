@@ -20,7 +20,7 @@ class TurboBoost::Commands::AttributeSet
       name.delete_prefix!("#{prefix}_") unless prefix.blank?
 
       # type casting
-      value = value.to_i if value.to_s.match?(/\A\d+\z/)
+      value = value.to_i if value.is_a?(String) && value.match?(/\A\d+\z/)
       value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
 
       instance_variable_set "@#{name}", value
