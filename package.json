@@ -32,6 +32,6 @@
     "rustywind": "^0.15.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --target=es2017 --analyze --outfile=app/assets/builds/@turbo-boost/commands.js"
+    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --target=es2020,chrome58,firefox57,safari11 --analyze --outfile=app/assets/builds/@turbo-boost/commands.js"
   }
 }
