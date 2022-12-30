@@ -10,12 +10,8 @@ class TurboBoost::Commands::AttributeSet
 
   def initialize(attributes = {}, prefix: nil)
     prefix = prefix.to_s
-    attrs = attributes.to_h.transform_values do |value|
-      value.is_a?(self.class) ? value : value.to_s
-    end
-    attrs = hydrate(attrs)
 
-    attrs.each do |key, value|
+    hydrate(attributes).each do |key, value|
       key = key.to_s.strip
 
       next unless prefix.blank? || key.start_with?(prefix)
