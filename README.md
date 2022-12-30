@@ -159,7 +159,7 @@ Commands can be tested in isolation as well as with standard Rails controller, i
     +import '@turbo-boost/commands'
     ```
 
-2. Add TurboBoost Commands behavior to the Rails app
+2. Add TurboBoost to your Rails app
 
     ```diff
     # app/views/layouts/application.html.erb
