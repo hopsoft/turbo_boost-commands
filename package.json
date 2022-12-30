@@ -10,6 +10,7 @@
     "turbo-boost"
   ],
   "type": "module",
+  "main": "app/assets/builds/@turbo-boost/commands.js",
   "exports": "app/assets/builds/@turbo-boost/commands.js",
   "files": [
     "app/assets/builds"
