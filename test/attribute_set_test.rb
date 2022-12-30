@@ -3,6 +3,8 @@
 require "test_helper"
 
 class AttributeSetTest < ActiveSupport::TestCase
+  include TurboBoost::Commands::AttributeHydration
+
   test "prefix selection" do
     attributes = {test_a: "included", b: "excluded"}
     attrs = TurboBoost::Commands::AttributeSet.new(attributes, prefix: :test)
@@ -32,5 +34,12 @@ class AttributeSetTest < ActiveSupport::TestCase
     assert attrs.a?
     assert attrs.a.is_a? Numeric
     assert_equal 54872, attrs.a
+  end
+
+  test "implicit hydration" do
+    attributes = {test_a: "value", data: {locals: {user: User.first}}}.with_indifferent_access
+    dehydrated = dehydrate(attributes)
+    attrs = TurboBoost::Commands::AttributeSet.new(dehydrated)
+    assert_equal attributes, attrs.to_h
   end
 end

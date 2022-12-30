@@ -129,11 +129,9 @@ class TurboBoost::Commands::Command
   def element
     @element ||= begin
       attributes = params[:element_attributes]
-      attrs = attributes.select { |key, _| !key.start_with?(/aria|data/) }
-
-      TurboBoost::Commands::AttributeSet.new(attrs.merge(
+      TurboBoost::Commands::AttributeSet.new(attributes.merge(
         aria: TurboBoost::Commands::AttributeSet.new(attributes, prefix: "aria"),
-        dataset: TurboBoost::Commands::AttributeSet.new(attributes, prefix: "data")
+        data: TurboBoost::Commands::AttributeSet.new(attributes, prefix: "data")
       ))
     end
   end

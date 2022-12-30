@@ -21,11 +21,11 @@ module TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
   def dehydrate_options!(options, key:)
     return unless options.is_a?(Hash)
 
-    dataset_key = :data if options.key?(:data)
-    dataset_key ||= "data" if options.key?("data")
-    return unless dataset_key
+    data_key = :data if options.key?(:data)
+    data_key ||= "data" if options.key?("data")
+    return unless data_key
 
-    data = options[dataset_key]
+    data = options[data_key]
     return unless data.is_a?(Hash)
 
     command_key = :turbo_command if data.key?(:turbo_command)
