@@ -3,22 +3,24 @@
 module TurboBoost::Commands::AttributeHydration
   extend self
 
-  # simple regular expressions checked before attempting specific hydration strategies
-  JSON_REGEX = /.*(\[|\{).*(\}|\]).*/
-  SGID_PARAM_REGEX = /.{100,}/i
+  # Rails implicitly converts certain keys to JSON,
+  # so we check keys before performing JSON conversion
+  def prefixed_attribute?(name)
+    PREFIX_ATTRIBUTE_REGEXP.match? name.to_s
+  end
 
-  def hydrate(value, json: false)
-    value = JSON.parse(value).with_indifferent_access if json
+  def hydrate(value)
     case value
     when Array
       value.map { |val| hydrate(val) }
     when Hash
-      value.each_with_object({}.with_indifferent_access) do |(key, val), memo|
+      value.each_with_object(HashWithIndifferentAccess.new) do |(key, val), memo|
         memo[key] = hydrate(val)
       end
     when String
-      hydrated_value = hydrate(value, json: true) if value.match?(JSON_REGEX)
-      hydrated_value ||= GlobalID::Locator.locate_signed(value) if value.match?(SGID_PARAM_REGEX)
+      parsed_value = parse_json(value)
+      hydrated_value = hydrate(parsed_value) unless parsed_value.nil?
+      hydrated_value ||= GlobalID::Locator.locate_signed(value) if possible_sgid_string?(value)
       hydrated_value || value
     else
       value
@@ -28,25 +30,57 @@ module TurboBoost::Commands::AttributeHydration
     value
   end
 
-  def dehydrate(value, json: false)
+  def dehydrate(value)
+    return value unless has_sgid?(value)
     case value
     when Array
-      dehydrated = value.map { |val| dehydrate_value(val, json: true) }
-      json ? dehydrated.to_json : dehydrated
+      value.map { |val| dehydrate(val, nested: true) }
     when Hash
-      dehydrated = value.each_with_object({}.with_indifferent_access) do |(key, val), memo|
-        memo[key] = dehydrate(val, json: true)
+      value.each_with_object(HashWithIndifferentAccess.new) do |(key, val), memo|
+        memo[key] = dehydrate(val)
       end
-      json ? dehydrated.to_json : dehydrated
     else
-      if value.respond_to?(:to_sgid_param)
-        value.try(:persisted?) ? value.to_sgid_param : nil
-      else
-        value
-      end
+      implements_sgid?(value) ? value.to_sgid_param : value
     end
-  rescue => error
-    Rails.logger.error "Failed to dehydrate value! #{value}; #{error}"
-    value
+  end
+
+  private
+
+  # simple regular expressions checked before attempting specific hydration strategies
+  PREFIX_ATTRIBUTE_REGEXP = /\Aaria|data\z/i
+  JSON_REGEX = /.*(\[|\{).*(\}|\]).*/
+  SGID_PARAM_REGEX = /.{100,}/i
+
+  def possible_json_string?(value)
+    return false unless value.is_a?(String)
+    JSON_REGEX.match? value
+  end
+
+  def possible_sgid_string?(value)
+    return false unless value.is_a?(String)
+    SGID_PARAM_REGEX.match? value
+  end
+
+  def implements_sgid?(value)
+    value.respond_to?(:to_sgid_param) && value.try(:persisted?)
+  end
+
+  def find_sgid_value(value)
+    case value
+    when Array then value.find { |val| find_sgid_value val }
+    when Hash then find_sgid_value(value.values)
+    else implements_sgid?(value) ? value : nil
+    end
+  end
+
+  def has_sgid?(value)
+    find_sgid_value(value).present?
+  end
+
+  def parse_json(value)
+    return nil unless possible_json_string?(value)
+    JSON.parse value
+  rescue
+    nil
   end
 end
