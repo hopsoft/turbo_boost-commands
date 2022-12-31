@@ -3,12 +3,6 @@
 module TurboBoost::Commands::AttributeHydration
   extend self
 
-  # Rails implicitly converts certain keys to JSON,
-  # so we check keys before performing JSON conversion
-  def prefixed_attribute?(name)
-    PREFIX_ATTRIBUTE_REGEXP.match? name.to_s
-  end
-
   def hydrate(value)
     case value
     when Array
@@ -34,10 +28,11 @@ module TurboBoost::Commands::AttributeHydration
     return value unless has_sgid?(value)
     case value
     when Array
-      value.map { |val| dehydrate(val, nested: true) }
+      value.map { |val| dehydrate val }
     when Hash
       value.each_with_object(HashWithIndifferentAccess.new) do |(key, val), memo|
-        memo[key] = dehydrate(val)
+        val = dehydrate(val)
+        memo[key] = convert_to_json?(key, val) ? val.to_json : val
       end
     else
       implements_sgid?(value) ? value.to_sgid_param : value
@@ -50,6 +45,20 @@ module TurboBoost::Commands::AttributeHydration
   PREFIX_ATTRIBUTE_REGEXP = /\Aaria|data\z/i
   JSON_REGEX = /.*(\[|\{).*(\}|\]).*/
   SGID_PARAM_REGEX = /.{100,}/i
+
+  # Rails implicitly converts certain keys to JSON,
+  # so we check keys before performing JSON conversion
+  def prefixed_attribute?(name)
+    PREFIX_ATTRIBUTE_REGEXP.match? name.to_s
+  end
+
+  def convert_to_json?(key, value)
+    return false if prefixed_attribute?(key)
+    case value
+    when Array, Hash then true
+    else false
+    end
+  end
 
   def possible_json_string?(value)
     return false unless value.is_a?(String)
