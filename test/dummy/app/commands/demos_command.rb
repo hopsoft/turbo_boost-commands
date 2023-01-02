@@ -5,7 +5,7 @@ class DemosCommand < TurboBoost::Commands::Command
 
   def toggle
     state.now[:active_demo] = element.aria.visible? ? nil : element.aria.controls
-    morph "##{demo_id}-demos", render("demos/#{demo_id}/demos")
+    morph id: "#{demo_id}-demos", html: render("demos/#{demo_id}/demos")
   end
 
   private

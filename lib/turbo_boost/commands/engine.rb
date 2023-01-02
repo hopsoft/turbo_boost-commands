@@ -3,9 +3,11 @@
 require "turbo-rails"
 require "turbo_boost/streams"
 require_relative "version"
+require_relative "patches"
 require_relative "command"
 require_relative "controller_pack"
 require_relative "../../../app/controllers/concerns/turbo_boost/commands/controller"
+require_relative "../../../app/helpers/turbo_boost/commands/application_helper"
 
 module TurboBoost::Commands
   def self.config
@@ -24,8 +26,15 @@ module TurboBoost::Commands
     initializer "turbo_boost_commands.configuration" do
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
 
-      ActiveSupport.on_load(:action_controller_base) do
+      ActiveSupport.on_load :action_controller_base do
+        # `self` is ActionController::Base
         include TurboBoost::Commands::Controller
+        helper TurboBoost::Commands::ApplicationHelper
+      end
+
+      ActiveSupport.on_load :action_view do
+        # `self` is ActionView::Base
+        ActionView::Helpers::TagHelper::TagBuilder.prepend TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
       end
     end
   end

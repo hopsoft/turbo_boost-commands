@@ -72,18 +72,19 @@ class TurboBoost::Commands::Runner
 
   def command_name
     return nil unless command_requested?
-    # binding.pry
     command_params[:name]
   end
 
   def command_class_name
     return nil unless command_requested?
-    command_name.split("#").first
+    name = command_name.split("#").first
+    name << "Command" unless name.end_with?("Command")
+    name
   end
 
   def command_method_name
     return nil unless command_requested?
-    return "noop" unless command_name.include?("#")
+    return "perform" unless command_name.include?("#")
     command_name.split("#").last
   end
 

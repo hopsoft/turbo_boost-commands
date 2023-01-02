@@ -3,6 +3,8 @@
 require_relative "runner"
 
 class TurboBoost::Commands::ControllerPack
+  include TurboBoost::Commands::AttributeHydration
+
   attr_reader :command, :controller, :runner
 
   delegate(
