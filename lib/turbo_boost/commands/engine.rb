@@ -3,6 +3,8 @@
 require "turbo-rails"
 require "turbo_boost/streams"
 require_relative "version"
+require_relative "../errors"
+require_relative "errors"
 require_relative "patches"
 require_relative "command"
 require_relative "controller_pack"

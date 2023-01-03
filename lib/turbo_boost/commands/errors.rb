@@ -6,4 +6,7 @@ module TurboBoost::Commands
 
   class InvalidMethodError < StandardError
   end
+
+  class InvalidElementError < StandardError
+  end
 end
