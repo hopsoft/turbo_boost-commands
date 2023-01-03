@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../errors"
-require_relative "errors"
 require_relative "sanitizer"
 require_relative "../state/manager"
 
