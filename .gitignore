@@ -12,3 +12,6 @@
 /node_modules
 Gemfile.lock
 *.key
+pkg
+tags
+.tags

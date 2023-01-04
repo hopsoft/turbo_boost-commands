@@ -36,13 +36,12 @@ class TurboBoost::State::Manager
   # For ActiveModel::Dirty tracking
   define_attribute_methods :state
 
-  delegate :cookies, to: :runner
-  delegate :request, :response, to: :"runner.controller"
+  delegate :request, :response, to: :controller
 
-  attr_reader :cookie_data, :header_data, :server_data
+  attr_reader :controller, :cookie_data, :header_data, :server_data
 
-  def initialize(runner)
-    @runner = runner
+  def initialize(controller)
+    @controller = controller
 
     begin
       @state = TurboBoost::State.new(cookie) # server state as stored in the cookie
@@ -65,13 +64,13 @@ class TurboBoost::State::Manager
     # Apply server state overrides (i.e. state stored in databases like Redis, Postgres, etc...)
     if TurboBoost::Commands.config.apply_server_state_overrides
       begin
-        state_override_block = self.class.state_override_block(runner.controller)
+        state_override_block = self.class.state_override_block(controller)
         if state_override_block
-          server_state_hash = runner.controller.instance_eval(&state_override_block).with_indifferent_access
+          server_state_hash = controller.instance_eval(&state_override_block).with_indifferent_access
           server_state_hash.each { |key, val| self[key] = val }
         end
       rescue => error
-        Rails.logger.error "Failed to apply `state_override_block` configured in #{runner.controller.class.name} to TurboBoost::State! #{error.message}"
+        Rails.logger.error "Failed to apply `state_override_block` configured in #{controller.class.name} to TurboBoost::State! #{error.message}"
       end
     end
 
@@ -98,6 +97,11 @@ class TurboBoost::State::Manager
   end
 
   delegate :cache_key, to: :state
+
+  # Same implementation as ActionController::Base but with public visibility
+  def cookies
+    request.cookie_jar
+  end
 
   def [](*keys, default: nil)
     state.read(*keys, default: default)
@@ -142,7 +146,6 @@ class TurboBoost::State::Manager
 
   private
 
-  attr_reader :runner
   attr_reader :state
 
   def headers

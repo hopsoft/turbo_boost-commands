@@ -11,7 +11,7 @@ class TurboBoost::Commands::Runner
 
   def initialize(controller)
     @controller = controller
-    @state_manager = TurboBoost::State::Manager.new(self)
+    @state_manager = TurboBoost::State::Manager.new(controller)
   end
 
   def meta_tag
@@ -91,23 +91,23 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(self)
+    @command_instance ||= command_class&.new(controller, state, command_params)
   end
 
   def command_performed?
-    !!@command_performed
+    command_instance.performed?
   end
 
   def command_errored?
-    !!@command_errored
+    command_instance.errored?
+  end
+
+  def command_succeeded?
+    command_instance.succeeded?
   end
 
   def controller_action_prevented?
     !!@controller_action_prevented
-  end
-
-  def command_succeeded?
-    command_performed? && !command_errored?
   end
 
   def should_prevent_controller_action?
@@ -115,14 +115,16 @@ class TurboBoost::Commands::Runner
     command_instance.should_prevent_controller_action? command_method_name
   end
 
-  def run
+  def perform
     return unless command_valid?
     return if command_performed?
-    @command_performed = true
-    command_instance.public_send command_method_name
+    command_instance.performed = true
+    command.run_callbacks :perform do
+      command_instance.public_send command_method_name
+    end
     prevent_controller_action if should_prevent_controller_action?
   rescue => error
-    @command_errored = true
+    command_instance.errored = true
     raise error if controller_action_prevented?
     prevent_controller_action error: error
   end
@@ -158,10 +160,6 @@ class TurboBoost::Commands::Runner
   def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
     render html: html, layout: false, status: status || response_status
-  end
-
-  def turbo_stream
-    @turbo_stream ||= Turbo::Streams::TagBuilder.new(view_context)
   end
 
   def message_verifier

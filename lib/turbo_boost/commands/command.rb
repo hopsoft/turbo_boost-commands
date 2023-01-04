@@ -16,7 +16,6 @@ require_relative "attribute_set"
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
 # * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * render_response ............. Renders a full controller response
 # * renderer .................... An ActionController::Renderer
 # * state ....................... An object that stores ephemeral `state`
 # * turbo_stream ................ A Turbo Stream TagBuilder
@@ -73,23 +72,33 @@ class TurboBoost::Commands::Command
     end
   end
 
-  attr_reader :controller, :turbo_streams
+  attr_accessor :performed, :errored
+  attr_reader :controller, :params, :state_manager, :turbo_streams
+
   alias_method :streams, :turbo_streams
+  alias_method :state, :state_manager
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
-  delegate(
-    :controller_action_prevented?,
-    :render_response,
-    :turbo_stream,
-    :state,
-    to: :@runner
-  )
+  delegate :missing, to: :controller
 
-  def initialize(runner)
-    @runner = runner
-    @controller = runner.controller
+  def initialize(controller, state, params = {})
+    @controller = controller
+    @state_manager = state_manager
+    @params = params
     @turbo_streams = Set.new
+  end
+
+  def performed?
+    !!@performed
+  end
+
+  def errored?
+    !!@errored
+  end
+
+  def succeeded?
+    performed? && !errored?
   end
 
   def dom_id_selector(...)
@@ -120,10 +129,6 @@ class TurboBoost::Commands::Command
   # default command invoked when method not specified
   # can be overridden in subclassed commands
   def perform
-  end
-
-  def params
-    @runner.command_params
   end
 
   def element

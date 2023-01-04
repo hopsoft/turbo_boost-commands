@@ -19,7 +19,7 @@ class TurboBoost::Commands::ControllerPack
     :command_errored?,
     :controller_action_prevented?,
     :meta_tag,
-    :run,
+    :perform,
     :state,
     :update_response,
     to: :runner
