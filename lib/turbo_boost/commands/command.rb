@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "attribute_set"
+require_relative "command_callbacks"
 
 # TurboBoost::Commands::Command superclass.
 # All command classes should inherit from this class.
@@ -26,6 +27,8 @@ require_relative "attribute_set"
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
 class TurboBoost::Commands::Command
+  include TurboBoost::Commands::CommandCallbacks
+
   class << self
     def css_id_selector(id)
       return id if id.to_s.start_with?("#")
@@ -80,9 +83,8 @@ class TurboBoost::Commands::Command
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
-  delegate :missing, to: :controller
 
-  def initialize(controller, state, params = {})
+  def initialize(controller, state_manager, params = {})
     @controller = controller
     @state_manager = state_manager
     @params = params
@@ -119,6 +121,10 @@ class TurboBoost::Commands::Command
     controller.view_context.render(options.except(:assigns), locals, &block)
   ensure
     ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
+  end
+
+  def turbo_stream
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 
   def morph(html:, id: nil, selector: nil)

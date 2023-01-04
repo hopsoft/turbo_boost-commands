@@ -91,19 +91,19 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, state, command_params)
+    @command_instance ||= command_class&.new(controller, state_manager, command_params)
   end
 
   def command_performed?
-    command_instance.performed?
+    !!command_instance&.performed?
   end
 
   def command_errored?
-    command_instance.errored?
+    !!command_instance&.errored?
   end
 
   def command_succeeded?
-    command_instance.succeeded?
+    !!command_instance&.succeeded?
   end
 
   def controller_action_prevented?
@@ -119,7 +119,7 @@ class TurboBoost::Commands::Runner
     return unless command_valid?
     return if command_performed?
     command_instance.performed = true
-    command.run_callbacks :perform do
+    command_instance.run_callbacks :perform do
       command_instance.public_send command_method_name
     end
     prevent_controller_action if should_prevent_controller_action?
@@ -160,6 +160,10 @@ class TurboBoost::Commands::Runner
   def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
     headers.each { |key, value| response.set_header key.to_s, value.to_s }
     render html: html, layout: false, status: status || response_status
+  end
+
+  def turbo_stream
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(view_context)
   end
 
   def message_verifier
