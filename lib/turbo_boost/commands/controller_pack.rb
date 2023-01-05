@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "../state/manager"
 require_relative "runner"
 
 class TurboBoost::Commands::ControllerPack
   include TurboBoost::Commands::AttributeHydration
 
-  attr_reader :command, :controller, :runner
+  attr_reader :controller, :state_manager, :runner, :command
+  alias_method :state, :state_manager
 
   delegate(
     :request,
@@ -20,7 +22,6 @@ class TurboBoost::Commands::ControllerPack
     :controller_action_prevented?,
     :meta_tag,
     :perform,
-    :state,
     :update_response,
     to: :runner
   )
@@ -29,6 +30,7 @@ class TurboBoost::Commands::ControllerPack
 
   def initialize(controller)
     @controller = controller
+    @state_manager = TurboBoost::State::Manager.new(controller)
     @runner = TurboBoost::Commands::Runner.new(controller)
     @command = runner.command_instance
   end

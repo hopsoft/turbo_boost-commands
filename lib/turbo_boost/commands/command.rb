@@ -75,32 +75,22 @@ class TurboBoost::Commands::Command
     end
   end
 
-  attr_accessor :performed, :errored
-  attr_reader :controller, :params, :state_manager, :turbo_streams
-
+  attr_reader :controller, :params, :turbo_streams
   alias_method :streams, :turbo_streams
-  alias_method :state, :state_manager
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
+  delegate :state, to: :"controller.turbo_boost"
 
-  def initialize(controller, state_manager, params = {})
+  def initialize(controller, params = {})
     @controller = controller
-    @state_manager = state_manager
     @params = params
     @turbo_streams = Set.new
   end
 
-  def performed?
-    !!@performed
-  end
-
-  def errored?
-    !!@errored
-  end
-
-  def succeeded?
-    performed? && !errored?
+  # Abdstract `perform` method, overridde in subclassed commands
+  def perform
+    raise NotImplementedError, "#{self.class.name} must implement the `perform` method!"
   end
 
   def dom_id_selector(...)
@@ -130,11 +120,6 @@ class TurboBoost::Commands::Command
   def morph(html:, id: nil, selector: nil)
     selector ||= css_id_selector(id)
     turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
-  end
-
-  # default command invoked when method not specified
-  # can be overridden in subclassed commands
-  def perform
   end
 
   def element
