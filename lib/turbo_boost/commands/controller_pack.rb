@@ -10,12 +10,6 @@ class TurboBoost::Commands::ControllerPack
   alias_method :state, :state_manager
 
   delegate(
-    :request,
-    :response,
-    to: :controller
-  )
-
-  delegate(
     :command_aborted?,
     :command_errored?,
     :command_performed?,
@@ -25,16 +19,10 @@ class TurboBoost::Commands::ControllerPack
     to: :runner
   )
 
-  delegate_missing_to :command
-
   def initialize(controller)
     @controller = controller
     @state_manager = TurboBoost::State::Manager.new(controller)
-    @runner = TurboBoost::Commands::Runner.new(controller)
+    @runner = TurboBoost::Commands::Runner.new(controller, state_manager)
     @command = runner.command_instance
-  end
-
-  def render(...)
-    command.render_response(...)
   end
 end

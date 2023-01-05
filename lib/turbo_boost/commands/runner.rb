@@ -3,12 +3,11 @@
 require_relative "sanitizer"
 
 class TurboBoost::Commands::Runner
-  attr_reader :controller
+  attr_reader :controller, :state_manager
 
-  delegate :state, to: :"controller.turbo_boost"
-
-  def initialize(controller)
+  def initialize(controller, state_manager)
     @controller = controller
+    @state_manager = state_manager
   end
 
   def meta_tag
@@ -17,7 +16,7 @@ class TurboBoost::Commands::Runner
       id: "turbo-boost",
       name: "turbo-boost",
       content: masked_token,
-      data: {busy: false, state: state.payload}
+      data: {busy: false, state: state_manager.payload}
     }
     controller.view_context.tag("meta", options).html_safe
   end
@@ -81,7 +80,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, state_manager, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -132,7 +131,7 @@ class TurboBoost::Commands::Runner
     end
 
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state.write_cookie # truncates state to stay within cookie size limits (4k)
+    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
   end
 
   def update_response
@@ -141,7 +140,7 @@ class TurboBoost::Commands::Runner
     @update_response_performed = true
 
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state.write_cookie # truncates state to stay within cookie size limits (4k)
+    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
