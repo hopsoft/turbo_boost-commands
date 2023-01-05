@@ -58,13 +58,6 @@ class TurboBoost::Commands::Runner
     end
   end
 
-  def command_element
-    return nil if command_params.blank?
-    @command_element ||= Struct
-      .new(*command_params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
-      .new(*command_params[:element_attributes].values)
-  end
-
   def command_name
     return nil unless command_requested?
     command_params[:name]
@@ -88,17 +81,21 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, command_params).tap do |command|
-      command&.add_observer self, :handle_command_event
+    @command_instance ||= command_class&.new(controller, command_params).tap do |instance|
+      instance&.add_observer self, :handle_command_event
     end
   end
 
-  def command_performed?
-    !!command_instance&.performed?
+  def command_aborted?
+    !!command_instance&.aborted?
   end
 
   def command_errored?
     !!command_instance&.errored?
+  end
+
+  def command_performed?
+    !!command_instance&.performed?
   end
 
   def command_succeeded?
@@ -246,8 +243,8 @@ class TurboBoost::Commands::Runner
 
   def append_success_event_to_response_body
     args = ["turbo-boost:command:success", {bubbles: true, cancelable: false, detail: parsed_command_params}]
-    event = if command_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
+    event = if command_instance&.element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
@@ -256,8 +253,8 @@ class TurboBoost::Commands::Runner
 
   def append_error_event_to_response_body(message)
     args = ["turbo-boost:command:server-error", {bubbles: true, cancelable: false, detail: parsed_command_params.merge(error: message)}]
-    event = if command_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
+    event = if command_instance&.element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end

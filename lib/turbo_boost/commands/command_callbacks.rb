@@ -13,25 +13,47 @@ module TurboBoost::Commands::CommandCallbacks
   module ClassMethods
     [:before, :after, :around].each do |type|
       define_method "#{type}_command" do |*method_names, &blk|
-        options = method_names.extract_options!
-        options[:if] = [options[:if]].flatten.compact
-        options[:unless] = [options[:unless]].flatten.compact
+        options = callback_options(method_names.extract_options!)
 
-        only = [options[:only]].flatten.compact
-        only.each do |command_name|
+        # convert only to if
+        options[:only].each do |command_name|
           options[:if] << -> { command_name.to_s == @performing_method_name.to_s }
         end
 
-        except = [options[:except]].flatten.compact
-        except.each do |command_name|
+        # convert except to unless
+        options[:except].each do |command_name|
           options[:unless] << -> { command_name.to_s == @performing_method_name.to_s }
         end
 
-        options.reject! { |key, value| key.match?(/\Aonly|except\z/i) || value.blank? }
+        options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
+        method_names.each { |method_name| set_callback NAME, type, method_name, options }
+      end
 
-        method_names.each do |method_name|
-          set_callback NAME, type, method_name, options
+      define_method "skip_#{type}_command" do |*method_names, &blk|
+        options = callback_options(method_names.extract_options!)
+
+        # convert only to if
+        options[:only].each do |command_name|
+          options[:if] << -> { command_name.to_s == @performing_method_name.to_s }
         end
+
+        # convert except to unless
+        options[:except].each do |command_name|
+          options[:unless] << -> { command_name.to_s == @performing_method_name.to_s }
+        end
+
+        options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
+        method_names.each { |method_name| skip_callback NAME, type, method_name, options }
+      end
+
+      private
+
+      def callback_options(options)
+        options[:if] = [options[:if]].flatten.compact
+        options[:unless] = [options[:unless]].flatten.compact
+        options[:only] = [options[:only]].flatten.compact
+        options[:except] = [options[:except]].flatten.compact
+        options
       end
     end
   end
