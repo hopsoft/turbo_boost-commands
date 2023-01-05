@@ -36,8 +36,6 @@ class TurboBoost::State::Manager
   # For ActiveModel::Dirty tracking
   define_attribute_methods :state
 
-  delegate :request, :response, to: :controller
-
   attr_reader :controller, :cookie_data, :header_data, :server_data
 
   def initialize(controller)
@@ -100,7 +98,7 @@ class TurboBoost::State::Manager
 
   # Same implementation as ActionController::Base but with public visibility
   def cookies
-    request.cookie_jar
+    controller.request.cookie_jar
   end
 
   def [](*keys, default: nil)
@@ -149,7 +147,7 @@ class TurboBoost::State::Manager
   attr_reader :state
 
   def headers
-    request.headers.select { |(key, _)| key.match?(/TURBOBOOST_STATE/i) }.sort
+    controller.request.headers.select { |(key, _)| key.match?(/TURBOBOOST_STATE/i) }.sort
   end
 
   # State that exists on the client.
