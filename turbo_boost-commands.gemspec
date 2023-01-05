@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.metadata["source_code_uri"] = s.homepage
   s.metadata["changelog_uri"] = s.homepage + "/blob/main/CHANGELOG.md"
 
-  s.files = Dir["app/**/*", "bin/*", "config/*", "lib/**/*.rb", "[A-Z]*"]
+  s.files = Dir["{app,lib}/**/*", "MIT-LICENSE", "README.md"]
 
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"

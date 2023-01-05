@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "attribute_set"
+require_relative "command_callbacks"
 
 # TurboBoost::Commands::Command superclass.
 # All command classes should inherit from this class.
@@ -16,7 +17,6 @@ require_relative "attribute_set"
 # * morph ....................... Appends a Turbo Stream to morph a DOM element
 # * params ...................... Commands specific params (frame_id, element, etc.)
 # * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * render_response ............. Renders a full controller response
 # * renderer .................... An ActionController::Renderer
 # * state ....................... An object that stores ephemeral `state`
 # * turbo_stream ................ A Turbo Stream TagBuilder
@@ -27,6 +27,8 @@ require_relative "attribute_set"
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
 class TurboBoost::Commands::Command
+  include TurboBoost::Commands::CommandCallbacks
+
   class << self
     def css_id_selector(id)
       return id if id.to_s.start_with?("#")
@@ -73,23 +75,24 @@ class TurboBoost::Commands::Command
     end
   end
 
-  attr_reader :controller, :turbo_streams
+  attr_reader :controller, :state_manager, :params, :turbo_streams
+
+  alias_method :state, :state_manager
   alias_method :streams, :turbo_streams
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
-  delegate(
-    :controller_action_prevented?,
-    :render_response,
-    :turbo_stream,
-    :state,
-    to: :@runner
-  )
 
-  def initialize(runner)
-    @runner = runner
-    @controller = runner.controller
+  def initialize(controller, state_manager, params = {})
+    @controller = controller
+    @state_manager = state_manager
+    @params = params
     @turbo_streams = Set.new
+  end
+
+  # Abdstract `perform` method, overridde in subclassed commands
+  def perform
+    raise NotImplementedError, "#{self.class.name} must implement the `perform` method!"
   end
 
   def dom_id_selector(...)
@@ -112,18 +115,13 @@ class TurboBoost::Commands::Command
     ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
   end
 
+  def turbo_stream
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
+  end
+
   def morph(html:, id: nil, selector: nil)
     selector ||= css_id_selector(id)
     turbo_streams << turbo_stream.invoke("morph", args: [html], selector: selector)
-  end
-
-  # default command invoked when method not specified
-  # can be overridden in subclassed commands
-  def perform
-  end
-
-  def params
-    @runner.command_params
   end
 
   def element

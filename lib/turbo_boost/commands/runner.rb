@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "sanitizer"
-require_relative "../state/manager"
 
 class TurboBoost::Commands::Runner
   attr_reader :controller, :state_manager
-  alias_method :state, :state_manager
 
-  delegate_missing_to :controller
-
-  def initialize(controller)
+  def initialize(controller, state_manager)
     @controller = controller
-    @state_manager = TurboBoost::State::Manager.new(self)
+    @state_manager = state_manager
   end
 
   def meta_tag
@@ -22,7 +18,7 @@ class TurboBoost::Commands::Runner
       content: masked_token,
       data: {busy: false, state: state_manager.payload}
     }
-    view_context.tag("meta", options).html_safe
+    controller.view_context.tag("meta", options).html_safe
   end
 
   def command_requested?
@@ -54,18 +50,11 @@ class TurboBoost::Commands::Runner
   end
 
   def command_params
-    return ActionController::Parameters.new if params[:turbo_boost_command].nil?
+    return ActionController::Parameters.new if controller.params[:turbo_boost_command].nil?
     @command_params ||= begin
       payload = parsed_command_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
     end
-  end
-
-  def command_element
-    return nil if command_params.blank?
-    @command_element ||= Struct
-      .new(*command_params[:element_attributes].keys.map { |key| key.to_s.parameterize.underscore.to_sym })
-      .new(*command_params[:element_attributes].values)
   end
 
   def command_name
@@ -91,23 +80,29 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(self)
+    @command_instance ||= command_class&.new(controller, state_manager, command_params).tap do |instance|
+      instance&.add_observer self, :handle_command_event
+    end
   end
 
-  def command_performed?
-    !!@command_performed
+  def command_aborted?
+    !!command_instance&.aborted?
   end
 
   def command_errored?
-    !!@command_errored
+    !!command_instance&.errored?
+  end
+
+  def command_performed?
+    !!command_instance&.performed?
+  end
+
+  def command_succeeded?
+    !!command_instance&.succeeded?
   end
 
   def controller_action_prevented?
     !!@controller_action_prevented
-  end
-
-  def command_succeeded?
-    command_performed? && !command_errored?
   end
 
   def should_prevent_controller_action?
@@ -117,14 +112,10 @@ class TurboBoost::Commands::Runner
 
   def run
     return unless command_valid?
+    return if command_aborted?
+    return if command_errored?
     return if command_performed?
-    @command_performed = true
-    command_instance.public_send command_method_name
-    prevent_controller_action if should_prevent_controller_action?
-  rescue => error
-    @command_errored = true
-    raise error if controller_action_prevented?
-    prevent_controller_action error: error
+    command_instance.perform_with_callbacks command_method_name
   end
 
   def prevent_controller_action(error: nil)
@@ -156,12 +147,12 @@ class TurboBoost::Commands::Runner
   end
 
   def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
-    headers.each { |key, value| response.set_header key.to_s, value.to_s }
-    render html: html, layout: false, status: status || response_status
+    headers.each { |key, value| controller.response.set_header key.to_s, value.to_s }
+    controller.render html: html, layout: false, status: status || response_status
   end
 
   def turbo_stream
-    @turbo_stream ||= Turbo::Streams::TagBuilder.new(view_context)
+    @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 
   def message_verifier
@@ -170,13 +161,20 @@ class TurboBoost::Commands::Runner
 
   # Same implementation as ActionController::Base but with public visibility
   def cookies
-    request.cookie_jar
+    controller.request.cookie_jar
+  end
+
+  def handle_command_event(event, error: nil)
+    case event
+    when :aborted, :errored then prevent_controller_action(error: error)
+    when :performed then prevent_controller_action if should_prevent_controller_action?
+    end
   end
 
   private
 
   def parsed_command_params
-    @parsed_command_params ||= JSON.parse(params[:turbo_boost_command])
+    @parsed_command_params ||= JSON.parse(controller.params[:turbo_boost_command])
   end
 
   def content_sanitizer
@@ -192,7 +190,7 @@ class TurboBoost::Commands::Runner
   end
 
   def client_token
-    (request.headers["TurboBoost-Token"] || command_params[:token]).to_s
+    (controller.request.headers["TurboBoost-Token"] || command_params[:token]).to_s
   end
 
   def valid_client_token?
@@ -204,8 +202,8 @@ class TurboBoost::Commands::Runner
   end
 
   def should_redirect?
-    return false if request.method.match?(/GET/i)
-    request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
+    return false if controller.request.method.match?(/GET/i)
+    controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
   def response_status
@@ -214,7 +212,7 @@ class TurboBoost::Commands::Runner
   end
 
   def response_type
-    body = (response_body.try(:join) || response_body.to_s).strip
+    body = (controller.response_body.try(:join) || controller.response_body.to_s).strip
     return :body if body.match?(/<\/\s*body/i)
     return :frame if body.match?(/<\/\s*turbo-frame/i)
     return :stream if body.match?(/<\/\s*turbo-stream/i)
@@ -246,8 +244,8 @@ class TurboBoost::Commands::Runner
 
   def append_success_event_to_response_body
     args = ["turbo-boost:command:success", {bubbles: true, cancelable: false, detail: parsed_command_params}]
-    event = if command_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
+    event = if command_instance&.element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
@@ -256,8 +254,8 @@ class TurboBoost::Commands::Runner
 
   def append_error_event_to_response_body(message)
     args = ["turbo-boost:command:server-error", {bubbles: true, cancelable: false, detail: parsed_command_params.merge(error: message)}]
-    event = if command_element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_element.id}"
+    event = if command_instance&.element.try(:id).present?
+      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
     else
       turbo_stream.invoke :dispatch_event, args: args
     end
@@ -265,22 +263,22 @@ class TurboBoost::Commands::Runner
   end
 
   def append_to_response_body(content)
-    return unless response.media_type == "text/html"
+    return unless controller.response.media_type == "text/html"
     sanitized_content = content_sanitizer.sanitize(content).html_safe
     return if sanitized_content.blank?
 
     html = case response_type
     when :body
-      match = response.body.match(/<\/\s*body/i).to_s
-      response.body.sub match, [sanitized_content, match].join
+      match = controller.response.body.match(/<\/\s*body/i).to_s
+      controller.response.body.sub match, [sanitized_content, match].join
     when :frame
-      match = response.body.match(/<\/\s*turbo-frame/i).to_s
-      response.body.sub match, [sanitized_content, match].join
+      match = controller.response.body.match(/<\/\s*turbo-frame/i).to_s
+      controller.response.body.sub match, [sanitized_content, match].join
     else
-      [response.body, sanitized_content].join
+      [controller.response.body, sanitized_content].join
     end
 
-    response.body = html
+    controller.response.body = html
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"
   end
