@@ -16,13 +16,12 @@ class TurboBoost::Commands::ControllerPack
   )
 
   delegate(
-    :command_requested?,
-    :command_performed?,
+    :command_aborted?,
     :command_errored?,
-    :controller_action_prevented?,
+    :command_performed?,
+    :command_requested?,
+    :command_succeeded?,
     :meta_tag,
-    :perform,
-    :update_response,
     to: :runner
   )
 

@@ -111,8 +111,10 @@ class TurboBoost::Commands::Runner
     command_instance.should_prevent_controller_action? command_method_name
   end
 
-  def perform
+  def run
     return unless command_valid?
+    return if command_aborted?
+    return if command_errored?
     return if command_performed?
     command_instance.perform_with_callbacks command_method_name
   end

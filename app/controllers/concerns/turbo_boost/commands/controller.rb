@@ -10,8 +10,8 @@ module TurboBoost::Commands::Controller
   end
 
   included do
-    before_action -> { turbo_boost.perform }
-    after_action -> { turbo_boost.update_response }
+    before_action -> { turbo_boost.runner.run }
+    after_action -> { turbo_boost.runner.update_response }
     helper_method :turbo_boost
   end
 
