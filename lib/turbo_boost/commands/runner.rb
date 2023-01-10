@@ -166,7 +166,10 @@ class TurboBoost::Commands::Runner
 
   def handle_command_event(event, error: nil)
     case event
-    when :aborted, :errored then prevent_controller_action(error: error)
+    when :aborted
+      prevent_controller_action error: error
+      append_streams_to_response_body
+    when :errored then prevent_controller_action(error: error)
     when :performed then prevent_controller_action if should_prevent_controller_action?
     end
   end
