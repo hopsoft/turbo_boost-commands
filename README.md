@@ -203,13 +203,18 @@ This example illustrates how to use TurboBoost Commands to manage upvotes on a P
 
 TurboBoost Commands use [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture client side events that invoke server side commands.
 
-Here is the list of default events and respective elements that TurboBoost Commands monitors.
+Here is the list of default **event delegates** *(DOM event name + CSS selectors)* that TurboBoost Commands monitors.
 
-- **`change`** - `<input>`, `<select>`, `<textarea>`
-- **`submit`** - `<form>`
-- **`click`** - `*` *all other elements*
+- **`change`** - `input[data-turbo-command],select[data-turbo-command],textarea[data-turbo-command]`
+- **`submit`** - `form[data-turbo-command]`
+- **`click`** - `[data-turbo-command]`
 
-It's possible to override these defaults like so.
+Note that the list of event delegates is ordinal.
+Matches are identified by scanning the list of delegates top to bottom *(first match wins)*.
+
+It's possible to override the default event delegates like so.
+
+**IMPORTANT:** *New entries and overrides are prepended to the list of delegates and will match before defaults.*
 
 ```js
 // restrict `click` monitoring to <a> and <button> elements
