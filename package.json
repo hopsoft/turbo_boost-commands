@@ -23,7 +23,7 @@
     "@hotwired/turbo-rails": ">= 7.2.0"
   },
   "devDependencies": {
-    "esbuild": "^0.16.3",
+    "esbuild": "^0.17.2",
     "eslint": "^8.19.0",
     "flowbite": "^1.5.3",
     "prettier-standard": "^16.4.1",

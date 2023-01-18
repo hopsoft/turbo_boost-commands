@@ -60,7 +60,7 @@
   - [Dependencies](#dependencies)
   - [Setup](#setup)
   - [Usage](#usage)
-    - [Command Triggers](#command-triggers)
+    - [Event Delegates](#event-delegates)
     - [Lifecycle Events](#lifecycle-events)
     - [Targeting Frames](#targeting-frames)
     - [Working with Forms](#working-with-forms)
@@ -199,21 +199,34 @@ This example illustrates how to use TurboBoost Commands to manage upvotes on a P
 
 3. **(Re)render to reflect the new state** - *normal Rails / Turbo Frame behavior runs and (re)renders the frame*
 
-### Command Triggers
+### Event Delegates
 
 TurboBoost Commands use [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture client side events that invoke server side commands.
 
-Here is the list of default events and respective elements that TurboBoost Commands monitors.
+Here is the list of default **event delegates** *(DOM event name + CSS selectors)* that TurboBoost Commands monitors.
 
-- **`change`** - `<input>`, `<select>`, `<textarea>`
-- **`submit`** - `<form>`
-- **`click`** - `*` *all other elements*
+- **`change`** - `input[data-turbo-command],select[data-turbo-command],textarea[data-turbo-command]`
+- **`submit`** - `form[data-turbo-command]`
+- **`click`** - `[data-turbo-command]`
 
-It's possible to override these defaults like so.
+Note that the list of event delegates is ordinal.
+Matches are identified by scanning the list of delegates top to bottom *(first match wins)*.
+
+It's possible to override the default event delegates.
+Just note that registered events are required to [bubble up through the DOM tree](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles).
+
+**IMPORTANT:** *New entries and overrides are prepended to the list of delegates and will match before defaults.*
 
 ```js
 // restrict `click` monitoring to <a> and <button> elements
 TurboBoost.Commands.registerEventDelegate('click', ['a[data-turbo-command]', 'button[data-command]'])
+```
+
+```js
+// append selectors to the `change` event
+const delegate = TurboBoost.Commands.eventDelegates.find(e => e.name === 'change')
+const selectors = [...delegate.selectors, '.example[data-turbo-command]']
+TurboBoost.Commands.registerEventDelegate('change', selectors)
 ```
 
 You can also register custom events and elements.
@@ -303,26 +316,35 @@ Commands are simple Ruby classes that inherit from `TurboBoost::Commands::Comman
 They expose the following instance methods and properties.
 
 ```ruby
-# * controller .................. The Rails controller processing the HTTP request
-# * css_id_selector ............. Returns a CSS selector for an element `id` i.e. prefixes with `#`
-# * dom_id ...................... The Rails dom_id helper
-# * dom_id_selector ............. Returns a CSS selector for a dom_id
-# * element ..................... A struct that represents the DOM element that triggered the command
-# * morph ....................... Appends a Turbo Stream to morph a DOM element
-# * params ...................... Commands specific params (frame_id, element, etc.)
-# * render ...................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
-# * render_response ............. Renders a full controller response
-# * renderer .................... An ActionController::Renderer
-# * state ....................... An object that stores ephemeral `state`
-# * turbo_stream ................ A Turbo Stream TagBuilder
-# * turbo_streams ............... A list of Turbo Streams to append to the response (also aliased as streams)
+# * controller ...................... The Rails controller processing the HTTP request
+# * convert_to_instance_variables ... Converts a Hash to instance variables
+# * css_id_selector ................. Returns a CSS selector for an element `id` i.e. prefixes with `#`
+# * dom_id .......................... The Rails dom_id helper
+# * dom_id_selector ................. Returns a CSS selector for a dom_id
+# * element ......................... A struct that represents the DOM element that triggered the command
+# * morph ........................... Appends a Turbo Stream to morph a DOM element
+# * params .......................... Commands specific params (frame_id, element, etc.)
+# * render .......................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
+# * renderer ........................ An ActionController::Renderer
+# * state ........................... An object that stores ephemeral `state`
+# * transfer_instance_variables ..... Transfers all instance variables to another object
+# * turbo_stream .................... A Turbo Stream TagBuilder
+# * turbo_streams ................... A list of Turbo Streams to append to the response (also aliased as streams)
 ```
+
+They also have access to the following class methods:
+
+```ruby
+# * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
+```
+
+Here's an example command.
 
 ```ruby
 # app/commands/demo_command.rb
 class DemoCommand < TurboBoost::Commands::Command
-  # The command method is invoked by an ActionController `before_action`.
-  def example
+  # The command method `perform` is invoked by an ActionController `before_action`.
+  def perform
     # - execute business logic
     # - update state
     # - append additional Turbo Streams
