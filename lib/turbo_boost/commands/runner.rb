@@ -42,7 +42,7 @@ class TurboBoost::Commands::Runner
 
     # validate csrf token
     unless valid_client_token?
-      raise TurboBoost::Commands::InvalidTokenError,
+      raise TurboBoost::InvalidTokenError,
         "CSRF token mismatch! The request header `TurboBoost-Token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
