@@ -60,7 +60,7 @@
   - [Dependencies](#dependencies)
   - [Setup](#setup)
   - [Usage](#usage)
-    - [Command Triggers](#command-triggers)
+    - [Event Delegates](#event-delegates)
     - [Lifecycle Events](#lifecycle-events)
     - [Targeting Frames](#targeting-frames)
     - [Working with Forms](#working-with-forms)
@@ -199,7 +199,7 @@ This example illustrates how to use TurboBoost Commands to manage upvotes on a P
 
 3. **(Re)render to reflect the new state** - *normal Rails / Turbo Frame behavior runs and (re)renders the frame*
 
-### Command Triggers
+### Event Delegates
 
 TurboBoost Commands use [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture client side events that invoke server side commands.
 
