@@ -42,7 +42,7 @@ class TurboBoost::Commands::Runner
 
     # validate csrf token
     unless valid_client_token?
-      raise TurboBoost::Commands::InvalidTokenError,
+      raise TurboBoost::InvalidTokenError,
         "CSRF token mismatch! The request header `TurboBoost-Token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
@@ -116,6 +116,8 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performed?
     command_instance.perform_with_callbacks command_method_name
+  rescue => error
+    prevent_controller_action error: error
   end
 
   def prevent_controller_action(error: nil)
