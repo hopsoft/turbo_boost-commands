@@ -6,6 +6,7 @@ function register (eventName, selectors) {
   if (match) events.splice(events.indexOf(match), 1)
   events = [{ name: eventName, selectors }, ...events]
   document.addEventListener(eventName, eventListener, true)
+  return { ...events.find(evt => evt.name === eventName) }
 }
 
 function getRegisteredEventForElement (element) {

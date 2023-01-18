@@ -222,6 +222,13 @@ Just note that registered events are required to [bubble up through the DOM tree
 TurboBoost.Commands.registerEventDelegate('click', ['a[data-turbo-command]', 'button[data-command]'])
 ```
 
+```js
+// append selectors to the `change` event
+const delegate = TurboBoost.Commands.eventDelegates.find(e => e.name === 'change')
+const selectors = [...delegate.selectors, '.example[data-turbo-command]']
+TurboBoost.Commands.registerEventDelegate('change', selectors)
+```
+
 You can also register custom events and elements.
 Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
