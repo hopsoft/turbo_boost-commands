@@ -1,6 +1,6 @@
 {
   "name": "@turbo-boost/commands",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Commands to help you build robust reactive applications with Rails & Hotwire.",
   "keywords": [
     "hotwire",
