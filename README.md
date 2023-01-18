@@ -212,7 +212,8 @@ Here is the list of default **event delegates** *(DOM event name + CSS selectors
 Note that the list of event delegates is ordinal.
 Matches are identified by scanning the list of delegates top to bottom *(first match wins)*.
 
-It's possible to override the default event delegates like so.
+It's possible to override the default event delegates.
+Just note that registered events are required to [bubble up through the DOM tree](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles).
 
 **IMPORTANT:** *New entries and overrides are prepended to the list of delegates and will match before defaults.*
 
