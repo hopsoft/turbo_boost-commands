@@ -24,6 +24,12 @@ module TurboBoost::Commands::AttributeHydration
     value
   end
 
+  # RULE: If an attribute value is a Hash
+  #       (not the `aria` or `data` key because those are handled by Rails)
+  #       and the Hash does not contain an object that implements GlobalID,
+  #       then the developer must convert the Hash to a JSON string manually.
+  #
+  # SOLUTION: All data that's not a scalar/primitive value should live in `data` or `aria`.
   def dehydrate(value)
     return value unless has_sgid?(value)
     case value
