@@ -11,6 +11,7 @@ function finish (event) {
   )
 }
 
+// TODO: forward source event to finish (error or success)
 addEventListener(commandEvents.serverError, finish)
 addEventListener(commandEvents.success, finish)
 addEventListener(

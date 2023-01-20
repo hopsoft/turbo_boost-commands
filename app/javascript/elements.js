@@ -5,6 +5,7 @@ function findClosestCommand (element) {
   return element.closest(`[${schema.commandAttribute}]`)
 }
 
+// TODO: update this method to findClosestFrameWithSource (`src` or `turbo-boost-src`)
 function findClosestFrame (element) {
   return element.closest('turbo-frame')
 }
