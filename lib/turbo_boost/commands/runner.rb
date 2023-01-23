@@ -236,8 +236,7 @@ class TurboBoost::Commands::Runner
   end
 
   def append_streams_to_response_body
-    return unless command_instance.turbo_streams.present?
-    append_to_response_body command_instance.turbo_streams.map(&:to_s).join.html_safe
+    command_instance.turbo_streams.each { |stream| append_to_response_body stream }
   end
 
   def append_meta_tag_to_response_body
@@ -267,10 +266,17 @@ class TurboBoost::Commands::Runner
     append_to_response_body event
   end
 
+  def appended_content
+    @appended_content ||= {}
+  end
+
   def append_to_response_body(content)
     return unless controller.response.media_type == "text/html"
-    sanitized_content = content_sanitizer.sanitize(content).html_safe
+    sanitized_content = content_sanitizer.sanitize(content.to_s).html_safe
     return if sanitized_content.blank?
+
+    return if appended_content[sanitized_content]
+    appended_content[sanitized_content] = true
 
     html = case response_type
     when :body
