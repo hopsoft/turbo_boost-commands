@@ -26,6 +26,7 @@
     "esbuild": "^0.17.2",
     "eslint": "^8.19.0",
     "flowbite": "^1.5.3",
+    "playwright": "^1.29.2",
     "prettier-standard": "^16.4.1",
     "rustywind": "^0.15.1"
   },

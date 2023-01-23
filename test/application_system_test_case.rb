@@ -1,40 +1,51 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "capybara/cuprite"
+require "capybara-playwright-driver"
 
-# Capybara setup fom Evil Martians
-# SEE: https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
-# NOTE: Will need to set this up for multiple sessions
-Capybara.default_max_wait_time = 2
-Capybara.default_normalize_ws = true
-# Capybara.save_path = ENV.fetch("CAPYBARA_ARTIFACTS", "./tmp/capybara")
-
-class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  # Driver customization options: https://github.com/rubycdp/ferrum#customization
-  driven_by :cuprite, screen_size: [1400, 1400],
-    options: {
-      headless: true, # set to false to view tests run browser (set slowmo)
-      js_errors: true,
-      pending_connection_errors: false,
-      # slowmo: 0.05, # seconds to wait before sending command
-      timeout: 10
-    }
-
-  def abort_asset_requets
-    page.driver.browser.on(:request) do |request|
-      binding.pry
-      if request.match?(/\.png|\.jpg|\.jpeg|\.svg|\.woff2|\.css/)
-        puts "Aborting request " + request.url.to_s
-        request.abort
-      else
-        puts "Continue with " + request.url.to_s
-        request.continue
-      end
-    end
+class CapybaraNullDriver < Capybara::Driver::Base
+  def needs_server?
+    true
   end
 end
 
+Capybara.register_driver(:null) { CapybaraNullDriver.new }
+Capybara.default_driver = :null
+Capybara.default_max_wait_time = 10
+Capybara.default_normalize_ws = true
+Capybara.save_path = "tmp/capybara"
 Capybara.configure do |config|
   config.server = :puma, {Silent: true}
+end
+
+class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  driven_by :null
+
+  def self.playwright
+    @playwright ||= Playwright.create(playwright_cli_executable_path: Rails.root.join("../../node_modules/.bin/playwright"))
+  end
+
+  alias_method :orig_page, :page
+  attr_reader :playwright_browser, :playwright_page
+  alias_method :page, :playwright_page
+
+  def js(...)
+    page.evaluate(...)
+  end
+
+  def wait_for_turbo_stream(attrs = {})
+    page.wait_for_selector("turbo-stream#{attrs.map { |(k, v)| "[#{k}='#{v}']" }.join}", state: "attached")
+  end
+
+  def before_setup
+    super
+    base_url = Capybara.current_session.server.base_url
+    @playwright_browser = self.class.playwright.playwright.chromium.launch(headless: true)
+    @playwright_page = @playwright_browser.new_page(baseURL: base_url)
+  end
+
+  def after_teardown
+    super
+    playwright_browser&.close
+  end
 end
