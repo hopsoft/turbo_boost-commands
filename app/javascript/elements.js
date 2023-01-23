@@ -5,9 +5,12 @@ function findClosestCommand (element) {
   return element.closest(`[${schema.commandAttribute}]`)
 }
 
-// TODO: update this method to findClosestFrameWithSource (`src` or `turbo-boost-src`)
-function findClosestFrame (element) {
-  return element.closest('turbo-frame')
+function findClosestFrameWithSource (element) {
+  return (
+    element.closest('turbo-frame[src]') ||
+    element.closest('turbo-frame[data-turbo-frame-src]') ||
+    element.closest('turbo-frame')
+  )
 }
 
 function assignElementValueToPayload (element, payload = {}) {
@@ -48,5 +51,5 @@ function buildAttributePayload (element) {
 export default {
   buildAttributePayload,
   findClosestCommand,
-  findClosestFrame
+  findClosestFrameWithSource
 }

@@ -12,7 +12,8 @@ function src (element, frame) {
 }
 
 function find (element) {
-  let frame = elements.findClosestFrame(element)
+  let frame = elements.findClosestFrameWithSource(element)
+
   const { turboFrame, turboMethod } = element.dataset
 
   if (element.tagName.toLowerCase() === 'form')
