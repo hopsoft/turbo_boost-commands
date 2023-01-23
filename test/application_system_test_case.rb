@@ -11,7 +11,28 @@ Capybara.default_normalize_ws = true
 # Capybara.save_path = ENV.fetch("CAPYBARA_ARTIFACTS", "./tmp/capybara")
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :cuprite, using: :headless_chrome, screen_size: [1400, 1400]
+  # Driver customization options: https://github.com/rubycdp/ferrum#customization
+  driven_by :cuprite, screen_size: [1400, 1400],
+    options: {
+      headless: true, # set to false to view tests run browser (set slowmo)
+      js_errors: true,
+      pending_connection_errors: false,
+      # slowmo: 0.05, # seconds to wait before sending command
+      timeout: 10
+    }
+
+  def abort_asset_requets
+    page.driver.browser.on(:request) do |request|
+      binding.pry
+      if request.match?(/\.png|\.jpg|\.jpeg|\.svg|\.woff2|\.css/)
+        puts "Aborting request " + request.url.to_s
+        request.abort
+      else
+        puts "Continue with " + request.url.to_s
+        request.continue
+      end
+    end
+  end
 end
 
 Capybara.configure do |config|

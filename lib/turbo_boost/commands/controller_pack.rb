@@ -12,6 +12,7 @@ class TurboBoost::Commands::ControllerPack
   delegate(
     :command_aborted?,
     :command_errored?,
+    :command_performing?,
     :command_performed?,
     :command_requested?,
     :command_succeeded?,
