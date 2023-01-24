@@ -11,7 +11,7 @@ end
 
 Capybara.register_driver(:null) { CapybaraNullDriver.new }
 Capybara.default_driver = :null
-Capybara.default_max_wait_time = 10
+Capybara.default_max_wait_time = 12
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
 Capybara.configure do |config|
@@ -33,15 +33,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     page.evaluate(...)
   end
 
-  def wait_for_turbo_stream(attrs = {})
-    page.wait_for_selector("turbo-stream#{attrs.map { |(k, v)| "[#{k}='#{v}']" }.join}", state: "attached")
-  end
-
   def before_setup
     super
     base_url = Capybara.current_session.server.base_url
     @playwright_browser = self.class.playwright.playwright.chromium.launch(headless: true)
     @playwright_page = @playwright_browser.new_page(baseURL: base_url)
+    playwright_page.set_default_timeout Capybara.default_max_wait_time * 1_000
   end
 
   def after_teardown
