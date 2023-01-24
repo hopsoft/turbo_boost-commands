@@ -43,6 +43,7 @@
     <a href="https://github.com/sponsors/hopsoft">
       <img alt="Sponsors" src="https://img.shields.io/github/sponsors/hopsoft?color=eb4aaa&logo=GitHub%20Sponsors" />
     </a>
+    <br>
     <a href="https://ruby.social/@hopsoft">
       <img alt="Ruby.Social Follow" src="https://img.shields.io/mastodon/follow/000008274?domain=https%3A%2F%2Fruby.social&label=%40hopsoft&style=social">
     </a>
