@@ -12,10 +12,10 @@ class IncrementLinkInFrameTest < ApplicationSystemTestCase
     assert_equal "e30", meta_element["data-state"]
     assert_nil js("TurboBoost.state.active_demo")
 
-    demo_element = page.wait_for_selector("##{name}-demo")
-
     # open demo
+    demo_element = page.wait_for_selector("##{name}-demo")
     demo_element.wait_for_selector("[data-turbo-command='DemosCommand#toggle']").click
+    wait_for_turbo_stream target: "DOM", action: "invoke"
     assert js("document.cookie").include?("turbo_boost.state")
     assert_equal 0, demo_element.wait_for_selector("[data-role='counter']").inner_text.to_i
     assert_equal "N/A", demo_element.wait_for_selector("[data-role='http-fingerprint']").inner_text
