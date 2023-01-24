@@ -18,12 +18,13 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,lib}/**/*", "MIT-LICENSE", "README.md"]
 
+  s.required_ruby_version = ">= 2.7"
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"
   s.add_dependency "turbo_boost-streams", ">= 0.0.6"
 
   s.add_development_dependency "capybara"
-  s.add_development_dependency "cuprite"
+  s.add_development_dependency "capybara-playwright-driver"
   s.add_development_dependency "foreman"
   s.add_development_dependency "importmap-rails"
   s.add_development_dependency "magic_frozen_string_literal"

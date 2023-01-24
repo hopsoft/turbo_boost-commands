@@ -93,6 +93,10 @@ class TurboBoost::Commands::Runner
     !!command_instance&.errored?
   end
 
+  def command_performing?
+    !!command_instance&.performing?
+  end
+
   def command_performed?
     !!command_instance&.performed?
   end
@@ -114,6 +118,7 @@ class TurboBoost::Commands::Runner
     return unless command_valid?
     return if command_aborted?
     return if command_errored?
+    return if command_performing?
     return if command_performed?
     command_instance.perform_with_callbacks command_method_name
   rescue => error

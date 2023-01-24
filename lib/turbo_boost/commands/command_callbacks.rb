@@ -92,6 +92,10 @@ module TurboBoost::Commands::CommandCallbacks
     !!@errored
   end
 
+  def performing?
+    !!@performing_method_name
+  end
+
   def performed?
     !!@performed
   end

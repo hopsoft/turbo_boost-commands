@@ -1,7 +1,7 @@
 <%= cache session[:rpc_count].to_i do %>
   <div id="rpc">
     <%= render "stats/stats", id: "rpc-stats" do %>
-      <%= render "stats/stat", label: "Counter", value: session[:rpc_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
+      <%= render "stats/stat", label: "Counter", role: "counter", value: session[:rpc_count].to_i, class: "!bg-indigo-600 dark:!bg-indigo-900",
         value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
     <% end %>
 
