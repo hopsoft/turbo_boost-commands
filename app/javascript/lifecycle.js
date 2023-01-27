@@ -2,7 +2,7 @@ import activity from './activity'
 import { dispatch, commandEvents } from './events'
 
 function finish (event) {
-  event.detail.endedAt = new Date().getTime()
+  event.detail.endedAt = Date.now()
   event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
   setTimeout(
     () =>
