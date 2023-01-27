@@ -36,6 +36,7 @@ RUN rm -rf /usr/local/share/.cache/* /usr/local/bundle/cache/* /opt/bundle/cache
 
 # prepare the environment
 ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
+WORKDIR /
 
 # prepare and run the application
 CMD rm -rf /opt/turbo_boost-commands && \
