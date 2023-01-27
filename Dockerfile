@@ -33,7 +33,7 @@ RUN bundle
 ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
 
 # prepare and run the application
-CMD git pull --depth 1 --force --no-rebase github main && \
+CMD git pull --branch main --depth 1 --force --no-rebase github main && \
 yarn install --ignore-engines && \
 cd test/dummy && \
 bundle && \
