@@ -19,7 +19,7 @@ function buildCommandPayload (id, element) {
     name: element.getAttribute(schema.commandAttribute),
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
-    startedAt: new Date().getTime()
+    startedAt: Date.now()
   }
 }
 
