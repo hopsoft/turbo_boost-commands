@@ -302,7 +302,7 @@ class TurboBoost::Commands::Runner
   end
 
   def inject_serialized_form_into_params
-    serialized_form = command_params.dig(:element_attributes, :data_serialized_form)
+    serialized_form = command_params.dig(:element_attributes, :serialized_form)
     return unless serialized_form.present?
 
     parsed_query = Rack::Utils.parse_nested_query(serialized_form)
