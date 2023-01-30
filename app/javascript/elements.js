@@ -26,7 +26,29 @@ function assignElementValueToPayload (element, payload = {}) {
   }, [])
 }
 
-function buildAttributePayload (element) {
+function assignSerializedFormValuesToPayload(element, payload) {
+  const serializeFormSelector = element.dataset.turboCommandSerializeForm
+  if (!serializeFormSelector) return
+
+  let serializableForm;
+
+  if (serializeFormSelector === "true" || serializeFormSelector === "1") {
+    serializableForm = element.closest("form");
+  } else {
+    serializableForm = document.createElement("form");
+    document.querySelectorAll(serializeFormSelector).forEach((element) => {
+      element.querySelectorAll("input, select, textarea").forEach((input) => {
+        serializableForm.append(input.cloneNode(true))
+      })
+    })
+  }
+
+  const formData = new FormData(serializableForm)
+  const serializedFormString = new URLSearchParams(formData).toString()
+  payload['serialized-form'] = serializedFormString
+}
+
+function buildAttributePayload(element) {
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
     let value = attr.value
     memo[attr.name] = value
@@ -37,6 +59,7 @@ function buildAttributePayload (element) {
   payload.checked = !!element.checked
   payload.disabled = !!element.disabled
   assignElementValueToPayload(element, payload)
+  assignSerializedFormValuesToPayload(element, payload)
 
   // reduce payload size to keep URL length smaller
   delete payload.class

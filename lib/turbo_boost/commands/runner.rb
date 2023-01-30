@@ -120,6 +120,8 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
+
+    inject_serialized_form_into_params
     command_instance.perform_with_callbacks command_method_name
   rescue => error
     prevent_controller_action error: error
@@ -297,5 +299,14 @@ class TurboBoost::Commands::Runner
     controller.response.body = html
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"
+  end
+
+  def inject_serialized_form_into_params
+    serialized_form = command_params.dig(:element_attributes, :serialized_form)
+    return unless serialized_form.present?
+
+    parsed_query = Rack::Utils.parse_nested_query(serialized_form)
+    command_params.merge!(parsed_query)
+    controller.params.merge!(parsed_query)
   end
 end
