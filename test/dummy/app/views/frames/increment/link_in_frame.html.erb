@@ -7,6 +7,38 @@
             value_class: ["!text-indigo-200 dark:!text-indigo-300"], label_class: ["!text-indigo-400 dark:!text-indigo-500"] %>
         <% end %>
 
+
+        <p class="my-8">
+          The link below will invoke a command before Rails/Hotwire replaces the frame's content.
+        </p>
+
+        <%#
+          This first one is under the assumption we still want to handle the default confirmation
+        %>
+        <%= link_to nil, id: demo_frame_id(@template_path, :trigger), class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
+          data: {
+            confirm: "Default Are you sure?",
+            turbo_command: "CounterCommand#increment", 
+            session_key: session_key } do %>
+          Default Confirmation in Link
+          <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
+        <% end %>
+<br>
+        <%= link_to nil, id: demo_frame_id(@template_path, :trigger), class: css("flowbite.link.default", "inline-block relative mb-8 ml-0"),
+          data: {
+            turbo_confirm: "Turbo Are you sure?",
+            turbo_command: "CounterCommand#increment", 
+            session_key: session_key } do %>
+          Turbo Confirmation in Link
+          <%= render flowbite(:notification_badge), value: session[session_key].to_i, class: "!-right-4" if session[:link_in_frame_count].to_i > 0 %>
+        <% end %>
+        <%#
+          We should probably consider a button_to as well. I think this will be a different type of submission and should be handled.
+          In the turbo library the turbo-confirm-method seems to only use button_to
+        %>
+
+        
+
         <p class="my-8">
           The link below will invoke a command before Rails/Hotwire replaces the frame's content.
         </p>
