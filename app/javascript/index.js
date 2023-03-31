@@ -12,6 +12,7 @@ import logger from './logger'
 import state from './state'
 import urls from './urls'
 import uuids from './uuids'
+import confirm from './confirm'
 
 function buildCommandPayload (id, element) {
   return {
