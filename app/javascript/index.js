@@ -42,14 +42,12 @@ function invokeCommand (event) {
       src: driver.src
     }
 
-    const options = {
-      cancelable: true,
-      detail: { ...payload, sourceEvent: event }
-    }
-
+    const options = { cancelable: true, detail: payload }
     dispatch(commandEvents.start, element, options).then(
-      // resolution
-      () => {
+      // resolution ..........................................................................................
+      evt => {
+        if (evt.defaultPrevented) return event.preventDefault()
+
         // the element and thus the driver may have changed based on the start event handler(s)
         driver = drivers.find(element)
         payload = {
@@ -78,12 +76,11 @@ function invokeCommand (event) {
         }
       },
 
-      // rejection
-      () => {
-        // noop, the dispatcher aborts on rejection
-      }
+      // rejection ...........................................................................................
+      _reason => event.preventDefault()
     )
   } catch (error) {
+    event.preventDefault()
     dispatch(commandEvents.clientError, element, {
       detail: { ...payload, error }
     })

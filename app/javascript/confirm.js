@@ -14,12 +14,17 @@ function showConfirm (event) {
   if (!message) return
 
   event.detail.promises.push(
-    new Promise((resolve, reject) => {
-      if (confirmMethod(message)) return resolve()
-      reject('The user cancelled the command.')
-    })
+    new Promise((resolve, _reject) =>
+      resolve({
+        method: 'TurboBoost.Commands.confirmMethod',
+        result: confirmMethod(message)
+      })
+    )
   )
 }
 
 setConfirmMethod(message => confirm(message))
-document.addEventListener(commandEvents.start, showConfirm)
+//setConfirmMethod(message => {
+//throw 'Nate said it fails!'
+//})
+document.addEventListener(commandEvents.start, showConfirm, true)

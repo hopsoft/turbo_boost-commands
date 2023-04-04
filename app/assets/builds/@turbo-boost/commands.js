@@ -1960,6 +1960,7 @@ var commandEvents = {
   success: "turbo-boost:command:success",
   finish: "turbo-boost:command:finish",
   abort: "turbo-boost:command:abort",
+  dispatchFailure: "turbo-boost:command:dispatch-failure",
   clientError: "turbo-boost:command:client-error",
   serverError: "turbo-boost:command:server-error"
 };
@@ -1976,19 +1977,31 @@ function dispatch(name, target, options = {}) {
   const evt = new CustomEvent(name, __spreadProps(__spreadValues({}, options), { bubbles: true }));
   target.dispatchEvent(evt);
   return Promise.all(evt.detail.promises).then(
-    // resolution
+    // resolution ............................................................................................
     (values) => {
-      return Promise.resolve(evt, values);
+      evt.detail.promiseResults = values;
+      switch (name) {
+        case commandEvents.start:
+          const value = values.find(
+            (value2) => typeof value2 === "object" && value2.method === "TurboBoost.Commands.confirmMethod"
+          ) || {};
+          const { result } = value;
+          if (result === false) {
+            evt.preventDefault();
+            const detail = { message: "The user aborted the command!" };
+            dispatch(commandEvents.abort, target, { detail });
+          }
+      }
+      return Promise.resolve(evt);
     },
-    // rejection (i.e. an error occurred or one of the promises was rejected)
+    // rejection (i.e. an error occurred or one of the promises was rejected) ................................
     (reason) => {
-      var _a;
-      (_a = options.detail.sourceEvent) == null ? void 0 : _a.preventDefault();
       evt.preventDefault();
       const message = `The ${name} event has been prevented because an error occurred or a promise was rejected in one of its handlers!`;
-      const detail = { message, reason, sourceEvent: evt };
-      dispatch(commandEvents.abort, target, { detail });
-      return Promise.reject(evt, reason);
+      dispatch(commandEvents.dispatchFailure, target, {
+        detail: { message, reason }
+      });
+      return Promise.reject(evt);
     }
   );
 }
@@ -2452,15 +2465,19 @@ function showConfirm(event) {
   if (!message)
     return;
   event.detail.promises.push(
-    new Promise((resolve, reject) => {
-      if (confirmMethod(message))
-        return resolve();
-      reject("The user cancelled the command.");
-    })
+    new Promise(
+      (resolve, _reject) => resolve({
+        method: "TurboBoost.Commands.confirmMethod",
+        result: confirmMethod(message)
+      })
+    )
   );
 }
 setConfirmMethod((message) => confirm(message));
-document.addEventListener(commandEvents.start, showConfirm);
+setConfirmMethod((message) => {
+  throw "Nate said it fails!";
+});
+document.addEventListener(commandEvents.start, showConfirm, true);
 
 // app/javascript/index.js
 function buildCommandPayload(id, element) {
@@ -2489,13 +2506,12 @@ function invokeCommand5(event) {
       frameId: driver.frame ? driver.frame.id : null,
       src: driver.src
     });
-    const options = {
-      cancelable: true,
-      detail: __spreadProps(__spreadValues({}, payload2), { sourceEvent: event })
-    };
+    const options = { cancelable: true, detail: payload2 };
     dispatch(commandEvents.start, element, options).then(
-      // resolution
-      () => {
+      // resolution ..........................................................................................
+      (evt) => {
+        if (evt.defaultPrevented)
+          return event.preventDefault();
         driver = drivers_default.find(element);
         payload2 = __spreadProps(__spreadValues({}, buildCommandPayload(commandId, element)), {
           driver: driver.name,
@@ -2518,11 +2534,11 @@ function invokeCommand5(event) {
             return driver.invokeCommand(payload2);
         }
       },
-      // rejection
-      () => {
-      }
+      // rejection ...........................................................................................
+      (_reason) => event.preventDefault()
     );
   } catch (error2) {
+    event.preventDefault();
     dispatch(commandEvents.clientError, element, {
       detail: __spreadProps(__spreadValues({}, payload), { error: error2 })
     });
