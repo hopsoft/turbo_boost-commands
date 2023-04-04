@@ -15,47 +15,54 @@ export const stateEvents = {
 
 export const allEvents = { ...commandEvents, ...stateEvents }
 
+function resolveStartEvent (event, promiseValues) {
+  const value =
+    promiseValues.find(
+      value =>
+        typeof value === 'object' &&
+        value.method === 'TurboBoost.Commands.confirmMethod'
+    ) || {}
+  const { result } = value
+
+  // IMPORTANT: explicit false check is required
+  if (result === false) {
+    event.preventDefault()
+    dispatch(commandEvents.abort, event.target, {
+      detail: { source: event, message: 'The user aborted the command!' }
+    })
+  }
+}
+
 export function dispatch (name, target, options = {}) {
   options = options || {}
   options.detail = { ...options.detail }
   options.detail.promises = options.detail.promises || []
   target = target || document
-  const evt = new CustomEvent(name, { ...options, bubbles: true })
-  target.dispatchEvent(evt)
-  return Promise.all(evt.detail.promises).then(
+  const event = new CustomEvent(name, { ...options, bubbles: true })
+  target.dispatchEvent(event)
+  return Promise.all(event.detail.promises).then(
     // resolution ............................................................................................
     values => {
-      evt.detail.promiseResults = values
-
-      switch (name) {
-        case commandEvents.start:
-          const value =
-            values.find(
-              value =>
-                typeof value === 'object' &&
-                value.method === 'TurboBoost.Commands.confirmMethod'
-            ) || {}
-          const { result } = value
-
-          // IMPORTANT: explicit false check is required
-          if (result === false) {
-            evt.preventDefault()
-            const detail = { message: 'The user aborted the command!' }
-            dispatch(commandEvents.abort, target, { detail })
-          }
+      try {
+        event.detail.promiseResults = values
+        if (name === commandEvents.start) resolveStartEvent(event, values)
+        return Promise.resolve(event)
+      } catch (error) {
+        event.preventDefault()
+        const message = `The dispatch encountered an error while resolving ${name}!`
+        const detail = { message, error }
+        dispatch(commandEvents.clientError, target, { detail })
+        return Promise.reject(event)
       }
-
-      return Promise.resolve(evt)
     },
 
     // rejection (i.e. an error occurred or one of the promises was rejected) ................................
     reason => {
-      evt.preventDefault()
+      event.preventDefault()
       const message = `The ${name} event has been prevented because an error occurred or a promise was rejected in one of its handlers!`
-      dispatch(commandEvents.dispatchFailure, target, {
-        detail: { message, reason }
-      })
-      return Promise.reject(evt)
+      const detail = { message, reason }
+      dispatch(commandEvents.dispatchFailure, target, { detail })
+      return Promise.reject(event)
     }
   )
 }

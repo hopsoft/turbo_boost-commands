@@ -1,7 +1,5 @@
 import { commandEvents } from './events'
 
-// what to do if form driver? let rails/hotwire handle it?
-
 let confirmMethod
 
 export function setConfirmMethod (method) {
@@ -9,6 +7,9 @@ export function setConfirmMethod (method) {
 }
 
 function showConfirm (event) {
+  // TODO: investigate further
+  // return early if event.driver is a native Turbo thing that supports confirm
+
   const element = event.target.closest('[data-turbo-command]')
   const { turboConfirm: message } = element.dataset
   if (!message) return
@@ -24,7 +25,4 @@ function showConfirm (event) {
 }
 
 setConfirmMethod(message => confirm(message))
-//setConfirmMethod(message => {
-//throw 'Nate said it fails!'
-//})
 document.addEventListener(commandEvents.start, showConfirm, true)

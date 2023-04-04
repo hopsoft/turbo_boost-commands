@@ -1,5 +1,6 @@
 import meta from '../meta'
 
+// TODO: why is this file here? we aren't using it anywhere.
 function invokeCommand (form, payload = {}) {
   payload.token = meta.token
   const input = document.createElement('input')
