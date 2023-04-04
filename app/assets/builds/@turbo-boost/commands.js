@@ -2437,6 +2437,9 @@ var logLevels = {
 };
 Object.values(allEvents).forEach((name) => {
   addEventListener(name, (event) => {
+    if (event.logged)
+      return;
+    event.logged = true;
     if (logLevels[currentLevel].includes(event.type)) {
       const level = currentLevel === "debug" ? "log" : currentLevel;
       console[level](event.type, { target: event.target, detail: event.detail });
