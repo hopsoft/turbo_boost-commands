@@ -12,7 +12,7 @@ import logger from './logger'
 import state from './state'
 import urls from './urls'
 import uuids from './uuids'
-import confirm from './confirm'
+import { setConfirmMethod } from './confirm'
 
 function buildCommandPayload (id, element) {
   return {
@@ -42,45 +42,47 @@ function invokeCommand (event) {
       src: driver.src
     }
 
-    const startEvent = dispatch(commandEvents.start, element, {
+    const options = {
       cancelable: true,
-      detail: payload
-    })
+      detail: { ...payload, sourceEvent: event }
+    }
 
-    if (startEvent.defaultPrevented)
-      return dispatch(commandEvents.abort, element, {
-        detail: {
-          message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
-          source: startEvent
+    dispatch(commandEvents.start, element, options).then(
+      // resolution
+      () => {
+        // the element and thus the driver may have changed based on the start event handler(s)
+        driver = drivers.find(element)
+        payload = {
+          ...buildCommandPayload(commandId, element),
+          driver: driver.name,
+          frameId: driver.frame ? driver.frame.id : null,
+          src: driver.src
         }
-      })
 
-    // the element and thus the driver may have changed based on the start event handler(s)
-    driver = drivers.find(element)
-    payload = {
-      ...buildCommandPayload(commandId, element),
-      driver: driver.name,
-      frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src
-    }
+        activity.add(payload)
 
-    activity.add(payload)
+        if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
-    if (['frame', 'window'].includes(driver.name)) event.preventDefault()
+        meta.busy = true
+        setTimeout(() => (meta.busy = false), 10)
 
-    meta.busy = true
-    setTimeout(() => (meta.busy = false), 10)
+        switch (driver.name) {
+          case 'method':
+            return driver.invokeCommand(element, payload)
+          case 'form':
+            return driver.invokeCommand(element, payload)
+          case 'frame':
+            return driver.invokeCommand(driver.frame, payload)
+          case 'window':
+            return driver.invokeCommand(payload)
+        }
+      },
 
-    switch (driver.name) {
-      case 'method':
-        return driver.invokeCommand(element, payload)
-      case 'form':
-        return driver.invokeCommand(element, payload)
-      case 'frame':
-        return driver.invokeCommand(driver.frame, payload)
-      case 'window':
-        return driver.invokeCommand(payload)
-    }
+      // rejection
+      () => {
+        // noop, the dispatcher aborts on rejection
+      }
+    )
   } catch (error) {
     dispatch(commandEvents.clientError, element, {
       detail: { ...payload, error }
@@ -117,6 +119,7 @@ self.TurboBoost = {
 self.TurboBoost.Commands = {
   logger,
   schema,
+  setConfirmMethod,
   events: commandEvents,
   registerEventDelegate: delegates.register,
   get eventDelegates () {
