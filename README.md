@@ -457,6 +457,30 @@ end
 Remember that commands are invoked by a controller [before action filter](https://guides.rubyonrails.org/action_controller_overview.html#filters).
 That means controller rendering from inside a command halts the standard request cycle.
 
+### Commands Lifecycle
+
+By default, commands are run before existing `before_action` callbacks (as
+`TurboBoost::Commands::Controller` is automatically included in `ActionController::Base`). You
+can configure this behavior to have more control over when commands are run:
+```ruby
+# config/initializers/turbo_boost_commands.rb
+TurboBoost::Commands.config.tap do |config|
+  config[:run_commands_before_controller_callbacks] = false
+end
+```
+
+Then, you'll need to include `TurboBoost::Commands::Controller` manually where you want it:
+
+```ruby
+class ApplicationController < ActionController::Base
+  before_action :action1
+  before_action :action2
+  before_action :action3
+
+  include TurboBoost::Commands::Controller
+end
+```
+
 ### Broadcasting Turbo Streams
 
 You can also broadcast Turbo Streams to subscribed users from a command.
