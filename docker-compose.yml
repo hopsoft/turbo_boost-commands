@@ -1,46 +1,68 @@
 version: "3.9"
 
+x-default-env: &default_env
+  GEM_HOME: /mnt/external/bundle
+  PLAYWRIGHT_BROWSERS_PATH: 0
+  RAILS_ENV: development
+  RAILS_LOG_TO_STDOUT: true
+  RAILS_SERVE_STATIC_FILES: true
+
 x-default-app: &default_app
   build: .
-  image: turbo_boost-commands
+  image: hopsoft/turbo_boost-commands
   tty: true
   stdin_open: true
-  working_dir: /opt/turbo_boost-commands/test/dummy
   environment:
-    RAILS_ENV: development
+    <<: *default_env
+  networks:
+    - primary
   volumes:
-    - bundle:/usr/local/bundle:delegated
-    - node_modules:/opt/turbo_boost-commands/node_modules
+    - .:/opt/turbo_boost-commands
+    - bundle:/mnt/external/bundle
+    - node_modules:/mnt/external/node_modules
+
+networks:
+  primary:
 
 volumes:
   bundle:
   node_modules:
 
 services:
-  # ----------------------------------------------------------------------------
-  # Shell - Intended for tinkering and running misc commands
-  # ----------------------------------------------------------------------------
-  shell:
-    <<: *default_app
-    container_name: turbo_boost-commands-shell
-    command: /bin/bash -c "tail -f /dev/null"
-
-  # ----------------------------------------------------------------------------
+  # ==========================================================================================================
   # Web - Runs the test/dummy Rails app
-  # ----------------------------------------------------------------------------
+  # ==========================================================================================================
   web:
     <<: *default_app
     container_name: turbo_boost-commands-web
     ports:
       - 3000:3000
-    command: >
-      /bin/bash -c "git pull --no-rebase github main &&
-                    cd /opt/turbo_boost-commands &&
-                    bundle &&
-                    yarn &&
-                    cd /opt/turbo_boost-commands/test/dummy &&
-                    rm -f tmp/pids/server.pid &&
-                    bin/rails db:create db:migrate &&
-                    bin/rails assets:clobber &&
-                    bin/rails assets:precompile &&
-                    bin/rails s --binding=0.0.0.0 --port=3000"
+    command: bin/docker/run/local
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+
+  # ==========================================================================================================
+  # ESBuild - Runs the esbuild watcher
+  # ==========================================================================================================
+  esbuild:
+    <<: *default_app
+    container_name: turbo_boost-commands-esbuild
+    command: /bin/bash -c "yarn && yarn build:watch"
+    depends_on:
+      web:
+        condition: service_healthy
+
+  # ==========================================================================================================
+  # Tailwind - Runs the Tailwind watcher
+  # ==========================================================================================================
+  tailwind:
+    <<: *default_app
+    container_name: turbo_boost-commands-tailwind
+    working_dir: /opt/turbo_boost-commands/test/dummy
+    command: bin/rails tailwindcss:watch
+    depends_on:
+      web:
+        condition: service_healthy

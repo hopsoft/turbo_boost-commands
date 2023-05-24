@@ -1,16 +1,19 @@
 # flyctl launch added from .gitignore
+**/*.gem
+**/*.key
+**/Gemfile.lock
 .bundle
+.env
 doc
+fly.toml
 log/*.log
+node_modules
 pkg
-tmp
+tags
 test/dummy/db/*.sqlite3
 test/dummy/db/*.sqlite3-*
 test/dummy/log/*.log
+test/dummy/public/assets
 test/dummy/storage
 test/dummy/tmp
-test/dummy/public/assets
-node_modules
-**/Gemfile.lock
-**/*.key
-fly.toml
+tmp

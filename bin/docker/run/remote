@@ -1,0 +1,33 @@
+#!/bin/bash
+
+
+# ============================================================================================================
+# Jemalloc - SEE: https://jemalloc.net
+# ============================================================================================================
+jemalloc="/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"
+if [ "$(uname -m)" = "x86_64" ] && [ -f "$jemalloc" ]; then
+  export LD_PRELOAD=$jemalloc
+fi
+
+jemalloc="/usr/lib/aarch64-linux-gnu/libjemalloc.so.2"
+if [ "$(uname -m)" = "aarch64" ] && [ -f "$jemalloc" ]; then
+  export LD_PRELOAD=$jemalloc
+fi
+
+
+# ============================================================================================================
+# Dependencies
+# ============================================================================================================
+rm -rf /opt/turbo_boost-commands/node_modules
+ln -s /mnt/external/node_modules /opt/turbo_boost-commands/node_modules
+yarn
+bundle
+
+
+# ============================================================================================================
+# Prepare & Run the Application
+# ============================================================================================================
+cd test/dummy
+rm -rf tmp/pids/*
+bin/rails assets:clean assets:precompile
+bin/rails server --binding=0.0.0.0 --port=3000
