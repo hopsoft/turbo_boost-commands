@@ -73,12 +73,12 @@
     - [Setting Instance Variables](#setting-instance-variables)
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-    - [Putting it All Together](#putting-it-all-together)
-      - [Running Locally](#running-locally)
-      - [Running in Docker](#running-in-docker)
   - [Community](#community)
-    - [Discussions](#discussions)
-    - [Twitter](#twitter)
+  - [Developing](#developing)
+      - [Notable Files](#notable-files)
+  - [Deploying](#deploying)
+      - [Notable Files](#notable-files-1)
+      - [How to Deploy](#how-to-deploy)
   - [Releasing](#releasing)
   - [About TurboBoost](#about-turboboost)
   - [License](#license)
@@ -477,71 +477,92 @@ end
 
 > 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
 
-### Putting it All Together
-
-The best way to learn this stuff is from working examples.
-Be sure to clone the library and run the test application.
-Then dig into the internals.
-
-#### Running Locally
-
-```sh
-git clone https://github.com/hopsoft/turbo_boost-commands.git
-cd turbo_boost-commands
-bundle
-cd test/dummy
-bin/rails s
-# View the app in a browser at http://localhost:3000
-```
-
-#### Running in Docker
-
-Docker users can get up and running even faster.
-
-```sh
-git clone https://github.com/hopsoft/turbo_boost-commands.git
-cd turbo_boost-commands
-docker compose up -d
-# View the app in a browser at http://localhost:3000
-```
-
-You can review the implementation in [`test/dummy/app`](https://github.com/hopsoft/turbo_boost-commands/tree/main/test/dummy).
-*Feel free to add some demos and submit a pull request while you're in there.*
-
 ## Community
 
-### Discussions
+Come join the party with over 2200+ like-minded friendly Rails/Hotwire enthusiasts on our [Discord server](https://discord.gg/stimulus-reflex).
 
-Feel free to add to the conversation here on [GitHub Discussions](https://github.com/hopsoft/turbo_boost-commands/discussions).
+## Developing
 
-### Twitter
+This project supports a fully Dockerized development experience.
 
-Connect with the core team on Twitter.
+1. Simply run the following commands to get started.
 
-<a href="https://twitter.com/hopsoft" target="_blank">
-  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/hopsoft?logo=twitter&style=social">
-</a>
+    ```sh
+    git clone -o github https://github.com/hopsoft/turbo_boost-streams.git
+    cd turbo_boost-streams
+    ```
+
+    ```sh
+    docker compose up -d # start the envionment (will take a few minutes on 1st run)
+    docker exec -it turbo_boost-streams-web rake # run the test suite
+    open http://localhost:3000 # open the `test/dummy` app in a browser
+    ```
+
+    And, if you're using the [containers gem (WIP)](https://github.com/hopsoft/containers).
+
+    ```sh
+    containers up # start the envionment (will take a few minutes on 1st run)
+    containers rake # run the test suite
+    open http://localhost:3000 # open the `test/dummy` app in a browser
+    ```
+
+1. Edit files using your preferred tools on the host machine.
+
+1. That's it!
+
+####  Notable Files
+
+- [Dockerfile](https://github.com/hopsoft/turbo_boost-streams/blob/main/Dockerfile)
+- [docker-compose.yml](https://github.com/hopsoft/turbo_boost-streams/blob/main/docker-compose.yml)
+- [bin/docker/run/local](https://github.com/hopsoft/turbo_boost-streams/blob/main/bin/docker/run/local)
+
+## Deploying
+
+This project supports Dockerized deployment via the same configurtation used for development,
+and... it actually runs the [`test/dummy`](https://github.com/hopsoft/turbo_boost-streams/tree/main/test/dummy) application in "production". 🤯
+
+The `test/dummy` app serves the following purposes.
+
+- Test app for the Rails engine
+- Documentation and marketing site with interactive demos
+
+You can [__see it in action__ here.](https://hopsoft.io/@turbo-boost/streams)
+_How's that for innovative simplicity?_
+
+####  Notable Files
+
+- [Dockerfile](https://github.com/hopsoft/turbo_boost-streams/blob/main/Dockerfile)
+- [fly.toml](https://github.com/hopsoft/turbo_boost-streams/blob/main/fly.toml)
+- [bin/docker/run/remote](https://github.com/hopsoft/turbo_boost-streams/blob/main/bin/docker/run/remote)
+
+#### How to Deploy
+
+```sh
+fly deploy
+```
 
 ## Releasing
 
-1. Run `yarn upgrade` and `bundle update` to pick up the latest
-1. Bump version number at `lib/turbo_boost-commands/version.rb`. Pre-release versions use `.preN`
-1. Run `bin/standardize`
+1. Run `yarn` and `bundle` to pick up the latest
+1. Bump version number at `lib/turbo_boost-streams/version.rb`. Pre-release versions use `.preN`
 1. Run `rake build` and `yarn build`
+1. Run `bin/standardize`
 1. Commit and push changes to GitHub
 1. Run `rake release`
 1. Run `yarn publish --no-git-tag-version --access public`
 1. Yarn will prompt you for the new version. Pre-release versions use `-preN`
-1. Commit and push any changes to GitHub
-1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases)) and generate the changelog for the stable release for it
+1. Commit and push changes to GitHub
+1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-streams/releases)) and generate the changelog for the stable release for it
 
 ## About TurboBoost
 
-TurboBoost is a suite of projects that enhance Rails and Hotwire to make building server rendered reactive applications simpler and more powerful.
+TurboBoost is a suite of libraries that enhance Rails, Hotwire, and Turbo... making them even more powerful and boosing your productivity.
 Be sure to check out all of the various the libraries.
 
 - [Streams](https://github.com/hopsoft/turbo_boost-streams)
 - [Commands](https://github.com/hopsoft/turbo_boost-commands)
+- [Elements](https://github.com/hopsoft/turbo_boost-elements)
+- [Devtools](https://github.com/hopsoft/turbo_boost-devtools)
 - Coming soon...
 
 ## License
