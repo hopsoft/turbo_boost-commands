@@ -138,6 +138,13 @@ Commands can be tested in isolation as well as with standard Rails controller, i
 
 ## Setup
 
+Complete the steps below, or use [this RailsByte](https://railsbytes.com/templates/xkjsbB):
+
+```sh
+rails app:template LOCATION='https://railsbytes.com/script/xkjsbB'
+```
+
+
 1. Add TurboBoost Commands dependencies
 
     ```diff
