@@ -1,7 +1,6 @@
 version: "3.9"
 
 x-default-env: &default_env
-  GEM_HOME: /mnt/external/bundle
   PLAYWRIGHT_BROWSERS_PATH: 0
   RAILS_ENV: development
   RAILS_LOG_TO_STDOUT: true
@@ -17,9 +16,9 @@ x-default-app: &default_app
   networks:
     - primary
   volumes:
-    - .:/opt/turbo_boost-commands
-    - bundle:/mnt/external/bundle
-    - node_modules:/mnt/external/node_modules
+    - .:/app
+    - bundle:/usr/local/bundle
+    - node_modules:/app/node_modules
 
 networks:
   primary:
@@ -61,7 +60,7 @@ services:
   tailwind:
     <<: *default_app
     container_name: turbo_boost-commands-tailwind
-    working_dir: /opt/turbo_boost-commands/test/dummy
+    working_dir: /app/test/dummy
     command: bin/rails tailwindcss:watch
     depends_on:
       web:
