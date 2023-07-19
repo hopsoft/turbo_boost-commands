@@ -3,6 +3,7 @@ import './turbo'
 import schema from './schema'
 import { dispatch, commandEvents, stateEvents } from './events'
 import activity from './activity'
+import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
 import meta from './meta'
@@ -23,7 +24,7 @@ function buildCommandPayload (id, element) {
   }
 }
 
-function invokeCommand (event) {
+async function invokeCommand (event) {
   let element
   let payload = {}
 
@@ -41,7 +42,7 @@ function invokeCommand (event) {
       src: driver.src
     }
 
-    const startEvent = dispatch(commandEvents.start, element, {
+    const startEvent = await dispatch(commandEvents.start, element, {
       cancelable: true,
       detail: payload
     })
@@ -114,6 +115,7 @@ self.TurboBoost = {
 }
 
 self.TurboBoost.Commands = {
+  confirmation,
   logger,
   schema,
   events: commandEvents,

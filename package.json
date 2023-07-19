@@ -11,7 +11,8 @@
   ],
   "main": "app/assets/builds/@turbo-boost/commands.js",
   "files": [
-    "app/assets/builds"
+    "app/assets/builds/commands.js",
+    "app/assets/builds/commands.js.map"
   ],
   "repository": "https://github.com/hopsoft/turbo_boost-commands",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
@@ -23,15 +24,14 @@
     "@hotwired/turbo-rails": ">= 7.2.0"
   },
   "devDependencies": {
-    "esbuild": "^0.17.3",
-    "eslint": "^8.19.0",
+    "esbuild": "^0.18.14",
     "flowbite": "1.5.3",
     "playwright": "^1.29.2",
     "prettier-standard": "^16.4.1",
     "rustywind": "^0.16.0"
   },
   "scripts": {
-    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --format=esm --target=es2020,chrome79,edge44,firefox71,opera65,safari13 --analyze --outfile=app/assets/builds/@turbo-boost/commands.js",
-    "build:watch": "yarn build -- --watch"
+    "build": "yarn run prettier-standard package.json bin/build.mjs app/javascript/**/*.js && node bin/build.mjs",
+    "build:watch": "yarn build --watch"
   }
 }
