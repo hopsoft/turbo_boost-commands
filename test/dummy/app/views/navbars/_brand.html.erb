@@ -1,0 +1,8 @@
+<%= link_to root_path, class: "flex items-center justify-between mr-4" do %>
+  <%= image_tag "turbo-boost-logo.webp", class: "h-9 light-mode", alt: "TurboBoost Logo" %>
+  <%= image_tag "turbo-boost-logo-dark-bg.webp", class: "h-9 dark-mode", alt: "TurboBoost Logo" %>
+  <span class="flex ml-2 text-2xl tracking-tight whitespace-nowrap dark:text-white">
+    <span class="font-bold">Commands</span>
+    <small class="ml-px font-mono text-xs opacity-90 text-secondary-300 dark:text-secondary-500">v<%= TurboBoost::Commands::VERSION %></small>
+  </span>
+<% end %>

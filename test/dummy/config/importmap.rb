@@ -12,5 +12,6 @@ pin "@hotwired/turbo", to: "https://ga.jspm.io/npm:@hotwired/turbo@7.3.0/dist/tu
 pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@7.3.0/app/javascript/turbo/index.js"
 pin "@rails/actioncable/src", to: "https://ga.jspm.io/npm:@rails/actioncable@7.0.4/src/index.js"
 pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"
+pin "flowbite", to: "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.turbo.min.js"
 pin "@turbo-boost/commands", to: "@turbo-boost/commands.js"
 pin "application", preload: true
