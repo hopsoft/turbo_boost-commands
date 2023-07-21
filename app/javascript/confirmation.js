@@ -16,7 +16,7 @@ const isTurboForm = event => {
   return !!(frame || target)
 }
 
-const delegate = event => isTurboMethod(event) || isTurboForm(event)
+const shouldDelegate = event => isTurboMethod(event) || isTurboForm(event)
 
 document.addEventListener(commandEvents.start, async event => {
   const message = event.target.getAttribute(schema.confirmAttribute)
@@ -24,7 +24,7 @@ document.addEventListener(commandEvents.start, async event => {
 
   event.detail.confirmation = true
 
-  if (delegate(event)) return // delegate confirmation handling to Turbo
+  if (shouldDelegate(event)) return // delegate confirmation handling to Turbo
   if (await confirmation.method(message)) event.preventDefault()
 })
 
