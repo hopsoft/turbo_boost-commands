@@ -17,6 +17,6 @@ RUN gem update --system && gem install bundler
 
 RUN mkdir -p /mnt/external/node_modules /mnt/external/bundle
 
-COPY . /opt/turbo_boost-commands
-WORKDIR /opt/turbo_boost-commands
+COPY . /app
+WORKDIR /app
 CMD bin/docker/run/remote

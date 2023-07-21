@@ -13,8 +13,8 @@ const logLevels = {
 Object.values(events).forEach(name => {
   addEventListener(name, event => {
     if (logLevels[currentLevel].includes(event.type)) {
-      const level = currentLevel === 'debug' ? 'log' : currentLevel
-      console[level](event.type, { target: event.target, detail: event.detail })
+      const { target, detail } = event
+      console[currentLevel](event.type, { target, detail })
     }
   })
 })
