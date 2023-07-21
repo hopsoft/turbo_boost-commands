@@ -5,9 +5,9 @@ module ApplicationHelper
     "heroicons/#{name}"
   end
 
-  # def component(name)
-  # "components/#{name}"
-  # end
+  def component(name)
+    "components/#{name}"
+  end
 
   # def flowbite(name)
   # component "flowbite/#{name}"
