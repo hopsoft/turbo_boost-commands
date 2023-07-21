@@ -1,6 +1,6 @@
 import meta from '../meta'
 
-function invokeCommand (form, payload = {}) {
+function invokeCommand(form, payload = {}) {
   payload.token = meta.token
   const input = document.createElement('input')
   input.type = 'hidden'

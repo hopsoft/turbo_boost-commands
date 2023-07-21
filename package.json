@@ -27,11 +27,11 @@
     "esbuild": "^0.18.14",
     "flowbite": "1.5.3",
     "playwright": "^1.29.2",
-    "prettier-standard": "^16.4.1",
-    "rustywind": "^0.16.0"
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1"
   },
   "scripts": {
-    "build": "yarn run prettier-standard package.json bin/build.mjs app/javascript/**/*.js && node bin/build.mjs",
+    "build": "bin/standardize && node bin/build.mjs",
     "build:watch": "yarn build --watch"
   }
 }

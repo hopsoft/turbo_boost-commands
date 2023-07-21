@@ -2,6 +2,4 @@
 
 bundle exec magic_frozen_string_literal
 bundle exec standardrb --fix
-yarn run prettier-standard package.json bin/build.mjs app/javascript/**/*.js
-yarn run rustywind --write test/dummy/app
-yarn run rustywind --write --custom-regex "(:\s[\"'])(.+)[\"']" test/dummy/app/views/_tailwind.yml.erb
+yarn run prettier --write package.json bin/build.mjs app/javascript/**/*.js test/dummy/app/javascript/**/*.js test/dummy/app/assets/stylesheets/**/*.css

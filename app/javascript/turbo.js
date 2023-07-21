@@ -26,9 +26,8 @@ addEventListener('turbo:before-fetch-request', event => {
 
   // always send state
   state.payloadChunks.forEach((chunk, i) => {
-    fetchOptions.headers[
-      `TurboBoost-State-${i.toString().padStart(4, '0')}`
-    ] = chunk
+    fetchOptions.headers[`TurboBoost-State-${i.toString().padStart(4, '0')}`] =
+      chunk
   })
 })
 
