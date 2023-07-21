@@ -1,41 +1,8 @@
+@import './tailwind/base';
+@import './tailwind/components/marketing/features';
+@import './tailwind/components/instruction';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-code {
-  @apply rounded bg-gray-100 px-1 py-0.5 text-sm dark:bg-gray-800;
-}
-
-/************************************************************************************************************/
-.feature .icon {
-  @apply bg-primary-100 dark:bg-primary-900 mb-4 flex h-10 w-10 items-center justify-center rounded-full lg:h-12 lg:w-12;
-}
-.feature .icon svg {
-  @apply text-primary-600 dark:text-primary-300 h-5 w-5 lg:h-6 lg:w-6;
-}
-.feature h3 {
-  @apply mb-2 text-xl font-bold dark:text-white;
-}
-.feature p {
-  @apply text-gray-600 dark:text-gray-400;
-}
-.feature em {
-  @apply text-accent-500 dark:text-accent-300 not-italic;
-}
-.feature em.subtle {
-  @apply not-italic text-gray-700 underline decoration-gray-600 decoration-dotted underline-offset-4 dark:text-gray-300 dark:decoration-gray-400;
-}
-
-/************************************************************************************************************/
-.instruction .step {
-  @apply border-primary-400 mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2;
-}
-.instruction .step * {
-  @apply text-primary-400;
-}
-.instruction h3 {
-  @apply text-3xl font-bold leading-tight text-gray-900 dark:text-gray-200 sm:text-4xl;
-}
-.instruction p {
-  @apply my-2 text-base font-normal text-gray-500 dark:text-gray-400 sm:text-lg;
-}
+@tailwind variants;
