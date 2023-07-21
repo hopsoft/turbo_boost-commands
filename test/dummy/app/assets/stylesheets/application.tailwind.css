@@ -6,6 +6,7 @@ code {
   @apply rounded bg-gray-100 px-1 py-0.5 text-sm dark:bg-gray-800;
 }
 
+/************************************************************************************************************/
 .feature .icon {
   @apply bg-primary-100 dark:bg-primary-900 mb-4 flex h-10 w-10 items-center justify-center rounded-full lg:h-12 lg:w-12;
 }
@@ -23,4 +24,18 @@ code {
 }
 .feature em.subtle {
   @apply not-italic text-gray-700 underline decoration-gray-600 decoration-dotted underline-offset-4 dark:text-gray-300 dark:decoration-gray-400;
+}
+
+/************************************************************************************************************/
+.instruction .step {
+  @apply border-primary-400 mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2;
+}
+.instruction .step * {
+  @apply text-primary-400;
+}
+.instruction h3 {
+  @apply text-3xl font-bold leading-tight text-gray-900 dark:text-gray-200 sm:text-4xl;
+}
+.instruction p {
+  @apply my-2 text-base font-normal text-gray-500 dark:text-gray-400 sm:text-lg;
 }

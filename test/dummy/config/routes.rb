@@ -2,9 +2,9 @@
 
 Rails.application.routes.draw do
   get "health", to: ->(_env) { [204, {}, [""]] }
-  resources :frames, only: [:show, :update]
-  resources :demos, only: %i[index show]
-  resources :docs, only: %i[index show]
-  resource :session, only: %i[destroy]
-  root "demos#index"
+
+  resource :features, only: [:show]
+  resource :installations, only: [:show]
+
+  root "features#show"
 end

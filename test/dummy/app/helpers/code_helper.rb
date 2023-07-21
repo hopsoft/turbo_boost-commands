@@ -19,6 +19,7 @@ module CodeHelper
     when :javascript then Rouge::Lexers::Javascript.new
     when :json then Rouge::Lexers::JSON.new
     when :ruby then Rouge::Lexers::Ruby.new
+    when :sh then Rouge::Lexers::Shell.new
     end
 
     formatter.format(lexer.lex(source)).html_safe

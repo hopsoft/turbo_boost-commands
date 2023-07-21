@@ -1,0 +1,80 @@
+<section class="bg-white dark:bg-gray-900 antialiased">
+  <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
+    <div class="max-w-2xl mx-auto space-y-4 text-center">
+      <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl dark:text-white">
+        Installation and Configuration
+      </h2>
+      <p class="text-base font-normal text-gray-500 sm:text-xl dark:text-gray-400">
+        We'll cover installing and configuring the Ruby GEM and the NPM package.
+      </p>
+    </div>
+
+    <div class="max-w-5xl mx-auto mt-8 space-y-16 sm:mt-12 lg:mt-16">
+      <div class="space-y-8 lg:space-y-12">
+
+        <div class="instruction">
+          <div class="flex mb-4">
+            <span class="step"><span>01</span></span>
+            <h3>Add the GEM to your Gemfile</h3>
+          </div>
+          <%= render component(:code), language: :sh, class: "text-sm", source_path: "app/views/installations/source_code/_bundle.sh.erb", erb: true %>
+          <p>The command above adds the following line to the Gemfile.</p>
+          <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/installations/source_code/_gemfile.rb.erb", erb: true %>
+        </div>
+
+        <div class="instruction">
+          <div class="flex mb-4">
+            <span class="step"><span>02</span></span>
+            <h3>Add the NPM package to your package.json file</h3>
+          </div>
+          <%= render component(:code), language: :sh, class: "text-sm", source_path: "app/views/installations/source_code/_yarn.sh.erb", erb: true %>
+          <p>The command above adds the following line to the package.json file.</p>
+          <%= render component(:code), language: :json, class: "text-sm", source_path: "app/views/installations/source_code/_package.json.erb", erb: true %>
+
+          <div class="flex items-center p-4 my-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+              Alternately, pin the JavaScript package to your config/importmap.rb file.
+            </div>
+          </div>
+          <%= render component(:code), language: :sh, class: "text-sm", source_path: "app/views/installations/source_code/_importmap.sh.erb", erb: true %>
+          <p>The command above adds the following line to the importmap.rb file.</p>
+          <%= render component(:code), language: :ruby, class: "text-sm", source_path: "app/views/installations/source_code/_importmap.rb.erb", erb: true %>
+        </div>
+
+        <div class="instruction">
+          <div class="flex mb-4">
+            <span class="step"><span>03</span></span>
+            <h3>Configure your JavaScript app</h3>
+          </div>
+          <div class="flex items-center p-4 my-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+              Be sure to add TurboBoost Commands after the Turbo import.
+            </div>
+          </div>
+          <%= render component(:code), language: :javascript, class: "text-sm", source_path: "app/views/installations/source_code/_application.js.erb" %>
+        </div>
+
+        <div class="instruction">
+          <div class="flex mb-4">
+            <span class="step"><span>04</span></span>
+            <h3>Configure your Rails app</h3>
+          </div>
+          <%= render component(:code), language: :erb, class: "text-sm", source_path: "app/views/installations/source_code/_application.html.erb" %>
+        </div>
+
+        <p class="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">
+          That's it! You're ready to start using TurboBoost Commands. 🙌
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
