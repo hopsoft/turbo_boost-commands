@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def heroicon(name)
-    "heroicons/#{name}"
-  end
+  # def heroicon(name)
+  #  "heroicons/#{name}"
+  # end
 
-  def component(name)
-    "components/#{name}"
-  end
+  # def component(name)
+  # "components/#{name}"
+  # end
 
   # def flowbite(name)
   # component "flowbite/#{name}"

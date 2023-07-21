@@ -1,0 +1,6 @@
+@layer components {
+  [class*="alert["] { @apply flex items-center p-4 my-4 text-sm rounded-lg; }
+  [class*="alert["] > svg { @apply w-4 h-4 mr-2; }
+  [class~="alert[info]"] { @apply text-blue-800 bg-blue-50 dark:bg-gray-800 dark:text-blue-400; }
+  [class~="alert[warning]"] { @apply text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300; }
+}

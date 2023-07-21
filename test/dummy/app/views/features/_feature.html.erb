@@ -1,0 +1,6 @@
+<%# styles → app/assets/stylesheets/tailwind/components/feature.css %>
+<div class="feature">
+  <div><%= render "heroicons/#{icon}", solid: true %></div>
+  <h3><%= heading %></h3>
+  <p><%= local_assigns[:description] || yield %></p>
+</div>

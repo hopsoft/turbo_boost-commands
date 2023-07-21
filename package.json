@@ -24,11 +24,15 @@
     "@hotwired/turbo-rails": ">= 7.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.4",
+    "@tailwindcss/typography": "^0.5.9",
     "esbuild": "^0.18.14",
     "flowbite": "1.5.3",
     "playwright": "^1.29.2",
     "prettier": "^3.0.0",
-    "prettier-plugin-tailwindcss": "^0.4.1"
+    "prettier-plugin-tailwindcss": "^0.4.1",
+    "tailwindcss": "^3.3.3"
   },
   "scripts": {
     "build": "bin/standardize && node bin/build.mjs",

@@ -12,7 +12,43 @@
       </p>
     </div>
 
-    <%= render "features/list" %>
+    <div class="my-12 space-y-8 md:grid md:grid-cols-2 md:gap-12 md:my-20 md:space-y-0 lg:grid-cols-3">
+      <%= render "features/feature", icon: :beaker, heading: "Hybrid Solutions" do %>
+        Strict REST semantics for everything can have diminishing returns.
+        TurboBoost <i>Commands</i> give you <em>more flexibility</em> by allowing you to "sprinkle"
+        in remote procedure calls (RPC) when needed, reducing boilerplate and helping you focus on the task at hand.
+      <% end %>
+
+      <%= render "features/feature", icon: :square_3_stack_3d, heading: "Isolated Concerns" do %>
+        Developing a <em>clean and maintainable</em> codebase is crucial.
+        TurboBoost <i>Commands</i> help you avoid non-RESTful routes and minimize fat models and controllers.
+        You'll write less code that's more organized, testable, and sustainable.
+      <% end %>
+
+      <%= render "features/feature", icon: :puzzle_piece, heading: "Seamless Integrations" do %>
+        TurboBoost <i>Commands</i> have been designed to work perfectly with both Rails and Hotwire.
+        They enhance your existing workflow...
+        and you can introduce their game-changing techniques gradually to your current projects with <em>zero risk</em>.
+      <% end %>
+
+      <%= render "features/feature", icon: :hand_thumb_up, heading: "Standard Mechanics" do %>
+        TurboBoost <i>Commands</i> are simply plain Ruby methods that are invoked by a Rails controller <code>before_action</code>.
+        After they execute some discrete business logic, normal Rails behavior resumes control.
+        It <em>couldn't be simpler</em>.
+      <% end %>
+
+      <%= render "features/feature", icon: :light_bulb, heading: "Conventional Concepts" do %>
+        At a high level, TurboBoost <i>Commands</i> share the same mental model as popular client-side frameworks like React,
+        but moving responsiblities to the server vastly <em>reduces the complexity</em> of triggering events, changing state, and re-rendering.
+      <% end %>
+
+      <%= render "features/feature", icon: :lightning_bolt, heading: "Reliable Protocols" do %>
+        TurboBoost <i>Commands</i> use standard HTTP,
+        so the tools you use for monitoring and optimizing normal web requests will also work for your reactive features...
+        helping you build performant, reliable, and <em>great user experiences</em>.
+      <% end %>
+    </div>
+
 
     <div class="max-w-screen-md">
       <a href="#" class="inline-flex justify-center items-center py-3 px-5 mr-3 text-base font-medium text-center text-white rounded-lg focus:ring-4 bg-primary-700 dark:focus:ring-primary-900 hover:bg-primary-800 focus:ring-primary-300">
