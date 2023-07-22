@@ -1,0 +1,4 @@
+<%= link_to url, class: token_list("flex items-center p-2 text-base text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700", "bg-gray-100 dark:bg-gray-700": active) do %>
+  <%= render "heroicons/#{icon}", class: "w-6 h-6 text-gray-500 dark:text-gray-400" %>
+  <span class="ml-3"><%= label %></span>
+<% end %>
