@@ -1,0 +1,18 @@
+<div class="hidden lg:block absolute bottom-0 left-0 justify-center p-2 space-x-4 w-full">
+  <%= render "sidebars/sponsor_cta" %>
+
+  <div class="justify-center lg:flex pr-5">
+    <%= link_to "https://github.com/hopsoft/turbo_boost-commands", target: "_blank", alt: "View on GitHub",
+      class: "p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:text-white dark:hover:bg-gray-600" do %>
+      <%= render "flowbite_icons/github", class: "w-6 h-6" %>
+    <% end %>
+    <%= link_to "https://twitter.com/hopsoft", target: "_blank", alt: "Follow on Twitter",
+      class: "p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:text-white dark:hover:bg-gray-600" do %>
+      <%= render "flowbite_icons/twitter", class: "w-6 h-6" %>
+    <% end %>
+    <%= link_to "https://www.youtube.com/channel/UCP7FO_cPZKI2v1XqrAVosqw", target: "_blank", alt: "Watch on YouTube",
+      class: "p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:text-white dark:hover:bg-gray-600" do %>
+      <%= render "flowbite_icons/youtube", class: "w-6 h-6" %>
+    <% end %>
+  </div>
+</div>

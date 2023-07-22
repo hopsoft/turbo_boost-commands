@@ -1,7 +1,8 @@
 @import './tailwind/base';
-@import './tailwind/components/alert';
-@import './tailwind/components/instruction';
-@import './tailwind/components/feature';
+@import '../../views/alerts/_alert';
+@import '../../views/features/_feature';
+@import '../../views/instructions/_instruction';
+@import '../../views/sidebars/_link';
 
 @tailwind base;
 @tailwind components;

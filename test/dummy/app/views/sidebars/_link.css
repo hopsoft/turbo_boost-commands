@@ -1,0 +1,11 @@
+@layer components {
+  [class~='sidebar[link]'] {
+    @apply flex items-center rounded-lg p-2 text-base text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700;
+  }
+  [class~='sidebar[link]'].active {
+    @apply bg-gray-100 dark:bg-gray-700;
+  }
+  [class~='sidebar[link]'] > svg {
+    @apply mr-3 h-6 w-6 text-gray-500 dark:text-gray-400;
+  }
+}

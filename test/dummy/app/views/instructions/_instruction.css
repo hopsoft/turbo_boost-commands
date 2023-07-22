@@ -6,10 +6,10 @@
 
   /* step.number */
   .instruction > div:first-child > span {
-    @apply mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-secondary-400;
+    @apply mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-rose-400;
   }
   .instruction > div:first-child > span span {
-    @apply text-secondary-400;
+    @apply text-rose-400;
   }
 
   /* step.heading */
