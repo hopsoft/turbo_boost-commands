@@ -13,21 +13,15 @@ addEventListener('turbo:before-fetch-request', event => {
 
   // command invoked and busy
   if (meta.busy) {
-    let acceptHeaders = [
-      'text/vnd.turbo-boost.html',
-      fetchOptions.headers['Accept']
-    ]
-    acceptHeaders = acceptHeaders
-      .filter(entry => entry && entry.trim().length > 0)
-      .join(', ')
+    let acceptHeaders = ['text/vnd.turbo-boost.html', fetchOptions.headers['Accept']]
+    acceptHeaders = acceptHeaders.filter(entry => entry && entry.trim().length > 0).join(', ')
     fetchOptions.headers['Accept'] = acceptHeaders
     fetchOptions.headers['TurboBoost-Token'] = meta.token
   }
 
   // always send state
   state.payloadChunks.forEach((chunk, i) => {
-    fetchOptions.headers[`TurboBoost-State-${i.toString().padStart(4, '0')}`] =
-      chunk
+    fetchOptions.headers[`TurboBoost-State-${i.toString().padStart(4, '0')}`] = chunk
   })
 })
 
@@ -41,12 +35,7 @@ addEventListener('turbo:before-fetch-response', event => {
   if (response.header('TurboBoost')) {
     if (response.statusCode < 200 || response.statusCode > 399) {
       const error = `Server returned a ${response.statusCode} status code! TurboBoost Commands require 2XX-3XX status codes.`
-      dispatch(
-        lifecycle.events.clientError,
-        document,
-        { detail: { ...event.detail, error } },
-        true
-      )
+      dispatch(lifecycle.events.clientError, document, { detail: { ...event.detail, error } }, true)
     }
 
     if (response.header('TurboBoost') === 'Append') {
@@ -59,7 +48,6 @@ addEventListener('turbo:before-fetch-response', event => {
 // fires when a frame element is navigated and finishes loading
 addEventListener('turbo:frame-load', event => {
   const frame = event.target.closest('turbo-frame')
-  frame.dataset.turboBoostSrc =
-    frameSources[frame.id] || frame.src || frame.dataset.turboBoostSrc
+  frame.dataset.turboBoostSrc = frameSources[frame.id] || frame.src || frame.dataset.turboBoostSrc
   delete frameSources[frame.id]
 })

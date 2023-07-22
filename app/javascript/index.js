@@ -14,7 +14,7 @@ import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
-function buildCommandPayload (id, element) {
+function buildCommandPayload(id, element) {
   return {
     id, // uniquely identifies the command
     name: element.getAttribute(schema.commandAttribute),
@@ -24,7 +24,7 @@ function buildCommandPayload (id, element) {
   }
 }
 
-async function invokeCommand (event) {
+async function invokeCommand(event) {
   let element
   let payload = {}
 
@@ -47,10 +47,7 @@ async function invokeCommand (event) {
       detail: payload
     })
 
-    if (
-      startEvent.defaultPrevented ||
-      (startEvent.detail.confirmation && event.defaultPrevented)
-    )
+    if (startEvent.defaultPrevented || (startEvent.detail.confirmation && event.defaultPrevented))
       return dispatch(commandEvents.abort, element, {
         detail: {
           message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
@@ -108,11 +105,11 @@ self.TurboBoost = {
 
   stateEvents,
 
-  get state () {
+  get state() {
     return state.current
   },
 
-  get stateDelta () {
+  get stateDelta() {
     return state.delta
   }
 }
@@ -123,7 +120,7 @@ self.TurboBoost.Commands = {
   schema,
   events: commandEvents,
   registerEventDelegate: delegates.register,
-  get eventDelegates () {
+  get eventDelegates() {
     return delegates.events
   }
 }

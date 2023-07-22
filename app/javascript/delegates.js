@@ -1,7 +1,7 @@
 let events = []
 let eventListener
 
-function register (eventName, selectors) {
+function register(eventName, selectors) {
   const match = events.find(evt => evt.name === eventName)
   if (match) events.splice(events.indexOf(match), 1)
   events = [{ name: eventName, selectors }, ...events]
@@ -9,15 +9,13 @@ function register (eventName, selectors) {
   return { ...events.find(evt => evt.name === eventName) }
 }
 
-function getRegisteredEventForElement (element) {
+function getRegisteredEventForElement(element) {
   return events.find(evt =>
-    evt.selectors.find(selector =>
-      Array.from(document.querySelectorAll(selector)).find(el => el === element)
-    )
+    evt.selectors.find(selector => Array.from(document.querySelectorAll(selector)).find(el => el === element))
   )
 }
 
-function isRegisteredForElement (eventName, element) {
+function isRegisteredForElement(eventName, element) {
   const evt = getRegisteredEventForElement(element)
   return evt && evt.name === eventName
 }
@@ -25,10 +23,10 @@ function isRegisteredForElement (eventName, element) {
 export default {
   register,
   isRegisteredForElement,
-  get events () {
+  get events() {
     return [...events]
   },
-  set handler (fn) {
+  set handler(fn) {
     eventListener = fn
   }
 }
