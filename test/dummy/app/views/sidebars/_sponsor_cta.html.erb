@@ -1,10 +1,13 @@
 <div class="justify-center px-4 pb-4 w-full">
   <div id="alert-update" class="p-4 mb-3 bg-gray-50 rounded-lg dark:bg-gray-700" role="alert">
     <div class="mb-3 text-sm text-gray-600 dark:text-gray-400">
-      Would you like to see <span class="text-black dark:text-white">more demos, better docs, and faster bug fixes</span>?
+      <div class="flex justify-center mb-2">
+        <%= image_tag "hopsoft.webp", class: "h-14 w-14 rounded-full", alt: "hopsoft" %>
+      </div>
+      Do you want <span class="text-black dark:text-white">more demos, better docs, and faster bug fixes</span>?
     </div>
     <a href="https://github.com/sponsors/hopsoft" target="_blank"
-      class="inline-flex items-center text-sm font-bold text-success-600 dark:text-success-500 hover:underline">
+      class="inline-flex items-center text-sm font-bold text-lime-600 dark:text-lime-400 hover:underline">
       Sponsor Hopsoft
       <%= render "heroicons/arrow_right", class: "ml-1 w-5 h-5", solid: true %>
     </a>
