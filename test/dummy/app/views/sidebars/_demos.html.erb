@@ -1,0 +1,18 @@
+<li>
+  <button type="button" aria-controls="sidebar-demos" data-collapse-toggle="sidebar-demos"
+    class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 dark:text-white hover:bg-gray-100 group dark:hover:bg-gray-700">
+    <%= render "heroicons/document_text", class: "mr-3 h-6 w-6 text-gray-500 dark:text-gray-400" %>
+    <span class="flex-1 ml-3 text-left whitespace-nowrap">Demos</span>
+    <%= render "heroicons/chevron_down", class: "w-6 h-6" %>
+  </button>
+  <ul id="sidebar-demos" class="hidden py-2 space-y-2">
+    <li>
+      <%= render "sidebars/link", label: "Basic Command", href: installations_path, icon: :code_bracket,
+        class: "pl-5 opacity-80", active: controller_name == "installations" && action_name == "show" %>
+    </li>
+    <li>
+      <%= render "sidebars/link", label: "Turbo Confirm", href: installations_path, icon: :code_bracket,
+        class: "pl-5 opacity-80", active: controller_name == "installations" && action_name == "show" %>
+    </li>
+  </ul>
+</li>

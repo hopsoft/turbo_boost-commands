@@ -1,0 +1,17 @@
+<%= tag.li id: "sidebar-docs", class: token_list(active: docs_controller?) do %>
+  <%= button_tag type: "button",
+    aria: { controls: "sidebar-docs-links", expanded: docs_controller? },
+    data: { collapse_toggle: "sidebar-docs-links" } do %>
+    <%= render "heroicons/document_text" %>
+    <span>Docs</span>
+    <%= render "heroicons/chevron_right", class: "collapsed" %>
+    <%= render "heroicons/chevron_down", class: "expanded" %>
+  <% end %>
+
+  <%= tag.ul id: "sidebar-docs-links", class: token_list("sidebar[links]", hidden: !docs_controller?) do %>
+    <li>
+      <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack,
+        active: controller_name == "installations" && action_name == "show" %>
+    </li>
+  <% end %>
+<% end %>

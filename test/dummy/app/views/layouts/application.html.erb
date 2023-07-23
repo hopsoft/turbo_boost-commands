@@ -12,11 +12,11 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-full antialiased bg-gray-50/30 dark:bg-gray-900">
+  <body class="h-full antialiased dark:bg-gray-900 bg-gray-50/30">
     <%= render "navbars/navbar" %>
     <%= render "sidebars/sidebar" %>
     <main class="p-4 pt-20 md:ml-64">
-      <%# render "breadcrumbs/breadcrumbs" %>
+      <%= render "breadcrumbs/breadcrumbs" %>
       <%= yield %>
     </main>
   </body>

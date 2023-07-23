@@ -1,37 +1,15 @@
-<aside id="drawer-navigation" aria-label="Sidenav"
-  class="fixed top-0 left-0 z-40 pt-14 w-64 h-screen bg-white border-r border-gray-200 transition-transform -translate-x-full md:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
-    <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-      <%# render "sidebar/search" %>
-      <ul class="space-y-2">
-        <li>
-          <%= render "sidebars/link", label: "Home", href: root_path, icon: :home,
-            active: controller_name == "features" && action_name == "show" %>
-        </li>
-        <li>
-          <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack,
-            active: controller_name == "installations" && action_name == "show" %>
-        </li>
+<aside id="sidebar" aria-label="Sidenav">
+  <div>
+    <%# render "sidebar/search" %>
+    <ul>
+      <li>
+        <%= render "sidebars/link", label: "Home", href: root_path, icon: :home, active: request.path == root_path %>
+      </li>
 
-        <li>
-          <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 dark:text-white hover:bg-gray-100 group dark:hover:bg-gray-700">
-            <%= render "heroicons/document_text", class: "mr-3 h-6 w-6 text-gray-500 dark:text-gray-400" %>
-            <span class="flex-1 ml-3 text-left whitespace-nowrap">Docs and Demos</span>
-            <%= render "heroicons/chevron_down", class: "w-6 h-6" %>
-          </button>
-          <ul id="dropdown-pages" class="hidden py-2 space-y-2">
-            <li>
-              <%= render "sidebars/link", label: "Basic Command", href: installations_path, icon: :code_bracket,
-                class: "pl-5 opacity-80", active: controller_name == "installations" && action_name == "show" %>
-            </li>
-            <li>
-              <%= render "sidebars/link", label: "Turbo Confirm", href: installations_path, icon: :code_bracket,
-                class: "pl-5 opacity-80", active: controller_name == "installations" && action_name == "show" %>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+      <%= render "sidebars/docs" %>
+      <%= render "sidebars/demos" %>
+    </ul>
+  </div>
 
-    <%= render "sidebars/footer" %>
+  <%= render "sidebars/footer" %>
 </aside>

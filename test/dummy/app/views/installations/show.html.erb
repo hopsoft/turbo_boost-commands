@@ -1,15 +1,22 @@
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Docs" %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Installation", active: true %>
+<% end %>
+
 <section>
-  <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
-    <div class="max-w-2xl mx-auto space-y-4 text-center">
-      <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl dark:text-white">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:py-24 lg:px-6">
+    <div class="mx-auto space-y-4 max-w-2xl text-center">
+      <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-gray-900 sm:text-5xl dark:text-white">
         Installation and Configuration
       </h2>
-      <p class="text-base font-normal text-gray-500 sm:text-xl dark:text-gray-400">
-        We'll cover installing and configuring both the Ruby GEM and the NPM package.
+      <p class="text-base font-normal text-gray-400 sm:text-xl dark:text-gray-500">
+        How to install and configure both the Ruby GEM and NPM package
       </p>
     </div>
 
-    <div class="max-w-5xl mx-auto mt-8 space-y-16 sm:mt-12 lg:mt-16">
+    <div class="mx-auto mt-8 space-y-16 max-w-5xl sm:mt-12 lg:mt-16">
       <div class="space-y-8 lg:space-y-12">
         <%= render "instructions/instruction", step: 1, heading: "Add the GEM to your Gemfile" do %>
           <%= render "examples/example", language: :sh, path: "$ command line", source: "bundle add turbo_boost-commands --version #{TurboBoost::Commands::VERSION}" %>
