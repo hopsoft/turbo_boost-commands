@@ -1,5 +1,5 @@
-<%= tag.li id: "sidebar-docs", class: token_list(active: docs_controller?) do %>
-  <%= button_tag type: "button",
+<%= tag.li class: token_list(active: docs_controller?) do %>
+  <%= button_tag type: "button", class: "sidebar[button]",
     aria: { controls: "sidebar-docs-links", expanded: docs_controller? },
     data: { collapse_toggle: "sidebar-docs-links" } do %>
     <%= render "heroicons/document_text" %>
@@ -9,9 +9,11 @@
   <% end %>
 
   <%= tag.ul id: "sidebar-docs-links", class: token_list("sidebar[links]", hidden: !docs_controller?) do %>
-    <li>
-      <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack,
-        active: controller_name == "installations" && action_name == "show" %>
-    </li>
+    <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack, active: controller_action?("installations#show") %>
+    <%= render "sidebars/link", label: "Commands", href: "#todo", icon: :server_stack, active: controller_action?("commands#show") %>
+    <%= render "sidebars/link", label: "Events", href: "#todo", icon: :cursor_arrow_rays, active: controller_action?("events#show") %>
+    <%= render "sidebars/link", label: "Event Delegates", href: "#todo", icon: :cursor_arrow_ripple, active: controller_action?("event_delegates#show") %>
+    <%= render "sidebars/link", label: "Instrumentation", href: "#todo", icon: :signal, active: controller_action?("instrumentations#show") %>
+    <%= render "sidebars/link", label: "State Management", href: "#todo", icon: :circle_stack, active: controller_action?("state_managements#show") %>
   <% end %>
 <% end %>

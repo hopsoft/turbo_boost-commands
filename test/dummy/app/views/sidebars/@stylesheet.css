@@ -1,6 +1,7 @@
 @layer components {
+  /* outer container */
   #sidebar {
-    @apply fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-14 transition-transform dark:border-gray-700 dark:bg-gray-800 md:translate-x-0;
+    @apply fixed left-0 top-0 z-40 h-screen w-64 border-r border-gray-200 bg-white pt-14 transition-transform dark:border-gray-700 dark:bg-gray-800;
   }
   #sidebar > div:first-child {
     @apply h-full overflow-y-auto bg-white px-3 py-5 dark:bg-gray-800;
@@ -10,29 +11,28 @@
   }
 
   /* docs button */
-  #sidebar [id='sidebar-docs'] > button {
+  #sidebar [class~='sidebar[button]'] {
     @apply flex w-full items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700;
   }
-  #sidebar [id='sidebar-docs'].active > button {
-    @apply text-rose-400 !important;
+  #sidebar li.active [class='sidebar[button]'] {
+    @apply text-primary-700 dark:text-primary-300 !important;
   }
-  #sidebar [id='sidebar-docs'] > button > svg {
+  #sidebar [class='sidebar[button]'] > svg {
     @apply h-6 w-6;
   }
-  #sidebar [id='sidebar-docs'].active > button > svg {
-    @apply text-rose-400 !important;
+  #sidebar li.active [class='sidebar[button]'] > svg {
+    @apply text-primary-700 dark:text-primary-300 !important;
   }
-  #sidebar [id='sidebar-docs'] > button > svg:first-child {
+  #sidebar [class='sidebar[button]'] > svg:first-child {
     @apply mr-3 text-gray-500 dark:text-gray-400;
   }
-  #sidebar [id='sidebar-docs'] > button[aria-expanded='true'] > svg.collapsed {
+  #sidebar [class='sidebar[button]'][aria-expanded='true'] > svg.collapsed {
     @apply hidden;
   }
-  #sidebar [id='sidebar-docs'] > button:not([aria-expanded='true']) > svg.expanded {
+  #sidebar [class='sidebar[button]']:not([aria-expanded='true']) > svg.expanded {
     @apply hidden;
   }
-
-  #sidebar [id='sidebar-docs'] > button > span {
+  #sidebar [class='sidebar[button]'] > span {
     @apply ml-3 flex-1 whitespace-nowrap text-left;
   }
 
@@ -40,15 +40,21 @@
   #sidebar [class~='sidebar[links]'] {
     @apply space-y-2 py-2;
   }
+  #sidebar [class~='sidebar[links]'] [class~='sidebar[link]'] {
+    @apply ml-3 opacity-70;
+  }
 
   /* link */
   #sidebar [class~='sidebar[link]'] {
     @apply flex items-center rounded-lg p-2 text-base text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700;
   }
   #sidebar [class~='sidebar[link]'].active {
-    @apply bg-gray-100 dark:bg-gray-700;
+    @apply bg-gray-300 dark:bg-gray-500;
   }
   #sidebar [class~='sidebar[link]'] > svg {
     @apply mr-3 h-6 w-6 text-gray-500 dark:text-gray-400;
+  }
+  #sidebar [class~='sidebar[link]'].active > svg {
+    @apply text-gray-600 dark:text-gray-300;
   }
 }

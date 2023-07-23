@@ -7,8 +7,20 @@ module ApplicationHelper
 
   DEMOS_CONTROLLERS = HashWithIndifferentAccess.new.freeze
 
+  def controller_action
+    "#{controller_name}##{action_name}"
+  end
+
+  def controller_action?(name)
+    controller_action == name.to_s
+  end
+
   def docs_controller?
     DOCS_CONTROLLERS[controller_name]
+  end
+
+  def docs_action?(name)
+    docs_controller? && action_name == name.to_s
   end
 
   def demos_controller?
