@@ -9,8 +9,8 @@
   <% end %>
 
   <%= tag.ul id: "sidebar-demos-links", class: token_list("sidebar[links]", hidden: !demos_controller?) do %>
-    <%= render "sidebars/link", label: "Basic Command", href: "#todo", icon: :command_line, active: controller_action?("#show") %>
-    <%= render "sidebars/link", label: "Turbo Confirm", href: "#todo", icon: :command_line, active: controller_action?("#show") %>
-    <%= render "sidebars/link", label: "Increment", href: "#todo", icon: :command_line, active: controller_action?("#show") %>
+    <%= render "sidebars/link", label: "Basic Command", href: todos_path, icon: :command_line, active: false %>
+    <%= render "sidebars/link", label: "Turbo Confirm", href: todos_path, icon: :command_line, active: false %>
+    <%= render "sidebars/link", label: "More...", href: todos_path, icon: :command_line, active: false %>
   <% end %>
 <% end %>

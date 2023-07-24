@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource :features, only: [:show]
   resource :installations, only: [:show]
+  resource :todos, only: [:show]
 
   root "features#show"
 end
