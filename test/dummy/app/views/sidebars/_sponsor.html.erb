@@ -1,15 +1,14 @@
 <div class="justify-center mb-2 w-full">
-  <div class="p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-    <div class="text-sm text-gray-600 dark:text-gray-400">
-      <div class="flex justify-center my-1">
-        <%= image_tag "hopsoft.webp", class: "h-14 w-14 rounded-full", alt: "hopsoft" %>
+  <div class="p-4 text-sm text-gray-600 bg-gray-50 rounded-lg dark:text-gray-400 dark:bg-gray-700">
+    <div class="flex flex-col text-center">
+      <div class="flex justify-center mb-1"><%= image_tag "hopsoft.webp", class: "h-14 w-14 rounded-full", alt: "hopsoft" %></div>
+      <div>Want more demos, better docs, and faster bug fixes?</div>
+      <div>
+        <a href="https://github.com/sponsors/hopsoft" target="_blank"
+          class="inline-flex items-center mt-2 text-sm font-medium text-emerald-500 align-bottom dark:text-emerald-400 hover:underline">
+          Sponsor TurboBoost
+          <%= render "heroicons/hand_thumb_up", class: "ml-1 w-4 h-4 opacity-70", solid: true %>
+        </a>
       </div>
-      Want more demos, better docs, and faster bug fixes?
-    </div>
-    <a href="https://github.com/sponsors/hopsoft" target="_blank"
-      class="inline-flex items-center text-sm font-medium hover:underline text-primary-600 dark:text-primary-300">
-      Sponsor TurboBoost
-      <%= render "heroicons/arrow_right", class: "ml-1 w-5 h-5", solid: true %>
-    </a>
   </div>
 </div>
