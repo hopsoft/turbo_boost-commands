@@ -43,6 +43,7 @@
         <%= render "instructions/instruction", step: 4, heading: "Configure your Rails app" do %>
           <%= render "examples/example", language: :erb, path: "app/views/layouts/application.html.erb", source_path: "app/views/installations/source_code/_application.html.erb" %>
           <%= render "alerts/warning", message: "You may need to configure additional layout files." %>
+          <%= render "examples/example", language: :rb, path: "config/initializers/turbo_boost.rb", source_path: "config/initializers/turbo_boost.rb" %>
         <% end %>
 
         <p class="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">

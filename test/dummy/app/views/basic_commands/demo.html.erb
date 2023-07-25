@@ -8,23 +8,26 @@
       Finally we can use the value when we re-render the Turbo Frame.
     </p>
 
-    <code><%= 0.to_s.rjust(4, "0") %></code>
+    <code><%= padded_number @count %></code>
 
-    <div role="group">
-      <button>
+    <div>
+      <button
+        data-turbo-command="Increment"
+        data-value="<%= @count %>">
         <%= render "heroicons/plus" %> Increment
       </button>
-      <button>
+
+      <button
+        data-turbo-command="Increment"
+        data-value="<%= @count %>"
+        data-turbo-confirm="Are you sure?">
         <%= render "heroicons/plus" %> Increment with Confim
       </button>
-    </div>
 
-    <div role="group">
-      <button>
+      <button
+        data-turbo-command="Decrement"
+        data-value="<%= @count %>">
         <%= render "heroicons/minus" %> Decrement
-      </button>
-      <button>
-        <%= render "heroicons/minus" %> Decrement with Confim
       </button>
     </div>
   </section>

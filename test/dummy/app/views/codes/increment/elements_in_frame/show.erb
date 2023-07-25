@@ -1,9 +1,0 @@
-<%= turbo_frame_tag "demo-#{params[:id]}" do %>
-  <%# State is held in session for this demo %>
-  <%= session[:count].to_i %>
-
-  <%# The command data attribute instructs the client to perform a remote command when clicked %>
-  <%= tag.p "P Tag", data: { turbo_command: "CounterCommand#increment" } %>
-  <%= tag.div "DIV Tag", data: { turbo_command: "CounterCommand#increment" } %>
-  <%= tag.span "SPAN Tag", data: { turbo_command: "CounterCommand#increment" } %>
-<% end %>

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# TurboBoost::Commands::Command superclass.
-# All command classes should inherit from this class.
-#
 # Commands are executed via a before_action in the Rails controller lifecycle.
 # They have access to the following methods and properties.
 #
@@ -25,17 +22,11 @@
 #
 # * prevent_controller_action ... Prevents the rails controller/action from running (i.e. the command handles the response entirely)
 #
-class CounterCommand < TurboBoost::Commands::Command
-  delegate :session, to: :controller
+class IncrementCommand < TurboBoost::Commands::Command
+  after_command -> { transfer_instance_variables controller }
 
-  # prevent the Rails controller/action from running
-  # i.e. completely handle the response in the command
-  prevent_controller_action
-
-  # triggered client-side by elements with `data-turbo-command="CounterCommand#increment"`
-  # performed server-side by an implicit controller before_action
-  def increment
-    # update the state held in sesion
-    session[:count] = session.fetch(:count, 0) + 1
+  def perform
+    # ⚠︎ Numeric and Boolean element attributes are implicitly type cast
+    @count = element.data.value + 1
   end
 end

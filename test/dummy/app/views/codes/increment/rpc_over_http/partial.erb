@@ -1,9 +1,0 @@
-<div id="counter">
-  <%# State is held in session for this demo. %>
-  <%= session[:count].to_i %>
-
-  <%# The command data attribute instructs the client to perform a remote command when clicked %>
-  <%= button_tag data: { turbo_command: "CounterCommand#increment" } do %>
-    RPC over HTTP
-  <% end %>
-</div>
