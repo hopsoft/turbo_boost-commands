@@ -5,7 +5,9 @@ module ApplicationHelper
     installations: true
   ).freeze
 
-  DEMOS_CONTROLLERS = HashWithIndifferentAccess.new.freeze
+  DEMOS_CONTROLLERS = HashWithIndifferentAccess.new(
+    basic_commands: true
+  ).freeze
 
   def controller_action
     "#{controller_name}##{action_name}"

@@ -1,0 +1,18 @@
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Demos" %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Basic Command", active: true %>
+<% end %>
+
+<section class="p-4 my-12 mx-auto max-w-screen-xl">
+  <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+    Basic Command
+  </h2>
+  <p class="mb-4 text-xl text-gray-500 dark:text-gray-400">
+    Let's create a basic Command that inrements and decrements a number.
+    It's simple and contrived but will also demonstrate some high level concepts.
+  </p>
+</section>
+
+<%= turbo_frame_tag "basic_command-demo", src: basic_command_demo_path %>

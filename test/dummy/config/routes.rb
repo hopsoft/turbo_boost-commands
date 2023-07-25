@@ -3,9 +3,7 @@
 Rails.application.routes.draw do
   get "health", to: ->(_env) { [204, {}, [""]] }
 
-  resource :features, only: [:show]
-  resource :installations, only: [:show]
-  resource :todos, only: [:show]
-
-  root "features#show"
+  draw :marketing
+  draw :docs
+  draw :demos
 end

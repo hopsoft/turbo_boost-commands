@@ -145,6 +145,7 @@ module.exports = {
         'Segoe UI Symbol',
         'Noto Color Emoji'
       ],
+      'mono': ['ui-monospace', 'SFMono-Regular'],
       sans: [
         'Raleway',
         'ui-sans-serif',

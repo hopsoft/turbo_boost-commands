@@ -1,0 +1,31 @@
+<%= turbo_frame_tag "basic_command-demo" do %>
+  <section>
+    <h2>Counter</h2>
+
+    <p>
+      For this demo, we'll store the value or "state" in the markup itself.
+      Then we'll send the value to the server when we invoke the Commands.
+      Finally we can use the value when we re-render the Turbo Frame.
+    </p>
+
+    <code><%= 0.to_s.rjust(4, "0") %></code>
+
+    <div role="group">
+      <button>
+        <%= render "heroicons/plus" %> Increment
+      </button>
+      <button>
+        <%= render "heroicons/plus" %> Increment with Confim
+      </button>
+    </div>
+
+    <div role="group">
+      <button>
+        <%= render "heroicons/minus" %> Decrement
+      </button>
+      <button>
+        <%= render "heroicons/minus" %> Decrement with Confim
+      </button>
+    </div>
+  </section>
+<% end %>
