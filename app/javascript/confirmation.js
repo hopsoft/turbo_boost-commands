@@ -25,7 +25,9 @@ document.addEventListener(commandEvents.start, async event => {
   event.detail.confirmation = true
 
   if (shouldDelegate(event)) return // delegate confirmation handling to Turbo
-  if (await confirmation.method(message)) event.preventDefault()
+
+  const proceed = await confirmation.method(message)
+  if (!proceed) event.preventDefault()
 })
 
 export default confirmation
