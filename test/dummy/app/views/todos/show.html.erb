@@ -1,3 +1,17 @@
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <% if params[:doc] %>
+    <%= render "breadcrumbs/breadcrumb", label: "Docs" %>
+    <%= render "breadcrumbs/divider" %>
+    <%= render "breadcrumbs/breadcrumb", label: params[:doc].titleize, active: true %>
+  <% end %>
+  <% if params[:demo] %>
+    <%= render "breadcrumbs/breadcrumb", label: "Demos" %>
+    <%= render "breadcrumbs/divider" %>
+    <%= render "breadcrumbs/breadcrumb", label: params[:demo].titleize, active: true %>
+  <% end %>
+<% end %>
+
 <section>
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
     <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
