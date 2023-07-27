@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def docs_controller?
-    DOCS_CONTROLLERS[controller_name]
+    DOCS_CONTROLLERS[controller_name] || controller_name == "todos" && params[:doc]
   end
 
   def docs_action?(name)
@@ -26,6 +26,6 @@ module ApplicationHelper
   end
 
   def demos_controller?
-    DEMOS_CONTROLLERS[controller_name]
+    DEMOS_CONTROLLERS[controller_name] || controller_name == "todos" && params[:demo]
   end
 end

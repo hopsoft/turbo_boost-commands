@@ -1,0 +1,8 @@
+<%= turbo_stream.update "basic_command-no-frame" do %>
+  <%= render "basic_commands/demo" %>
+<% end %>
+
+<!-- also update the turbo-frame demo to keep the counts in sync -->
+<%= turbo_stream.update "basic_command-turbo-frame" do %>
+  <%= render "basic_commands/demo" %>
+<% end %>

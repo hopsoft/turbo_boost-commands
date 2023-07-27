@@ -5,6 +5,7 @@ require_relative "sanitizer"
 class TurboBoost::Commands::Runner
   SUPPORTED_MEDIA_TYPES = {
     "text/html" => true,
+    "text/vnd.turbo-boost.html" => true,
     "text/vnd.turbo-stream.html" => true
   }.freeze
 

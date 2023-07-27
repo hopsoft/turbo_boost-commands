@@ -15,9 +15,10 @@ function aborted(event) {
 function errored(event) {
   const xhr = event.target
 
-  xhr.getResponseHeader('TurboBoost') === 'Append'
-    ? renderer.append(xhr.responseText)
-    : renderer.replaceDocument(xhr.responseText)
+  const append =
+    xhr.getResponseHeader('TurboBoost') === 'Append' ||
+    xhr.getResponseHeader('Content-Type').startsWith('text/vnd.turbo-boost.html')
+  append ? renderer.append(xhr.responseText) : renderer.replaceDocument(xhr.responseText)
 
   const error = `Server returned a ${xhr.status} status code! TurboBoost Commands require 2XX-3XX status codes.`
 
@@ -28,9 +29,10 @@ function loaded(event) {
   const xhr = event.target
   if (xhr.status < 200 || xhr.status > 399) return errored(event)
   const content = xhr.responseText
-  xhr.getResponseHeader('TurboBoost') === 'Append'
-    ? renderer.append(xhr.responseText)
-    : renderer.replaceDocument(xhr.responseText)
+  const append =
+    xhr.getResponseHeader('TurboBoost') === 'Append' ||
+    xhr.getResponseHeader('Content-Type').startsWith('text/vnd.turbo-boost.html')
+  append ? renderer.append(xhr.responseText) : renderer.replaceDocument(xhr.responseText)
 }
 
 function invokeCommand(payload) {

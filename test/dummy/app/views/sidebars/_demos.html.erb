@@ -10,6 +10,12 @@
 
   <%= tag.ul id: "sidebar-demos-links", class: token_list("sidebar[links]", hidden: !demos_controller?) do %>
     <%= render "sidebars/link", label: "Basic Command", href: basic_command_path, icon: :command_line, active: controller_action?("basic_commands#show") %>
-    <%= render "sidebars/link", label: "More...", href: todos_path, icon: :command_line, active: false %>
+    <%= render "sidebars/link", label: "Explicit Updates", href: todos_path(demo: "explicit-updates"), icon: :command_line, active: params[:demo] == "explicit-updates" %>
+    <%= render "sidebars/link", label: "Simple Forms", href: todos_path(demo: "simple-forms"), icon: :command_line, active: params[:demo] == "simple-forms" %>
+    <%= render "sidebars/link", label: "Complex Forms", href: todos_path(demo: "complex-forms"), icon: :command_line, active: params[:demo] == "complex-forms" %>
+    <%= render "sidebars/link", label: "Toggles", href: todos_path(demo: "toggles"), icon: :command_line, active: params[:demo] == "toggles" %>
+    <%= render "sidebars/link", label: "Tables", href: todos_path(demo: "tables"), icon: :command_line, active: params[:demo] == "tables" %>
+    <%= render "sidebars/link", label: "Multiple Frames", href: todos_path(demo: "multiple-frames"), icon: :command_line, active: params[:demo] == "multiple-frames" %>
+    <%= render "sidebars/link", label: "More...", href: todos_path(demo: "more"), icon: :command_line, active: params[:demo] == "more" %>
   <% end %>
 <% end %>
