@@ -1,0 +1,25 @@
+<%= turbo_stream.update "basic_command-turbo-frame" do %>
+  <h3>Counter</h3>
+
+  <p>
+    For this demo, we'll store the value or "state" in the markup itself.
+    Then we'll send the value to the server when we invoke the Commands.
+    Finally we can use the value when we re-render the Turbo Frame.
+  </p>
+
+  <code><%= padded_number Current.user.count %></code>
+
+  <div>
+    <button data-turbo-command="IncrementCountCommand">
+      <%= render "heroicons/plus" %> Increment
+    </button>
+
+    <button data-turbo-command="DecrementCountCommand">
+      <%= render "heroicons/minus" %> Decrement
+    </button>
+
+    <button data-turbo-command="ResetCountCommand" data-turbo-confirm="Are you sure?">
+      <%= render "heroicons/arrow_path" %> Reset
+    </button>
+  </div>
+<% end %>

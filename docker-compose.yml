@@ -1,31 +1,31 @@
 version: '3.9'
 
-x-default-env: &default_env
-  PLAYWRIGHT_BROWSERS_PATH: 0
-  RAILS_ENV: development
-  RAILS_LOG_TO_STDOUT: true
-  RAILS_SERVE_STATIC_FILES: true
-
-x-default-app: &default_app
-  build: .
-  image: hopsoft/turbo_boost-commands
-  tty: true
-  stdin_open: true
-  environment:
-    <<: *default_env
-  networks:
-    - primary
-  volumes:
-    - .:/app
-    - bundle:/usr/local/bundle
-    - node_modules:/app/node_modules
-
 networks:
   primary:
 
 volumes:
   bundle:
+  database:
   node_modules:
+
+x-default-app: &default_app
+  build: .
+  image: hopsoft/turbo_boost-commands
+  stdin_open: true
+  tty: true
+  environment:
+    DATABASE_URL: sqlite3:///mnt/external/database/development.sqlite3
+    PLAYWRIGHT_BROWSERS_PATH: 0
+    RAILS_ENV: development
+    RAILS_LOG_TO_STDOUT: true
+    RAILS_SERVE_STATIC_FILES: true
+  networks:
+    - primary
+  volumes:
+    - .:/app
+    - bundle:/usr/local/bundle
+    - database:/mnt/external/database
+    - node_modules:/app/node_modules
 
 services:
   # ==========================================================================================================

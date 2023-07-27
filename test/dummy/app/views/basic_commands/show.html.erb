@@ -6,66 +6,15 @@
 <% end %>
 
 <section class="p-4 my-12 mx-auto max-w-screen-xl">
-  <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+  <h1 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
     Basic Command
-  </h2>
-  <p class="mb-4 text-xl text-gray-500 dark:text-gray-400">
+  </h1>
+  <p class="text-xl text-gray-500 dark:text-gray-400">
     Let's create a basic Command that inrements and decrements a number.
-    It's simple and contrived but will also demonstrate some high level concepts.
+    It's simple and contrived but will demonstrate some high level concepts.
   </p>
   <%= render "alerts/info", message: "Be sure to open the browser's network tab and watch HTTP activity as you increment and decrement the number." %>
 </section>
 
-<%= turbo_frame_tag "basic_command-demo", src: basic_command_demo_path %>
-
-<section class="p-4 my-12 mx-auto max-w-screen-xl">
-  <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-    How it's Built
-  </h2>
-  <p class="mb-4 text-base text-gray-500 dark:text-gray-400">
-    Here's the source code used to make this demo.
-  </p>
-
-  <%= render "examples/example", language: :erb, path: "app/views/basic_commands/show.html.erb", source_path: "app/views/basic_commands/source_code/show.html.erb" %>
-  <a href="#" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">View on GitHub</a>
-
-  <div class="py-4"></div>
-
-  <%= render "examples/example", language: :erb, path: "app/views/basic_commands/demo.html.erb", source_path: "app/views/basic_commands/demo.html.erb" %>
-  <a href="#" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">View on GitHub</a>
-
-  <div class="py-4"></div>
-
-  <%= render "examples/example", language: :rb, path: "app/commands/increment_command.rb", source_path: "app/commands/increment_command.rb" %>
-  <a href="#" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">View on GitHub</a>
-
-  <div class="py-4"></div>
-
-  <%= render "examples/example", language: :rb, path: "app/commands/decrement_command.rb", source_path: "app/commands/decrement_command.rb" %>
-  <a href="#" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">View on GitHub</a>
-
-  <div class="py-4"></div>
-
-  <%= render "examples/example", language: :rb, path: "app/controllers/basic_commands_controller.rb", source_path: "app/controllers/basic_commands_controller.rb" %>
-  <a href="#" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">View on GitHub</a>
-</section>
-
-<section class="p-4 my-12 mx-auto max-w-screen-xl">
-  <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-    How it Works
-  </h2>
-  <p class="mb-4 text-base text-gray-500 dark:text-gray-400">
-    Explanation coming soon...
-  </p>
-</section>
-
-<section class="p-4 my-12 mx-auto max-w-screen-xl">
-  <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-    Basic Command without a Turbo Frame
-  </h2>
-  <p class="mb-4 text-xl text-gray-500 dark:text-gray-400">
-    Now let's create the same basic Command but this time without using a Turbo Frame.
-    <br>
-    Demo coming soon...
-  </p>
-</section>
+<%= render "basic_commands/with_turbo_frame" %>
+<%= render "basic_commands/without_turbo_frame" %>

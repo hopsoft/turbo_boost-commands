@@ -7,7 +7,7 @@ app = "turbo-boost-commands"
 primary_region = "den"
 
 [env]
-  GEM_HOME = "/mnt/external/bundle"
+  DATABASE_URL = "sqlite3:///mnt/external/database/development.sqlite3"
   RAILS_ENV = "development"
   RAILS_LOG_TO_STDOUT = "true"
   RAILS_MAX_THREADS = "6"
@@ -26,5 +26,5 @@ primary_region = "den"
   auto_stop_machines = false
 
 [[statics]]
-  guest_path = "/opt/turbo_boost-commands/public"
+  guest_path = "/app"
   url_prefix = "/"

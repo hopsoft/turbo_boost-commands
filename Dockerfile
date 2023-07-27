@@ -15,7 +15,7 @@ npm install -g npm@latest yarn
 RUN apt-get clean
 RUN gem update --system && gem install bundler
 
-RUN mkdir -p /mnt/external/node_modules /mnt/external/bundle
+RUN mkdir -p /mnt/external/node_modules /mnt/external/bundle /mnt/external/database
 
 COPY . /app
 WORKDIR /app
