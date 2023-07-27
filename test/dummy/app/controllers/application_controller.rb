@@ -11,8 +11,7 @@ class ApplicationController < ActionController::Base
   # IMPORTANT: Server state should be scoped to the visitor
   #
   # Rembember to persist this state during/after the controller and action have performed
-  # turbo_boost_state do
-  #   # Example
+  # turbo_boost_state do # Example
   #   # {example: SecureRandom.hex}
 
   #   # Too much data
@@ -24,8 +23,9 @@ class ApplicationController < ActionController::Base
   private
 
   def init_current
-    Current.state = turbo_boost.state
-    Current.user = User.find_or_create_by(session_id: session.id.to_s)
+    session[:forced_load] = true unless session.loaded? # forces session to load (required for automated testing)
+    Current.state ||= turbo_boost.state
+    Current.user ||= User.find_or_create_by(session_id: session.id.to_s)
   end
 
   def cleanup

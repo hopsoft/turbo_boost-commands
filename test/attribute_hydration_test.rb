@@ -12,13 +12,15 @@ class AttributeHydrationTest < ActiveSupport::TestCase
   end
 
   test "dehydration with a GlobalID value" do
-    attributes = {user: User.first}.with_indifferent_access
+    user = User.create(session_id: SecureRandom.hex)
+    attributes = {user: user}.with_indifferent_access
     dehydrated = dehydrate(attributes)
     assert dehydrated[:user].is_a?(String)
   end
 
   test "dehydration with nested hash containing a GlobalID object" do
-    attributes = {locals: {user: User.first}}.with_indifferent_access
+    user = User.create(session_id: SecureRandom.hex)
+    attributes = {locals: {user: user}}.with_indifferent_access
     dehydrated = dehydrate(attributes)
     assert dehydrated[:locals].is_a?(String)
 
@@ -35,14 +37,16 @@ class AttributeHydrationTest < ActiveSupport::TestCase
   end
 
   test "hydration with a GlobalID value" do
-    attributes = {user: User.first}.with_indifferent_access
+    user = User.create(session_id: SecureRandom.hex)
+    attributes = {user: user}.with_indifferent_access
     dehydrated = dehydrate(attributes)
     hydrated = hydrate(dehydrated)
     assert_equal attributes, hydrated
   end
 
   test "hydration with nested hash containing a GlobalID object" do
-    attributes = {locals: {user: User.first}}.with_indifferent_access
+    user = User.create(session_id: SecureRandom.hex)
+    attributes = {locals: {user: user}}.with_indifferent_access
     dehydrated = dehydrate(attributes)
     hydrated = hydrate(dehydrated)
     assert_equal attributes, hydrated
