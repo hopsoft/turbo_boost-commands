@@ -42,6 +42,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "standardrb"
   s.add_development_dependency "tailwindcss-rails"
-  s.add_development_dependency "web-console"
+  # s.add_development_dependency "web-console"
   s.add_development_dependency "webdrivers"
 end
