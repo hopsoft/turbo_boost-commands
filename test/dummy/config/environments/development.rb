@@ -47,7 +47,6 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
     config.active_record.dump_schema_after_migration = false
     config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
-    config.web_console.enabled = false
   end
 
   # Don't care if the mailer can't send.
