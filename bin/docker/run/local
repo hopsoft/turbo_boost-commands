@@ -57,5 +57,6 @@ yarn playwright install
 # ============================================================================================================
 cd test/dummy
 rm -rf tmp/pids/*
+bin/rails db:create db:migrate db:seed
 bin/rails assets:clobber tailwindcss:build
 bin/rails server --binding=0.0.0.0 --port=3000
