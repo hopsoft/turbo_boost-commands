@@ -15,7 +15,7 @@
     </p>
   </div>
 
-  <div class="space-y-8 lg:space-y-12">
+  <div class="mt-12 space-y-8 lg:space-y-12">
     <%= render "instructions/instruction", step: 1, heading: "Add the GEM to your Gemfile" do %>
       <%= render "examples/example", language: :sh, path: "$ command line", source: "bundle add turbo_boost-commands --version #{TurboBoost::Commands::VERSION}" %>
       <p class="!mt-6">The command above adds this to the Gemfile.</p>
