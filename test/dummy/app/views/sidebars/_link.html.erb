@@ -1,6 +1,6 @@
 <li>
   <%= link_to href, class: token_list("sidebar[link]", local_assigns[:class], "active": active) do %>
-    <%= render "heroicons/#{icon}" %>
+    <%= render "icons/heroicons/#{icon}" %>
     <%= local_assigns[:label] || yield %>
   <% end %>
 </li>

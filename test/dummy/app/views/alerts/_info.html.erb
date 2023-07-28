@@ -1,6 +1,6 @@
 <%# styles → app/assets/stylesheets/tailwind/components/alert.css %>
 <div class="alert[info]" role="alert">
   <span class="sr-only">Info</span>
-  <%= render "heroicons/bell", solid: true %>
+  <%= render "icons/heroicons/bell", solid: true %>
   <%= local_assigns[:message] || yield %>
 </div>

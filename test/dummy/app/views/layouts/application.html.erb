@@ -13,8 +13,10 @@
   </head>
 
   <body class="h-full antialiased dark:bg-gray-900 bg-gray-50/30">
-    <%= render "navbars/navbar" %>
-    <%= render "sidebars/sidebar" %>
+    <% cache params.to_s do %>
+      <%= render "navbars/navbar" %>
+      <%= render "sidebars/sidebar" %>
+    <% end %>
     <main class="p-4 pt-20 md:ml-64">
       <%= render "breadcrumbs/breadcrumbs" %>
       <%= yield %>

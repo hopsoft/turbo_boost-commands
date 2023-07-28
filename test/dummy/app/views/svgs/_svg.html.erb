@@ -1,0 +1,10 @@
+<%= tag.svg xmlns: "http://www.w3.org/2000/svg", class: token_list(local_assigns[:class]), data: local_assigns[:data],
+  fill: svg_fill(local_assigns), stroke: svg_stroke(local_assigns), viewBox: svg_view_box(local_assigns) do %>
+  <% if content_for? :outline %>
+    <%= yield :solid %>
+  <% elsif content_for? :outline %>
+    <%= yield :outline %>
+  <% else %>
+    <%= yield %>
+  <% end %>
+<% end %>

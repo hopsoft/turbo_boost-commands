@@ -47,6 +47,8 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
     config.active_record.dump_schema_after_migration = false
     config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+  else
+    config.importmap.cache_sweepers << Rails.root.join("../../app/assets/builds/@turbo-boost")
   end
 
   # Don't care if the mailer can't send.
@@ -79,5 +81,4 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.hosts.clear
-  config.importmap.cache_sweepers << Rails.root.join("../../app/assets/builds/@turbo-boost")
 end
