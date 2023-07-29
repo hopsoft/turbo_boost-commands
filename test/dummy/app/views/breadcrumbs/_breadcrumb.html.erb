@@ -1,0 +1,12 @@
+<li>
+  <%= link_to local_assigns[:href], class: token_list(
+    "text-sm font-medium hover:text-blue-600 md:ml-2 dark:hover:text-white",
+    token_list(
+      "text-gray-700 dark:text-gray-400": !local_assigns[:active],
+      "text-gray-900 dark:text-gray-200 underline underline-offset-2 decoration-dotted decoration-gray-600 dark:decoration-gray-500": local_assigns[:active],
+      "pointer-events-none": local_assigns[:href].blank?,
+    ),
+    local_assigns[:class]) do %>
+    <%= local_assigns[:label] || yield %>
+  <% end %>
+</li>

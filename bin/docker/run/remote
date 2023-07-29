@@ -18,9 +18,8 @@ fi
 # ============================================================================================================
 # Dependencies
 # ============================================================================================================
-ln -sf /mnt/external/node_modules /opt/turbo_boost-commands/node_modules
-yarn
-bundle
+yarn install --modules-folder /mnt/external/node_modules
+bundle install
 
 
 # ============================================================================================================
@@ -28,5 +27,6 @@ bundle
 # ============================================================================================================
 cd test/dummy
 rm -rf tmp/pids/*
-bin/rails assets:clean assets:precompile
+bin/rails db:create db:migrate db:seed
+bin/rails assets:clean
 bin/rails server --binding=0.0.0.0 --port=3000

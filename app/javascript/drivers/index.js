@@ -4,14 +4,12 @@ import frameDriver from './frame'
 import methodDriver from './method'
 import windowDriver from './window'
 
-function src (element, frame) {
+function src(element, frame) {
   frame = frame || { dataset: {} }
-  return (
-    element.href || frame.src || frame.dataset.turboBoostSrc || location.href
-  )
+  return element.href || frame.src || frame.dataset.turboBoostSrc || location.href
 }
 
-function find (element) {
+function find(element) {
   let frame = elements.findClosestFrameWithSource(element)
 
   const { turboFrame, turboMethod } = element.dataset
@@ -50,8 +48,7 @@ function find (element) {
   if ((!turboFrame || turboFrame === '_self') && frame)
     return {
       name: 'frame',
-      reason:
-        'element does NOT target a frame or targets _self and is contained by a frame',
+      reason: 'element does NOT target a frame or targets _self and is contained by a frame',
       frame,
       src: src(element, frame),
       invokeCommand: frameDriver.invokeCommand

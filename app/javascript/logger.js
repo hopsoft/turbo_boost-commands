@@ -20,10 +20,10 @@ Object.values(events).forEach(name => {
 })
 
 export default {
-  get level () {
+  get level() {
     return currentLevel
   },
-  set level (value) {
+  set level(value) {
     if (!Object.keys(logLevels).includes(value)) value = 'unknown'
     return (currentLevel = value)
   }

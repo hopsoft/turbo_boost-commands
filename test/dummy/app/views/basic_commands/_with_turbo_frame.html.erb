@@ -1,0 +1,112 @@
+<section class="p-4 mx-auto max-w-screen-xl">
+  <h2 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+    With Turbo Frame
+  </h2>
+  <%= render "basic_commands/turbo_frame" %>
+</section>
+
+<section class="p-4 mx-auto mb-6 max-w-screen-xl">
+  <div id="accordion" data-accordion="collapse" data-active-classes="bg-blue-100 dark:bg-gray-800 text-blue-600 dark:text-white">
+    <h3 id="accordion-turbo-frame-heading-1">
+      <button type="button" class="flex justify-between items-center p-5 w-full text-xl font-medium text-left text-gray-500 rounded-t-xl border border-b-0 border-gray-200 dark:text-gray-400 dark:border-gray-700 hover:bg-blue-100 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 dark:hover:bg-gray-800" data-accordion-target="#accordion-turbo-frame-body-1" aria-expanded="false" aria-controls="accordion-turbo-frame-body-1">
+        <span>Highlights</span>
+        <%= render "icons/heroicons/chevron_up", solid: true, class: "w-5 h-5 shrink-0 rotate-180", data: { accordion_icon: true } %>
+      </button>
+    </h3>
+    <div id="accordion-turbo-frame-body-1" class="hidden" aria-labelledby="accordion-turbo-frame-heading-1">
+      <div class="p-5 border border-b-0 border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+        <ul class="space-y-4 text-lg text-left text-gray-500 dark:text-gray-400">
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>Fast reactivity over HTTPS</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No JavaScript required</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No Rails boilerplate <em class="text-base italic opacity-60">(additional routes, controllers, actions, or forked logic)</em></span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>Each command excecutes isolated business logic that changes state</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>Rails and Hotwire handle everything else</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>State changes are real database updates</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>Everything is managed on the server <em class="text-base italic opacity-60">(no dual client implementation)</em></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 id="accordion-turbo-frame-heading-2">
+      <button type="button" class="flex justify-between items-center p-5 w-full text-xl font-medium text-left text-gray-500 border border-b-0 border-gray-200 dark:text-gray-400 dark:border-gray-700 hover:bg-blue-100 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 dark:hover:bg-gray-800" data-accordion-target="#accordion-turbo-frame-body-2" aria-expanded="false" aria-controls="accordionturbo-frame-body-2">
+        <span>How it's Built</span>
+        <%= render "icons/heroicons/chevron_up", solid: true, class: "w-5 h-5 shrink-0 rotate-180", data: { accordion_icon: true } %>
+      </button>
+    </h3>
+    <div id="accordion-turbo-frame-body-2" class="hidden" aria-labelledby="accordion-turbo-frame-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="text-base text-lg text-gray-500 dark:text-gray-400">
+          Here's the code that made this demo.
+        </p>
+
+        <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">View Templates</h4>
+
+        <%= render "examples/example", language: :erb, path: "app/views/basic_commands/show.html.erb",
+          source_path: "app/views/basic_commands/_turbo_frame.html.erb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <%= render "examples/example", language: :erb, source_path: "app/views/basic_commands/show.turbo_stream.erb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <%= render "examples/example", language: :erb, source_path: "app/views/basic_commands/_demo.html.erb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">TurboBoost Commands</h4>
+
+        <%= render "examples/example", language: :rb, source_path: "app/commands/increment_count_command.rb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <%= render "examples/example", language: :rb, source_path: "app/commands/decrement_count_command.rb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <%= render "examples/example", language: :rb, source_path: "app/commands/reset_count_command.rb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">Controller</h4>
+
+        <%= render "examples/example", language: :rb, source_path: "app/controllers/basic_commands_controller.rb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+
+        <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">Model</h4>
+
+        <%= render "examples/example", language: :rb, source_path: "app/models/user.rb" %>
+        <a href="#" class="block mx-3 text-sm font-medium text-right hover:underline text-secondary-400">View on GitHub</a>
+      </div>
+    </div>
+
+    <h3 id="accordion-turbo-frame-heading-3">
+      <button type="button" class="flex justify-between items-center p-5 w-full text-xl font-medium text-left text-gray-500 border border-gray-200 dark:text-gray-400 dark:border-gray-700 hover:bg-blue-100 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 dark:hover:bg-gray-800" data-accordion-target="#accordion-turbo-frame-body-3" aria-expanded="false" aria-controls="accordion-turbo-frame-body-3">
+        <span>How it Works</span>
+        <%= render "icons/heroicons/chevron_up", solid: true, class: "w-5 h-5 shrink-0 rotate-180", data: { accordion_icon: true } %>
+      </button>
+    </h3>
+    <div id="accordion-turbo-frame-body-3" class="hidden" aria-labelledby="accordion-turbo-frame-heading-3">
+      <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+        <p class="text-base text-lg text-gray-500 dark:text-gray-400">
+          TODO: Write this content
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

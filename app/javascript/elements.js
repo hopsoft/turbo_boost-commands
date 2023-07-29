@@ -1,11 +1,11 @@
 import schema from './schema'
 import lifecycle from './lifecycle'
 
-function findClosestCommand (element) {
+function findClosestCommand(element) {
   return element.closest(`[${schema.commandAttribute}]`)
 }
 
-function findClosestFrameWithSource (element) {
+function findClosestFrameWithSource(element) {
   return (
     element.closest('turbo-frame[src]') ||
     element.closest('turbo-frame[data-turbo-frame-src]') ||
@@ -13,12 +13,10 @@ function findClosestFrameWithSource (element) {
   )
 }
 
-function assignElementValueToPayload (element, payload = {}) {
-  if (element.tagName.toLowerCase() !== 'select')
-    return (payload.value = element.value || null)
+function assignElementValueToPayload(element, payload = {}) {
+  if (element.tagName.toLowerCase() !== 'select') return (payload.value = element.value || null)
 
-  if (!element.multiple)
-    return (payload.value = element.options[element.selectedIndex].value)
+  if (!element.multiple) return (payload.value = element.options[element.selectedIndex].value)
 
   payload.values = Array.from(element.options).reduce((memo, option) => {
     if (option.selected) memo.push(option.value)
@@ -26,7 +24,7 @@ function assignElementValueToPayload (element, payload = {}) {
   }, [])
 }
 
-function buildAttributePayload (element) {
+function buildAttributePayload(element) {
   const payload = Array.from(element.attributes).reduce((memo, attr) => {
     let value = attr.value
     memo[attr.name] = value

@@ -14,7 +14,7 @@ export const stateEvents = {
 
 export const allEvents = { ...commandEvents, ...stateEvents }
 
-export function dispatch (name, target, options = {}) {
+export function dispatch(name, target, options = {}) {
   return new Promise(resolve => {
     options = options || {}
     options.detail = options.detail || {}

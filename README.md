@@ -59,29 +59,29 @@
 
 ## Table of Contents
 
-  - [Why TurboBoost Commands?](#why-turboboost-commands)
-  - [Sponsors](#sponsors)
-  - [Dependencies](#dependencies)
-  - [Setup](#setup)
-  - [Usage](#usage)
-    - [Event Delegates](#event-delegates)
-    - [Lifecycle Events](#lifecycle-events)
-    - [Targeting Frames](#targeting-frames)
-    - [Working with Forms](#working-with-forms)
-    - [Server Side Commands](#server-side-commands)
-    - [Appending Turbo Streams](#appending-turbo-streams)
-    - [Setting Instance Variables](#setting-instance-variables)
-    - [Prevent Controller Action](#prevent-controller-action)
-    - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-  - [Community](#community)
-  - [Developing](#developing)
-      - [Notable Files](#notable-files)
-  - [Deploying](#deploying)
-      - [Notable Files](#notable-files-1)
-      - [How to Deploy](#how-to-deploy)
-  - [Releasing](#releasing)
-  - [About TurboBoost](#about-turboboost)
-  - [License](#license)
+- [Why TurboBoost Commands?](#why-turboboost-commands)
+- [Sponsors](#sponsors)
+- [Dependencies](#dependencies)
+- [Setup](#setup)
+- [Usage](#usage)
+  - [Event Delegates](#event-delegates)
+  - [Lifecycle Events](#lifecycle-events)
+  - [Targeting Frames](#targeting-frames)
+  - [Working with Forms](#working-with-forms)
+  - [Server Side Commands](#server-side-commands)
+  - [Appending Turbo Streams](#appending-turbo-streams)
+  - [Setting Instance Variables](#setting-instance-variables)
+  - [Prevent Controller Action](#prevent-controller-action)
+  - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
+- [Community](#community)
+- [Developing](#developing)
+  - [Notable Files](#notable-files)
+- [Deploying](#deploying)
+  - [Notable Files](#notable-files-1)
+  - [How to Deploy](#how-to-deploy)
+- [Releasing](#releasing)
+- [About TurboBoost](#about-turboboost)
+- [License](#license)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
@@ -91,11 +91,11 @@ Commands help you build robust reactive applications with Rails & Hotwire.
 They allow you to declaratively specify server methods that will execute whenever client side events are triggered by users.
 
 TurboBoost Commands work with Hotwire's Turbo Frames.
-__They also work independent of frames.__
+**They also work independent of frames.**
 
-Commands let you *sprinkle* ✨ in reactive functionality and skip the ceremony of the typical
+Commands let you _sprinkle_ ✨ in reactive functionality and skip the ceremony of the typical
 [REST semantics](https://en.wikipedia.org/wiki/Representational_state_transfer)
-imposed by Rails conventions and Turbo Frames i.e. boilerplate *(routes, controllers, actions, etc...)*.
+imposed by Rails conventions and Turbo Frames i.e. boilerplate _(routes, controllers, actions, etc...)_.
 
 Commands are great for features adjacent to traditional RESTful resources.
 Things like making selections, toggling switches, adding filters, etc...
@@ -108,9 +108,9 @@ Namely,
 1. **Trigger an event**
 2. **Change state**
 3. **(Re)render to reflect the new state**
-4. *repeat...*
+4. _repeat..._
 
-*The primary distinction being that __state is wholly managed by the server__.*
+_The primary distinction being that **state is wholly managed by the server**._
 
 Commands are executed via a Rails `before_action` which means that reactivity runs over HTTP.
 _**Web sockets are NOT used for the reactive critical path!** 🎉_
@@ -144,98 +144,102 @@ Complete the steps below, or use [this RailsByte](https://railsbytes.com/templat
 rails app:template LOCATION='https://railsbytes.com/script/xkjsbB'
 ```
 
-
 1. Add TurboBoost Commands dependencies
 
-    ```diff
-    # Gemfile
-    gem "turbo-rails", ">= 1.1", "< 2"
-    +gem "turbo_boost-commands", "~> VERSION"
-    ```
+   ```diff
+   # Gemfile
+   gem "turbo-rails", ">= 1.1", "< 2"
+   +gem "turbo_boost-commands", "~> VERSION"
+   ```
 
-    ```diff
-    # package.json
-    "dependencies": {
-      "@hotwired/turbo-rails": ">=7.2",
-    +  "@turbo-boost/commands": "^VERSION"
-    ```
+   ```diff
+   # package.json
+   "dependencies": {
+     "@hotwired/turbo-rails": ">=7.2",
+   +  "@turbo-boost/commands": "^VERSION"
+   ```
 
-   *Be sure to install the __same version__ of the Ruby and JavaScript libraries.*
+   _Be sure to install the **same version** of the Ruby and JavaScript libraries._
 
 2. Import TurboBoost Commands in your JavaScript app
 
-    ```diff
-    # app/javascript/application.js
-    import '@hotwired/turbo-rails'
-    +import '@turbo-boost/commands'
-    ```
+   ```diff
+   # app/javascript/application.js
+   import '@hotwired/turbo-rails'
+   +import '@turbo-boost/commands'
+   ```
 
-2. Add TurboBoost to your Rails app
+3. Add TurboBoost to your Rails app
 
-    ```diff
-    # app/views/layouts/application.html.erb
-    <html>
-      <head>
-    +  <%= turbo_boost.meta_tag %>
-      </head>
-      <body>
-      </body>
-    </html>
-    ```
+   ```diff
+   # app/views/layouts/application.html.erb
+   <html>
+     <head>
+   +  <%= turbo_boost.meta_tag %>
+     </head>
+     <body>
+     </body>
+   </html>
+   ```
 
 ## Usage
 
 This example illustrates how to use TurboBoost Commands to manage upvotes on a Post.
 
-1. **Trigger an event** - *register an element to listen for client side events that trigger server side commands*
+1. **Trigger an event** - _register an element to listen for client side events that trigger server side commands_
 
-    ```erb
-    <!-- app/views/posts/show.html.erb -->
-    <%= turbo_frame_tag dom_id(@post) do %>
-      <a href="#" data-turbo-command="PostCommand#upvote">Upvote</a>
-      Upvote Count: <%= @post.votes %>
-    <% end %>
-    ```
+   ```erb
+   <!-- app/views/posts/show.html.erb -->
+   <%= turbo_frame_tag dom_id(@post) do %>
+     <a href="#" data-turbo-command="PostCommand#upvote">Upvote</a>
+     Upvote Count: <%= @post.votes %>
+   <% end %>
+   ```
 
-2. **Change state** - *create a server side command that modifies state*
+2. **Change state** - _create a server side command that modifies state_
 
-    ```ruby
-    # app/commands/post_command.rb
-    class PostCommand < TurboBoost::Commands::Command
-      def upvote
-        Post.find(controller.params[:id]).increment! :votes
-      end
-    end
-    ```
+   ```ruby
+   # app/commands/post_command.rb
+   class PostCommand < TurboBoost::Commands::Command
+     def upvote
+       Post.find(controller.params[:id]).increment! :votes
+     end
+   end
+   ```
 
-3. **(Re)render to reflect the new state** - *normal Rails / Turbo Frame behavior runs and (re)renders the frame*
+3. **(Re)render to reflect the new state** - _normal Rails / Turbo Frame behavior runs and (re)renders the frame_
 
 ### Event Delegates
 
 TurboBoost Commands use [event delegation](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation) to capture client side events that invoke server side commands.
 
-Here is the list of default **event delegates** *(DOM event name + CSS selectors)* that TurboBoost Commands monitors.
+Here is the list of default **event delegates** _(DOM event name + CSS selectors)_ that TurboBoost Commands monitors.
 
 - **`change`** - `input[data-turbo-command],select[data-turbo-command],textarea[data-turbo-command]`
 - **`submit`** - `form[data-turbo-command]`
 - **`click`** - `[data-turbo-command]`
 
 Note that the list of event delegates is ordinal.
-Matches are identified by scanning the list of delegates top to bottom *(first match wins)*.
+Matches are identified by scanning the list of delegates top to bottom _(first match wins)_.
 
 It's possible to override the default event delegates.
 Just note that registered events are required to [bubble up through the DOM tree](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles).
 
-**IMPORTANT:** *New entries and overrides are prepended to the list of delegates and will match before defaults.*
+**IMPORTANT:** _New entries and overrides are prepended to the list of delegates and will match before defaults._
 
 ```js
 // restrict `click` monitoring to <a> and <button> elements
-TurboBoost.Commands.registerEventDelegate('click', ['a[data-turbo-command]', 'button[data-command]'])
+TurboBoost.Commands.registerEventDelegate('click', [
+  'a[data-turbo-command]',
+  'button[data-command]'
+])
 ```
 
 ```js
 // append selectors to the `change` event
-const delegate = TurboBoost.Commands.eventDelegates.find(e => e.name === 'change')
+const delegate = TurboBoost.Commands.eventDelegates.find(
+  e => e.name === 'change'
+)
 const selectors = [...delegate.selectors, '.example[data-turbo-command]']
 TurboBoost.Commands.registerEventDelegate('change', selectors)
 ```
@@ -244,7 +248,9 @@ You can also register custom events and elements.
 Here's an example that sets up monitoring for the `sl-change` event on the `sl-switch` element from the [Shoelace web component library](https://shoelace.style/).
 
 ```js
-TurboBoost.Commands.registerEventDelegate('sl-change', ['sl-switch[data-turbo-command]'])
+TurboBoost.Commands.registerEventDelegate('sl-change', [
+  'sl-switch[data-turbo-command]'
+])
 ```
 
 ### Lifecycle Events
@@ -262,19 +268,19 @@ but you can also explicitly target other frames just like you normally would wit
 
 1. Look for `data-turbo-frame` on the command element
 
-    ```erb
-    <input type="checkbox"
-      data-turbo-command="ExampleCommand#work"
-      data-turbo-frame="some-frame-id">
-    ```
+   ```erb
+   <input type="checkbox"
+     data-turbo-command="ExampleCommand#work"
+     data-turbo-frame="some-frame-id">
+   ```
 
 1. Find the closest `<turbo-frame>` to the command element
 
-    ```erb
-    <turbo-frame id="example-frame">
-      <input type="checkbox" data-turbo-command="ExampleCommand#work">
-    </turbo-frame>
-    ```
+   ```erb
+   <turbo-frame id="example-frame">
+     <input type="checkbox" data-turbo-command="ExampleCommand#work">
+   </turbo-frame>
+   ```
 
 ### Working with Forms
 
@@ -304,7 +310,7 @@ Just specify the `data-turbo-command` attribute on the form.
 ### Server Side Commands
 
 The client side DOM attribute `data-turbo-command` indicates what Ruby class and method to invoke.
-*The attribute value is specified with RDoc notation. i.e. `ClassName#method_name`*
+_The attribute value is specified with RDoc notation. i.e. `ClassName#method_name`_
 
 Here's an example.
 
@@ -385,7 +391,7 @@ class DemoCommand < TurboBoost::Commands::Command
 end
 ```
 
-*This proves especially powerful when paired with [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams).*
+_This proves especially powerful when paired with [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams)._
 
 > 📘 **NOTE:** `turbo_stream.invoke` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#usage) feature.
 
@@ -479,8 +485,8 @@ class DemoCommand < TurboBoost::Commands::Command
 end
 ```
 
-*Learn more about Turbo Stream broadcasting by reading through the
-[hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code.*
+_Learn more about Turbo Stream broadcasting by reading through the
+[hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code._
 
 > 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
 
@@ -494,30 +500,30 @@ This project supports a fully Dockerized development experience.
 
 1. Simply run the following commands to get started.
 
-    ```sh
-    git clone -o github https://github.com/hopsoft/turbo_boost-streams.git
-    cd turbo_boost-streams
-    ```
+   ```sh
+   git clone -o github https://github.com/hopsoft/turbo_boost-streams.git
+   cd turbo_boost-streams
+   ```
 
-    ```sh
-    docker compose up -d # start the envionment (will take a few minutes on 1st run)
-    docker exec -it turbo_boost-streams-web rake # run the test suite
-    open http://localhost:3000 # open the `test/dummy` app in a browser
-    ```
+   ```sh
+   docker compose up -d # start the envionment (will take a few minutes on 1st run)
+   docker exec -it turbo_boost-streams-web rake # run the test suite
+   open http://localhost:3000 # open the `test/dummy` app in a browser
+   ```
 
-    And, if you're using the [containers gem (WIP)](https://github.com/hopsoft/containers).
+   And, if you're using the [containers gem (WIP)](https://github.com/hopsoft/containers).
 
-    ```sh
-    containers up # start the envionment (will take a few minutes on 1st run)
-    containers rake # run the test suite
-    open http://localhost:3000 # open the `test/dummy` app in a browser
-    ```
+   ```sh
+   containers up # start the envionment (will take a few minutes on 1st run)
+   containers rake # run the test suite
+   open http://localhost:3000 # open the `test/dummy` app in a browser
+   ```
 
 1. Edit files using your preferred tools on the host machine.
 
 1. That's it!
 
-####  Notable Files
+#### Notable Files
 
 - [Dockerfile](https://github.com/hopsoft/turbo_boost-streams/blob/main/Dockerfile)
 - [docker-compose.yml](https://github.com/hopsoft/turbo_boost-streams/blob/main/docker-compose.yml)
@@ -533,10 +539,10 @@ The `test/dummy` app serves the following purposes.
 - Test app for the Rails engine
 - Documentation and marketing site with interactive demos
 
-You can [__see it in action__ here.](https://hopsoft.io/@turbo-boost/streams)
+You can [**see it in action** here.](https://hopsoft.io/@turbo-boost/streams)
 _How's that for innovative simplicity?_
 
-####  Notable Files
+#### Notable Files
 
 - [Dockerfile](https://github.com/hopsoft/turbo_boost-streams/blob/main/Dockerfile)
 - [fly.toml](https://github.com/hopsoft/turbo_boost-streams/blob/main/fly.toml)

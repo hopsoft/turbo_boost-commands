@@ -5,7 +5,7 @@ import { dispatch, commandEvents, stateEvents } from '../events'
 let loadedState, currentState, changedState
 let loadStateTimeout
 
-function loadState () {
+function loadState() {
   if (!meta.element) return loadStateLater()
   const json = atob(meta.element.dataset.state)
   changedState = {}
@@ -19,7 +19,7 @@ function loadState () {
   )
 }
 
-function loadStateLater () {
+function loadStateLater() {
   clearTimeout(loadStateTimeout)
   loadStateTimeout = setTimeout(loadState, 10)
 }
@@ -43,11 +43,11 @@ addEventListener(stateEvents.stateChange, event => {
 export default {
   events: stateEvents,
 
-  get current () {
+  get current() {
     return currentState
   },
 
-  get delta () {
+  get delta() {
     return changedState
   },
 
@@ -56,7 +56,7 @@ export default {
   // A Base64 character is an 8-bit-padded ASCII character... or 1 byte
   //
   // SEE: lib/state.rb - for info on how `state` is serialized/deserialized
-  get payloadChunks () {
+  get payloadChunks() {
     return btoa(JSON.stringify(changedState)).match(/.{1,2000}/g)
   }
 }

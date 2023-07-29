@@ -1,6 +1,6 @@
 import urls from '../urls'
 
-function invokeCommand (frame, payload) {
+function invokeCommand(frame, payload) {
   const src = payload.src
   payload = { ...payload }
   delete payload.src

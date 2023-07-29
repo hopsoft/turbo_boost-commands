@@ -1,0 +1,6 @@
+<%# styles → app/assets/stylesheets/tailwind/components/alert.css %>
+<div class="alert[warning]" role="alert">
+  <span class="sr-only">Warning</span>
+  <%= render "icons/heroicons/exclamation_triangle", solid: true %>
+  <%= local_assigns[:message] || yield %>
+</div>

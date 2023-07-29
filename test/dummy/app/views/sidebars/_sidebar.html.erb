@@ -1,0 +1,15 @@
+<aside id="sidebar" aria-label="Sidenav" class="-translate-x-full md:translate-x-0">
+  <div>
+    <%# xrender "sidebar/search" %>
+
+    <%= render "sidebars/sponsor" %>
+
+    <ul>
+      <%= render "sidebars/link", label: "Home", href: root_path, icon: :home, active: request.path == root_path %>
+      <%= render "sidebars/docs" %>
+      <%= render "sidebars/demos" %>
+    </ul>
+  </div>
+
+  <%= render "sidebars/footer" %>
+</aside>

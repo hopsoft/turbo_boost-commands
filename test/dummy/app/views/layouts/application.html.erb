@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="h-full dark">
   <head>
     <title>TurboBoost Commands</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,27 +8,18 @@
     <%= turbo_boost.meta_tag %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "https://rsms.me/inter/inter.css", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50 dark:bg-gray-900">
-    <%= render "layouts/navbar" %>
-
-    <div class="flex overflow-hidden pt-16">
-      <%= render "layouts/sidebar" %>
-
-      <div id="main-content" class="overflow-y-auto relative w-full h-full bg-gray-50 dark:bg-gray-900">
-        <%= render(flowbite(:breadcrumbs)) { yield :breadcrumbs } %>
-        <%= yield %>
-      </div>
-    </div>
-
-    <%= render "layouts/footer" %>
-
-    <script type="text/javascript">
-      window.TailwindDefaults = <%= tailwind_defaults.to_json.html_safe %>;
-    </script>
+  <body class="h-full antialiased dark:bg-gray-900 bg-gray-50/30">
+    <% cache params.to_s do %>
+      <%= render "navbars/navbar" %>
+      <%= render "sidebars/sidebar" %>
+    <% end %>
+    <main class="p-4 pt-20 md:ml-64">
+      <%= render "breadcrumbs/breadcrumbs" %>
+      <%= yield %>
+    </main>
   </body>
 </html>

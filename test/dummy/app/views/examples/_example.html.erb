@@ -1,0 +1,8 @@
+<%= tag.code local_assigns[:path] || source_path, class: "ml-2 px-2 rounded-t-lg text-gray-400 rounded-b-none bg-white dark:text-gray-400/60 dark:bg-gray-700 border border-b-0 dark:border-black" -%>
+<%= tag.div id: local_assigns[:id] || SecureRandom.alphanumeric(10), class: "highlight text-sm #{local_assigns[:class]}" do -%>
+  <% if local_assigns[:source] %>
+    <%= tag.pre render_source(source, language: language), class: "-mt-px overflow-scroll p-5 rounded-lg border dark:border-black" %>
+  <% elsif local_assigns[:source_path] %>
+    <%= tag.pre render_source(read_source(source_path, erb: local_assigns[:erb]), language: language), class: "-mt-px overflow-scroll p-5 rounded-lg border dark:border-black" %>
+  <% end %>
+<% end -%>

@@ -13,9 +13,10 @@ RUN apt-get -y --no-install-recommends install nodejs && \
 npm install -g npm@latest yarn
 
 RUN apt-get clean
-RUN gem update --system && gem install bundler
+RUN gem update --system
+RUN bundle config set --local clean 'true'
 
-RUN mkdir -p /mnt/external/node_modules /mnt/external/bundle
+RUN mkdir -p /mnt/external/node_modules /mnt/external/yarn/.cache /mnt/external/gems /mnt/external/database
 
 COPY . /app
 WORKDIR /app

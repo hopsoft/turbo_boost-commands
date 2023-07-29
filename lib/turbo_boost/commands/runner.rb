@@ -3,6 +3,12 @@
 require_relative "sanitizer"
 
 class TurboBoost::Commands::Runner
+  SUPPORTED_MEDIA_TYPES = {
+    "text/html" => true,
+    "text/vnd.turbo-boost.html" => true,
+    "text/vnd.turbo-stream.html" => true
+  }.freeze
+
   attr_reader :controller, :state_manager
 
   def initialize(controller, state_manager)
@@ -276,7 +282,7 @@ class TurboBoost::Commands::Runner
   end
 
   def append_to_response_body(content)
-    return unless controller.response.media_type == "text/html"
+    return unless SUPPORTED_MEDIA_TYPES[controller.response.media_type]
     sanitized_content = content_sanitizer.sanitize(content.to_s).html_safe
     return if sanitized_content.blank?
 

@@ -17,21 +17,30 @@
   "repository": "https://github.com/hopsoft/turbo_boost-commands",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "@turbo-boost/streams": ">= 0.0.8"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "@hotwired/turbo-rails": ">= 7.2.0"
+    "@hotwired/turbo-rails": ">= 7.2.0",
+    "@turbo-boost/streams": "^0.0.8"
+  },
+  "peerDependenciesMeta": {
+    "@turbo-boost/streams": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "esbuild": "^0.18.14",
-    "flowbite": "1.5.3",
-    "playwright": "^1.29.2",
-    "prettier-standard": "^16.4.1",
-    "rustywind": "^0.16.0"
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.4",
+    "@tailwindcss/typography": "^0.5.9",
+    "esbuild": "^0.18.16",
+    "flowbite": "1.7.0",
+    "playwright": "^1.36.2",
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1",
+    "rustywind": "^0.16.0",
+    "tailwindcss": "^3.3.3"
   },
   "scripts": {
-    "build": "yarn run prettier-standard package.json bin/build.mjs app/javascript/**/*.js && node bin/build.mjs",
+    "build": "bin/standardize && node bin/build.mjs",
     "build:watch": "yarn build --watch"
   }
 }

@@ -1,0 +1,29 @@
+<nav class="fixed top-0 right-0 left-0 z-50 py-2.5 px-4 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+  <div class="flex flex-wrap justify-between items-center">
+    <%# left ============================================================================================== %>
+    <div class="flex justify-start items-center">
+      <%= render "navbars/sidebar_toggle" %>
+      <%= render "navbars/brand" %>
+      <%# xrender "navbars/search" %>
+    </div>
+
+    <%# right ============================================================================================= %>
+    <div class="flex items-center lg:order-2">
+      <div class="hidden mx-1 text-xs font-light text-gray-500 opacity-90 md:block dark:text-gray-400">
+        © 2023 Hopsoft. All rights reserved.
+      </div>
+
+      <%# xrender "navbars/search_toggle" %>
+      <%= render "navbars/mode_toggle" %>
+
+      <%# xrender "navbars/notifications_toggle" %>
+      <%# xrender "navbars/notifications" %>
+
+      <%# xrender "navbars/apps_toggle" %>
+      <%# xrender "navbars/apps" %>
+
+      <%# xrender "navbars/user_menu_toggle" %>
+      <%# xrender "navbars/user_menu" %>
+    </div>
+  </div>
+</nav>

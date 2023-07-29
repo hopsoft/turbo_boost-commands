@@ -1,0 +1,28 @@
+name: Prettier-Standard
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - main
+
+jobs:
+  prettier:
+    name: Prettier Check Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          version: '16.x'
+          cache: 'yarn'
+
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Run Prettier
+        run: yarn run prettier --write package.json prettier.config.js bin/build.mjs app/javascript/**/**/**/**/*.js test/dummy/app/javascript/**/**/**/**/*.js test/dummy/app/assets/stylesheets/**/**/**/**/*.css test/dummy/app/views/**/**/**/**/*.css
+

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class Current < ActiveSupport::CurrentAttributes
-  attribute :state
+  attribute :state, :user
 end
