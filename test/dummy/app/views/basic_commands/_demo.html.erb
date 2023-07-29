@@ -10,15 +10,15 @@
 <% cache do %>
   <div>
     <button data-turbo-command="IncrementCountCommand">
-      <%= render "icons/heroicons/plus" %> Increment
+      <%= render "icons/heroicons/plus", solid: true %> Increment
     </button>
 
     <button data-turbo-command="DecrementCountCommand">
-      <%= render "icons/heroicons/minus" %> Decrement
+      <%= render "icons/heroicons/minus", solid: true %> Decrement
     </button>
 
     <button data-turbo-command="ResetCountCommand" data-turbo-confirm="Are you sure?">
-      <%= render "icons/heroicons/arrow_path" %> Reset
+      <%= render "icons/heroicons/arrow_path", solid: true %> Reset
     </button>
   </div>
 <% end %>

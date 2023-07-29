@@ -2,10 +2,10 @@
   <%= button_tag type: "button", class: "sidebar[button]",
     aria: { controls: "sidebar-docs-links", expanded: docs_controller? },
     data: { collapse_toggle: "sidebar-docs-links" } do %>
-    <%= render "icons/heroicons/document_text" %>
+    <%= render "icons/heroicons/document_text", solid: true %>
     <span>Docs</span>
-    <%= render "icons/heroicons/chevron_right", class: "collapsed" %>
-    <%= render "icons/heroicons/chevron_down", class: "expanded" %>
+    <%= render "icons/heroicons/chevron_right", solid: true, class: "collapsed" %>
+    <%= render "icons/heroicons/chevron_down", solid: true, class: "expanded" %>
   <% end %>
 
   <%= tag.ul id: "sidebar-docs-links", class: token_list("sidebar[links]", hidden: !docs_controller?) do %>
