@@ -4,9 +4,7 @@ networks:
   primary:
 
 volumes:
-  bundle:
-  database:
-  node_modules:
+  external:
 
 x-default-app: &default_app
   build: .
@@ -15,17 +13,17 @@ x-default-app: &default_app
   tty: true
   environment:
     DATABASE_URL: sqlite3:///mnt/external/database/development.sqlite3
+    GEM_HOME: /mnt/external/gems
     PLAYWRIGHT_BROWSERS_PATH: 0
     RAILS_ENV: development
     RAILS_LOG_TO_STDOUT: true
     RAILS_SERVE_STATIC_FILES: true
+    YARN_CACHE_FOLDER: /mnt/external/yarn/.cache
   networks:
     - primary
   volumes:
     - .:/app
-    - bundle:/usr/local/bundle
-    - database:/mnt/external/database
-    - node_modules:/app/node_modules
+    - external:/mnt/external
 
 services:
   # ==========================================================================================================
@@ -50,7 +48,7 @@ services:
   esbuild:
     <<: *default_app
     container_name: turbo_boost-commands-esbuild
-    command: /bin/bash -c "yarn && yarn build:watch"
+    command: /bin/bash -c "yarn build:watch"
     depends_on:
       web:
         condition: service_healthy

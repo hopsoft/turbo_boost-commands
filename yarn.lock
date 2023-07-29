@@ -7,11 +7,6 @@
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
-"@alpinejs/morph@>=3.10.4":
-  version "3.12.3"
-  resolved "https://registry.yarnpkg.com/@alpinejs/morph/-/morph-3.12.3.tgz#f09fa83d3527ae21daa49a8f1c7a2200c24fe3c8"
-  integrity sha512-vhUT9UJxta+yb6mYGUEHiT/w5EtxHQSgwdjS6fvums3XVMuS/u4rXQj9OtCrDDoazD27eT/6TJ8McXKVOL0HXg==
-
 "@esbuild/android-arm64@0.18.17":
   version "0.18.17"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.18.17.tgz#9e00eb6865ed5f2dbe71a1e96f2c52254cd92903"
@@ -207,37 +202,10 @@
     lodash.merge "^4.6.2"
     postcss-selector-parser "6.0.10"
 
-"@turbo-boost/streams@>= 0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@turbo-boost/streams/-/streams-0.0.8.tgz#21c61b0d58aa1e79b45842332b6b721bdee2cc75"
-  integrity sha512-6DyH6ce4Dt0arUTH0ckAFEUVv2a9UbtRed04G/61BmthUksHsNgGfzskICmaG0ZR2BERFCoFufc+5obm70GXtA==
-  dependencies:
-    "@alpinejs/morph" ">=3.10.4"
-    alpinejs ">=3.10.4"
-
-"@vue/reactivity@~3.1.1":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.1.5.tgz#dbec4d9557f7c8f25c2635db1e23a78a729eb991"
-  integrity sha512-1tdfLmNjWG6t/CsPldh+foumYFo3cpyCHgBYQ34ylaMsJ+SNHQ1kApMIa8jN+i593zQuaw3AdWH0nJTARzCFhg==
-  dependencies:
-    "@vue/shared" "3.1.5"
-
-"@vue/shared@3.1.5":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.1.5.tgz#74ee3aad995d0a3996a6bb9533d4d280514ede03"
-  integrity sha512-oJ4F3TnvpXaQwZJNF3ZK+kLPHKarDmJjJ6jyzVNDKH9md1dptjC7lWR//jrGuLdek/U6iltWxqAnYOu8gCiOvA==
-
 agent-base@5:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-5.1.1.tgz#e8fb3f242959db44d63be665db7a8e739537a32c"
   integrity sha512-TMeqbNl2fMW0nMjTEPOwe3J/PRFP4vqeoNuQMG0HlMrtm5QxKqdvAkZ1pRBQ/ulIyDD5Yq0nJ7YbdD8ey0TO3g==
-
-alpinejs@>=3.10.4:
-  version "3.12.3"
-  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.12.3.tgz#d7f311b39318c5144e99205ab69557c0d90a552a"
-  integrity sha512-fLz2dfYQ3xCk7Ip8LiIpV2W+9brUyex2TAE7Z0BCvZdUDklJE+n+a8gCgLWzfZ0GzZNZu7HUP8Z0z6Xbm6fsSA==
-  dependencies:
-    "@vue/reactivity" "~3.1.1"
 
 any-promise@^1.0.0:
   version "1.3.0"

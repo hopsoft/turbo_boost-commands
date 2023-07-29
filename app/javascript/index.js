@@ -1,4 +1,3 @@
-import '@turbo-boost/streams'
 import './turbo'
 import schema from './schema'
 import { dispatch, commandEvents, stateEvents } from './events'

@@ -18,13 +18,8 @@ fi
 # ============================================================================================================
 # Dependencies
 # ============================================================================================================
-rm -rf /app/node_modules
-ln -sf /mnt/external/node_modules /app/node_modules
-yarn
-
-rm -rf /usr/local/bundle
-ln -sf /mnt/external/bundle /usr/local/bundle
-bundle
+yarn install --modules-folder /mnt/external/node_modules
+bundle install
 
 
 # ============================================================================================================

@@ -7,16 +7,18 @@
 
 <code role="counter"><%= padded_number Current.user.count %></code>
 
-<div>
-  <button data-turbo-command="IncrementCountCommand">
-    <%= render "icons/heroicons/plus" %> Increment
-  </button>
+<% cache do %>
+  <div>
+    <button data-turbo-command="IncrementCountCommand">
+      <%= render "icons/heroicons/plus" %> Increment
+    </button>
 
-  <button data-turbo-command="DecrementCountCommand">
-    <%= render "icons/heroicons/minus" %> Decrement
-  </button>
+    <button data-turbo-command="DecrementCountCommand">
+      <%= render "icons/heroicons/minus" %> Decrement
+    </button>
 
-  <button data-turbo-command="ResetCountCommand" data-turbo-confirm="Are you sure?">
-    <%= render "icons/heroicons/arrow_path" %> Reset
-  </button>
-</div>
+    <button data-turbo-command="ResetCountCommand" data-turbo-confirm="Are you sure?">
+      <%= render "icons/heroicons/arrow_path" %> Reset
+    </button>
+  </div>
+<% end %>

@@ -8,12 +8,14 @@ primary_region = "den"
 
 [env]
   DATABASE_URL = "sqlite3:///mnt/external/database/development.sqlite3"
+  GEM_HOME = "/mnt/external/gems"
   RAILS_ENV = "development"
   RAILS_LOG_TO_STDOUT = "true"
   RAILS_MAX_THREADS = "6"
   RAILS_RELATIVE_URL_ROOT = "/@turbo-boost/commands"
   RAILS_SERVE_STATIC_FILES = "true"
   WEB_CONCURRENCY = "2"
+  YARN_CACHE_FOLDER = "/mnt/external/yarn/.cache"
 
 [[mounts]]
   source = "turbo_boost_commands_volume"
