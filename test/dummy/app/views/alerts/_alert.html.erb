@@ -1,0 +1,6 @@
+<div role="alert"
+  class="<%= token_list("border border-gray-200 shadow-gray-100 dark:shadow-gray-950 shadow-md dark:border-gray-700 my-6 flex items-center rounded-lg p-4", local_assigns[:class]) %>">
+  <span class="sr-only"><%= type %></span>
+  <%= render "icons/heroicons/#{heroicon}", solid: true, class: "mr-2 h-6 w-6" %>
+  <%= local_assigns[:message] || yield %>
+</div>

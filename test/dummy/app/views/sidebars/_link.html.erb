@@ -1,6 +1,10 @@
 <li>
-  <%= link_to href, class: token_list("sidebar[link]", local_assigns[:class], "active": active) do %>
-    <%= render "icons/heroicons/#{icon}", solid: true %>
+  <%= link_to href,
+    class: token_list("flex items-center rounded-lg p-2 text-base text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700", local_assigns[:class],
+      "bg-gray-300 dark:bg-gray-500": active
+    ) do %>
+    <%= render "icons/heroicons/#{icon}", solid: true,
+      class: token_list("mr-3 h-6 w-6 text-gray-500 dark:text-gray-400", "text-gray-600 dark:text-gray-300": active) %>
     <%= local_assigns[:label] || yield %>
   <% end %>
 </li>

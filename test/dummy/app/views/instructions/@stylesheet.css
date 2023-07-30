@@ -1,23 +1,4 @@
 @layer components {
-  /* step */
-  .instruction > div:first-child {
-    @apply mb-4 flex;
-  }
-
-  /* step.number */
-  .instruction > div:first-child > span {
-    @apply mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-rose-400;
-  }
-  .instruction > div:first-child > span span {
-    @apply text-rose-400;
-  }
-
-  /* step.heading */
-  .instruction > div:first-child > h3 {
-    @apply text-3xl font-bold leading-tight text-gray-900 dark:text-gray-200 sm:text-4xl;
-  }
-
-  /* copy */
   .instruction > p {
     @apply my-2 text-base font-normal text-gray-500 dark:text-gray-400 sm:text-lg;
   }

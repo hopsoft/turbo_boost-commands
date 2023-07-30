@@ -18,18 +18,18 @@
 
     <div class="mt-12 space-y-8 lg:space-y-12">
       <%= render "instructions/instruction", step: 1, heading: "Add the GEM to your Gemfile" do %>
-        <%= render "examples/example", language: :sh, path: "$ command line", source: "bundle add turbo_boost-commands --version #{TurboBoost::Commands::VERSION}" %>
+        <%= render "examples/example", language: :sh, path: "$ command line", source: "bundle add turbo_boost-commands" %>
         <p class="!mt-6">The command above adds this to the Gemfile.</p>
         <%= render "examples/example", language: :rb, erb: true, path: "Gemfile", source_path: "app/views/installations/source_code/_gemfile.rb.erb" %>
       <% end %>
 
-      <%= render "instructions/instruction", step: 2, heading: "Add the NPM package to your package.json file" do %>
-        <%= render "examples/example", language: :sh, path: "$ command line", source: "yarn add @turbo-boost/commands@#{TurboBoost::Commands::VERSION}" %>
+      <%= render "instructions/instruction", step: 2, heading: "Add the NPM packages to your package.json file" do %>
+        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_yarn_add.sh.erb" %>
         <p class="!mt-6">The command above adds this to package.json.</p>
         <%= render "examples/example", language: :json, erb: true, path: "package.json", source_path: "app/views/installations/source_code/_package.json.erb" %>
 
-        <%= render "alerts/info", message: "Alternately pin the JavaScript package to your config/importmap.rb file." %>
-        <%= render "examples/example", language: :sh, path: "$ command line", source: "bin/importmap pin @turbo-boost/commands@#{TurboBoost::Commands::VERSION}" %>
+        <%= render "alerts/info", message: "Alternately pin the JavaScript package to your config/importmap.rb file.", class: "mt-8" %>
+        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_importmap_pin.sh.erb" %>
         <p class="!mt-6">The command above adds this to importmap.rb.</p>
         <%= render "examples/example", language: :rb, erb: true, path: "config/importmap.rb", source_path: "app/views/installations/source_code/_importmap.rb.erb" %>
       <% end %>
@@ -46,7 +46,8 @@
       <% end %>
 
       <p class="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">
-        That's it! You're ready to start using TurboBoost Commands. 🚀
+        <strong class="text-bold">That's it!</strong>
+        You're ready to start using TurboBoost Commands. 🙌
       </p>
     </div>
   </section>

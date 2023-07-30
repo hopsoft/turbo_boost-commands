@@ -1,9 +1,7 @@
 @import './tailwind/base';
-@import '../../views/alerts/@stylesheet';
 @import '../../views/basic_commands/@stylesheet';
 @import '../../views/features/@stylesheet';
 @import '../../views/instructions/@stylesheet';
-@import '../../views/sidebars/@stylesheet';
 
 @tailwind base;
 @tailwind components;
