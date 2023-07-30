@@ -28,7 +28,7 @@
         <p class="!mt-6">The command above adds this to package.json.</p>
         <%= render "examples/example", language: :json, erb: true, path: "package.json", source_path: "app/views/installations/source_code/_package.json.erb" %>
 
-        <%= render "alerts/info", message: "Alternately pin the JavaScript package to your config/importmap.rb file.", class: "mt-8" %>
+        <%= render "alerts/info", message: "Alternately pin the JavaScript package to your config/importmap.rb file." %>
         <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_importmap_pin.sh.erb" %>
         <p class="!mt-6">The command above adds this to importmap.rb.</p>
         <%= render "examples/example", language: :rb, erb: true, path: "config/importmap.rb", source_path: "app/views/installations/source_code/_importmap.rb.erb" %>
