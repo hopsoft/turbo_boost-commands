@@ -1,6 +1,6 @@
-<%# styles → app/assets/stylesheets/tailwind/components/alert.css %>
-<div class="alert[info]" role="alert">
-  <span class="sr-only">Info</span>
-  <%= render "icons/heroicons/bell", solid: true %>
-  <%= local_assigns[:message] || yield %>
-</div>
+<%= render "alerts/alert",
+  **local_assigns.merge(
+    type: "Information",
+    heroicon: :information_circle,
+    class: token_list("bg-blue-50 text-blue-800 dark:bg-gray-800 dark:text-blue-400", local_assigns[:class])
+  ) %>

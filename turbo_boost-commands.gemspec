@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.7"
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"
+  s.add_dependency "turbo_boost-streams", ">= 0.0.8"
 
   s.add_development_dependency "capybara"
   s.add_development_dependency "capybara-playwright-driver"
@@ -41,7 +42,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "standardrb"
   s.add_development_dependency "tailwindcss-rails"
-  s.add_development_dependency "turbo_boost-streams", ">= 0.0.8"
   # s.add_development_dependency "web-console"
   s.add_development_dependency "webdrivers"
 end

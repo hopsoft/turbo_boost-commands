@@ -30,4 +30,8 @@ module ApplicationHelper
     return true if controller_name == "todos" && params[:demo]
     DEMOS_CONTROLLERS[controller_name]
   end
+
+  def element_id(*args)
+    args.push(object_id).join("-").parameterize
+  end
 end

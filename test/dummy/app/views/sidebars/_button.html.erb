@@ -1,0 +1,33 @@
+<%= button_tag type: "button", value: value,
+  class: token_list("flex w-full items-center rounded-lg p-2 font-medium hover:bg-gray-100 dark:hover:bg-gray-700",
+    "text-gray-900 dark:text-white": !active,
+    "text-primary-700 dark:text-primary-300": active
+  ),
+  aria: { controls: element_id(:sidebar, value), expanded: active },
+  data: { collapse_toggle: element_id(:sidebar, value) } do %>
+  <%= render "icons/heroicons/#{heroicon}", solid: true,
+    class: token_list("h-6 w-6 mr-3",
+      "text-gray-500 dark:text-gray-400": !active,
+      "text-primary-700 dark:text-primary-300": active
+    ) %>
+  <span class="flex-1 ml-3 text-left whitespace-nowrap">
+    <%= value.to_s.titleize %>
+  </span>
+  <% if active %>
+    <%= render "icons/heroicons/chevron_down", solid: true,
+      class: token_list("h-6 w-6 mr-3",
+        "text-gray-500 dark:text-gray-400": !active,
+        "text-primary-700 dark:text-primary-300": active
+      ) %>
+  <% else %>
+    <%= render "icons/heroicons/chevron_right", solid: true,
+      class: token_list("h-6 w-6 mr-3",
+        "text-gray-500 dark:text-gray-400": !active,
+        "text-primary-700 dark:text-primary-300": active
+      ) %>
+  <% end %>
+<% end %>
+
+<%= tag.ul id: element_id(:sidebar, value), class: token_list("space-y-2 ml-3 opacity-70", hidden: !active) do %>
+  <%= yield %>
+<% end %>

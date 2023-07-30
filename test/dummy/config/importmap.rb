@@ -17,3 +17,4 @@ pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"
 pin "flowbite", to: "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.turbo.min.js"
 pin "@turbo-boost/commands", to: "@turbo-boost/commands.js"
 pin "application", preload: true
+pin "add", to: "https://ga.jspm.io/npm:add@2.0.6/index.js"
