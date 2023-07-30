@@ -177,12 +177,14 @@ class TurboBoost::Commands::Runner
     controller.request.cookie_jar
   end
 
-  def handle_command_event(event, error: nil)
+  def handle_command_event(*args)
+    event = args.shift
+    options = args.extract_options!
     case event
     when :aborted
       prevent_controller_action error: error
       append_streams_to_response_body
-    when :errored then prevent_controller_action(error: error)
+    when :errored then prevent_controller_action(**options)
     when :performed then prevent_controller_action if should_prevent_controller_action?
     end
   end
