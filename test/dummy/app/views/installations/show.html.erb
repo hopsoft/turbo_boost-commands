@@ -1,11 +1,11 @@
-<% cache do %>
-  <% content_for :breadcrumbs do %>
-    <%= render "breadcrumbs/divider" %>
-    <%= render "breadcrumbs/breadcrumb", label: "Docs" %>
-    <%= render "breadcrumbs/divider" %>
-    <%= render "breadcrumbs/breadcrumb", label: "Installation", active: true %>
-  <% end %>
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Docs" %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Installation", active: true %>
+<% end %>
 
+<% cache do %>
   <section class="p-4 my-12 mx-auto max-w-screen-xl">
     <div class="mx-auto space-y-4 max-w-2xl text-center">
       <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-gray-900 sm:text-5xl dark:text-white">
