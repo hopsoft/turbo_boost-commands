@@ -243,7 +243,7 @@ class TurboBoost::Commands::Runner
   end
 
   def append_error_to_response(error)
-    message = "Error in #{command_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
+    message = "Error in #{command_name}!\n#{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
     append_error_alert_to_response_body message
@@ -275,11 +275,11 @@ class TurboBoost::Commands::Runner
     message << <<~MSG
       #{message.truncate(128)}
 
-      Check the server logs for more more details and/or set the client log level to debug and check the JavaScript console.
+      Check the server logs for details and/or set the client `logger.level = 'error'` and check the JavaScript console.
 
       Example:
 
-      TurboBoost.Commands.logger.level = 'debug';
+      TurboBoost.Commands.logger.level = 'error';
     MSG
     append_to_response_body turbo_stream.invoke(:alert, args: [message])
   end
