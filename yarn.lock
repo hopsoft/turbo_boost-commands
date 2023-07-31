@@ -355,10 +355,10 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
-flowbite@1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/flowbite/-/flowbite-1.7.0.tgz#82359dbd5e3b2b9591eaf18ea929fb77871346b2"
-  integrity sha512-OTTmnhRgv85Rs+mcMaVU7zB6EvRQs7BaQziyMUsZLRjW9aUpeQyqKjLmxsVMMCdr8isYPCLd6UL7X1IaSVI0WQ==
+flowbite@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/flowbite/-/flowbite-1.8.0.tgz#e1ff53d5b51a05030ff715348a688f8fc6fab5df"
+  integrity sha512-8IRvTPmNRoGEQ6lxhhFzTnBCPV8Ik8oFf15LnVR2u3O1GQ8cXHaMgEE0bsCL2DHRGvO4Ww9EitcRsGO7PTibvA==
   dependencies:
     "@popperjs/core" "^2.9.3"
     mini-svg-data-uri "^1.4.3"
