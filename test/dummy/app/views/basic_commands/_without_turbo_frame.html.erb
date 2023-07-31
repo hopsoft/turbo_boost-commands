@@ -19,7 +19,7 @@
         <ul class="space-y-4 text-lg text-left text-gray-500 dark:text-gray-400">
           <li class="flex items-center space-x-3">
             <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
-            <span>Includes all the benefits noted above</span>
+            <span>Includes all the benefits from the Turbo Frame demo</span>
           </li>
           <li class="flex items-center space-x-3">
             <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
@@ -27,7 +27,7 @@
           </li>
           <li class="flex items-center space-x-3">
             <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
-            <span>Slightly more performant than Turbo Frames</span>
+            <span>More performant than Turbo Frames</span>
           </li>
         </ul>
       </div>
@@ -41,9 +41,45 @@
     </h3>
     <div id="accordion-no-frame-body-2" class="hidden" aria-labelledby="accordion-no-frame-heading-2">
       <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
-        <p class="text-base text-lg text-gray-500 dark:text-gray-400">
-          Here's the code that made this demo.
+        <p class="text-lg text-gray-500 dark:text-gray-400">
+          This demo was built in about 50 lines of code spread over 8 files...
+          including the model, view, controller, and commands.
+          🤯
         </p>
+
+        <p class="text-lg italic text-gray-400 dark:text-gray-500">
+          Pretty impressive when you consider it's a full-stack solution that persists "state" changes to the backend database and executes within 30-75ms (including repaint).
+          and most of the latency is actually network I/O.
+        <p>
+
+        <p class="mt-6 text-lg font-bold text-gray-500 dark:text-gray-400">
+          Look at all the things we aren't doing!
+        </p>
+
+        <ul class="mt-3 mb-6 space-y-4 text-lg text-left text-gray-500 dark:text-gray-400">
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No JavaScript (including Stimulus)</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No Turbo Frames</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No additional routes</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No additional controllers</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <%= render "icons/heroicons/check", class: "flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400", solid: true %>
+            <span>No additional actions</span>
+          </li>
+        </ul>
+
+        <%= render "examples/example", language: :sh, path: "files", source_path: "app/views/basic_commands/_no_frame_files.sh.erb" %>
 
         <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">View Templates</h4>
 
