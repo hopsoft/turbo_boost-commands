@@ -5,6 +5,7 @@
 
     <ul class="space-y-2">
       <%= render "sidebars/link", label: "Home", href: root_path, icon: :home, active: request.path == root_path %>
+      <%= render "sidebars/link", label: "Sponsors", href: sponsors_path, icon: :globe_americas, active: request.path == sponsors_path %>
 
       <%= render "sidebars/button", value: "Docs", heroicon: :document_text, active: docs_controller? do %>
         <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack, active: controller_action?("installations#show") %>

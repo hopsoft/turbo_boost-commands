@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
-resource :features, only: [:show]
-resource :todos, only: [:show]
-root "features#show"
+resources :features, only: [:index]
+resources :todos, only: [:index]
+resources :sponsors, only: [:index]
+
+root "features#index"

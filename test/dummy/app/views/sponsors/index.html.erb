@@ -1,0 +1,28 @@
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Sponsors", active: true %>
+<% end %>
+
+<% cache do %>
+  <section class="p-4 my-12 mx-auto max-w-screen-xl">
+    <div class="mx-auto space-y-4 max-w-2xl text-center">
+      <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-gray-900 sm:text-5xl dark:text-white">
+        Corporate Sponsors
+      </h2>
+      <p class="text-base font-normal text-gray-400 sm:text-xl dark:text-gray-500">
+        Organizations that give back to the Ruby on Rails community by sponsoring TurboBoost's ongoing development.
+      </p>
+    </div>
+
+    <div class="my-4 text-center">
+      <a href="https://github.com/sponsors/hopsoft?amount=500" target="_blank" class="inline-flex items-center text-lg font-medium hover:underline text-primary-600 dark:text-primary-500">
+        Become a Corporate Sponsor
+        <%= render "icons/heroicons/arrow_right", solid: true, class: "w-5 h-5 ml-2" %>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 mt-8 xl:gap-12">
+      <%= render "sponsors/clickfunnels" %>
+    </div>
+  </section>
+<% end %>
