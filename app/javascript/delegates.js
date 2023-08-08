@@ -5,7 +5,10 @@ function register(eventName, selectors) {
   const match = events.find(evt => evt.name === eventName)
   if (match) events.splice(events.indexOf(match), 1)
   events = [{ name: eventName, selectors }, ...events]
+
+  document.removeEventListener(eventName, eventListener, true)
   document.addEventListener(eventName, eventListener, true)
+
   return { ...events.find(evt => evt.name === eventName) }
 }
 
