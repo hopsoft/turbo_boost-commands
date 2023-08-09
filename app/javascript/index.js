@@ -87,16 +87,6 @@ async function invokeCommand(event) {
   }
 }
 
-// wire things up and setup defaults for event delegation
-delegates.handler = invokeCommand
-delegates.register('click', [`[${schema.commandAttribute}]`])
-delegates.register('submit', [`form[${schema.commandAttribute}]`])
-delegates.register('change', [
-  `input[${schema.commandAttribute}]`,
-  `select[${schema.commandAttribute}]`,
-  `textarea[${schema.commandAttribute}]`
-])
-
 self.TurboBoost = self.TurboBoost || {}
 
 self.TurboBoost = {
@@ -113,14 +103,26 @@ self.TurboBoost = {
   }
 }
 
-self.TurboBoost.Commands = {
-  confirmation,
-  logger,
-  schema,
-  events: commandEvents,
-  registerEventDelegate: delegates.register,
-  get eventDelegates() {
-    return delegates.events
+if (!self.TurboBoost.Commands) {
+  // wire things up and setup defaults for event delegation
+  delegates.handler = invokeCommand
+  delegates.register('click', [`[${schema.commandAttribute}]`])
+  delegates.register('submit', [`form[${schema.commandAttribute}]`])
+  delegates.register('change', [
+    `input[${schema.commandAttribute}]`,
+    `select[${schema.commandAttribute}]`,
+    `textarea[${schema.commandAttribute}]`
+  ])
+
+  self.TurboBoost.Commands = {
+    confirmation,
+    logger,
+    schema,
+    events: commandEvents,
+    registerEventDelegate: delegates.register,
+    get eventDelegates() {
+      return delegates.events
+    }
   }
 }
 
