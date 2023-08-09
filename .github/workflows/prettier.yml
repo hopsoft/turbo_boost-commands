@@ -1,4 +1,4 @@
-name: Prettier-Standard
+name: Prettier
 
 on:
   pull_request:
