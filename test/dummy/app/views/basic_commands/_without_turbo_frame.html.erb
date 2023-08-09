@@ -81,6 +81,32 @@
 
         <%= render "examples/example", language: :sh, path: "files", source_path: "app/views/basic_commands/_no_frame_files.sh.erb" %>
 
+        <%= render "alerts/info", icon: false do  %>
+          <div>
+            <p>
+              Commands send the <code class="bg-transparent text-green-500">Accept: text/vnd.turbo-boost.html, text/html, application/xhtml+xml</code> HTTP request header.
+            </p>
+            <p>
+              If a Command is triggered inside a Turbo Frame or with a Turbo Method, the request will also include the <code class="bg-transparent text-green-500">turbo_stream</code> format in the URL.
+            </p>
+            <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700">
+            <p>
+              Rails determines request format by looking at both the URL and the request headers and then locates the view template based on the format.
+              This means that Commands look for view templates in the following order.
+              <ol class="list-decimal m-5 mb-0">
+                <li><code class="bg-transparent text-green-500">*.html.erb</code></li>
+                <li><code class="bg-transparent text-green-500">*.turbo_stream.erb</code> <small class="italic opacity-70">Commands triggered inside a Turbo Frame or with a Turbo Method</small></li>
+                <li><code class="bg-transparent text-green-500">*.turbo_boost.erb</code></li>
+              </ol>
+            </p>
+            <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700">
+            <p>
+              This demo uses the <code class="bg-transparent text-green-500">*.turbo_boost.erb</code> template because it's updating multiple places in the DOM;
+              however, simply re-rendering the <code class="bg-transparent text-green-500">*.html.erb</code> template is often sufficient for many use cases.
+            </p>
+          </div>
+        <% end %>
+
         <h4 class="my-6 text-lg font-bold tracking-tight text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">View Templates</h4>
 
         <%= render "examples/example", language: :erb, path: "app/views/basic_commands/show.html.erb",
