@@ -104,6 +104,9 @@
               This demo uses the <code class="bg-transparent text-green-500">*.turbo_boost.erb</code> template because it's updating multiple places in the DOM;
               however, simply re-rendering the <code class="bg-transparent text-green-500">*.html.erb</code> template is often sufficient for many use cases.
             </p>
+            <%= render "alerts/warning" do  %>
+              You can also hijack normal response mechanics from within the Command by calling <code class="mx-2 bg-transparent text-green-500">prevent_controller_action</code>
+            <% end %>
           </div>
         <% end %>
 
