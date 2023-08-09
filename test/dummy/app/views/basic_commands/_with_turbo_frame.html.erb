@@ -95,28 +95,28 @@
         <%= render "alerts/info", icon: false do  %>
           <div>
             <p>
-              Commands send the <code class="bg-transparent text-green-500">Accept: text/vnd.turbo-boost.html, text/html, application/xhtml+xml</code> HTTP request header.
+              Commands send the <code class="text-green-500 bg-transparent">Accept: text/vnd.turbo-boost.html, text/html, application/xhtml+xml</code> HTTP request header.
             </p>
             <p>
-              If a Command is triggered inside a Turbo Frame or with a Turbo Method, the request will also include the <code class="bg-transparent text-green-500">turbo_stream</code> format in the URL.
+              If a Command is triggered inside a Turbo Frame or with a Turbo Method, the request will also include the <code class="text-green-500 bg-transparent">turbo_stream</code> format in the URL.
             </p>
-            <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700">
+            <hr class="my-6 h-px bg-gray-200 border-0 dark:bg-gray-700">
             <p>
               Rails determines request format by looking at both the URL and the request headers and then locates the view template based on the format.
               This means that Commands look for view templates in the following order.
-              <ol class="list-decimal m-5 mb-0">
-                <li><code class="bg-transparent text-green-500">*.html.erb</code></li>
-                <li><code class="bg-transparent text-green-500">*.turbo_stream.erb</code> <small class="italic opacity-70">Commands triggered inside a Turbo Frame or with a Turbo Method</small></li>
-                <li><code class="bg-transparent text-green-500">*.turbo_boost.erb</code></li>
+              <ol class="m-5 mb-0 list-decimal">
+                <li><code class="text-green-500 bg-transparent">*.html.erb</code></li>
+                <li><code class="text-green-500 bg-transparent">*.turbo_stream.erb</code> <small class="italic opacity-70">Commands triggered inside a Turbo Frame or with a Turbo Method</small></li>
+                <li><code class="text-green-500 bg-transparent">*.turbo_boost.erb</code></li>
               </ol>
             </p>
-            <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700">
+            <hr class="my-6 h-px bg-gray-200 border-0 dark:bg-gray-700">
             <p>
-              This demo uses the <code class="bg-transparent text-green-500">*.turbo_stream.erb</code> template because it's updating multiple places in the DOM;
-              however, simply re-rendering the <code class="bg-transparent text-green-500">*.html.erb</code> template is often sufficient for many use cases.
+              This demo uses the <code class="text-green-500 bg-transparent">*.turbo_stream.erb</code> template because it's updating multiple places in the DOM;
+              however, simply re-rendering the <code class="text-green-500 bg-transparent">*.html.erb</code> template is often sufficient for many use cases.
             </p>
             <%= render "alerts/warning" do  %>
-              You can also hijack normal response mechanics from within the Command by calling <code class="mx-2 bg-transparent text-green-500">prevent_controller_action</code>
+              You can also hijack normal response mechanics from within the Command by calling <code class="mx-2 text-green-500 bg-transparent">prevent_controller_action</code>
             <% end %>
           </div>
         <% end %>
