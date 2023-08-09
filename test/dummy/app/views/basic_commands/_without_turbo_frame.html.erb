@@ -94,9 +94,16 @@
               Rails determines request format by looking at both the URL and the request headers and then locates the view template based on the format.
               This means that Commands look for view templates in the following order.
               <ol class="m-5 mb-0 list-decimal">
-                <li><code class="text-green-500 bg-transparent">*.html.erb</code></li>
-                <li><code class="text-green-500 bg-transparent">*.turbo_stream.erb</code> <small class="italic opacity-70">Commands triggered inside a Turbo Frame or with a Turbo Method</small></li>
+                <li>Request format specified in the URL - i.e. <code class="text-green-500 bg-transparent">/resource.turbo_stream</code></li>
+                <li>HTTP accept header <em class="italic opacity-70">in linear order, left to right</em> - i.e. <code class="text-green-500 bg-transparent">Accept: text/vnd.turbo-boost.html, text/html, application/xhtml+xml</code></li>
+              </ol>
+            </p>
+            <hr class="my-6 h-px bg-gray-200 border-0 dark:bg-gray-700">
+            <p>
+              For example, this specific demo will look for view templates in the following order.
+              <ol class="m-5 mb-0 list-decimal">
                 <li><code class="text-green-500 bg-transparent">*.turbo_boost.erb</code></li>
+                <li><code class="text-green-500 bg-transparent">*.html.erb</code></li>
               </ol>
             </p>
             <hr class="my-6 h-px bg-gray-200 border-0 dark:bg-gray-700">
