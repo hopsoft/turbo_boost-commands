@@ -2,6 +2,7 @@ import meta from '../meta'
 
 function updateFormSubmission(formSubmission) {
   const shouldUpdate =
+    formSubmission?.formElement instanceof HTMLFormElement &&
     formSubmission?.body instanceof URLSearchParams &&
     formSubmission?.fetchRequest?.body instanceof URLSearchParams
 
