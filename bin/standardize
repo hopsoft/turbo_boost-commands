@@ -3,6 +3,5 @@
 bundle exec magic_frozen_string_literal
 bundle exec standardrb --fix
 yarn run prettier --write package.json prettier.config.js bin/build.mjs app/javascript/**/**/**/**/*.js test/dummy/app/javascript/**/**/**/**/*.js test/dummy/app/assets/stylesheets/**/**/**/**/*.css test/dummy/app/views/**/**/**/**/*.css
-yarn run rustywind --write test/dummy/app/views
 
 cd test/dummy && bin/rails tailwindcss:clobber tailwindcss:build && cd -
