@@ -1,6 +1,6 @@
 {
   "name": "@turbo-boost/commands",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Commands to help you build robust reactive applications with Rails & Hotwire.",
   "keywords": [
     "hotwire",
@@ -39,6 +39,7 @@
   },
   "scripts": {
     "build": "bin/standardize && node bin/build.mjs",
+    "build:all": "bin/standardize && node bin/build.mjs && rake build",
     "build:watch": "yarn build --watch"
   }
 }
