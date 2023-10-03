@@ -25,6 +25,7 @@ function isRegisteredForElement(eventName, element) {
 
 export default {
   register,
+  getRegisteredEventForElement,
   isRegisteredForElement,
   get events() {
     return [...events]
