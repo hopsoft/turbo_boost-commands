@@ -4,7 +4,10 @@ import { dispatch } from '../events'
 
 export default function createCommandController(BaseController) {
   return class extends BaseController {
-    static values = { command: String, form: String }
+    static values = {
+      name: String, // the name of the command to invoke
+      form: String // an optional dom id of a form element to submit
+    }
 
     invoke(event) {
       event.preventDefault()
@@ -22,7 +25,7 @@ export default function createCommandController(BaseController) {
 
     assignCommand(el) {
       const originalCommand = el.getAttribute(schema.commandAttribute)
-      el.setAttribute(schema.commandAttribute, this.commandValue)
+      el.setAttribute(schema.commandAttribute, this.nameValue)
       el.setAttribute(`${schema.commandAttribute}-original`, originalCommand)
     }
 
