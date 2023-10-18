@@ -231,7 +231,7 @@ Just note that registered events are required to [bubble up through the DOM tree
 // restrict `click` monitoring to <a> and <button> elements
 TurboBoost.Commands.registerEventDelegate('click', [
   'a[data-turbo-command]',
-  'button[data-command]'
+  'button[data-turbo-command]'
 ])
 ```
 
