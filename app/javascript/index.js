@@ -12,6 +12,7 @@ import logger from './logger'
 import state from './state'
 import urls from './urls'
 import uuids from './uuids'
+import createCommandController from './controllers/command_controller'
 
 function buildCommandPayload(id, element) {
   return {
@@ -119,6 +120,7 @@ if (!self.TurboBoost.Commands) {
     confirmation,
     logger,
     schema,
+    createCommandController,
     events: commandEvents,
     registerEventDelegate: delegates.register,
     get eventDelegates() {
