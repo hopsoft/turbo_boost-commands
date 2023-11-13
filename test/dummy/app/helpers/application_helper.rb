@@ -1,27 +1,37 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def component(name)
-    "components/#{name}"
+  DOCS_CONTROLLERS = HashWithIndifferentAccess.new(
+    installations: true
+  ).freeze
+
+  DEMOS_CONTROLLERS = HashWithIndifferentAccess.new(
+    basic_commands: true
+  ).freeze
+
+  def controller_action
+    "#{controller_name}##{action_name}"
   end
 
-  def flowbite(name)
-    component "flowbite/#{name}"
+  def controller_action?(name)
+    controller_action == name.to_s
   end
 
-  def heroicon(name)
-    component "heroicons/#{name}"
+  def docs_controller?
+    return true if controller_name == "todos" && params[:doc]
+    DOCS_CONTROLLERS[controller_name]
   end
 
-  def icon(name)
-    component "icons/#{name}"
+  def docs_action?(name)
+    docs_controller? && action_name == name.to_s
   end
 
-  def el_id(*values, prefix: nil)
-    "#{prefix}#{values.join("-").parameterize}"
+  def demos_controller?
+    return true if controller_name == "todos" && params[:demo]
+    DEMOS_CONTROLLERS[controller_name]
   end
 
-  def boolean_text(value)
-    (!!value).to_s
+  def element_id(*args)
+    args.push(object_id).join("-").parameterize
   end
 end

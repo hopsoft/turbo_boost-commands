@@ -1,20 +1,20 @@
 const active = {}
 
-function add (payload) {
+function add(payload) {
   active[payload.id] = payload
 }
 
-function remove (id) {
+function remove(id) {
   delete active[id]
 }
 
 export default {
   add,
   remove,
-  get commands () {
+  get commands() {
     return [...Object.values(active)]
   },
-  get length () {
+  get length() {
     return Object.keys(active).length
   }
 }

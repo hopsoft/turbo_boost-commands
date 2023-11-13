@@ -1,0 +1,7 @@
+<button type="button" data-tooltip-target="view-mode-tooltip" data-tooltip-placement="bottom" data-controller="view-mode" data-action="click->view-mode#toggle"
+  class="p-2.5 text-sm text-gray-500 rounded-lg transition duration-75 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100 focus:ring-4 dark:hover:bg-gray-700 dark:hover:text-white">
+  <%= render "icons/heroicons/moon", solid: true, class: "w-5 h-5 hidden", data: { view_mode_target: "moon" } %>
+  <%= render "icons/heroicons/sun", solid: true, class: "w-5 h-5 hidden", data: { view_mode_target: "sun" } %>
+</button>
+
+<%= render "tooltips/tooltip", id: "view-mode-tooltip", content: "Light / Dark mode" %>

@@ -1,8 +1,8 @@
-import '@turbo-boost/streams'
 import './turbo'
 import schema from './schema'
 import { dispatch, commandEvents, stateEvents } from './events'
 import activity from './activity'
+import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
 import meta from './meta'
@@ -13,7 +13,7 @@ import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
-function buildCommandPayload (id, element) {
+function buildCommandPayload(id, element) {
   return {
     id, // uniquely identifies the command
     name: element.getAttribute(schema.commandAttribute),
@@ -23,7 +23,7 @@ function buildCommandPayload (id, element) {
   }
 }
 
-function invokeCommand (event) {
+async function invokeCommand(event) {
   let element
   let payload = {}
 
@@ -41,12 +41,12 @@ function invokeCommand (event) {
       src: driver.src
     }
 
-    const startEvent = dispatch(commandEvents.start, element, {
+    const startEvent = await dispatch(commandEvents.start, element, {
       cancelable: true,
       detail: payload
     })
 
-    if (startEvent.defaultPrevented)
+    if (startEvent.defaultPrevented || (startEvent.detail.confirmation && event.defaultPrevented))
       return dispatch(commandEvents.abort, element, {
         detail: {
           message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
@@ -74,7 +74,7 @@ function invokeCommand (event) {
       case 'method':
         return driver.invokeCommand(element, payload)
       case 'form':
-        return driver.invokeCommand(element, payload)
+        return driver.invokeCommand(element, payload, event)
       case 'frame':
         return driver.invokeCommand(driver.frame, payload)
       case 'window':
@@ -87,16 +87,6 @@ function invokeCommand (event) {
   }
 }
 
-// wire things up and setup defaults for event delegation
-delegates.handler = invokeCommand
-delegates.register('click', [`[${schema.commandAttribute}]`])
-delegates.register('submit', [`form[${schema.commandAttribute}]`])
-delegates.register('change', [
-  `input[${schema.commandAttribute}]`,
-  `select[${schema.commandAttribute}]`,
-  `textarea[${schema.commandAttribute}]`
-])
-
 self.TurboBoost = self.TurboBoost || {}
 
 self.TurboBoost = {
@@ -104,22 +94,36 @@ self.TurboBoost = {
 
   stateEvents,
 
-  get state () {
+  get state() {
     return state.current
   },
 
-  get stateDelta () {
+  get stateDelta() {
     return state.delta
   }
 }
 
-self.TurboBoost.Commands = {
-  logger,
-  schema,
-  events: commandEvents,
-  registerEventDelegate: delegates.register,
-  get eventDelegates () {
-    return delegates.events
+if (!self.TurboBoost.Commands) {
+  // wire things up and setup defaults for event delegation
+  delegates.handler = invokeCommand
+  delegates.register('click', [`[${schema.commandAttribute}]`])
+  delegates.register('submit', [`form[${schema.commandAttribute}]`])
+  delegates.register(schema.turboSubmitStartEvent, [`form[${schema.commandAttribute}]`])
+  delegates.register('change', [
+    `input[${schema.commandAttribute}]`,
+    `select[${schema.commandAttribute}]`,
+    `textarea[${schema.commandAttribute}]`
+  ])
+
+  self.TurboBoost.Commands = {
+    confirmation,
+    logger,
+    schema,
+    events: commandEvents,
+    registerEventDelegate: delegates.register,
+    get eventDelegates() {
+      return delegates.events
+    }
   }
 }
 

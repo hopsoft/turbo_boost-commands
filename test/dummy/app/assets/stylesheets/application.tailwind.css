@@ -1,13 +1,9 @@
+@import './tailwind/base';
+@import '../../views/basic_commands/@stylesheet';
+@import '../../views/features/@stylesheet';
+@import '../../views/instructions/@stylesheet';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/*
-
-@layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
-  }
-}
-
-*/
+@tailwind variants;

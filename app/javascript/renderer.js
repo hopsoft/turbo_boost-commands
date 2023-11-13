@@ -1,4 +1,4 @@
-function replaceDocument (content) {
+function replaceDocument(content) {
   const head = '<html'
   const tail = '</html'
   const headIndex = content.indexOf(head)
@@ -9,7 +9,7 @@ function replaceDocument (content) {
   }
 }
 
-function append (content) {
+function append(content) {
   document.body.insertAdjacentHTML('beforeend', content)
 }
 

@@ -1,4 +1,4 @@
-function build (urlString, payload = {}) {
+function build(urlString, payload = {}) {
   const a = document.createElement('a')
   a.href = urlString
   const url = new URL(a)

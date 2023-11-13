@@ -1,51 +1,23 @@
-FROM ruby:3.1.2
-
-ENV GEM_HOME=/opt/bundle
-RUN mkdir -p /opt/bundle /opt/node_modules
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+FROM ruby:3.2.2-slim-bullseye
 
 RUN apt-get -y update && \
-apt-get -y upgrade && \
-apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages install \
+apt-get -y --no-install-recommends install \
 build-essential \
-git \
-nodejs \
+curl \
+libjemalloc2 \
 sqlite3 \
-tzdata && \
-apt-get clean
+tzdata
 
-# setup ruby gems
-RUN gem update --system && \
-gem install bundler
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get -y --no-install-recommends install nodejs && \
+npm install -g npm@latest yarn
 
-# setup yarn
-RUN npm install -g yarn
+RUN apt-get clean
+RUN gem update --system
+RUN bundle config set --local clean 'true'
 
-# get application code
-RUN rm -rf /opt/turbo_boost-commands
-RUN git clone --origin github --branch main --depth 1 https://github.com/hopsoft/turbo_boost-commands.git /opt/turbo_boost-commands
+RUN mkdir -p /mnt/external/node_modules /mnt/external/yarn/.cache /mnt/external/gems /mnt/external/database
 
-# install application dependencies 1st time
-WORKDIR /opt/turbo_boost-commands
-RUN ln -s /opt/node_modules /opt/turbo_boost-commands/node_modules
-RUN yarn install --ignore-engines
-RUN bundle
-
-# cleanup
-RUN rm -rf /usr/local/share/.cache/* /usr/local/bundle/cache/* /opt/bundle/cache/* /root/.bundle/cache/* /root/.cache/*
-
-# prepare the environment
-ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true RAILS_SERVE_STATIC_FILES=true
-WORKDIR /
-
-# prepare and run the application
-CMD rm -rf /opt/turbo_boost-commands && \
-git clone --origin github --branch main --depth 1 https://github.com/hopsoft/turbo_boost-commands.git /opt/turbo_boost-commands && \
-cd /opt/turbo_boost-commands/test/dummy && \
-ln -s /opt/node_modules /opt/turbo_boost-commands/node_modules && \
-yarn install --ignore-engines && \
-bundle && \
-rm -rf tmp/pids/server.pid /usr/local/share/.cache/* /usr/local/bundle/cache/* /opt/bundle/cache/* /root/.bundle/cache/* /root/.cache/* && \
-bin/rails db:create db:migrate && \
-bin/rails assets:precompile && \
-bin/rails s --binding=0.0.0.0 --port=3000
+COPY . /app
+WORKDIR /app
+CMD bin/docker/run/remote

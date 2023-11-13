@@ -1,0 +1,65 @@
+#!/bin/bash
+
+shopt -s globstar
+
+# ============================================================================================================
+# Jemalloc - SEE: https://jemalloc.net
+# ============================================================================================================
+jemalloc="/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"
+if [ "$(uname -m)" = "x86_64" ] && [ -f "$jemalloc" ]; then
+  export LD_PRELOAD=$jemalloc
+fi
+
+jemalloc="/usr/lib/aarch64-linux-gnu/libjemalloc.so.2"
+if [ "$(uname -m)" = "aarch64" ] && [ -f "$jemalloc" ]; then
+  export LD_PRELOAD=$jemalloc
+fi
+
+
+# ============================================================================================================
+# Dependencies
+# ============================================================================================================
+rm -rfv /app/node_modules
+ln -snv /mnt/external/node_modules /app/node_modules
+yarn install
+
+bundle install
+
+
+# ============================================================================================================
+# Playwright Dependencies - SEE: https://playwright.dev
+# ============================================================================================================
+apt-get -y --no-install-recommends install \
+libasound2 \
+libatk-bridge2.0-0 \
+libatk1.0-0 \
+libc6 \
+libcairo-gobject2 \
+libcairo2 \
+libcups2 \
+libdbus-1-3 \
+libexpat1 \
+libfontconfig1 \
+libfreetype6 \
+libgbm1 \
+libgdk-pixbuf2.0-0 \
+libglib2.0-0 \
+libgtk-3-0 \
+libnss3 \
+libpango-1.0-0 \
+libpangocairo-1.0-0 \
+libstdc++6 \
+zlib1g
+
+apt-get clean
+yarn playwright install
+
+
+# ============================================================================================================
+# Prepare & Run the Application
+# ============================================================================================================
+cd test/dummy
+rm -rf tmp/pids/*
+bin/rails db:create db:migrate db:seed
+bin/rails assets:clobber tailwindcss:build
+bin/rails server --binding=0.0.0.0 --port=3000

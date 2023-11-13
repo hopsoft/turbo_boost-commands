@@ -14,11 +14,13 @@ export const stateEvents = {
 
 export const allEvents = { ...commandEvents, ...stateEvents }
 
-export function dispatch (name, target, options = {}) {
-  options = options || {}
-  options.detail = options.detail || {}
-  target = target || document
-  const evt = new CustomEvent(name, { ...options, bubbles: true })
-  target.dispatchEvent(evt)
-  return evt
+export function dispatch(name, target, options = {}) {
+  return new Promise(resolve => {
+    options = options || {}
+    options.detail = options.detail || {}
+    target = target || document
+    const evt = new CustomEvent(name, { ...options, bubbles: true })
+    target.dispatchEvent(evt)
+    resolve(evt)
+  })
 }

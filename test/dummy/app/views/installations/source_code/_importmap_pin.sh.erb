@@ -1,0 +1,2 @@
+bin/importmap pin add @turbo-boost/streams@$(bundle show turbo_boost-streams | ruby -ne 'puts $_.split(/-/).last')
+bin/importmap pin @turbo-boost/commands@$(bundle show turbo_boost-commands | ruby -ne 'puts $_.split(/-/).last')

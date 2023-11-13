@@ -1,0 +1,36 @@
+<aside id="sidebar" aria-label="Sidebar"
+  class="fixed top-0 left-0 z-40 pt-14 w-64 h-screen bg-white border-r border-gray-200 transition-transform -translate-x-full md:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
+  <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
+    <%= render "sidebars/sponsor" %>
+
+    <ul class="space-y-2">
+      <%= render "sidebars/link", label: "Home", href: root_path, icon: :home, active: request.path == root_path %>
+      <%= render "sidebars/link", label: "Sponsors", href: sponsors_path, icon: :globe_americas, active: request.path == sponsors_path %>
+
+      <%= render "sidebars/button", value: "Docs", heroicon: :document_text, active: docs_controller? do %>
+        <%= render "sidebars/link", label: "Installation", href: installations_path, icon: :arrow_down_on_square_stack, active: controller_action?("installations#show") %>
+        <%= render "sidebars/link", label: "Commands", href: todos_path(doc: "commands"), icon: :server_stack, active: params[:doc] == "commands" %>
+        <%= render "sidebars/link", label: "Event Lifecycle", href: todos_path(doc: "event-lifecycle"), icon: :cursor_arrow_rays, active: params[:doc] == "event-lifecycle" %>
+        <%= render "sidebars/link", label: "Event Delegates", href: todos_path(doc: "event-delegates"), icon: :cursor_arrow_ripple, active: params[:doc] == "event-delegates" %>
+        <%= render "sidebars/link", label: "Instrumentation", href: todos_path(doc: "instrumentation"), icon: :signal, active: params[:doc] == "instrumentation" %>
+        <%= render "sidebars/link", label: "Error Handling", href: todos_path(doc: "error-handling"), icon: :exclamation_triangle, active: params[:doc] == "error-handling" %>
+        <%= render "sidebars/link", label: "GlobalID Attributes", href: todos_path(doc: "globalid-attributes"), icon: :server_stack, active: params[:doc] == "globalid-attributes" %>
+        <%= render "sidebars/link", label: "State Management", href: todos_path(doc: "state-management"), icon: :circle_stack, active: params[:doc] == "state-management" %>
+        <%= render "sidebars/link", label: "State Resolution", href: todos_path(doc: "state-resolution"), icon: :rectangle_group, active: params[:doc] == "state-resolution" %>
+        <%= render "sidebars/link", label: "Optimistic Updates", href: todos_path(doc: "optimistic-updates"), icon: :face_smile, active: params[:doc] == "optimistic-updates" %>
+        <%= render "sidebars/link", label: "Best Practices", href: todos_path(doc: "best-practices"), icon: :shield_check, active: params[:doc] == "best-practices" %>
+      <% end %>
+
+      <%= render "sidebars/button", value: "Demos", heroicon: :play_circle, active: demos_controller? do %>
+        <%= render "sidebars/link", label: "Basic Command", href: basic_command_path, icon: :command_line, active: controller_action?("basic_commands#show") %>
+        <%= render "sidebars/link", label: "Tables", href: todos_path(demo: "tables"), icon: :command_line, active: params[:demo] == "tables" %>
+        <%= render "sidebars/link", label: "Simple Form", href: todos_path(demo: "simple-form"), icon: :command_line, active: params[:demo] == "simple-form" %>
+        <%= render "sidebars/link", label: "Complex Form", href: todos_path(demo: "complex-form"), icon: :command_line, active: params[:demo] == "complex-form" %>
+        <%= render "sidebars/link", label: "Wizard Form", href: todos_path(demo: "wizard-form"), icon: :command_line, active: params[:demo] == "wizard-form" %>
+        <%= render "sidebars/link", label: "More...", href: todos_path(demo: "more"), icon: :command_line, active: params[:demo] == "more" %>
+      <% end %>
+    </ul>
+  </div>
+
+  <%= render "sidebars/footer" %>
+</aside>

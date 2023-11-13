@@ -1,0 +1,11 @@
+<div class="feature">
+  <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:w-12 lg:h-12 bg-primary-100 dark:bg-primary-900">
+    <%= render "icons/heroicons/#{icon}", solid: true, class: "h-5 w-5 text-primary-600 dark:text-primary-300 lg:h-6 lg:w-6" %>
+  </div>
+  <h3 class="mb-2 text-xl font-bold dark:text-white">
+    <%= heading %>
+  </h3>
+  <p class="text-gray-600 dark:text-gray-400">
+    <%= local_assigns[:content] || yield %>
+  </p>
+</div>

@@ -1,11 +1,11 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  connect () {
+  connect() {
     this.scrollLater()
   }
 
-  scroll (event) {
+  scroll(event) {
     const options = {
       behavior: 'instant',
       block: 'start'
@@ -15,19 +15,19 @@ export default class extends Controller {
     this.scrollTop = this.scrollTop - this.navbar.offsetHeight
   }
 
-  scrollLater (wait = 100) {
+  scrollLater(wait = 100) {
     setTimeout(this.scroll.bind(this), wait)
   }
 
-  get scrollTop () {
+  get scrollTop() {
     return document.documentElement.scrollTop
   }
 
-  set scrollTop (value) {
+  set scrollTop(value) {
     return (document.documentElement.scrollTop = value)
   }
 
-  get navbar () {
+  get navbar() {
     return document.getElementById('navbar')
   }
 }

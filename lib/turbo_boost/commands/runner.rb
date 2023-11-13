@@ -3,6 +3,12 @@
 require_relative "sanitizer"
 
 class TurboBoost::Commands::Runner
+  SUPPORTED_MEDIA_TYPES = {
+    "text/html" => true,
+    "text/vnd.turbo-boost.html" => true,
+    "text/vnd.turbo-stream.html" => true
+  }.freeze
+
   attr_reader :controller, :state_manager
 
   def initialize(controller, state_manager)
@@ -173,12 +179,14 @@ class TurboBoost::Commands::Runner
     controller.request.cookie_jar
   end
 
-  def handle_command_event(event, error: nil)
+  def handle_command_event(*args)
+    event = args.shift
+    options = args.extract_options!
     case event
     when :aborted
       prevent_controller_action error: error
       append_streams_to_response_body
-    when :errored then prevent_controller_action(error: error)
+    when :errored then prevent_controller_action(**options)
     when :performed then prevent_controller_action if should_prevent_controller_action?
     end
   end
@@ -237,9 +245,10 @@ class TurboBoost::Commands::Runner
   end
 
   def append_error_to_response(error)
-    message = "Error in #{command_name}! #{error.inspect} #{error.backtrace[0, 4].inspect}"
+    message = "Error in #{command_name}!\n#{error.inspect} #{error.backtrace[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
+    append_error_alert_to_response_body message
   end
 
   def append_streams_to_response_body
@@ -263,6 +272,20 @@ class TurboBoost::Commands::Runner
     append_to_response_body event
   end
 
+  def append_error_alert_to_response_body(message)
+    return unless Rails.env.development?
+    message << <<~MSG
+      #{message.truncate(128)}
+
+      Check the server logs for details and/or set the client `logger.level = 'error'` and check the JavaScript console.
+
+      Example:
+
+      TurboBoost.Commands.logger.level = 'error';
+    MSG
+    append_to_response_body turbo_stream.invoke(:alert, args: [message])
+  end
+
   def append_error_event_to_response_body(message)
     args = ["turbo-boost:command:server-error", {bubbles: true, cancelable: false, detail: parsed_command_params.merge(error: message)}]
     event = if command_instance&.element.try(:id).present?
@@ -278,7 +301,7 @@ class TurboBoost::Commands::Runner
   end
 
   def append_to_response_body(content)
-    return unless controller.response.media_type == "text/html"
+    return unless SUPPORTED_MEDIA_TYPES[controller.response.media_type]
     sanitized_content = content_sanitizer.sanitize(content.to_s).html_safe
     return if sanitized_content.blank?
 

@@ -1,0 +1,8 @@
+@layer components {
+  .feature p em {
+    @apply not-italic text-accent-500 dark:text-accent-300;
+  }
+  .feature p i {
+    @apply not-italic text-gray-700 underline decoration-gray-600 decoration-dotted underline-offset-4 dark:text-gray-300 dark:decoration-gray-400;
+  }
+}

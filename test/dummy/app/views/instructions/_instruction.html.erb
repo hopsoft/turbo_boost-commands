@@ -1,0 +1,11 @@
+<div class="instruction">
+  <div class="flex mb-4">
+    <span class="flex flex-shrink-0 justify-center items-center mr-3 w-10 h-10 rounded-full border-2 border-rose-400">
+      <span class="text-rose-400"><%= step.to_s.rjust(2, "0") %></span>
+    </span>
+    <h3 class="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl dark:text-gray-200">
+      <%= heading %>
+    </h3>
+  </div>
+  <%= local_assigns[:content] || yield %>
+</div>

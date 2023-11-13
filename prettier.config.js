@@ -1,0 +1,22 @@
+module.exports = {
+  arrowParens: 'avoid',
+  bracketSameLine: true,
+  bracketSpacing: true,
+  embeddedLanguageFormatting: 'auto',
+  htmlWhitespaceSensitivity: 'css',
+  insertPragma: false,
+  jsxSingleQuote: false,
+  plugins: ['prettier-plugin-tailwindcss'],
+  printWidth: 110,
+  proseWrap: 'preserve',
+  quoteProps: 'as-needed',
+  requirePragma: false,
+  semi: false,
+  singleAttributePerLine: false,
+  singleQuote: true,
+  tabWidth: 2,
+  tailwindConfig: './test/dummy/config/tailwind.config.js',
+  trailingComma: 'none',
+  useTabs: false,
+  vueIndentScriptAndStyle: false
+}

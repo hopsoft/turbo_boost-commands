@@ -1,40 +1,32 @@
-# fly.toml file generated for turboboost-commands on 2022-12-23T12:55:35-07:00
+# fly.toml app configuration file generated for turbo-boost-commands on 2023-05-23T22:00:07-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "turboboost-commands"
-kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
+app = "turbo-boost-commands"
+primary_region = "den"
 
 [env]
-  # Must match the proxy config in the smallteam-tech/proxy repo
+  DATABASE_URL = "sqlite3:///mnt/external/database/development.sqlite3"
+  GEM_HOME = "/mnt/external/gems"
+  RAILS_ENV = "development"
+  RAILS_LOG_TO_STDOUT = "true"
+  RAILS_MAX_THREADS = "6"
   RAILS_RELATIVE_URL_ROOT = "/@turbo-boost/commands"
+  RAILS_SERVE_STATIC_FILES = "true"
+  WEB_CONCURRENCY = "2"
+  YARN_CACHE_FOLDER = "/mnt/external/yarn/.cache"
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
+[[mounts]]
+  source = "turbo_boost_commands_volume"
+  destination = "/mnt/external"
 
-[[services]]
-  http_checks = []
+[http_service]
   internal_port = 3000
-  processes = ["app"]
-  protocol = "tcp"
-  script_checks = []
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = false
 
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
+[[statics]]
+  guest_path = "/app"
+  url_prefix = "/"

@@ -1,0 +1,6 @@
+<nav id="breadcrumbs" class="flex ml-3" aria-label="Breadcrumbs">
+  <ol class="inline-flex items-center space-x-1 md:space-x-2">
+    <%= render "breadcrumbs/breadcrumb", label: "Home", href: root_path, active: request.path == root_path %>
+    <%= yield :breadcrumbs %>
+  </ol>
+</nav>

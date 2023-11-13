@@ -1,17 +1,17 @@
 class Meta {
-  get element () {
+  get element() {
     return document.querySelector('meta[name="turbo-boost"]')
   }
 
-  get token () {
+  get token() {
     return this.element.getAttribute('content')
   }
 
-  get busy () {
+  get busy() {
     return this.element.dataset.busy === 'true'
   }
 
-  set busy (value) {
+  set busy(value) {
     return (this.element.dataset.busy = !!value)
   }
 }

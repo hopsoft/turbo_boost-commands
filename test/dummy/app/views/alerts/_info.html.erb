@@ -1,0 +1,6 @@
+<%= render("alerts/alert",
+  **local_assigns.merge(
+    type: "Information",
+    heroicon: :information_circle,
+    class: token_list("bg-blue-50 text-blue-800 dark:bg-gray-800 dark:text-blue-400", local_assigns[:class])
+  )) { yield if block_given? } %>
