@@ -140,7 +140,7 @@ class TurboBoost::Commands::Runner
       render_response
       append_success_to_response
     when TurboBoost::Commands::AbortError
-      render_response status: 299, headers: {"TurboBoost-Abort": error.location}
+      render_response status: 299, headers: {"TurboBoost-Abort": command_name}
     else
       location = error.backtrace.first.to_s[/[^\/]+\.rb:\d+/i]
       render_response status: :internal_server_error,

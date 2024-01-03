@@ -8,17 +8,12 @@ module TurboBoost::Commands
   class InvalidElementError < StandardError; end
 
   class AbortError < StandardError
-    attr_reader :cause
+    attr_reader :cause, :command
 
-    def initialize(message = "Command aborted by a callback!", handler:, cause: nil)
+    def initialize(message = "Command aborted by a callback!", command:, cause: nil)
       super(message)
-      @handler = handler
+      @command = command
       @cause = cause
-    end
-
-    def location
-      path, line = @handler&.source_location || []
-      "#{path.split("/").last}:#{line}"
     end
   end
 end
