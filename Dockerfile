@@ -1,4 +1,4 @@
-FROM ruby:3.2.2-slim-bullseye
+FROM ruby:3.0.3-slim-bullseye
 
 RUN apt-get -y update && \
 apt-get -y --no-install-recommends install \
@@ -8,7 +8,7 @@ libjemalloc2 \
 sqlite3 \
 tzdata
 
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get -y --no-install-recommends install nodejs && \
 npm install -g npm@latest yarn
 

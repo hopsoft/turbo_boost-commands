@@ -121,13 +121,13 @@ class TurboBoost::Commands::Command
     options = options.symbolize_keys
 
     ivars = options[:assigns]&.each_with_object({}) do |(key, value), memo|
-      memo[key] = controller.instance_variable_get("@#{key}")
-      controller.instance_variable_set "@#{key}", value
+      memo[key] = controller.instance_variable_get(:"@#{key}")
+      controller.instance_variable_set :"@#{key}", value
     end
 
     controller.view_context.render(options.except(:assigns), locals, &block)
   ensure
-    ivars&.each { |key, value| controller.instance_variable_set "@#{key}", value }
+    ivars&.each { |key, value| controller.instance_variable_set :"@#{key}", value }
   end
 
   def turbo_stream

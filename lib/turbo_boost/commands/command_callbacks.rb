@@ -11,8 +11,26 @@ module TurboBoost::Commands::CommandCallbacks
   NAME = :perform_command
 
   module ClassMethods
+    # Configure an abort handler
+    #
+    # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command is aborted
+    # @yieldparam command [TurboBoost::Commands::Command] The command instance
+    # @yieldparam error [StandardError] The error that was raised in a `before_command` callback
+    def on_abort(&block)
+      @on_abort = block
+    end
+
+    # Configure an error handler
+    #
+    # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command raises an error during execution
+    # @yieldparam command [TurboBoost::Commands::Command] The command instance
+    # @yieldparam error [StandardError] The error that was raised
+    def on_error(&block)
+      @on_error = block
+    end
+
     [:before, :after, :around].each do |type|
-      define_method "#{type}_command" do |*method_names, &blk|
+      define_method :"#{type}_command" do |*method_names, &blk|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -29,7 +47,7 @@ module TurboBoost::Commands::CommandCallbacks
         method_names.each { |method_name| set_callback NAME, type, method_name, options }
       end
 
-      define_method "skip_#{type}_command" do |*method_names, &blk|
+      define_method :"skip_#{type}_command" do |*method_names, &blk|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -66,7 +84,7 @@ module TurboBoost::Commands::CommandCallbacks
                       callback.call
                       false # everything is ok
                     rescue => error
-                      command.send :aborted!, error
+                      command.public_send :aborted!, error
                       true # halt the callback chain
                     end
                   }
@@ -106,14 +124,24 @@ module TurboBoost::Commands::CommandCallbacks
 
   private
 
+  def abort_handler
+    self.class.instance_variable_get(:@on_abort) || ->(*_) {}
+  end
+
   def aborted!(error)
     changed @aborted = true
     notify_observers :aborted, error: error
+    abort_handler.call self, error
+  end
+
+  def error_handler
+    self.class.instance_variable_get(:@on_error) || ->(*_) {}
   end
 
   def errored!(error)
     changed @errored = true
     notify_observers :errored, error: error
+    error_handler.call self, error
   end
 
   def performed!

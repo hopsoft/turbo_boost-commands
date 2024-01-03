@@ -182,9 +182,9 @@ class TurboBoost::Commands::Runner
     options = args.extract_options!
     case event
     when :aborted
-      prevent_controller_action error: error
+      prevent_controller_action error: options[:error]
       append_streams_to_response_body
-    when :errored then prevent_controller_action(**options)
+    when :errored then prevent_controller_action error: options[:error]
     when :performed then prevent_controller_action if should_prevent_controller_action?
     end
   end

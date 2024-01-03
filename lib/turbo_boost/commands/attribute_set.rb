@@ -24,12 +24,12 @@ class TurboBoost::Commands::AttributeSet
       value = value.to_i if value.is_a?(String) && value.match?(/\A-?\d+\z/)
       value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
 
-      instance_variable_set "@#{name}", value
+      instance_variable_set :"@#{name}", value
 
       next if orig_respond_to_missing?(name, false)
 
       self.class.define_method(name) { instance_variable_get :"@#{name}" }
-      self.class.define_method("#{name}?") { public_send(name).present? }
+      self.class.define_method(:"#{name}?") { public_send(name).present? }
     end
   end
 

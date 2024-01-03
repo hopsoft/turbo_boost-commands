@@ -5,4 +5,3 @@ CREATE TABLE sqlite_sequence(name,seq);
 INSERT INTO "schema_migrations" (version) VALUES
 ('20221230164522');
 
-

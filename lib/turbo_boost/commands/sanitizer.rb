@@ -7,7 +7,7 @@ class TurboBoost::Commands::Sanitizer
   attr_reader :scrubber
 
   def sanitize(value)
-    super value, scrubber: scrubber
+    super(value, scrubber: scrubber)
   end
 
   private
