@@ -135,12 +135,17 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
     @controller_action_prevented = true
 
-    if error
-      render_response status: :internal_server_error
-      append_error_to_response error
-    else
+    case error
+    when nil
       render_response
       append_success_to_response
+    when TurboBoost::Commands::AbortError
+      render_response status: 299, headers: {"TurboBoost-Abort": error.location}
+    else
+      location = error.backtrace.first.to_s[/[^\/]+\.rb:\d+/i]
+      render_response status: :internal_server_error,
+        headers: {"TurboBoost-Error": "#{location}; #{error.message}"}
+      append_error_to_response error
     end
 
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
@@ -161,6 +166,7 @@ class TurboBoost::Commands::Runner
 
   def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
     headers.each { |key, value| controller.response.set_header key.to_s, value.to_s }
+    controller.response.set_header "TurboBoost-Command", "#{command_class_name}##{command_method_name}"
     controller.render html: html, layout: false, status: status || response_status
   end
 

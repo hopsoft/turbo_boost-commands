@@ -11,22 +11,26 @@ module TurboBoost::Commands::CommandCallbacks
   NAME = :perform_command
 
   module ClassMethods
-    # Configure an abort handler
+    # DSL to configure an abort handler
+    #
+    # NOTE: Can also be defined by overriding `def abort_handler` in a subclass
     #
     # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command is aborted
     # @yieldparam command [TurboBoost::Commands::Command] The command instance
     # @yieldparam error [StandardError] The error that was raised in a `before_command` callback
     def on_abort(&block)
-      @on_abort = block
+      define_method(:abort_handler, &block)
     end
 
     # Configure an error handler
+    #
+    # NOTE: Can also be defined by overriding `def error_handler` in a subclass
     #
     # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command raises an error during execution
     # @yieldparam command [TurboBoost::Commands::Command] The command instance
     # @yieldparam error [StandardError] The error that was raised
     def on_error(&block)
-      @on_error = block
+      define_method(:error_handler, &block)
     end
 
     [:before, :after, :around].each do |type|
@@ -79,15 +83,28 @@ module TurboBoost::Commands::CommandCallbacks
   included do
     define_callbacks NAME,
       skip_after_callbacks_if_terminated: true,
-      terminator: ->(command, callback) {
-                    begin
-                      callback.call
-                      false # everything is ok
-                    rescue => error
-                      command.send :aborted!, error
-                      true # halt the callback chain
-                    end
-                  }
+      terminator: ->(command, callback) do
+        halt = true # STOP the callback chain (pessimistic)
+
+        begin
+          catch :abort do
+            callback.call # execution halts here if the callback invokes `throw :abort`
+            halt = false # CONTINUE the callback chain
+          end
+
+          # `throw :abort` was invoked
+          command.send :aborted!,
+            TurboBoost::Commands::AbortError.new(handler: command.method(:abort_handler))
+        rescue UncaughtThrowError => error
+          # `throw` was invoked without :abort
+          message = "Please use `throw :abort` to abort a command."
+          command.send :aborted!,
+            TurboBoost::Commands::AbortError.new(message, handler: command.method(:abort_handler), cause: error)
+        rescue => error
+          # unxpected error in callback
+          command.send :errored!, error
+        end
+      end
   end
 
   def perform_with_callbacks(method_name)
@@ -122,26 +139,26 @@ module TurboBoost::Commands::CommandCallbacks
     performed? && !aborted? && !errored?
   end
 
+  def abort_handler(error = nil)
+    # noop, override in subclasses via `on_abort`
+  end
+
+  def error_handler(error)
+    # noop, override in subclasses via `on_error`
+  end
+
   private
 
-  def abort_handler
-    self.class.instance_variable_get(:@on_abort) || ->(*_) {}
-  end
-
-  def aborted!(error)
+  def aborted!(error = nil)
     changed @aborted = true
+    abort_handler error
     notify_observers :aborted, error: error
-    abort_handler.call self, error
-  end
-
-  def error_handler
-    self.class.instance_variable_get(:@on_error) || ->(*_) {}
   end
 
   def errored!(error)
     changed @errored = true
+    error_handler error
     notify_observers :errored, error: error
-    error_handler.call self, error
   end
 
   def performed!
