@@ -84,7 +84,7 @@ module TurboBoost::Commands::CommandCallbacks
                       callback.call
                       false # everything is ok
                     rescue => error
-                      command.public_send :aborted!, error
+                      command.send :aborted!, error
                       true # halt the callback chain
                     end
                   }
