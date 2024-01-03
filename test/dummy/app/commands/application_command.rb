@@ -15,6 +15,7 @@ class ApplicationCommand < TurboBoost::Commands::Command
   # Setup an error handler with `on_error`
   # on_error { |error| Honeybadger.notify error }
 
+  # You can also override abort_handler instead of using `on_error`
   # def error_handler(error)
   #   Honeybadger.notify error
   # end
