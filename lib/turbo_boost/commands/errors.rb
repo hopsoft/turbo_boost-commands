@@ -29,7 +29,9 @@ module TurboBoost::Commands
   end
 
   class AbortError < CommandError
-    def initialize(message = "TurboBoost Command intentionally aborted via `throw` in a `[before,after,around]_command` lifecycle callback!", **kwargs)
+    def initialize(message = "", **kwargs)
+      default_message = "TurboBoost Command intentionally aborted via `throw` in a `[before,after,around]_command` lifecycle callback!"
+      message = "#{default_message} #{message}".strip
       super(message, http_status: :abort_turbo_boost_command, **kwargs)
     end
   end
