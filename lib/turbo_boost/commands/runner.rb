@@ -170,7 +170,7 @@ class TurboBoost::Commands::Runner
 
   def render_response(html: "", status: nil, headers: {})
     controller.render html: html, layout: false, status: status || response_status
-    controller.append_to_response_headers headers.merge(TurboBoost: :Append)
+    append_to_response_headers headers.merge(TurboBoost: :Append)
   end
 
   def turbo_stream
