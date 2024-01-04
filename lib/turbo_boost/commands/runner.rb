@@ -144,7 +144,7 @@ class TurboBoost::Commands::Runner
     else
       location = error.backtrace.first.to_s[/[^\/]+\.rb:\d+/i]
       render_response status: :internal_server_error,
-        headers: {"TurboBoost-Error": "#{location}; #{error.message}"}
+        headers: {"TurboBoost-Error": true, "TurboBoost-Error-Info": "#{location}; #{error.message}"}
       append_error_to_response error
     end
 
