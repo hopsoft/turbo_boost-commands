@@ -142,7 +142,9 @@ class TurboBoost::Commands::Runner
     when TurboBoost::Commands::AbortError
       render_response status: 299, headers: {"TurboBoost-Abort": true}
     else
-      location = error.backtrace.first.to_s[/[^\/]+\.rb:\d+/i]
+      backtrace = error.cause&.backtrace if error.is_a?(TurboBoost::Commands::PerformError)
+      backtrace ||= error.backtrace || []
+      location = backtrace.first&.to_s&.[](/[^\/]+\.rb:\d+/i)
       render_response status: :internal_server_error,
         headers: {"TurboBoost-Error": true, "TurboBoost-Error-Info": "#{location}; #{error.message}"}
       append_error_to_response error
