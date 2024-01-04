@@ -101,9 +101,6 @@ module TurboBoost::Commands::CommandCallbacks
           # `throw` was invoked without :abort
           message = "Please use `throw :abort` to abort a command."
           command.send :aborted!, TurboBoost::Commands::AbortError.new(message, command: command, cause: error)
-        rescue => error
-          # unxpected error in callback
-          command.send :errored!, TurboBoost::Commands::PerformError.new(command: command, cause: error)
         end
 
         halt

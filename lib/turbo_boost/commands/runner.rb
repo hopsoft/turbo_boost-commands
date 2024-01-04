@@ -127,8 +127,6 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
     command_instance.perform_with_callbacks command_method_name
-  rescue => error
-    prevent_controller_action error: error
   end
 
   def prevent_controller_action(error: nil)
@@ -249,7 +247,9 @@ class TurboBoost::Commands::Runner
   end
 
   def append_error_to_response(error)
-    message = "Error in #{command_name}!\n#{error.inspect} #{error.backtrace[0, 4].inspect}"
+    backtrace = error.cause&.backtrace if error.is_a?(TurboBoost::Commands::CommandError)
+    backtrace ||= error.backtrace || []
+    message = "Error in #{command_name}!\n#{error.inspect} #{(backtrace || [])[0, 4].inspect}"
     Rails.logger.error message
     append_error_event_to_response_body message
     append_error_alert_to_response_body message
