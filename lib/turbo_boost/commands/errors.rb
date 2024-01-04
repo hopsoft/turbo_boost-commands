@@ -7,13 +7,25 @@ module TurboBoost::Commands
 
   class InvalidElementError < StandardError; end
 
-  class AbortError < StandardError
+  class CommandError < StandardError
     attr_reader :cause, :command
 
-    def initialize(message = "Command aborted by a callback!", command:, cause: nil)
+    def initialize(message, command:, cause: nil)
       super(message)
       @command = command
       @cause = cause
+    end
+  end
+
+  class AbortError < CommandError
+    def initialize(message = "Command aborted by a callback!", **kwargs)
+      super
+    end
+  end
+
+  class PerformError < CommandError
+    def initialize(message = "Unexpected error in Command!", **kwargs)
+      super
     end
   end
 end

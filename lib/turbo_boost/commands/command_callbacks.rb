@@ -101,7 +101,7 @@ module TurboBoost::Commands::CommandCallbacks
           command.send :aborted!, TurboBoost::Commands::AbortError.new(message, command: command, cause: error)
         rescue => error
           # unxpected error in callback
-          command.send :errored!, error
+          command.send :errored!, TurboBoost::Commands::PerformError.new(command: command, cause: error)
         end
 
         halt
