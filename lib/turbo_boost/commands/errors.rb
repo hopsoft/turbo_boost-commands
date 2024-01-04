@@ -38,7 +38,7 @@ module TurboBoost::Commands
 
   class PerformError < CommandError
     def initialize(message = "Unexpected error in TurboBoost Command!", **kwargs)
-      super(message, http_status: :unhandled_turbo_boost_command_error, **kwargs)
+      super(message, http_status: :internal_server_error, **kwargs)
     end
   end
 end
