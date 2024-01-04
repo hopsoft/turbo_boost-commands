@@ -167,7 +167,7 @@ module TurboBoost::Commands::CommandCallbacks
   end
 
   def performed!
-    return if aborted? || errored? || performed?
+    return if performed?
     changed @performed = true
     notify_observers :performed
   end
