@@ -92,14 +92,13 @@ module TurboBoost::Commands::CommandCallbacks
             halt = false # CONTINUE the callback chain
           end
 
-          # `throw :abort` was invoked
-          command.send :aborted!,
-            TurboBoost::Commands::AbortError.new(command: command)
+          if halt # callback chain halted, meaning `throw` was invoked in a callback
+            command.send :aborted!, TurboBoost::Commands::AbortError.new(command: command)
+          end
         rescue UncaughtThrowError => error
           # `throw` was invoked without :abort
           message = "Please use `throw :abort` to abort a command."
-          command.send :aborted!,
-            TurboBoost::Commands::AbortError.new(message, command: command, cause: error)
+          command.send :aborted!, TurboBoost::Commands::AbortError.new(message, command: command, cause: error)
         rescue => error
           # unxpected error in callback
           command.send :errored!, error
