@@ -103,6 +103,8 @@ module TurboBoost::Commands::CommandCallbacks
           # unxpected error in callback
           command.send :errored!, error
         end
+
+        halt
       end
   end
 
