@@ -137,16 +137,16 @@ class TurboBoost::Commands::Runner
 
     case error
     when nil
-      render_response
+      status = "HTTP #{TurboBoost::Commands.http_status_code(response_status)} #{response_status.to_s.titleize}"
+      render_response status: response_status, headers: {"TurboBoost-Command-Status": status}
       append_success_to_response
     when TurboBoost::Commands::AbortError
-      render_response status: 299, headers: {"TurboBoost-Abort": true}
+      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
+    when TurboBoost::Commands::PerformError
+      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
+      append_error_to_response error
     else
-      backtrace = error.cause&.backtrace if error.is_a?(TurboBoost::Commands::PerformError)
-      backtrace ||= error.backtrace || []
-      location = backtrace.first&.to_s&.[](/[^\/]+\.rb:\d+/i)
-      render_response status: :internal_server_error,
-        headers: {"TurboBoost-Error": true, "TurboBoost-Error-Info": "#{location}; #{error.message}"}
+      render_response status: :internal_server_error, headers: {"TurboBoost-Command-Status": error.message}
       append_error_to_response error
     end
 

@@ -8,24 +8,35 @@ module TurboBoost::Commands
   class InvalidElementError < StandardError; end
 
   class CommandError < StandardError
-    attr_reader :cause, :command
-
-    def initialize(message, command:, cause: nil)
-      super(message)
-      @command = command
+    def initialize(message, command:, http_status:, cause: nil)
       @cause = cause
+      @command = command
+      @http_status_code = TurboBoost::Commands.http_status_code(http_status)
+      messages = [
+        "HTTP #{http_status_code} #{TurboBoost::Commands::HTTP_STATUS_CODES[http_status_code]}",
+        message,
+        location
+      ]
+      super(messages.join("; ").strip)
+    end
+
+    attr_reader :cause, :command, :http_status_code
+
+    def location
+      line = (cause&.backtrace || []).first.to_s
+      line.[](/[^\/]+\.rb:\d+/i)
     end
   end
 
   class AbortError < CommandError
-    def initialize(message = "Command aborted by a callback!", **kwargs)
-      super
+    def initialize(message = "TurboBoost Command intentionally aborted via `throw` in a `[before,after,around]_command` lifecycle callback!", **kwargs)
+      super(message, http_status: :abort_turbo_boost_command, **kwargs)
     end
   end
 
   class PerformError < CommandError
-    def initialize(message = "Unexpected error in Command!", **kwargs)
-      super
+    def initialize(message = "Unexpected error in TurboBoost Command!", **kwargs)
+      super(message, http_status: :unhandled_turbo_boost_command_error, **kwargs)
     end
   end
 end

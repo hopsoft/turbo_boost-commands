@@ -6,6 +6,7 @@ module TurboBoost::Commands::CommandCallbacks
   extend ActiveSupport::Concern
 
   include Observable
+
   include ActiveSupport::Callbacks
 
   NAME = :perform_command
@@ -34,7 +35,7 @@ module TurboBoost::Commands::CommandCallbacks
     end
 
     [:before, :after, :around].each do |type|
-      define_method :"#{type}_command" do |*method_names, &blk|
+      define_method :"#{type}_command" do |*method_names, &block|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -48,10 +49,11 @@ module TurboBoost::Commands::CommandCallbacks
         end
 
         options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
-        method_names.each { |method_name| set_callback NAME, type, method_name, options }
+        set_callback(NAME, type, options, &block)
+        method_names.each { |method_name| set_callback(NAME, type, method_name, options, &block) }
       end
 
-      define_method :"skip_#{type}_command" do |*method_names, &blk|
+      define_method :"skip_#{type}_command" do |*method_names, &block|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -65,7 +67,7 @@ module TurboBoost::Commands::CommandCallbacks
         end
 
         options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
-        method_names.each { |method_name| skip_callback NAME, type, method_name, options }
+        method_names.each { |method_name| skip_callback(NAME, type, method_name, options, &block) }
       end
 
       private
@@ -115,7 +117,7 @@ module TurboBoost::Commands::CommandCallbacks
       performed!
     end
   rescue => error
-    errored! error
+    errored! TurboBoost::Commands::PerformError.new(command: self, cause: error)
   ensure
     @performing_method_name = nil
   end
