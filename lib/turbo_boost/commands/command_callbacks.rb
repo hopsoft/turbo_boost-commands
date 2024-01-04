@@ -150,21 +150,21 @@ module TurboBoost::Commands::CommandCallbacks
   private
 
   def aborted!(error)
-    return if @aborted
+    return if aborted? || errored? || performed?
     changed @aborted = true
     abort_handler error
     notify_observers :aborted, error: error
   end
 
   def errored!(error)
-    return if @errored
+    return if aborted? || errored? || performed?
     changed @errored = true
     error_handler error
     notify_observers :errored, error: error
   end
 
   def performed!
-    return if @performed
+    return if aborted? || errored? || performed?
     changed @performed = true
     notify_observers :performed
   end
