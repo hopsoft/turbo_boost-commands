@@ -247,12 +247,9 @@ class TurboBoost::Commands::Runner
   end
 
   def append_error_to_response(error)
-    backtrace = error.cause&.backtrace if error.is_a?(TurboBoost::Commands::CommandError)
-    backtrace ||= error.backtrace || []
-    message = "Error in #{command_name}!\n#{error.inspect} #{(backtrace || [])[0, 4].inspect}"
-    Rails.logger.error message
-    append_error_event_to_response_body message
-    append_error_alert_to_response_body message
+    Rails.logger.error error.message
+    append_error_event_to_response_body error.message
+    append_error_alert_to_response_body error.message
   end
 
   def append_streams_to_response_body
@@ -278,14 +275,14 @@ class TurboBoost::Commands::Runner
 
   def append_error_alert_to_response_body(message)
     return unless Rails.env.development?
-    message << <<~MSG
-      #{message.truncate(128)}
+    message = <<~MSG
+      #{message}
 
-      Check the server logs for details and/or set the client `logger.level = 'error'` and check the JavaScript console.
+      See the HTTP header: `TurboBoost-Command-Status`
 
-      Example:
+      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.
 
-      TurboBoost.Commands.logger.level = 'error';
+      Finally, check server logs for additional info.
     MSG
     append_to_response_body turbo_stream.invoke(:alert, args: [message])
   end
@@ -337,7 +334,7 @@ class TurboBoost::Commands::Runner
   def append_to_response_headers(headers = {})
     return unless command_performed?
     headers.each { |key, val| append_response_header key, val }
-    append_response_header "TurboBoost-Command", "#{command_class_name}##{command_method_name}"
+    append_response_header "TurboBoost-Command", command_name
     append_response_header "TurboBoost-Command-Status", "HTTP #{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}"
   end
 end

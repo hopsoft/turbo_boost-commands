@@ -6,34 +6,12 @@ module TurboBoost::Commands::CommandCallbacks
   extend ActiveSupport::Concern
 
   include Observable
-
   include ActiveSupport::Callbacks
+  include ActiveSupport::Rescuable
 
   NAME = :perform_command
 
   module ClassMethods
-    # DSL to configure an abort handler
-    #
-    # NOTE: Can also be defined by overriding `def abort_handler` in a subclass
-    #
-    # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command is aborted
-    # @yieldparam command [TurboBoost::Commands::Command] The command instance
-    # @yieldparam error [StandardError] The error that was raised in a `before_command` callback
-    def on_abort(&block)
-      define_method(:abort_handler, &block)
-    end
-
-    # Configure an error handler
-    #
-    # NOTE: Can also be defined by overriding `def error_handler` in a subclass
-    #
-    # @yield [TurboBoost::Commands::Command, StandardError] The block to execute if the command raises an error during execution
-    # @yieldparam command [TurboBoost::Commands::Command] The command instance
-    # @yieldparam error [StandardError] The error that was raised
-    def on_error(&block)
-      define_method(:error_handler, &block)
-    end
-
     [:before, :after, :around].each do |type|
       define_method :"#{type}_command" do |*method_names, &block|
         options = callback_options(method_names.extract_options!)
@@ -152,7 +130,7 @@ module TurboBoost::Commands::CommandCallbacks
   def aborted!(error)
     return if aborted? || errored? || performed?
     changed @aborted = @performed = true
-    abort_handler error
+    rescue_with_handler error
     notify_observers :aborted, error: error
   end
 
@@ -160,6 +138,7 @@ module TurboBoost::Commands::CommandCallbacks
     return if aborted? || errored? || performed?
     changed @errored = @performed = true
     error_handler error
+    rescue_with_handler error
     notify_observers :errored, error: error
   end
 
