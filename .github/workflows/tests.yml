@@ -49,4 +49,4 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run tests
-      run: docker run ${{ APP_NAME }}:${{ matrix.ruby-version }}
+      run: docker run ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
