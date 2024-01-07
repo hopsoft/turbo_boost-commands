@@ -39,8 +39,8 @@ jobs:
     - name: Build with Docker and Ruby ${{ matrix.ruby-version }}
       uses: docker/build-push-action@v2
       with:
-        context: .
-        file: .github/Dockerfile
+        context: ${{ github.workspace }}/app
+        file: ${{ github.workspace }}/app/.github/Dockerfile
         build-args: |
           RUBY_VERSION=${{ matrix.ruby-version }}
           GITHUB_WORKSPACE=${{ github.workspace }}
