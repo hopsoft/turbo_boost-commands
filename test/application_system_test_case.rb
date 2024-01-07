@@ -27,7 +27,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   alias_method :orig_page, :page
   attr_reader :playwright_browser, :playwright_page
-  alias_method :page, :playwright_page
+
+  def page
+    playwright_page.tap do |page|
+      page.set_default_timeout 30_000
+    end
+  end
 
   def js(...)
     page.evaluate(...)
