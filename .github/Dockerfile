@@ -22,6 +22,7 @@ gem update --system && \
 bundle config set --local clean 'true'
 
 WORKDIR /app
+RUN ls -lha .
 
 RUN bundle
 RUN yarn --frozen-lockfile
