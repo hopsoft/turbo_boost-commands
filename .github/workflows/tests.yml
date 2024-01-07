@@ -50,4 +50,4 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run tests
-      run: docker run ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
+      run: docker run -e 'MT_FAIL_FAST=1' ${{ env.APP_NAME }}:${{ matrix.ruby-version }}

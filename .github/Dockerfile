@@ -3,6 +3,7 @@ ARG RUBY_VERSION=placeholder
 FROM ruby:${RUBY_VERSION}-slim-bullseye AS base
 RUN apt-get -y update && apt-get -y --no-install-recommends install \
 build-essential \
+chromium \
 curl \
 libjemalloc2 \
 sqlite3 \
