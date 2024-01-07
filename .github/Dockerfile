@@ -14,18 +14,14 @@ apt-get -y --no-install-recommends install nodejs && \
 npm install -g npm@latest yarn
 
 FROM node AS playwright
-RUN yarn global add playwright --with-deps
+RUN yarn global add playwright --with-deps && playwright install
 
 FROM playwright AS final
-RUN apt-get clean
-
 COPY ../ /app
 WORKDIR /app
-
 RUN gem update --system
-RUN bundle
-RUN bundle clean --force
-RUN yarn --frozen-lockfile
-RUN yarn autoclean --force
+RUN bundle && bundle clean --force
+RUN yarn --frozen-lockfile && yarn autoclean --force
+RUN apt-get clean
 
 CMD rake

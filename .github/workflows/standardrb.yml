@@ -25,4 +25,4 @@ jobs:
           bundler-cache: true
 
       - name: Run StandardRB
-        run: bundle exec standardrb --format progress
+        run: shopt -s globstar && bundle exec standardrb --format progress

@@ -24,5 +24,5 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run Prettier
-        run: yarn run prettier --write package.json prettier.config.js bin/build.mjs app/javascript/**/**/**/**/*.js test/dummy/app/javascript/**/**/**/**/*.js test/dummy/app/assets/stylesheets/**/**/**/**/*.css test/dummy/app/views/**/**/**/**/*.css
+        run: shopt -s globstar && yarn run prettier --write package.json prettier.config.js bin/build.mjs app/javascript/**/*.js test/dummy/app/assets/stylesheets/**/*.css test/dummy/app/views/**/*.css
 
