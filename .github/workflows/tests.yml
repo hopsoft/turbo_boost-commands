@@ -38,6 +38,7 @@ jobs:
       with:
         context: .
         file: .github/Dockerfile
+        load: true
         build-args: RUBY_VERSION=${{ matrix.ruby-version }}
         tags: ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
         cache-from: type=local,src=/tmp/.buildx-cache
