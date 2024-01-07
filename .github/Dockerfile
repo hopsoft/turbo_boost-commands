@@ -14,7 +14,9 @@ apt-get -y --no-install-recommends install nodejs && \
 npm install -g npm@latest yarn
 
 FROM node AS playwright
-RUN yarn global add playwright --with-deps && playwright install
+RUN yarn global add playwright && \
+playwright install-deps && \
+playwright install
 
 FROM playwright AS final
 COPY ../ /app
