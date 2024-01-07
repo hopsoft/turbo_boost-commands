@@ -22,10 +22,10 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-WORKDIR $GITHUB_WORKSPACE/app
+WORKDIR ${GITHUB_WORKSPACE}/app
 
-RUN bundle && \
-yarn --frozen-lockfile && \
-yarn autoclean --force
+RUN bundle
+RUN yarn --frozen-lockfile
+RUN yarn autoclean --force
 
 CMD rake
