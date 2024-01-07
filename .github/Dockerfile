@@ -1,4 +1,5 @@
-ARG RUBY_VERSION=3.3
+ARG RUBY_VERSION=placeholder
+ARG GITHUB_WORKSPACE=placeholder
 
 FROM ruby:${RUBY_VERSION}-slim-bullseye AS base
 RUN apt-get -y update && apt-get -y --no-install-recommends install \
@@ -21,7 +22,7 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-WORKDIR /home/runner/work/turbo_boost-commands/turbo_boost-commands
+WORKDIR $GITHUB_WORKSPACE/app
 
 RUN bundle && \
 yarn --frozen-lockfile && \
