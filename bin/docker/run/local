@@ -22,13 +22,15 @@ fi
 rm -rfv /app/node_modules
 ln -snv /mnt/external/node_modules /app/node_modules
 yarn install
+yarn autoclean --force
 bundle install
+bundle clean --force
 
 
 # ============================================================================================================
 # Playwright - SEE: https://playwright.dev
 # ============================================================================================================
-yarn global add playwright@1.40.1
+yarn global add playwright
 playwright install-deps
 playwright install
 apt-get clean

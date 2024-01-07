@@ -14,7 +14,6 @@ npm install -g npm@latest yarn
 
 RUN apt-get clean
 RUN gem update --system
-RUN bundle config set --local clean 'true'
 
 RUN mkdir -p /mnt/external/node_modules /mnt/external/yarn/.cache /mnt/external/gems /mnt/external/database
 
