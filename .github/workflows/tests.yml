@@ -39,7 +39,7 @@ jobs:
         context: .
         file: .github/Dockerfile
         build-args: RUBY_VERSION=${{ matrix.ruby-version }}
-        tags: ${{ APP_NAME }}:${{ matrix.ruby-version }}
+        tags: ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -49,4 +49,4 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run tests
-      run: docker run ${{ APP_NAME }}:${{ matrix.ruby-version }}
+      run: docker run ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
