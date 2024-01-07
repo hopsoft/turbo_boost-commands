@@ -1,6 +1,7 @@
 *.gem
 *.key
 .containers.yml
+
 /.bundle/
 /doc/
 /log/*.log
@@ -13,5 +14,7 @@
 /test/dummy/storage/
 /test/dummy/tmp/
 /tmp/
+
 Gemfile.lock
+test/dummy/app/assets/builds/
 test/dummy/app/javascript/@turbo-boost

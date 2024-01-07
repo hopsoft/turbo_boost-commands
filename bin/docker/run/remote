@@ -28,5 +28,5 @@ bundle install
 cd test/dummy
 rm -rf tmp/pids/*
 bin/rails db:create db:migrate db:seed
-bin/rails assets:clean
+bin/rails assets:precompile tailwindcss:build assets:clean
 bin/rails server --binding=0.0.0.0 --port=3000
