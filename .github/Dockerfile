@@ -21,9 +21,9 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-COPY ../Gemfile ../package.json ../yarn.lock /
+COPY ../ /app
 
-RUN ls -lha /
+WORKDIR /app
 
 RUN bundle && \
 yarn --frozen-lockfile && \
