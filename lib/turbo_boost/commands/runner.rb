@@ -127,20 +127,25 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
     command_instance.perform_with_callbacks command_method_name
-  rescue => error
-    prevent_controller_action error: error
   end
 
   def prevent_controller_action(error: nil)
     return if controller_action_prevented?
     @controller_action_prevented = true
 
-    if error
-      render_response status: :internal_server_error
+    case error
+    when nil
+      render_response status: response_status
+      append_success_to_response
+    when TurboBoost::Commands::AbortError
+      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
+      append_streams_to_response_body
+    when TurboBoost::Commands::PerformError
+      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
       append_error_to_response error
     else
-      render_response
-      append_success_to_response
+      render_response status: :internal_server_error, headers: {"TurboBoost-Command-Status": error.message}
+      append_error_to_response error
     end
 
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
@@ -148,10 +153,12 @@ class TurboBoost::Commands::Runner
   end
 
   def update_response
-    return if controller_action_prevented?
     return if @update_response_performed
     @update_response_performed = true
 
+    return if controller_action_prevented?
+
+    append_to_response_headers
     append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
     state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
     append_success_to_response if command_succeeded?
@@ -159,9 +166,9 @@ class TurboBoost::Commands::Runner
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
   end
 
-  def render_response(html: "", status: nil, headers: {TurboBoost: :Append})
-    headers.each { |key, value| controller.response.set_header key.to_s, value.to_s }
+  def render_response(html: "", status: nil, headers: {})
     controller.render html: html, layout: false, status: status || response_status
+    append_to_response_headers headers.merge(TurboBoost: :Append)
   end
 
   def turbo_stream
@@ -181,10 +188,7 @@ class TurboBoost::Commands::Runner
     event = args.shift
     options = args.extract_options!
     case event
-    when :aborted
-      prevent_controller_action error: error
-      append_streams_to_response_body
-    when :errored then prevent_controller_action(**options)
+    when :aborted, :errored then prevent_controller_action error: options[:error]
     when :performed then prevent_controller_action if should_prevent_controller_action?
     end
   end
@@ -243,10 +247,9 @@ class TurboBoost::Commands::Runner
   end
 
   def append_error_to_response(error)
-    message = "Error in #{command_name}!\n#{error.inspect} #{error.backtrace[0, 4].inspect}"
-    Rails.logger.error message
-    append_error_event_to_response_body message
-    append_error_alert_to_response_body message
+    Rails.logger.error error.message
+    append_error_event_to_response_body error.message
+    append_error_alert_to_response_body error.message
   end
 
   def append_streams_to_response_body
@@ -272,14 +275,14 @@ class TurboBoost::Commands::Runner
 
   def append_error_alert_to_response_body(message)
     return unless Rails.env.development?
-    message << <<~MSG
-      #{message.truncate(128)}
+    message = <<~MSG
+      #{message}
 
-      Check the server logs for details and/or set the client `logger.level = 'error'` and check the JavaScript console.
+      See the HTTP header: `TurboBoost-Command-Status`
 
-      Example:
+      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.
 
-      TurboBoost.Commands.logger.level = 'error';
+      Finally, check server logs for additional info.
     MSG
     append_to_response_body turbo_stream.invoke(:alert, args: [message])
   end
@@ -320,5 +323,18 @@ class TurboBoost::Commands::Runner
     controller.response.body = html
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"
+  end
+
+  # Writes new header... will not overwrite existing header
+  def append_response_header(key, value)
+    return if controller.response.get_header key.to_s
+    controller.response.set_header key.to_s, value.to_s
+  end
+
+  def append_to_response_headers(headers = {})
+    return unless command_performed?
+    headers.each { |key, val| append_response_header key, val }
+    append_response_header "TurboBoost-Command", command_name
+    append_response_header "TurboBoost-Command-Status", "HTTP #{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}"
   end
 end

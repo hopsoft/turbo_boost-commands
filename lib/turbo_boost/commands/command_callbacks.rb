@@ -7,12 +7,13 @@ module TurboBoost::Commands::CommandCallbacks
 
   include Observable
   include ActiveSupport::Callbacks
+  include ActiveSupport::Rescuable
 
   NAME = :perform_command
 
   module ClassMethods
     [:before, :after, :around].each do |type|
-      define_method "#{type}_command" do |*method_names, &blk|
+      define_method :"#{type}_command" do |*method_names, &block|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -26,10 +27,11 @@ module TurboBoost::Commands::CommandCallbacks
         end
 
         options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
-        method_names.each { |method_name| set_callback NAME, type, method_name, options }
+        set_callback(NAME, type, options, &block)
+        method_names.each { |method_name| set_callback(NAME, type, method_name, options, &block) }
       end
 
-      define_method "skip_#{type}_command" do |*method_names, &blk|
+      define_method :"skip_#{type}_command" do |*method_names, &block|
         options = callback_options(method_names.extract_options!)
 
         # convert only to if
@@ -43,7 +45,7 @@ module TurboBoost::Commands::CommandCallbacks
         end
 
         options = options.slice(:if, :unless, :prepend).select { |_, val| val.present? }
-        method_names.each { |method_name| skip_callback NAME, type, method_name, options }
+        method_names.each { |method_name| skip_callback(NAME, type, method_name, options, &block) }
       end
 
       private
@@ -61,15 +63,26 @@ module TurboBoost::Commands::CommandCallbacks
   included do
     define_callbacks NAME,
       skip_after_callbacks_if_terminated: true,
-      terminator: ->(command, callback) {
-                    begin
-                      callback.call
-                      false # everything is ok
-                    rescue => error
-                      command.send :aborted!, error
-                      true # halt the callback chain
-                    end
-                  }
+      terminator: ->(command, callback) do
+        halt = true # STOP the callback chain (pessimistic)
+
+        begin
+          catch :abort do
+            callback.call # execution halts here if the callback invokes `throw :abort`
+            halt = false # CONTINUE the callback chain
+          end
+
+          if halt # callback chain halted, meaning `throw` was invoked in a callback
+            command.send :aborted!, TurboBoost::Commands::AbortError.new(command: command)
+          end
+        rescue UncaughtThrowError => error
+          # `throw` was invoked without :abort
+          message = "Please use `throw :abort` to abort a command."
+          command.send :aborted!, TurboBoost::Commands::AbortError.new(message, command: command, cause: error)
+        end
+
+        halt
+      end
   end
 
   def perform_with_callbacks(method_name)
@@ -79,7 +92,7 @@ module TurboBoost::Commands::CommandCallbacks
       performed!
     end
   rescue => error
-    errored! error
+    errored! TurboBoost::Commands::PerformError.new(command: self, cause: error)
   ensure
     @performing_method_name = nil
   end
@@ -104,19 +117,33 @@ module TurboBoost::Commands::CommandCallbacks
     performed? && !aborted? && !errored?
   end
 
+  def abort_handler(error = nil)
+    # noop, override in subclasses via `on_abort`
+  end
+
+  def error_handler(error)
+    # noop, override in subclasses via `on_error`
+  end
+
   private
 
   def aborted!(error)
-    changed @aborted = true
+    return if aborted? || errored? || performed?
+    changed @aborted = @performed = true
+    rescue_with_handler error
     notify_observers :aborted, error: error
   end
 
   def errored!(error)
-    changed @errored = true
+    return if aborted? || errored? || performed?
+    changed @errored = @performed = true
+    error_handler error
+    rescue_with_handler error
     notify_observers :errored, error: error
   end
 
   def performed!
+    return if performed?
     changed @performed = true
     notify_observers :performed
   end
