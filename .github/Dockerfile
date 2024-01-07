@@ -21,11 +21,10 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-WORKDIR /app
-RUN ls -lha .
+COPY Gemfile package.json yarn.lock /
 
-RUN bundle
-RUN yarn --frozen-lockfile
-RUN yarn autoclean --force
+RUN bundle && \
+yarn --frozen-lockfile && \
+yarn autoclean --force
 
 CMD rake
