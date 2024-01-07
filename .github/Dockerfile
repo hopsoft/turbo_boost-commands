@@ -21,7 +21,7 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-WORKDIR /app
+WORKDIR /home/runner/work/turbo_boost-commands/turbo_boost-commands
 
 RUN bundle && \
 yarn --frozen-lockfile && \
