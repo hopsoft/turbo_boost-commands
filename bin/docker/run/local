@@ -30,6 +30,7 @@ bundle install
 # ============================================================================================================
 yarn global add playwright
 playwright install-deps
+playwright install
 apt-get clean
 
 
