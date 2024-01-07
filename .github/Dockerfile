@@ -23,6 +23,8 @@ bundle config set --local clean 'true'
 
 COPY ../Gemfile ../package.json ../yarn.lock /
 
+RUN ls -lha /
+
 RUN bundle && \
 yarn --frozen-lockfile && \
 yarn autoclean --force
