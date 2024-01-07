@@ -28,7 +28,7 @@ bundle install
 # ============================================================================================================
 # Playwright - SEE: https://playwright.dev
 # ============================================================================================================
-yarn global add playwright
+yarn global add playwright@1.40.1
 playwright install-deps
 playwright install
 apt-get clean
