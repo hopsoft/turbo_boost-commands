@@ -41,9 +41,7 @@ jobs:
       with:
         context: ${{ github.workspace }}/app
         file: ${{ github.workspace }}/app/.github/Dockerfile
-        build-args: |
-          RUBY_VERSION=${{ matrix.ruby-version }}
-          GITHUB_WORKSPACE=${{ github.workspace }}
+        build-args: RUBY_VERSION=${{ matrix.ruby-version }}
         tags: ${{ env.APP_NAME }}:${{ matrix.ruby-version }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new

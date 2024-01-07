@@ -1,5 +1,4 @@
 ARG RUBY_VERSION=placeholder
-ARG GITHUB_WORKSPACE=placeholder
 
 FROM ruby:${RUBY_VERSION}-slim-bullseye AS base
 RUN apt-get -y update && apt-get -y --no-install-recommends install \
@@ -22,7 +21,7 @@ RUN apt-get clean && \
 gem update --system && \
 bundle config set --local clean 'true'
 
-WORKDIR ${GITHUB_WORKSPACE}/app
+WORKDIR /app
 
 RUN bundle
 RUN yarn --frozen-lockfile
