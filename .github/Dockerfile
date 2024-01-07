@@ -17,15 +17,14 @@ FROM node AS playwright
 RUN yarn global add playwright --with-deps
 
 FROM playwright AS final
-RUN apt-get clean && \
-gem update --system && \
-bundle config set --local clean 'true'
+RUN apt-get clean
 
 COPY ../ /app
-
 WORKDIR /app
 
+RUN gem update --system
 RUN bundle
+RUN bundle clean --force
 RUN yarn --frozen-lockfile
 RUN yarn autoclean --force
 
