@@ -25,8 +25,8 @@ COPY ../ /app
 
 WORKDIR /app
 
-RUN bundle && \
-yarn --frozen-lockfile && \
-yarn autoclean --force
+RUN bundle
+RUN yarn --frozen-lockfile
+RUN yarn autoclean --force
 
 CMD rake
