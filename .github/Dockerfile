@@ -16,7 +16,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 FROM node AS playwright
 RUN yarn global add playwright@1.40.1 \
   && playwright install-deps \
-  && playwright install
+  && playwright install --with=chromium
 
 FROM playwright AS final
 RUN apt-get clean \
