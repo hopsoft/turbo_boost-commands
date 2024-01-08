@@ -20,11 +20,13 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 20
+        cache: yarn
 
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
 
     - name: Yarn install
       run: yarn install --frozen-lockfile
@@ -35,30 +37,30 @@ jobs:
     - name: Install Playwright Browsers
       run: yarn playwright install chromium
 
-    - name: Install Playwright dependencies
-      run: |
-        apt-get update
-        apt-get -y --no-install-recommends install \
-          libasound2 \
-          libatk-bridge2.0-0 \
-          libatk1.0-0 \
-          libc6 \
-          libcairo-gobject2 \
-          libcairo2 \
-          libcups2 \
-          libdbus-1-3 \
-          libexpat1 \
-          libfontconfig1 \
-          libfreetype6 \
-          libgbm1 \
-          libgdk-pixbuf2.0-0 \
-          libglib2.0-0 \
-          libgtk-3-0 \
-          libnss3 \
-          libpango-1.0-0 \
-          libpangocairo-1.0-0 \
-          libstdc++6 \
-          zlib1g
+    #- name: Install Playwright dependencies
+      #run: |
+        #apt-get update
+        #apt-get -y --no-install-recommends install \
+          #libasound2 \
+          #libatk-bridge2.0-0 \
+          #libatk1.0-0 \
+          #libc6 \
+          #libcairo-gobject2 \
+          #libcairo2 \
+          #libcups2 \
+          #libdbus-1-3 \
+          #libexpat1 \
+          #libfontconfig1 \
+          #libfreetype6 \
+          #libgbm1 \
+          #libgdk-pixbuf2.0-0 \
+          #libglib2.0-0 \
+          #libgtk-3-0 \
+          #libnss3 \
+          #libpango-1.0-0 \
+          #libpangocairo-1.0-0 \
+          #libstdc++6 \
+          #zlib1g
 
     - name: Run ruby tests
       run: bundle exec rake
