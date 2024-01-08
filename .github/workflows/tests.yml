@@ -35,8 +35,8 @@ jobs:
     - name: Install Playwright Browsers
       run: yarn playwright install chromium
 
-    #- name: Install Playwright Dependencies
-      #run: yarn playwright install-deps
+    - name: Install Playwright Dependencies
+      run: yarn playwright install-deps
 
     #- name: Install Playwright dependencies
       #run: |
