@@ -34,7 +34,7 @@ jobs:
     - name: Install Playwright Dependencies
       run: |
         yarn playwright install-deps
-        yarn playwright install
+        yarn playwright install chromium
 
     - name: Run ruby tests
       run: bundle exec rake
