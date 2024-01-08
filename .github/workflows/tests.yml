@@ -39,4 +39,4 @@ jobs:
       run: yarn playwright install-deps
 
     - name: Run ruby tests
-      run: bundle exec rake
+      run: bundle exec rake MINITEST_FAIL_FAST=true
