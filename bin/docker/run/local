@@ -21,9 +21,9 @@ fi
 # ============================================================================================================
 rm -rfv /app/node_modules
 ln -snv /mnt/external/node_modules /app/node_modules
-yarn install
+yarn install --network-concurrency=3
 yarn autoclean --force
-bundle install
+bundle install --jobs=3 --retry=3
 bundle clean --force
 
 
