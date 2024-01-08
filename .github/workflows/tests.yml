@@ -32,7 +32,7 @@ jobs:
       run: yarn install --frozen-lockfile
 
     - name: Install Playwright Browsers
-      run: yarn playwright install
+      run: yarn playwright install chromium
 
     #- name: Install Playwright Dependencies
       #run: yarn playwright install-deps
