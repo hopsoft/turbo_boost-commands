@@ -30,9 +30,8 @@ bundle clean --force
 # ============================================================================================================
 # Playwright - SEE: https://playwright.dev
 # ============================================================================================================
-yarn global add playwright
-playwright install-deps
-playwright install
+yarn playwright install-deps
+yarn playwright install
 apt-get clean
 
 
