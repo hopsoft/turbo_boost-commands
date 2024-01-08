@@ -14,8 +14,6 @@ x-default-app: &default_app
   environment:
     DATABASE_URL: sqlite3:///mnt/external/database/development.sqlite3
     GEM_HOME: /mnt/external/gems
-    PLAYWRIGHT_BROWSERS_PATH: 0
-    PLAYWRIGHT_CLI_EXECUTABLE_PATH: /app/node_modules/.bin/playwright
     RAILS_ENV: development
     RAILS_LOG_TO_STDOUT: true
     RAILS_SERVE_STATIC_FILES: true

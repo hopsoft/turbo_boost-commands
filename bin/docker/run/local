@@ -31,7 +31,7 @@ bundle clean --force
 # Playwright - SEE: https://playwright.dev
 # ============================================================================================================
 yarn playwright install-deps
-yarn playwright install
+yarn playwright install chromium
 apt-get clean
 
 
