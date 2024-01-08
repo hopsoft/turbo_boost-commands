@@ -21,13 +21,11 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18
-        cache: yarn
 
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true
 
     - name: Yarn install
       run: yarn install --frozen-lockfile --network-concurrency=3
@@ -36,32 +34,10 @@ jobs:
       id: playwright-version
       run: echo "version=$(yarn playwright --version)" >> $GITHUB_OUTPUT
 
-    - name: Cache Playwright Browsers
-      id: playwright-browsers
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cache/playwright-browsers
-        key: ${{ runner.os }}-playwright-browsers-${{ steps.playwright-version.outputs.version }}
-        restore-keys: |
-          ${{ runner.os }}-playwright-browsers-
-
     - name: Install Playwright Browsers
-      if: steps.playwright-browsers.outputs.cache-hit != 'true'
       run: yarn playwright install
 
-    - name: Cache Playwright Dependencies
-      id: playwright-dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cache/playwright-dependencies
-        key: ${{ runner.os }}-playwright-dependencies-${{ steps.playwright-version.outputs.version }}
-        restore-keys: |
-          ${{ runner.os }}-playwright-dependencies-
-
     - name: Install Playwright Dependencies
-      if: steps.playwright-dependencies.outputs.cache-hit != 'true'
       run: yarn playwright install-deps
 
     - name: Run ruby tests
