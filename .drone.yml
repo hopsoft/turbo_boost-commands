@@ -9,17 +9,7 @@ steps:
   commands:
   - sleep 5 # give docker enough time to start
   - docker compose build
-  volumes:
-  - name: dockersock
-    path: /var/run
 
 services:
 - name: docker
   image: docker:dind
-  volumes:
-  - name: dockersock
-    path: /var/run
-
-volumes:
-- name: dockersock
-  temp: {}
