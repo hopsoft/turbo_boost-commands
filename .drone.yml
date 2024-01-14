@@ -3,13 +3,13 @@ kind: pipeline
 type: docker
 name: default
 
+plugins:
+  docker: {}
+
 steps:
 - name: build
-  image: docker:dind
-  commands:
-  - sleep 5 # give docker enough time to start
-  - docker compose build
-
-services:
-- name: docker
-  image: docker:dind
+  image: plugins/docker
+  settings:
+    context: .
+  tags:
+    - hopsoft/turbo_boost-commands:${DRONE_COMMIT_SHA}
