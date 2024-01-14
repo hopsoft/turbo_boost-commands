@@ -5,6 +5,22 @@ name: default
 
 steps:
 - name: build
-  build: .
+  image: docker:dind
   commands:
-  - shopt -s globstar && bundle exec standardrb --format progress
+  - sleep 5 # give docker enough time to start
+  - docker compose build
+  volumes:
+  - name: dockersock
+    path: /var/run
+
+services:
+- name: docker
+  image: docker:dind
+  privileged: true
+  volumes:
+  - name: dockersock
+    path: /var/run
+
+volumes:
+- name: dockersock
+  temp: {}
