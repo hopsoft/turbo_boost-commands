@@ -15,7 +15,11 @@ npm install -g npm@latest yarn
 RUN apt-get clean
 RUN gem update --system
 
-RUN mkdir -p /mnt/external/node_modules /mnt/external/yarn/.cache /mnt/external/gems /mnt/external/database
+RUN mkdir -p \
+/mnt/external/node_modules \
+/mnt/external/yarn/.cache \
+/mnt/external/gems \
+/mnt/external/database
 
 COPY . /app
 WORKDIR /app

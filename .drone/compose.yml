@@ -1,0 +1,53 @@
+networks:
+  primary:
+
+volumes:
+  caddy_config:
+  caddy_data:
+  drone_server:
+
+services:
+  drone_server:
+    image: drone/drone:2
+    container_name: drone-server
+    env_file: .env
+    networks:
+      - primary
+    restart: unless-stopped
+    healthcheck:
+      test: wget --tries=1 -S -O /dev/null http://localhost:80 || exit 1
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  drone_runner:
+    image: drone/drone-runner-docker:1
+    container_name: drone-runner
+    depends_on:
+      drone_server:
+        condition: service_healthy
+    env_file: .env
+    networks:
+      - primary
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  caddy:
+    image: caddy
+    container_name: caddy
+    depends_on:
+      drone_server:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - primary
+    restart: unless-stopped
+    volumes:
+      - /home/docker/.config/drone/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_config:/config
+      - caddy_data:/data

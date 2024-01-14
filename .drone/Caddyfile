@@ -1,0 +1,3 @@
+https://ci.hopsoft.io {
+	reverse_proxy http://drone_server
+}
