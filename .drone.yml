@@ -12,4 +12,4 @@ steps:
   settings:
     context: .
     tags:
-      - hopsoft/turbo_boost-commands:${DRONE_COMMIT_SHA}
+    - ${DRONE_COMMIT_SHA}
