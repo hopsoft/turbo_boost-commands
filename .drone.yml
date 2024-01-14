@@ -6,3 +6,5 @@ name: default
 steps:
 - name: build
   build: .
+  commands:
+  - shopt -s globstar && bundle exec standardrb --format progress
