@@ -16,3 +16,4 @@ validation:
     urls:
       allow:
         - ^http://runner
+        - ^http://server
