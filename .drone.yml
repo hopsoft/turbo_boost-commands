@@ -11,4 +11,4 @@ steps:
   image: plugins/docker
   settings:
     context: .
-    tags: ${DRONE_COMMIT_SHA}
+    auto_tag: true
