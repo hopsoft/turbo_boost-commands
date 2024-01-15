@@ -1,7 +1,10 @@
 version: 0.1
 http:
-  secret: local-registry
+  addr: 0.0.0.0:5000
+  secret: 35x03e9d593142529264643dc668d02b
 log:
+  accesslog:
+    disabled: false
   level: debug
 storage:
   filesystem:
@@ -12,5 +15,4 @@ validation:
   manifests:
     urls:
       allow:
-        - ^http?://([^/]+\.)*runner/
-        - ^http?://([^/]+\.)*server/
+        - ^http://runner
