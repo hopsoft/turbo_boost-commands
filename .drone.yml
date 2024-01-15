@@ -9,7 +9,6 @@ steps:
   settings:
     context: .
     registry: registry
-    repo: registry/hopsoft/turbo_boost-commands
-    tags:
-      - ci-${DRONE_COMMIT_SHA}
+    repo: "registry/hopsoft/turbo_boost-commands"
+    tags: ci-${DRONE_COMMIT_SHA}
     use_cache: true
