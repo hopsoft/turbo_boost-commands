@@ -1,0 +1,16 @@
+version: 0.1
+http:
+  secret: ci.hopsoft.io
+log:
+  level: debug
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+  delete:
+    enabled: true
+validation:
+  manifests:
+    urls:
+      allow:
+        - ^http?://([^/]+\.)*drone_runner/
+        - ^http?://([^/]+\.)*drone_server/

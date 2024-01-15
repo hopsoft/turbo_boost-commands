@@ -4,12 +4,25 @@ networks:
 volumes:
   caddy_config:
   caddy_data:
-  drone_server:
+  docker_registry_data:
 
 services:
+  docker_registry:
+    image: registry:2
+    container_name: docker-registry
+    networks:
+      - primary
+    restart: unless-stopped
+    volumes:
+      - docker_registry_data:/var/lib/registry
+      - /home/docker/.config/drone/docker_registry_config.yml:/etc/docker/registry/config.yml
+
   drone_server:
     image: drone/drone:2
     container_name: drone-server
+    depends_on:
+      docker_registry:
+        condition: service_started
     env_file: .env
     networks:
       - primary
@@ -25,6 +38,8 @@ services:
     image: drone/drone-runner-docker:1
     container_name: drone-runner
     depends_on:
+      docker_registry:
+        condition: service_started
       drone_server:
         condition: service_healthy
     env_file: .env
@@ -35,7 +50,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   caddy:
-    image: caddy
+    image: caddy:2
     container_name: caddy
     depends_on:
       drone_server:
