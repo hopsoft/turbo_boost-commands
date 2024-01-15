@@ -17,7 +17,7 @@ steps:
     use_cache: true
 
 - name: standardrb
-  image: registry:5000/hopsoft/turbo_boost-commands:ci
+  image: hopsoft/turbo_boost-commands:ci
   pull: never
   commands:
   - shopt -s globstar
