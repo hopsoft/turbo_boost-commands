@@ -14,3 +14,9 @@ steps:
     repo: registry:5000/hopsoft/turbo_boost-commands
     tags: ci-${DRONE_COMMIT_SHA}
     use_cache: true
+
+- name: standardrb
+  image: registry:5000/hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
+  commands:
+  - shopt -s globstar
+  - bundle exec standardrb --format progress
