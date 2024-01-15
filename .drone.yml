@@ -3,14 +3,11 @@ kind: pipeline
 type: docker
 name: default
 
-plugins:
-  docker: {}
-
 steps:
 - name: build
   image: plugins/docker
   settings:
     context: .
     tags:
-      - ci-${DRONE_COMMIT_SHA}
+      - "ci-${DRONE_COMMIT_SHA}"
     use_cache: true
