@@ -37,6 +37,7 @@
 1. Copy the `.env`, `Caddyfile`, and `compose.yml` config files to the server _(location of your choice, `/home/docker/.config/drone` for example)_
 
    ```sh
+   mkdir /home/docker/cache # host volume shared with the drone runner to cache docker builds
    touch /home/docker/.env /home/docker/Caddyfile /home/docker/compose.yml /home/docker/registry.yml
    chmod 600 /home/docker/.env
    chown -R docker:docker /home/docker

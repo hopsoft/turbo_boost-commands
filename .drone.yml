@@ -12,11 +12,14 @@ steps:
     insecure: true
     registry: registry:5000
     repo: registry:5000/hopsoft/turbo_boost-commands
-    tags: ci-${DRONE_COMMIT_SHA}
+    storage_path: /cache
+    tags: ci
     use_cache: true
 
 - name: standardrb
-  image: registry:5000/hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
+  image: registry:5000/hopsoft/turbo_boost-commands:ci
   commands:
   - shopt -s globstar
   - bundle exec standardrb --format progress
+  settings:
+    insecure: true
