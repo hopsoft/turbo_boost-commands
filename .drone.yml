@@ -7,9 +7,12 @@ steps:
 - name: build
   image: plugins/docker
   settings:
+    auto_tag: true
+    compress: true
     context: .
+    force_tag: true
     insecure: true
+    pull_image: true
     registry: http://registry:5000
-    repo: registry:5000/hopsoft/turbo_boost-commands
-    tags: ci-${DRONE_COMMIT_SHA}
+    repo: hopsoft/turbo_boost-commands
     use_cache: true
