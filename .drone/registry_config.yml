@@ -1,6 +1,6 @@
 version: 0.1
 http:
-  secret: registry.local
+  secret: local-registry
 log:
   level: debug
 storage:
@@ -12,5 +12,5 @@ validation:
   manifests:
     urls:
       allow:
-        - ^http?://([^/]+\.)*drone_runner/
-        - ^http?://([^/]+\.)*drone_server/
+        - ^http?://([^/]+\.)*runner/
+        - ^http?://([^/]+\.)*server/

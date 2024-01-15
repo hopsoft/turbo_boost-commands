@@ -7,7 +7,7 @@ volumes:
   docker_registry_data:
 
 services:
-  "registry.local":
+  registry:
     image: registry:2
     container_name: registry
     networks:
@@ -15,13 +15,13 @@ services:
     restart: unless-stopped
     volumes:
       - docker_registry_data:/var/lib/registry
-      - /home/docker/.config/drone/docker_registry_config.yml:/etc/docker/registry/config.yml
+      - /home/docker/.config/drone/registry_config.yml:/etc/docker/registry/config.yml
 
-  drone_server:
+  server:
     image: drone/drone:2
-    container_name: drone-server
+    container_name: server
     depends_on:
-      "registry.local":
+      registry:
         condition: service_started
     env_file: .env
     networks:
@@ -34,13 +34,13 @@ services:
       retries: 5
       start_period: 10s
 
-  drone_runner:
+  runner:
     image: drone/drone-runner-docker:1
-    container_name: drone-runner
+    container_name: runner
     depends_on:
-      "registry.local":
+      registry:
         condition: service_started
-      drone_server:
+      server:
         condition: service_healthy
     env_file: .env
     networks:
@@ -49,11 +49,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  caddy:
+  proxy:
     image: caddy:2
-    container_name: caddy
+    container_name: proxy
     depends_on:
-      drone_server:
+      server:
         condition: service_healthy
     ports:
       - "80:80"
