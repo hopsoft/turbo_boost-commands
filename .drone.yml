@@ -7,7 +7,6 @@ steps:
 - name: build
   image: plugins/docker
   settings:
-    add_host: registry:5000
     context: .
     force_tag: true
     insecure: true
