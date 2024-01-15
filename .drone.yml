@@ -8,7 +8,7 @@ steps:
   image: plugins/docker
   settings:
     context: .
-    registry: docker_registry
+    registry: registry.local
     repo: hopsoft/turbo_boost-commands
     tags:
       - ci-${DRONE_COMMIT_SHA}

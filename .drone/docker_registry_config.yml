@@ -1,6 +1,6 @@
 version: 0.1
 http:
-  secret: ci.hopsoft.io
+  secret: registry.local
 log:
   level: debug
 storage:

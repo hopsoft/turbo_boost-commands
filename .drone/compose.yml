@@ -7,9 +7,9 @@ volumes:
   docker_registry_data:
 
 services:
-  docker_registry:
+  "registry.local":
     image: registry:2
-    container_name: docker-registry
+    container_name: registry
     networks:
       - primary
     restart: unless-stopped
@@ -21,7 +21,7 @@ services:
     image: drone/drone:2
     container_name: drone-server
     depends_on:
-      docker_registry:
+      "registry.local":
         condition: service_started
     env_file: .env
     networks:
@@ -38,7 +38,7 @@ services:
     image: drone/drone-runner-docker:1
     container_name: drone-runner
     depends_on:
-      docker_registry:
+      "registry.local":
         condition: service_started
       drone_server:
         condition: service_healthy
