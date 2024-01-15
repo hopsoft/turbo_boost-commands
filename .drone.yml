@@ -12,3 +12,4 @@ steps:
   settings:
     context: .
     auto_tag: true
+    use_cache: true
