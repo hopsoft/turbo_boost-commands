@@ -9,5 +9,5 @@ steps:
   settings:
     context: .
     tags:
-      - "ci-${DRONE_COMMIT_SHA}"
+      - hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
     use_cache: true
