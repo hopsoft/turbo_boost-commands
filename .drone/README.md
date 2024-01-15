@@ -37,10 +37,9 @@
 1. Copy the `.env`, `Caddyfile`, and `compose.yml` config files to the server _(location of your choice, `/home/docker/.config/drone` for example)_
 
    ```sh
-   su - docker
-   mkdir -p ~/.config/drone
-   touch ~/.config/drone/.env ~/.config/drone/Caddyfile  ~/.config/drone/compose.yml
-   chmod 600 ~/.config/drone/.env
+   touch /home/docker/.env /home/docker/Caddyfile /home/docker/compose.yml /home/docker/registry.yml
+   chmod 600 /home/docker/.env
+   chown -R docker:docker /home/docker
    # copy contents to each file
    ```
 
@@ -49,5 +48,5 @@
 
    ```sh
    # as root
-   su docker -c "docker compose -f /home/docker/.config/drone/compose.yml up -d"
+   su docker -c "docker compose -f /home/docker/compose.yml up -d"
    ```

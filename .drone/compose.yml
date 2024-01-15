@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     volumes:
       - docker_registry_data:/var/lib/registry
-      - /home/docker/.config/drone/registry_config.yml:/etc/docker/registry/config.yml
+      - /home/docker/registry.yml:/etc/docker/registry/config.yml
 
   server:
     image: drone/drone:2
@@ -63,6 +63,6 @@ services:
       - primary
     restart: unless-stopped
     volumes:
-      - /home/docker/.config/drone/Caddyfile:/etc/caddy/Caddyfile
+      - /home/docker/Caddyfile:/etc/caddy/Caddyfile
       - caddy_config:/config
       - caddy_data:/data
