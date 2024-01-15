@@ -12,7 +12,6 @@ steps:
     context: .
     force_tag: true
     insecure: true
-    pull_image: true
     registry: http://registry:5000
     repo: hopsoft/turbo_boost-commands
     use_cache: true
