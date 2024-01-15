@@ -17,8 +17,7 @@ steps:
     use_cache: true
 
 - name: standardrb
-  image: hopsoft/turbo_boost-commands:ci
-  pull: never
+  image: registry:5000/hopsoft/turbo_boost-commands:ci
   commands:
   - shopt -s globstar
   - bundle exec standardrb --format progress
