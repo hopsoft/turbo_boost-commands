@@ -17,7 +17,9 @@ steps:
     use_cache: true
 
 - name: standardrb
-  image: http://registry:5000/hopsoft/turbo_boost-commands:ci
+  image: registry:5000/hopsoft/turbo_boost-commands:ci
+  environment:
+    DRONE_REGISTRY_PLUGIN_SKIP_VERIFY: true
   commands:
   - shopt -s globstar
   - bundle exec standardrb --format progress
