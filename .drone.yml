@@ -8,6 +8,7 @@ steps:
   image: plugins/docker
   settings:
     context: .
+    repo: hopsoft/turbo_boost-commands
     tags:
-      - hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
+      - ci-${DRONE_COMMIT_SHA}
     use_cache: true
