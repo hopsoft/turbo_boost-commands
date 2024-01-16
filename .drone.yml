@@ -6,10 +6,6 @@ name: default
 workspace:
   path: /drone/src
 
-volumes:
-  - name: cache
-    temp: {}
-
 steps:
   - name: restore
     image: meltwater/drone-cache:v1
