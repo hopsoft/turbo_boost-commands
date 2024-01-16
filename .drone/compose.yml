@@ -5,6 +5,7 @@ volumes:
   caddy_config:
   caddy_data:
   docker_registry_data:
+  drone_server_data:
 
 services:
   registry:
@@ -33,6 +34,8 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+    volumes:
+      - drone_server_data:/data
 
   runner:
     image: drone/drone-runner-docker:1

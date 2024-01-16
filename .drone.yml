@@ -4,7 +4,7 @@ type: docker
 name: default
 
 steps:
-- name: build
+- name: Build
   image: plugins/docker
   settings:
     context: .
@@ -16,8 +16,14 @@ steps:
     tags: ci
     use_cache: true
 
-- name: standardrb
+- name: Network Test
+  image: alpine
+  commands:
+  - ping -c 4 registry
+
+- name: StandardRB
   image: registry:5000/hopsoft/turbo_boost-commands:ci
   commands:
+  - ping -c 4 registry
   - shopt -s globstar
   - bundle exec standardrb --format progress
