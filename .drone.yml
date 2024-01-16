@@ -12,7 +12,7 @@ volumes:
 
 steps:
   - name: restore
-    image: plugins/drone-meltwater-cache
+    image: meltwater/drone-cache:v1
     settings:
       backend: filesystem
       restore: true
