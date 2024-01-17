@@ -4,26 +4,69 @@ type: docker
 name: default
 
 steps:
-- name: Build
-  image: plugins/docker
-  settings:
-    context: .
-    force_tag: true
-    insecure: true
-    registry: registry:5000
-    repo: registry:5000/hopsoft/turbo_boost-commands
-    storage_path: /cache
-    tags: ci
-    use_cache: true
+  - name: restore
+    image: meltwater/drone-cache:v1
+    settings:
+      backend: filesystem
+      restore: true
+      archive_format: gzip
+      filesystem_cache_root: /cache
+      mount:
+        - images
+    volumes:
+      - name: cache
+        path: /cache
 
-- name: Network Test
-  image: alpine
-  commands:
-  - ping -c 4 registry
+  - name: Build
+    image: plugins/docker
+    settings:
+      context: .
+      force_tag: true
+      insecure: true
+      registry: registry:5000
+      repo: registry:5000/hopsoft/turbo_boost-commands
+      storage_path: /cache
+      tags: ci-${DRONE_COMMIT_SHA}
+      use_cache: true
+      volumes:
+        - name: cache
+          path: /cache
 
-- name: StandardRB
-  image: registry:5000/hopsoft/turbo_boost-commands:ci
-  commands:
-  - ping -c 4 registry
-  - shopt -s globstar
-  - bundle exec standardrb --format progress
+  - name: standardrb
+    image: turbo_boost-commands:ci
+    commands:
+      - shopt -s globstar
+      - bundle exec standardrb --format progress
+    volumes:
+      - name: cache
+        path: /cache
+
+#---
+#kind: pipeline
+#type: docker
+#name: default
+
+#steps:
+#- name: Build
+  #image: plugins/docker
+  #settings:
+    #context: .
+    #force_tag: true
+    #insecure: true
+    #registry: registry:5000
+    #repo: registry:5000/hopsoft/turbo_boost-commands
+    #storage_path: /cache
+    #tags: ci
+    #use_cache: true
+
+#- name: Network Test
+  #image: alpine
+  #commands:
+  #- ping -c 4 registry
+
+#- name: StandardRB
+  #image: registry:5000/hopsoft/turbo_boost-commands:ci
+  #commands:
+  #- ping -c 4 registry
+  #- shopt -s globstar
+  #- bundle exec standardrb --format progress
