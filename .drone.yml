@@ -33,7 +33,7 @@ steps:
           path: /cache
 
   - name: standardrb
-    image: turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
+    image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
     pull: never
     commands:
       - shopt -s globstar
