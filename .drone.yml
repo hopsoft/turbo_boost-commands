@@ -48,9 +48,9 @@ steps:
   - name: peek-cache
     image: alpine
     commands:
-      - ls -lha /cache
-      - ls -lha /cache/image
-      - ls -lha /cache/images
+      - apk update
+      - apk add tree
+      - tree /cache
     volumes:
       - name: cache
         path: /cache
