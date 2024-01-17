@@ -12,7 +12,7 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - images
+        - /cache/hopsoft-images
     volumes:
       - name: cache
         path: /cache
@@ -25,7 +25,7 @@ steps:
       insecure: true
       registry: registry:5000
       repo: registry:5000/hopsoft/turbo_boost-commands
-      storage_path: /cache
+      storage_path: /cache/hopsoft-images
       tags: ci-${DRONE_COMMIT_SHA}
       use_cache: true
       volumes:
@@ -40,7 +40,7 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - images
+        - /cache/hopsoft-images
     volumes:
       - name: cache
         path: /cache
@@ -50,7 +50,7 @@ steps:
     commands:
       - apk update
       - apk add tree
-      - tree /cache
+      - tree /cache/hopsoft-images
     volumes:
       - name: cache
         path: /cache
