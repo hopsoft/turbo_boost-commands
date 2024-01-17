@@ -6,39 +6,61 @@ name: default
 workspace:
   path: /drone/src
 
+volumes:
+  - name: dockersock
+    temp: {}
+
+services:
+  - name: dind
+    image: docker:dind
+    privileged: true
+    volumes:
+    - name: dockersock
+      path: /var/run
+
 steps:
-  - name: restore
-    image: meltwater/drone-cache:v1
-    settings:
-      backend: filesystem
-      restore: true
-      archive_format: gzip
-      filesystem_cache_root: /cache
-      mount:
-        - images
+  - name: docker
+    image: docker:dind
     volumes:
-      - name: cache
-        path: /cache
-
-  - name: build
-    image: plugins/docker
-    settings:
-      context: .
-      tags: hopsoft/turbo_boost-commands:ci
-      storage_path: /cache/images
-      compress: true
-      force_tag: true
-      insecure: true
-      use_cache: true
-    volumes:
-      - name: cache
-        path: /cache
-
-  - name: standardrb
-    image: turbo_boost-commands:ci
+    - name: dockersock
+      path: /var/run
     commands:
-      - shopt -s globstar
-      - bundle exec standardrb --format progress
-    volumes:
-      - name: cache
-        path: /cache
+    - sleep 5 # give docker enough time to start
+    - docker ps -a
+
+#steps:
+  #- name: restore
+    #image: meltwater/drone-cache:v1
+    #settings:
+      #backend: filesystem
+      #restore: true
+      #archive_format: gzip
+      #filesystem_cache_root: /cache
+      #mount:
+        #- images
+    #volumes:
+      #- name: cache
+        #path: /cache
+
+  #- name: build
+    #image: plugins/docker
+    #settings:
+      #context: .
+      #tags: hopsoft/turbo_boost-commands:ci
+      #storage_path: /cache/images
+      #compress: true
+      #force_tag: true
+      #insecure: true
+      #use_cache: true
+    #volumes:
+      #- name: cache
+        #path: /cache
+
+  #- name: standardrb
+    #image: turbo_boost-commands:ci
+    #commands:
+      #- shopt -s globstar
+      #- bundle exec standardrb --format progress
+    #volumes:
+      #- name: cache
+        #path: /cache
