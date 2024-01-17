@@ -12,10 +12,10 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - /cache/hopsoft-images
+        - /var/lib/docker
     volumes:
-      - name: cache
-        path: /cache
+      - name: docker
+        path: /var/lib/docker
 
   - name: build-image
     image: plugins/docker
@@ -25,12 +25,12 @@ steps:
       insecure: true
       registry: registry:5000
       repo: registry:5000/hopsoft/turbo_boost-commands
-      storage_path: /cache/hopsoft-images
+      storage_path: /var/lib/docker
       tags: ci-${DRONE_COMMIT_SHA}
       use_cache: true
       volumes:
-        - name: cache
-          path: /cache
+        - name: docker
+          path: /var/lib/docker
 
   - name: rebuild-cache
     image: meltwater/drone-cache:v1
@@ -40,20 +40,20 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - /cache/hopsoft-images
+        - /var/lib/docker
     volumes:
-      - name: cache
-        path: /cache
+      - name: docker
+        path: /var/lib/docker
 
   - name: peek-cache
     image: alpine
     commands:
       - apk update
       - apk add tree
-      - tree /cache/hopsoft-images
+      - tree /var/lib/docker
     volumes:
-      - name: cache
-        path: /cache
+      - name: docker
+        path: /var/lib/docker
 
   - name: check-standardrb
     image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
@@ -62,8 +62,8 @@ steps:
       - shopt -s globstar
       - bundle exec standardrb --format progress
     volumes:
-      - name: cache
-        path: /cache
+      - name: docker
+        path: /var/lib/docker
 
 #---
 #kind: pipeline
