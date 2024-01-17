@@ -13,6 +13,7 @@ steps:
       filesystem_cache_root: /cache
       mount:
         - /mnt/external
+        - /var/lib/docker
     volumes:
       - name: cache
         path: /cache
@@ -23,10 +24,14 @@ steps:
       context: .
       registry: registry:5000
       repo: registry:5000/hopsoft/turbo_boost-commands
-      tags: ci-${DRONE_COMMIT_SHA}
+      tags: ci
+      #tags: ci-${DRONE_COMMIT_SHA}
+      compress: true
       force_tag: true
       insecure: true
+      storage_path: /var/lib/docker
       use_cache: true
+
 
   - name: rebuild-cache
     image: meltwater/drone-cache:v1
@@ -37,6 +42,7 @@ steps:
       filesystem_cache_root: /cache
       mount:
         - /mnt/external
+        - /var/lib/docker
     volumes:
       - name: cache
         path: /cache
