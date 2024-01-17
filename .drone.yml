@@ -17,6 +17,8 @@ steps:
     volumes:
       - name: cache
         path: /cache
+      - name: external
+        path: /mnt/external
 
   - name: build-image
     image: plugins/docker
@@ -46,6 +48,8 @@ steps:
     volumes:
       - name: cache
         path: /cache
+      - name: external
+        path: /mnt/external
 
   - name: peek
     image: alpine
@@ -56,12 +60,17 @@ steps:
     volumes:
       - name: cache
         path: /cache
+      - name: external
+        path: /mnt/external
 
   - name: prepare
-    image: docker:24
+    image: docker:24-dind
     settings:
       commands:
-        - echo "Hello World!"
+        - docker run hello-world
+    volumes:
+      - name: external
+        path: /mnt/external
 
   #- name: check-standardrb
     #image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
