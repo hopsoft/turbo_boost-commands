@@ -4,7 +4,7 @@ type: docker
 name: default
 
 steps:
-  - name: restore
+  - name: restore-cache
     image: meltwater/drone-cache:v1
     settings:
       backend: filesystem
@@ -17,7 +17,7 @@ steps:
       - name: cache
         path: /cache
 
-  - name: Build
+  - name: build-image
     image: plugins/docker
     settings:
       context: .
@@ -32,7 +32,28 @@ steps:
         - name: cache
           path: /cache
 
-  - name: standardrb
+  - name: rebuild-cache
+    image: meltwater/drone-cache:v1
+    settings:
+      backend: filesystem
+      rebuild: true
+      archive_format: gzip
+      filesystem_cache_root: /cache
+      mount:
+        - images
+    volumes:
+      - name: cache
+        path: /cache
+
+  - name: peek-cache
+    image: alpine
+    commands:
+      - ls -lha /cache
+    volumes:
+      - name: cache
+        path: /cache
+
+  - name: check-standardrb
     image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
     pull: never
     commands:
