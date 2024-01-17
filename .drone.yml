@@ -34,6 +34,7 @@ steps:
 
   - name: standardrb
     image: turbo_boost-commands:ci
+    pull: never
     commands:
       - shopt -s globstar
       - bundle exec standardrb --format progress
