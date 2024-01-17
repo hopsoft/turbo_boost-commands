@@ -12,25 +12,21 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - /var/lib/docker
+        - /mnt/external
     volumes:
-      - name: docker
-        path: /var/lib/docker
+      - name: cache
+        path: /cache
 
   - name: build-image
     image: plugins/docker
     settings:
       context: .
-      force_tag: true
-      insecure: true
       registry: registry:5000
       repo: registry:5000/hopsoft/turbo_boost-commands
-      storage_path: /var/lib/docker
       tags: ci-${DRONE_COMMIT_SHA}
+      force_tag: true
+      insecure: true
       use_cache: true
-      volumes:
-        - name: docker
-          path: /var/lib/docker
 
   - name: rebuild-cache
     image: meltwater/drone-cache:v1
@@ -40,57 +36,35 @@ steps:
       archive_format: gzip
       filesystem_cache_root: /cache
       mount:
-        - /var/lib/docker
+        - /mnt/external
     volumes:
-      - name: docker
-        path: /var/lib/docker
+      - name: cache
+        path: /cache
 
-  - name: peek-cache
+  - name: peek
     image: alpine
     commands:
       - apk update
       - apk add tree
-      - tree /var/lib/docker
+      - tree /cache
     volumes:
-      - name: docker
-        path: /var/lib/docker
+      - name: cache
+        path: /cache
 
-  - name: check-standardrb
-    image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
-    pull: never
-    commands:
-      - shopt -s globstar
-      - bundle exec standardrb --format progress
-    volumes:
-      - name: docker
-        path: /var/lib/docker
+  - name: prepare
+    image: plugins/docker
+    settings:
+      repo: registry:5000
+      insecure: true
+      commands:
+        - echo "Hello World!"
 
-#---
-#kind: pipeline
-#type: docker
-#name: default
-
-#steps:
-#- name: Build
-  #image: plugins/docker
-  #settings:
-    #context: .
-    #force_tag: true
-    #insecure: true
-    #registry: registry:5000
-    #repo: registry:5000/hopsoft/turbo_boost-commands
-    #storage_path: /cache
-    #tags: ci
-    #use_cache: true
-
-#- name: Network Test
-  #image: alpine
-  #commands:
-  #- ping -c 4 registry
-
-#- name: StandardRB
-  #image: registry:5000/hopsoft/turbo_boost-commands:ci
-  #commands:
-  #- ping -c 4 registry
-  #- shopt -s globstar
-  #- bundle exec standardrb --format progress
+  #- name: check-standardrb
+    #image: hopsoft/turbo_boost-commands:ci-${DRONE_COMMIT_SHA}
+    #pull: never
+    #commands:
+      #- shopt -s globstar
+      #- bundle exec standardrb --format progress
+    #volumes:
+      #- name: docker
+        #path: /var/lib/docker

@@ -36,6 +36,7 @@ services:
       start_period: 10s
     volumes:
       - drone_server_data:/data
+      #- /home/docker/daemon.json:/etc/docker/daemon.json
 
   runner:
     image: drone/drone-runner-docker:1
@@ -51,6 +52,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      #- /home/docker/daemon.json:/etc/docker/daemon.json
 
   proxy:
     image: caddy:2
