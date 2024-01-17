@@ -49,6 +49,8 @@ steps:
     image: alpine
     commands:
       - ls -lha /cache
+      - ls -lha /cache/image
+      - ls -lha /cache/images
     volumes:
       - name: cache
         path: /cache
