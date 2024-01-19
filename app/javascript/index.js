@@ -108,7 +108,6 @@ if (!self.TurboBoost.Commands) {
   delegates.handler = invokeCommand
   delegates.register('click', [`[${schema.commandAttribute}]`])
   delegates.register('submit', [`form[${schema.commandAttribute}]`])
-  delegates.register(schema.turboSubmitStartEvent, [`form[${schema.commandAttribute}]`])
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
