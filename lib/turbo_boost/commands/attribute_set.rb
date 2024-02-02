@@ -28,8 +28,12 @@ class TurboBoost::Commands::AttributeSet
 
       next if orig_respond_to_missing?(name, false)
 
-      self.class.define_method(name) { instance_variable_get :"@#{name}" }
-      self.class.define_method(:"#{name}?") { public_send(name).present? }
+      begin
+        self.class.define_method(name) { instance_variable_get :"@#{name}" }
+        self.class.define_method(:"#{name}?") { public_send(name).present? }
+      rescue => error
+        Rails.logger.error "TurboBoost::Commands::AttributeSet failed to define method! #{name}; #{error}"
+      end
     end
   end
 
