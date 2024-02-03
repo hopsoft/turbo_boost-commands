@@ -24,14 +24,13 @@ class TurboBoost::Commands::AttributeSet
       value = value.to_i if value.is_a?(String) && value.match?(/\A-?\d+\z/)
       value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
 
-      instance_variable_set :"@#{name}", value
-
-      next if orig_respond_to_missing?(name, false)
-
       begin
+        next if instance_variable_defined?(:"@#{name}")
+        next if orig_respond_to_missing?(name, false)
+        instance_variable_set :"@#{name}", value
         self.class.define_method(name) { instance_variable_get :"@#{name}" }
         self.class.define_method(:"#{name}?") { public_send(name).present? }
-      rescue => error
+      rescue Exception => error # standard:disable Lint/RescueException
         Rails.logger.error "TurboBoost::Commands::AttributeSet failed to define method! #{name}; #{error}"
       end
     end
