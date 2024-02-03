@@ -176,7 +176,7 @@ class TurboBoost::Commands::Runner
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256", url_safe: true
   end
 
   # Same implementation as ActionController::Base but with public visibility
