@@ -30,7 +30,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.4",
     "@tailwindcss/typography": "^0.5.9",
-    "esbuild": "^0.19.0",
+    "esbuild": "^0.20.0",
     "flowbite": "1.8.1",
     "playwright": "^1.36.2",
     "prettier": "^3.0.0",

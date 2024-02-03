@@ -18,7 +18,8 @@ function errored(event) {
   const append =
     xhr.getResponseHeader('TurboBoost') === 'Append' ||
     xhr.getResponseHeader('Content-Type').startsWith('text/vnd.turbo-boost.html')
-  append ? renderer.append(xhr.responseText) : renderer.replaceDocument(xhr.responseText)
+
+  if (append) renderer.append(xhr.responseText)
 
   const error = `Server returned a ${xhr.status} status code! TurboBoost Commands require 2XX-3XX status codes.`
 
