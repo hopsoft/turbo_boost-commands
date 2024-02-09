@@ -1,6 +1,6 @@
 <aside id="sidebar" aria-label="Sidebar"
-  class="fixed top-0 left-0 z-40 pt-14 w-64 h-screen bg-white border-r border-gray-200 transition-transform -translate-x-full md:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
-  <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
+  class="fixed top-0 left-0 z-40 w-64 h-screen bg-white border-r border-gray-200 pt-14 transition-transform -translate-x-full md:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
+  <div class="h-full px-3 py-5 overflow-y-auto bg-white dark:bg-gray-800">
     <%= render "sidebars/sponsor" %>
 
     <ul class="space-y-2">
@@ -15,9 +15,6 @@
         <%= render "sidebars/link", label: "Instrumentation", href: todos_path(doc: "instrumentation"), icon: :signal, active: params[:doc] == "instrumentation" %>
         <%= render "sidebars/link", label: "Error Handling", href: todos_path(doc: "error-handling"), icon: :exclamation_triangle, active: params[:doc] == "error-handling" %>
         <%= render "sidebars/link", label: "GlobalID Attributes", href: todos_path(doc: "globalid-attributes"), icon: :server_stack, active: params[:doc] == "globalid-attributes" %>
-        <%= render "sidebars/link", label: "State Management", href: todos_path(doc: "state-management"), icon: :circle_stack, active: params[:doc] == "state-management" %>
-        <%= render "sidebars/link", label: "State Resolution", href: todos_path(doc: "state-resolution"), icon: :rectangle_group, active: params[:doc] == "state-resolution" %>
-        <%= render "sidebars/link", label: "Optimistic Updates", href: todos_path(doc: "optimistic-updates"), icon: :face_smile, active: params[:doc] == "optimistic-updates" %>
         <%= render "sidebars/link", label: "Best Practices", href: todos_path(doc: "best-practices"), icon: :shield_check, active: params[:doc] == "best-practices" %>
       <% end %>
 

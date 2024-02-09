@@ -1,5 +1,3 @@
-import meta from '../meta'
-import state from '../state'
 import { dispatch } from '../events'
 import lifecycle from '../lifecycle'
 import urls from '../urls'
@@ -45,11 +43,6 @@ function invokeCommand(payload) {
     const xhr = new XMLHttpRequest()
     xhr.open('GET', urls.build(src, payload), true)
     xhr.setRequestHeader('Accept', 'text/vnd.turbo-boost.html, text/html, application/xhtml+xml')
-    xhr.setRequestHeader('TurboBoost-Token', meta.token)
-    state.payloadChunks.forEach((chunk, i) =>
-      xhr.setRequestHeader(`TurboBoost-State-${i.toString().padStart(4, '0')}`, chunk)
-    )
-
     xhr.addEventListener('abort', aborted)
     xhr.addEventListener('error', errored)
     xhr.addEventListener('load', loaded)

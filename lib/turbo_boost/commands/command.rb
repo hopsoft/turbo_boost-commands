@@ -19,7 +19,6 @@ require_relative "command_callbacks"
 # * params .......................... Commands specific params (frame_id, element, etc.)
 # * render .......................... Renders Rails templates, partials, etc. (doesn't halt controller request handling)
 # * renderer ........................ An ActionController::Renderer
-# * state ........................... An object that stores ephemeral `state`
 # * transfer_instance_variables ..... Transfers all instance variables to another object
 # * turbo_stream .................... A Turbo Stream TagBuilder
 # * turbo_streams ................... A list of Turbo Streams to append to the response (also aliased as streams)
@@ -77,17 +76,15 @@ class TurboBoost::Commands::Command
     end
   end
 
-  attr_reader :controller, :state_manager, :params, :turbo_streams
+  attr_reader :controller, :params, :turbo_streams
 
-  alias_method :state, :state_manager
   alias_method :streams, :turbo_streams
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
 
-  def initialize(controller, state_manager, params = {})
+  def initialize(controller, params = {})
     @controller = controller
-    @state_manager = state_manager
     @params = params
     @turbo_streams = Set.new
   end

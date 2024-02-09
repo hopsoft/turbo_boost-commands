@@ -1,15 +1,13 @@
 import './turbo'
 import schema from './schema'
-import { dispatch, commandEvents, stateEvents } from './events'
+import { dispatch, commandEvents } from './events'
 import activity from './activity'
 import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
-import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
-import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
@@ -67,9 +65,6 @@ async function invokeCommand(event) {
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
-    meta.busy = true
-    setTimeout(() => (meta.busy = false), 10)
-
     switch (driver.name) {
       case 'method':
         return driver.invokeCommand(element, payload)
@@ -88,20 +83,6 @@ async function invokeCommand(event) {
 }
 
 self.TurboBoost = self.TurboBoost || {}
-
-self.TurboBoost = {
-  ...self.TurboBoost,
-
-  stateEvents,
-
-  get state() {
-    return state.current
-  },
-
-  get stateDelta() {
-    return state.delta
-  }
-}
 
 if (!self.TurboBoost.Commands) {
   // wire things up and setup defaults for event delegation

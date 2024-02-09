@@ -7,12 +7,7 @@ export const commandEvents = {
   serverError: 'turbo-boost:command:server-error'
 }
 
-export const stateEvents = {
-  stateLoad: 'turbo-boost:state:load',
-  stateChange: 'turbo-boost:state:change'
-}
-
-export const allEvents = { ...commandEvents, ...stateEvents }
+export const allEvents = { ...commandEvents }
 
 export function dispatch(name, target, options = {}) {
   return new Promise(resolve => {
