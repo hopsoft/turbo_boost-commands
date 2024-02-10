@@ -2,16 +2,15 @@ import meta from '../meta'
 import observable from './observable'
 import { dispatch, commandEvents, stateEvents } from '../events'
 
-let loadedState, currentState, changedState
+let initialState, currentState, changedState
 let loadStateTimeout
 
 function loadState() {
   if (!meta.element) return loadStateLater()
-  const json = atob(meta.element.dataset.state)
+  const json = JSON.parse(meta.element.dataset.client)
+  initialState = { ...json }
+  currentState = observable(json)
   changedState = {}
-  currentState = observable(JSON.parse(json))
-  loadedState = { ...currentState }
-  delete meta.element.dataset.clientStateChange
   setTimeout(() =>
     dispatch(stateEvents.stateLoad, meta.element, {
       detail: { state: currentState }
@@ -24,7 +23,7 @@ function loadStateLater() {
   loadStateTimeout = setTimeout(loadState, 10)
 }
 
-if (!loadedState) loadState()
+if (!initialState) loadState()
 
 addEventListener('DOMContentLoaded', loadStateLater)
 addEventListener('load', loadStateLater)
@@ -35,9 +34,9 @@ addEventListener(commandEvents.success, loadStateLater)
 addEventListener(stateEvents.stateChange, event => {
   changedState = {}
   for (const [key, value] of Object.entries(currentState))
-    if (loadedState[key] !== value) changedState[key] = value
-  meta.element.dataset.clientStateChange = true
-  meta.element.dataset.state = btoa(JSON.stringify(currentState))
+    if (initialState[key] !== value) changedState[key] = value
+  meta.client = currentState
+  meta.delta = changedState
 })
 
 export default {
@@ -49,14 +48,5 @@ export default {
 
   get delta() {
     return changedState
-  },
-
-  // The UI state changes are split into chunks and sent to the server in an HTTP request header.
-  // Max size for an HTTP header is around 4k or 4,000 bytes.
-  // A Base64 character is an 8-bit-padded ASCII character... or 1 byte
-  //
-  // SEE: lib/state.rb - for info on how `state` is serialized/deserialized
-  get payloadChunks() {
-    return btoa(JSON.stringify(changedState)).match(/.{1,2000}/g)
   }
 }

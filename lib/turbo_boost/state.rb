@@ -21,6 +21,10 @@ class TurboBoost::State
     end
   end
 
+  def to_json
+    to_h.to_json
+  end
+
   def to_sgid_param
     store.cleanup
     URI::UID.build(store).to_sgid_param for: self.class.name, expires_in: 1.week

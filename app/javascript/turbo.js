@@ -16,13 +16,7 @@ addEventListener('turbo:before-fetch-request', event => {
     let acceptHeaders = ['text/vnd.turbo-boost.html', fetchOptions.headers['Accept']]
     acceptHeaders = acceptHeaders.filter(entry => entry && entry.trim().length > 0).join(', ')
     fetchOptions.headers['Accept'] = acceptHeaders
-    fetchOptions.headers['TurboBoost-Token'] = meta.token
   }
-
-  // always send state
-  state.payloadChunks.forEach((chunk, i) => {
-    fetchOptions.headers[`TurboBoost-State-${i.toString().padStart(4, '0')}`] = chunk
-  })
 })
 
 // fires after receiving a turbo HTTP response

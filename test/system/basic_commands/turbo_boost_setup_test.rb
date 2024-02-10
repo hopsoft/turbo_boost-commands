@@ -24,7 +24,7 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
     page.goto basic_command_url
 
     meta_element = page.wait_for_selector("meta#turbo-boost", state: "attached")
-    assert_equal "e30", meta_element["data-state"]
+    assert_equal "{}", meta_element["data-client"]
     assert_equal 0, js("Object.keys(TurboBoost.state).length")
     assert_equal 0, js("Object.values(TurboBoost.state).length")
 
@@ -32,12 +32,12 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
     js("TurboBoost.state.example = 'value'")
     assert js("TurboBoost.state.test")
     assert_equal "value", js("TurboBoost.state.example")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUifQ==", meta_element["data-state"]
+    assert_equal "{\"test\":true,\"example\":\"value\"}", meta_element["data-delta"]
 
     js("TurboBoost.state.list = [1,2,3]")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUiLCJsaXN0IjpbMSwyLDNdfQ==", meta_element["data-state"]
+    assert_equal "{\"test\":true,\"example\":\"value\",\"list\":[1,2,3]}", meta_element["data-delta"]
 
     js("TurboBoost.state.obj = {a: true, b: false, c: 'value'}")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUiLCJsaXN0IjpbMSwyLDNdLCJvYmoiOnsiYSI6dHJ1ZSwiYiI6ZmFsc2UsImMiOiJ2YWx1ZSJ9fQ==", meta_element["data-state"]
+    assert_equal "{\"test\":true,\"example\":\"value\",\"list\":[1,2,3],\"obj\":{\"a\":true,\"b\":false,\"c\":\"value\"}}", meta_element["data-delta"]
   end
 end

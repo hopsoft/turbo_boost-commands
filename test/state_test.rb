@@ -25,6 +25,7 @@ class StateTest < ActiveSupport::TestCase
     state = TurboBoost::State.new(ActiveSupport::Cache::MemoryStore.new(size: 4.kilobytes))
     state.write :example, "0" * 4097.bytes
     assert_nil state.read(:example)
+    assert_empty state.to_h
   end
 
   test "fetch" do
@@ -44,6 +45,7 @@ class StateTest < ActiveSupport::TestCase
     assert_equal "value", state.read(:example)
     sleep 1
     assert_nil state.read(:example)
+    assert_empty state.to_h
   end
 
   test "to_h" do

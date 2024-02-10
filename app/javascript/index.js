@@ -19,7 +19,12 @@ function buildCommandPayload(id, element) {
     name: element.getAttribute(schema.commandAttribute),
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
-    startedAt: Date.now()
+    startedAt: Date.now(),
+    token: meta.token, // authenticity token
+    state: {
+      delta: meta.delta, // client side state changes (optimistic updates)
+      server: meta.server // server side state when the last command performed
+    }
   }
 }
 

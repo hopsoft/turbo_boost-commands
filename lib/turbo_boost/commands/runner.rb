@@ -9,11 +9,10 @@ class TurboBoost::Commands::Runner
     "text/vnd.turbo-stream.html" => true
   }.freeze
 
-  attr_reader :controller, :state_manager
+  attr_reader :controller
 
-  def initialize(controller, state_manager)
+  def initialize(controller)
     @controller = controller
-    @state_manager = state_manager
   end
 
   def meta_tag
@@ -21,10 +20,22 @@ class TurboBoost::Commands::Runner
     options = {
       id: "turbo-boost",
       name: "turbo-boost",
-      content: masked_token,
-      data: {busy: false, state: state_manager.payload}
+      content: masked_token, # A signed token that can be used to verify command invocation
+      data: {
+        busy: false, # Indicates if a Command is active
+        client: state.to_json, # JSON that represents the state (mutable client-side)
+        server: state.to_sgid_param # SignedGlobalID that represents the state (immutable client-side)
+      }
     }
     controller.view_context.tag("meta", options).html_safe
+  end
+
+  def state
+    @state ||= begin
+      sgid = command_params.dig(:state, :server)
+      value = TurboBoost::State.from_sgid_param(sgid) if sgid
+      value || TurboBoost::State.new
+    end
   end
 
   def command_requested?
@@ -49,7 +60,7 @@ class TurboBoost::Commands::Runner
     # validate csrf token
     unless valid_client_token?
       raise TurboBoost::InvalidTokenError,
-        "CSRF token mismatch! The request header `TurboBoost-Token: #{client_token}` does not match the expected value of `#{server_token}`."
+        "Token mismatch! The token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
     true
@@ -86,7 +97,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, state_manager, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -199,7 +210,7 @@ class TurboBoost::Commands::Runner
   end
 
   def new_token
-    @new_token ||= SecureRandom.urlsafe_base64(12)
+    @new_token ||= SecureRandom.alphanumeric(13)
   end
 
   def server_token
@@ -207,11 +218,11 @@ class TurboBoost::Commands::Runner
   end
 
   def client_token
-    # (controller.request.headers["TurboBoost-Token"] || command_params[:token]).to_s
-    nil
+    command_params[:token].to_s
   end
 
   def valid_client_token?
+    return true # TODO: revisit this
     return true unless Rails.configuration.turbo_boost_commands.validate_client_token
     return false unless client_token.present?
     return false unless message_verifier.valid_message?(client_token)
