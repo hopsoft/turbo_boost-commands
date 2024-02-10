@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
-class TurboBoost::State
+class TurboBoost::Commands::State
   class << self
     def from_sgid_param(sgid)
       new URI::UID.from_sgid(sgid, for: name)&.decode
+    end
+
+    def assign_resolver(&block)
+      @resolver = block
+    end
+
+    def resolver
+      @resolver || ->(*_) {}
     end
   end
 
@@ -13,6 +21,18 @@ class TurboBoost::State
   end
 
   delegate_missing_to :store
+
+  def cache_key
+    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
+  end
+
+  def [](...)
+    store.read(...)
+  end
+
+  def []=(...)
+    store.write(...)
+  end
 
   def to_h
     store.cleanup

@@ -21,10 +21,8 @@ function buildCommandPayload(id, element) {
     elementAttributes: elements.buildAttributePayload(element),
     startedAt: Date.now(),
     token: meta.token, // authenticity token
-    state: {
-      delta: meta.delta, // client side state changes (optimistic updates)
-      server: meta.server // server side state when the last command performed
-    }
+    signedState: meta.signedState, // server side state
+    state: state.changed // client side state (optimistic updates)
   }
 }
 
@@ -103,8 +101,8 @@ self.TurboBoost = {
     return state.current
   },
 
-  get stateDelta() {
-    return state.delta
+  get stateChanges() {
+    return state.changed
   }
 }
 

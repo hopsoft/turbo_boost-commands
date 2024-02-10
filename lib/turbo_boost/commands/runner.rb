@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "sanitizer"
+require_relative "state"
 
 class TurboBoost::Commands::Runner
   SUPPORTED_MEDIA_TYPES = {
@@ -23,8 +24,8 @@ class TurboBoost::Commands::Runner
       content: masked_token, # A signed token that can be used to verify command invocation
       data: {
         busy: false, # Indicates if a Command is active
-        client: state.to_json, # JSON that represents the state (mutable client-side)
-        server: state.to_sgid_param # SignedGlobalID that represents the state (immutable client-side)
+        state: state.to_json, # JSON that represents the current state
+        signed_state: state.to_sgid_param # Signed value that represents the current state (restored when commands are invoked)
       }
     }
     controller.view_context.tag("meta", options).html_safe
@@ -32,9 +33,9 @@ class TurboBoost::Commands::Runner
 
   def state
     @state ||= begin
-      sgid = command_params.dig(:state, :server)
-      value = TurboBoost::State.from_sgid_param(sgid) if sgid
-      value || TurboBoost::State.new
+      sgid = command_params[:signed_state]
+      value = TurboBoost::Commands::State.from_sgid_param(sgid) if sgid
+      value || TurboBoost::Commands::State.new
     end
   end
 
@@ -59,7 +60,7 @@ class TurboBoost::Commands::Runner
 
     # validate csrf token
     unless valid_client_token?
-      raise TurboBoost::InvalidTokenError,
+      raise TurboBoost::Commands::InvalidTokenError,
         "Token mismatch! The token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
@@ -222,12 +223,12 @@ class TurboBoost::Commands::Runner
   end
 
   def valid_client_token?
-    return true # TODO: revisit this
-    return true unless Rails.configuration.turbo_boost_commands.validate_client_token
-    return false unless client_token.present?
-    return false unless message_verifier.valid_message?(client_token)
-    unmasked_client_token = message_verifier.verify(client_token)
-    unmasked_client_token == server_token
+    # return true unless Rails.configuration.turbo_boost_commands.validate_client_token
+    # return false unless client_token.present?
+    # return false unless message_verifier.valid_message?(client_token)
+    # unmasked_client_token = message_verifier.verify(client_token)
+    # unmasked_client_token == server_token
+    true # TODO: revisit this
   end
 
   def should_redirect?

@@ -23,7 +23,6 @@ x-default-app: &default_app
     - primary
   volumes:
     - .:/app
-    - ../universalid:/universalid
     - external:/mnt/external
 
 services:

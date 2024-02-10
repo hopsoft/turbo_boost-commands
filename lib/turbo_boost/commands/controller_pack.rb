@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../state"
 require_relative "runner"
 
 class TurboBoost::Commands::ControllerPack

@@ -7,7 +7,7 @@ let loadStateTimeout
 
 function loadState() {
   if (!meta.element) return loadStateLater()
-  const json = JSON.parse(meta.element.dataset.client)
+  const json = JSON.parse(meta.element.dataset.state)
   initialState = { ...json }
   currentState = observable(json)
   changedState = {}
@@ -32,21 +32,22 @@ addEventListener('turbo:frame-load', loadStateLater)
 addEventListener(commandEvents.success, loadStateLater)
 
 addEventListener(stateEvents.stateChange, event => {
-  changedState = {}
   for (const [key, value] of Object.entries(currentState))
     if (initialState[key] !== value) changedState[key] = value
-  meta.client = currentState
-  meta.delta = changedState
 })
 
 export default {
   events: stateEvents,
 
+  get initial() {
+    return { ...initialState }
+  },
+
   get current() {
     return currentState
   },
 
-  get delta() {
-    return changedState
+  get changed() {
+    return { ...changedState }
   }
 }

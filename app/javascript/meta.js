@@ -17,27 +17,14 @@ class Meta {
     return (this.element.dataset.busy = !!value)
   }
 
-  // mutable and optimistic client side state
-  get client() {
-    return JSON.parse(this.element.dataset.client)
+  // mutable state representation for use on the client
+  get state() {
+    return this.element.dataset.state
   }
 
-  set client(value = {}) {
-    return (this.element.dataset.client = JSON.stringify(value))
-  }
-
-  // mutable and optimistic client side state
-  get delta() {
-    return this.element.dataset.delta ? JSON.parse(this.element.dataset.delta) : {}
-  }
-
-  set delta(value = {}) {
-    return (this.element.dataset.delta = JSON.stringify(value))
-  }
-
-  // immutable server side state - from the last command
-  get server() {
-    return this.element.dataset.server
+  // signed and immutable server state determined by the last command
+  get signedState() {
+    return this.element.dataset.signedState
   }
 }
 

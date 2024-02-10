@@ -9,8 +9,8 @@ FileUtils.rm_r link, force: true, verbose: true if File.exist?(link) && !File.sy
 FileUtils.ln_s target, link, force: true, verbose: true unless File.exist?(link)
 
 pin "@hotwired/stimulus", to: "https://ga.jspm.io/npm:@hotwired/stimulus@3.2.2/dist/stimulus.js"
-pin "@hotwired/turbo", to: "https://ga.jspm.io/npm:@hotwired/turbo@7.3.0/dist/turbo.es2017-esm.js"
-pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@7.3.0/app/javascript/turbo/index.js"
+pin "@hotwired/turbo", to: "https://ga.jspm.io/npm:@hotwired/turbo@8.0.2/dist/turbo.es2017-esm.js"
+pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@8.0.2/app/javascript/turbo/index.js"
 pin "@rails/actioncable/src", to: "https://ga.jspm.io/npm:@rails/actioncable@7.1.3/src/index.js"
 pin "@turbo-boost/streams", to: "https://ga.jspm.io/npm:@turbo-boost/streams@0.0.8/app/assets/builds/@turbo-boost/streams.js"
 pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"

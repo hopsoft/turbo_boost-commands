@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module TurboBoost::Commands
+  class InvalidTokenError < StandardError; end
+
   class InvalidClassError < StandardError; end
 
   class InvalidMethodError < StandardError; end
