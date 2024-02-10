@@ -40,12 +40,4 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
     js("TurboBoost.state.obj = {a: true, b: false, c: 'value'}")
     assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUiLCJsaXN0IjpbMSwyLDNdLCJvYmoiOnsiYSI6dHJ1ZSwiYiI6ZmFsc2UsImMiOiJ2YWx1ZSJ9fQ==", meta_element["data-state"]
   end
-
-  test "turbo boost cookie" do
-    page.goto basic_command_url
-
-    meta_element = page.wait_for_selector("meta#turbo-boost", state: "attached")
-    assert js("document.cookie").include?("turbo_boost.state")
-    assert_equal "e30", meta_element["data-state"]
-  end
 end

@@ -1,137 +1,36 @@
 # frozen_string_literal: true
 
-require_relative "state/errors"
-
 class TurboBoost::State
   class << self
-    def serialize_base64(data)
-      Base64.urlsafe_encode64 data.to_json, padding: false
-    end
-
-    def deserialize_base64(string)
-      return {} if string.blank?
-      JSON.parse Base64.urlsafe_decode64(string)
-    rescue => error
-      raise TurboBoost::State::DeserializationError, "Unable to decode and parse Base64 string! \"#{string}\" #{error.message}"
-    end
-
-    def serialize(data)
-      dump = Marshal.dump(data)
-      deflated = Zlib::Deflate.deflate(dump, Zlib::BEST_COMPRESSION)
-      Base64.urlsafe_encode64 deflated
-    end
-
-    def deserialize(string)
-      return {} if string.blank?
-      decoded = Base64.urlsafe_decode64(string)
-      inflated = Zlib::Inflate.inflate(decoded)
-      Marshal.load inflated
-    rescue => error
-      raise TurboBoost::State::DeserializationError, "Unable to decode, inflate, and load Base64 string! \"#{string}\" #{error.message}"
-    end
-
-    def key_for(*keys)
-      keys.map { |key| key.try(:cache_key) || key.to_s }.join("/")
+    def from_sgid_param(sgid)
+      new URI::UID.from_sgid(sgid, for: name)&.decode
     end
   end
 
-  def initialize(ordinal_payload = nil)
-    @internal_data = {}.with_indifferent_access
-    @internal_keys = []
-
-    deserialize(ordinal_payload).each do |(key, value)|
-      write key, value
-    end
+  def initialize(store = nil)
+    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.week, size: 32.kilobytes)
+    @store.cleanup
   end
 
-  delegate :deserialize, :key_for, :serialize, :serialize_base64, to: "self.class"
-  delegate :size, to: :internal_data
-  delegate :include?, :has_key?, :key?, :member?, to: :internal_data
+  delegate_missing_to :store
 
-  def cache_key
-    "turbo-boost/ui-state/#{Digest::SHA2.base64digest(payload)}"
-  end
-
-  def read(*keys, default: nil)
-    value = internal_data[key_for(*keys)]
-    value = write(*keys, default) if value.nil? && default
-    value
-  end
-
-  def write(*keys, value)
-    key = key_for(*keys)
-    internal_keys.delete key if internal_keys.include?(key)
-    internal_keys << key
-    internal_data[key] = value
-    value
-  end
-
-  def delete(*keys)
-    key = key_for(*keys)
-    internal_keys.delete key
-    internal_data.delete key
-  end
-
-  def payload
-    serialize_base64 internal_data
-  end
-
-  def ordinal_payload
-    serialize internal_list
-  end
-
-  def clear
-    internal_keys.clear
-    internal_data.clear
-  end
-
-  def shrink!
-    @internal_data = shrink(internal_data).with_indifferent_access
-    @internal_keys = internal_keys & internal_data.keys
-  end
-
-  def prune!(max_bytesize: 2.kilobytes)
-    return if internal_keys.blank?
-    return if internal_data.blank?
-
-    percentage = (max_bytesize > 0) ? ordinal_payload.bytesize / max_bytesize.to_f : 0
-    while percentage > 1
-      keys_to_keep = internal_keys.slice((internal_keys.length - (internal_keys.length / percentage).floor)..-1)
-      keys_to_remove = internal_keys - keys_to_keep
-      @internal_keys = keys_to_keep
-      keys_to_remove.each { |key| internal_data.delete key }
-      percentage = (max_bytesize > 0) ? ordinal_payload.bytesize / max_bytesize.to_f : 0
-    end
-  end
-
-  # Returns a copy of the data as a Hash
   def to_h
-    internal_data.deep_dup
+    store.cleanup
+    data.each_with_object(HashWithIndifferentAccess.new) do |(key, entry), memo|
+      memo[key] = entry.value
+    end
+  end
+
+  def to_sgid_param
+    store.cleanup
+    URI::UID.build(store).to_sgid_param for: self.class.name, expires_in: 1.week
   end
 
   private
 
-  attr_reader :internal_keys
-  attr_reader :internal_data
+  attr_reader :store
 
-  def internal_list
-    internal_keys.map { |key| [key, internal_data[key]] }
-  end
-
-  def shrink(obj)
-    case obj
-    when Array
-      obj.each_with_object([]) do |value, memo|
-        value = shrink(value)
-        memo << value if value.present?
-      end
-    when Hash
-      obj.each_with_object({}.with_indifferent_access) do |(key, value), memo|
-        value = shrink(value)
-        memo[key] = value if value.present?
-      end
-    else
-      obj
-    end
+  def data
+    store.instance_variable_get(:@data) || {}
   end
 end

@@ -148,8 +148,7 @@ class TurboBoost::Commands::Runner
       append_error_to_response error
     end
 
-    append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
+    append_meta_tag_to_response_body
   end
 
   def update_response
@@ -159,8 +158,7 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
 
     append_to_response_headers
-    append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
+    append_meta_tag_to_response_body
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
@@ -179,11 +177,6 @@ class TurboBoost::Commands::Runner
     ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256", url_safe: true
   rescue
     ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
-  end
-
-  # Same implementation as ActionController::Base but with public visibility
-  def cookies
-    controller.request.cookie_jar
   end
 
   def handle_command_event(*args)
@@ -210,11 +203,12 @@ class TurboBoost::Commands::Runner
   end
 
   def server_token
-    cookies.encrypted["turbo_boost.token"]
+    nil
   end
 
   def client_token
-    (controller.request.headers["TurboBoost-Token"] || command_params[:token]).to_s
+    # (controller.request.headers["TurboBoost-Token"] || command_params[:token]).to_s
+    nil
   end
 
   def valid_client_token?
@@ -259,7 +253,6 @@ class TurboBoost::Commands::Runner
   end
 
   def append_meta_tag_to_response_body
-    cookies.encrypted["turbo_boost.token"] = {value: new_token, path: "/"}
     append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-boost")
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the meta tag to the response! #{error.message}"

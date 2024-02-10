@@ -2,6 +2,7 @@
 
 require "turbo-rails"
 require "turbo_boost/streams"
+require "universalid"
 require_relative "version"
 require_relative "http_status_codes"
 require_relative "../errors"
@@ -19,7 +20,6 @@ module TurboBoost::Commands
 
   class Engine < ::Rails::Engine
     config.turbo_boost_commands = ActiveSupport::OrderedOptions.new
-    config.turbo_boost_commands[:max_cookie_size] = ActionDispatch::Cookies::MAX_COOKIE_SIZE / 3
     config.turbo_boost_commands[:validate_client_token] = false
 
     # must opt-in to state overrides

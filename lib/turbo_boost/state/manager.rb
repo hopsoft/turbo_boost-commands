@@ -36,20 +36,19 @@ class TurboBoost::State::Manager
   # For ActiveModel::Dirty tracking
   define_attribute_methods :state
 
-  attr_reader :controller, :cookie_data, :header_data, :server_data
+  attr_reader :controller, :header_data, :server_data
 
   def initialize(controller)
     @controller = controller
 
     begin
-      @state = TurboBoost::State.new(cookie) # server state as stored in the cookie
+      @state = TurboBoost::State.new
     rescue => error
       Rails.logger.error "Failed to construct TurboBoost::State! #{error.message}"
       @state = TurboBoost::State.new
     end
 
     # State the server used to render the page last time
-    cookie_state_hash = state.to_h
 
     # State managed by the server on the backend (redis cache etc.)
     # SEE: `TurboBoost::State::Manager.state_override_block`
@@ -85,7 +84,6 @@ class TurboBoost::State::Manager
       end
     end
 
-    @cookie_data = cookie_state_hash
     @header_data = header_state_hash
     @server_data = server_state_hash
   rescue => error
@@ -95,11 +93,6 @@ class TurboBoost::State::Manager
   end
 
   delegate :cache_key, to: :state
-
-  # Same implementation as ActionController::Base but with public visibility
-  def cookies
-    controller.request.cookie_jar
-  end
 
   def [](*keys, default: nil)
     state.read(*keys, default: default)
@@ -127,21 +120,6 @@ class TurboBoost::State::Manager
     state.payload
   end
 
-  def ordinal_payload
-    provisional_state.clear
-    state.shrink!
-    state.prune! max_bytesize: TurboBoost::Commands.config.max_cookie_size
-    state.ordinal_payload
-  end
-
-  def write_cookie
-    return unless changed? || cookie.blank?
-    cookies.signed["turbo_boost.state"] = {value: ordinal_payload, path: "/", expires: 1.day.from_now}
-    changes_applied
-  rescue => error
-    Rails.logger.error "Failed to write the TurboBoost::State cookie! #{error.message}"
-  end
-
   private
 
   attr_reader :state
@@ -153,10 +131,5 @@ class TurboBoost::State::Manager
   # State that exists on the client.
   def header
     headers.map(&:last).join
-  end
-
-  # State that the server last rendered with.
-  def cookie
-    cookies.signed["turbo_boost.state"]
   end
 end
