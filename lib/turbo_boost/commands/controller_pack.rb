@@ -15,7 +15,6 @@ class TurboBoost::Commands::ControllerPack
     :command_requested?,
     :command_succeeded?,
     :controller,
-    :meta_tag,
     :state,
     to: :runner
   )

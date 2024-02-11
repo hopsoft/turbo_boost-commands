@@ -12,7 +12,7 @@ pin "@hotwired/stimulus", to: "https://ga.jspm.io/npm:@hotwired/stimulus@3.2.2/d
 pin "@hotwired/turbo", to: "https://ga.jspm.io/npm:@hotwired/turbo@8.0.2/dist/turbo.es2017-esm.js"
 pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@8.0.2/app/javascript/turbo/index.js"
 pin "@rails/actioncable/src", to: "https://ga.jspm.io/npm:@rails/actioncable@7.1.3/src/index.js"
-pin "@turbo-boost/streams", to: "https://ga.jspm.io/npm:@turbo-boost/streams@0.0.8/app/assets/builds/@turbo-boost/streams.js"
+pin "@turbo-boost/streams", to: "https://ga.jspm.io/npm:@turbo-boost/streams@0.0.9/app/assets/builds/@turbo-boost/streams.js"
 pin "debounced", to: "https://ga.jspm.io/npm:debounced@0.0.5/src/index.js"
 pin "flowbite", to: "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.turbo.min.js"
 pin "@turbo-boost/commands", to: "@turbo-boost/commands.js"

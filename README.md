@@ -169,19 +169,6 @@ rails app:template LOCATION='https://railsbytes.com/script/xkjsbB'
    +import '@turbo-boost/commands'
    ```
 
-3. Add TurboBoost to your Rails app
-
-   ```diff
-   # app/views/layouts/application.html.erb
-   <html>
-     <head>
-   +  <%= turbo_boost.meta_tag %>
-     </head>
-     <body>
-     </body>
-   </html>
-   ```
-
 ## Usage
 
 This example illustrates how to use TurboBoost Commands to manage upvotes on a Post.
