@@ -16,20 +16,20 @@ class TurboBoost::Commands::Runner
     @controller = controller
   end
 
-  def meta_tag
-    masked_token = message_verifier.generate(new_token)
-    options = {
-      id: "turbo-boost",
-      name: "turbo-boost",
-      content: masked_token, # A signed token that can be used to verify command invocation
-      data: {
-        busy: false, # Indicates if a Command is active
-        state: state.to_json, # JSON that represents the current state
-        signed_state: state.to_sgid_param # Signed value that represents the current state (restored when commands are invoked)
-      }
-    }
-    controller.view_context.tag("meta", options).html_safe
-  end
+  # def meta_tag
+  #   masked_token = message_verifier.generate(new_token)
+  #   options = {
+  #     id: "turbo-boost",
+  #     name: "turbo-boost",
+  #     content: masked_token, # A signed token that can be used to verify command invocation
+  #     data: {
+  #       busy: false, # Indicates if a Command is active
+  #       state: state.to_json, # JSON that represents the current state
+  #       signed_state: state.to_sgid_param # Signed value that represents the current state (restored when commands are invoked)
+  #     }
+  #   }
+  #   controller.view_context.tag("meta", options).html_safe
+  # end
 
   def state
     @state ||= begin

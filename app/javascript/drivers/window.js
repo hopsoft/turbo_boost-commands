@@ -1,4 +1,3 @@
-import meta from '../meta'
 import state from '../state'
 import { dispatch } from '../events'
 import lifecycle from '../lifecycle'
