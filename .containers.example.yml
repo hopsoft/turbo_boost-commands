@@ -1,0 +1,13 @@
+---
+organization:
+  name: turbo_boost
+
+app:
+  name: turbo_boost-commands
+  directory: /path/to/turbo_boost-commands
+
+docker:
+  directory: /path/to/turbo_boost-commands
+  compose_files:
+    - /path/to/turbo_boost-commands/docker-compose.yml
+  default_service: web
