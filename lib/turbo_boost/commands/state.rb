@@ -20,6 +20,7 @@ class TurboBoost::Commands::State
     @store.cleanup
   end
 
+  delegate :to_json, to: :to_h
   delegate_missing_to :store
 
   def each
@@ -34,6 +35,10 @@ class TurboBoost::Commands::State
     # self.class.resolver.call self, client_state
   end
 
+  def now
+    @now ||= self.class.new
+  end
+
   def cache_key
     "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
   end
@@ -44,10 +49,6 @@ class TurboBoost::Commands::State
 
   def []=(...)
     store.write(...)
-  end
-
-  def to_json
-    to_h.to_json
   end
 
   def to_sgid_param
