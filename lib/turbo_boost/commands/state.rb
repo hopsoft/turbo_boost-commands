@@ -1,26 +1,38 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::State
+  include Enumerable
+
   class << self
     def from_sgid_param(sgid)
       new URI::UID.from_sgid(sgid, for: name)&.decode
     end
 
+    attr_reader :resolver
+
     def assign_resolver(&block)
       @resolver = block
-    end
-
-    def resolver
-      @resolver || ->(*_) {}
     end
   end
 
   def initialize(store = nil)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.week, size: 32.kilobytes)
+    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
     @store.cleanup
   end
 
   delegate_missing_to :store
+
+  def each
+    data.keys.each do |key|
+      yield key, self[key]
+    end
+  end
+
+  # TODO: implement state resolution
+  def resolve(client_state)
+    # return unless self.class.resolver
+    # self.class.resolver.call self, client_state
+  end
 
   def cache_key
     "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
@@ -32,13 +44,6 @@ class TurboBoost::Commands::State
 
   def []=(...)
     store.write(...)
-  end
-
-  def to_h
-    store.cleanup
-    data.each_with_object(HashWithIndifferentAccess.new) do |(key, entry), memo|
-      memo[key] = entry.value
-    end
   end
 
   def to_json

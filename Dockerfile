@@ -10,7 +10,8 @@ tzdata
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get -y --no-install-recommends install nodejs && \
-npm install -g npm@latest yarn
+corepack enable && \
+yarn set version stable
 
 RUN apt-get clean
 RUN gem update --system

@@ -16,21 +16,6 @@ class TurboBoost::Commands::Runner
     @controller = controller
   end
 
-  def meta_tag
-    masked_token = message_verifier.generate(new_token)
-    options = {
-      id: "turbo-boost",
-      name: "turbo-boost",
-      content: masked_token, # A signed token that can be used to verify command invocation
-      data: {
-        busy: false, # Indicates if a Command is active
-        state: state.to_json, # JSON that represents the current state
-        signed_state: state.to_sgid_param # Signed value that represents the current state (restored when commands are invoked)
-      }
-    }
-    controller.view_context.tag("meta", options).html_safe
-  end
-
   def state
     @state ||= begin
       sgid = command_params[:signed_state]
@@ -138,6 +123,7 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
+    state.resolve command_params[:state]
     command_instance.perform_with_callbacks command_method_name
   end
 
@@ -160,7 +146,8 @@ class TurboBoost::Commands::Runner
       append_error_to_response error
     end
 
-    append_meta_tag_to_response_body
+    append_authenticity_token_to_response_body
+    append_command_state_to_response_body
   end
 
   def update_response
@@ -170,7 +157,8 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
 
     append_to_response_headers
-    append_meta_tag_to_response_body
+    append_authenticity_token_to_response_body
+    append_command_state_to_response_body
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
@@ -264,10 +252,16 @@ class TurboBoost::Commands::Runner
     command_instance.turbo_streams.each { |stream| append_to_response_body stream }
   end
 
-  def append_meta_tag_to_response_body
-    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-boost")
+  def append_authenticity_token_to_response_body
+    append_to_response_body turbo_stream.invoke("TurboBoost.Commands.token=", args: [new_token], camelize: false)
   rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append the meta tag to the response! #{error.message}"
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command token to the response! #{error.message}"
+  end
+
+  def append_command_state_to_response_body
+    append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [state.to_json, state.to_sgid_param], camelize: false)
+  rescue => error
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
   end
 
   def append_success_event_to_response_body

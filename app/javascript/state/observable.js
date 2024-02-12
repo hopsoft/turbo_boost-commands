@@ -1,4 +1,3 @@
-import meta from '../meta'
 import { dispatch, stateEvents as events } from '../events'
 
 let head
@@ -9,13 +8,13 @@ function observable(object, parent = null) {
   const proxy = new Proxy(object, {
     deleteProperty(target, key) {
       delete target[key]
-      dispatch(events.stateChange, meta.element, { detail: { state: head } })
+      dispatch(events.stateChange, document, { detail: { state: head } })
       return true
     },
 
     set(target, key, value, receiver) {
       target[key] = observable(value, this)
-      dispatch(events.stateChange, meta.element, { detail: { state: head } })
+      dispatch(events.stateChange, document, { detail: { state: head } })
       return true
     }
   })

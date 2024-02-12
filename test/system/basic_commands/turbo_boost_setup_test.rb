@@ -15,7 +15,7 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
     assert js("Array.isArray(TurboBoost.Commands.eventDelegates.find(e => e.name === 'submit').selectors)")
     assert_equal "function", js("typeof TurboBoost.Commands.registerEventDelegate")
     assert_equal "object", js("typeof TurboBoost.Commands.events")
-    assert_equal "object", js("typeof TurboBoost.state")
+    assert_equal "object", js("typeof TurboBoost.State")
     assert_equal "object", js("typeof TurboBoost.Commands.logger")
     assert_equal "debug", js("TurboBoost.Commands.logger.level")
   end
@@ -23,15 +23,14 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
   test "turbo boost client state" do
     page.goto basic_command_url
 
-    meta_element = page.wait_for_selector("meta#turbo-boost", state: "attached")
-    assert_equal "{}", meta_element["data-state"]
-    assert_equal 0, js("Object.keys(TurboBoost.state).length")
-    assert_equal 0, js("Object.values(TurboBoost.state).length")
+    assert js("TurboBoost.State.signed.length > 0")
+    assert_equal 0, js("Object.keys(TurboBoost.State.current).length")
+    assert_equal 0, js("Object.values(TurboBoost.State.current).length")
 
-    js("TurboBoost.state.test = true")
-    js("TurboBoost.state.example = 'value'")
-    assert js("TurboBoost.state.test")
-    assert_equal "value", js("TurboBoost.state.example")
-    assert_equal "value", js("TurboBoost.stateChanges.example")
+    js("TurboBoost.State.current.test = true")
+    js("TurboBoost.State.current.example = 'value'")
+    assert js("TurboBoost.State.current.test")
+    assert_equal "value", js("TurboBoost.State.current.example")
+    assert_equal "value", js("TurboBoost.State.changed.example")
   end
 end
