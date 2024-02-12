@@ -28,14 +28,11 @@
     "@tailwindcss/typography": "^0.5.10",
     "esbuild": "^0.20.0",
     "flowbite": "1.7.0",
-    "playwright": "^1.41.2",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --external:alpinejs --external:@alpinejs/morph --external:@hotwired/turbo-rails --external:@turbo-boost/streams --format=esm --target=es2020,chrome79,edge44,firefox71,opera65,safari13 --outfile=app/assets/builds/@turbo-boost/commands.js",
-    "build:watch": "yarn build -- --watch"
-  },
-  "packageManager": "yarn@4.1.0"
+    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --external:alpinejs --external:@alpinejs/morph --external:@hotwired/turbo-rails --external:@turbo-boost/streams --format=esm --target=es2020,chrome79,edge44,firefox71,opera65,safari13 --outfile=app/assets/builds/@turbo-boost/commands.js"
+  }
 }

@@ -21,15 +21,11 @@ fi
 # ============================================================================================================
 rm -rfv /app/node_modules
 ln -snv /mnt/external/node_modules /app/node_modules
-yarn set version stable
-yarn install
+npm install -g playwright
+playwright install-deps chromium
+playwright install chromium
+npm install --prefix /mnt/external/node_modules
 bundle install
-
-
-# ============================================================================================================
-# Playwright Dependencies - SEE: https://playwright.dev
-# ============================================================================================================
-yarn playwright install --with-deps
 
 
 # ============================================================================================================

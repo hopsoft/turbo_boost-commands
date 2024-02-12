@@ -18,7 +18,6 @@ x-default-app: &default_app
     RAILS_ENV: development
     RAILS_LOG_TO_STDOUT: true
     RAILS_SERVE_STATIC_FILES: true
-    YARN_CACHE_FOLDER: /mnt/external/yarn/.cache
   networks:
     - primary
   volumes:
@@ -56,7 +55,7 @@ services:
   esbuild:
     <<: *default_app
     container_name: turbo_boost-commands-esbuild
-    command: /bin/bash -c "yarn build:watch"
+    command: /bin/bash -c "npm run build:watch"
     depends_on:
       web:
         condition: service_healthy

@@ -3,5 +3,5 @@
 shopt -s globstar
 bundle exec magic_frozen_string_literal
 bundle exec standardrb --fix
-yarn run prettier --write .
+npx prettier --write .
 cd test/dummy && bin/rails tailwindcss:clobber tailwindcss:build && cd -

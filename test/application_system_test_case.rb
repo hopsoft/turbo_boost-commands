@@ -22,7 +22,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by :null
 
   def self.playwright
-    @playwright ||= Playwright.create(playwright_cli_executable_path: Rails.root.join("../../node_modules/.bin/playwright"))
+    @playwright ||= Playwright.create(playwright_cli_executable_path: `which playwright`.strip)
   end
 
   alias_method :orig_page, :page

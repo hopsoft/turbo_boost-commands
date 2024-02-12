@@ -548,19 +548,15 @@ fly deploy
 > [!TIP]
 > Run these commands on the host machine _(i.e. not inside the dev container)_
 
-> [!TIP]
-> Ensure you're using the latest stable version of `yarn`
-> `corepack enable && yarn set version stable`
-
-1. Run `yarn upgrade-interactive` and `bundle update` to pick up the latest dependencies
+1. Run `npm update` and `bundle update` to pick up the latest dependencies
 1. Bump version number at `lib/turbo_boost-streams/version.rb`. Pre-release versions use `.preN`
 1. Bump version number at `package.json` _(make sure it matches)_. Pre-release versions use `-preN`
 1. Run `bin/standardize`
 1. Run `rake build`
-1. Run `yarn build`
+1. Run `npm build`
 1. Commit and push any changes to GitHub
 1. Run `rake release`
-1. Run `yarn npm publish --access public`
+1. Run `npm publish ???? --access public`
 1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases)) and generate the changelog for the stable release for it
 
 ## About TurboBoost

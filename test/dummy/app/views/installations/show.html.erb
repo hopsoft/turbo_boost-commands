@@ -24,7 +24,7 @@
       <% end %>
 
       <%= render "instructions/instruction", step: 2, heading: "Add the NPM packages to your package.json file" do %>
-        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_yarn_add.sh.erb" %>
+        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_npm_install.sh.erb" %>
         <p class="!mt-6">The command above adds this to package.json.</p>
         <%= render "examples/example", language: :json, erb: true, path: "package.json", source_path: "app/views/installations/source_code/_package.json.erb" %>
 
