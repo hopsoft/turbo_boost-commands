@@ -123,7 +123,7 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
-    state.resolve command_params[:state]
+    state.resolve command_params[:client_state]
     command_instance.perform_with_callbacks command_method_name
   end
 
@@ -146,7 +146,7 @@ class TurboBoost::Commands::Runner
       append_error_to_response error
     end
 
-    append_authenticity_token_to_response_body
+    append_command_token_to_response_body
     append_command_state_to_response_body
   end
 
@@ -157,7 +157,7 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
 
     append_to_response_headers
-    append_authenticity_token_to_response_body
+    append_command_token_to_response_body
     append_command_state_to_response_body
     append_success_to_response if command_succeeded?
   rescue => error
@@ -198,25 +198,29 @@ class TurboBoost::Commands::Runner
     TurboBoost::Commands::Sanitizer.instance
   end
 
+  # TODO: revisit command token validation
   def new_token
     @new_token ||= SecureRandom.alphanumeric(13)
   end
 
+  # TODO: revisit command token validation
   def server_token
     nil
   end
 
+  # TODO: revisit command token validation
   def client_token
     command_params[:token].to_s
   end
 
+  # TODO: revisit command token validation
   def valid_client_token?
     # return true unless Rails.configuration.turbo_boost_commands.validate_client_token
     # return false unless client_token.present?
     # return false unless message_verifier.valid_message?(client_token)
     # unmasked_client_token = message_verifier.verify(client_token)
     # unmasked_client_token == server_token
-    true # TODO: revisit this
+    true
   end
 
   def should_redirect?
@@ -252,7 +256,7 @@ class TurboBoost::Commands::Runner
     command_instance.turbo_streams.each { |stream| append_to_response_body stream }
   end
 
-  def append_authenticity_token_to_response_body
+  def append_command_token_to_response_body
     append_to_response_body turbo_stream.invoke("TurboBoost.Commands.token=", args: [new_token], camelize: false)
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command token to the response! #{error.message}"

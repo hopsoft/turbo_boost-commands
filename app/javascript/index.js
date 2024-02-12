@@ -35,7 +35,7 @@ function buildCommandPayload(id, element) {
     startedAt: Date.now(),
     token: Commands.token, // command token (used for CSRF protection)
     signedState: state.signed, // server side state
-    clientState: state.changed // client side state (optimistic updates)
+    clientState: state.changed // client side state (delta of optimistic updates)
   }
 }
 
