@@ -38,16 +38,5 @@
   "scripts": {
     "build": "node bin/build.mjs",
     "build:watch": "yarn build --watch"
-  },
-  "resolutions": {
-    "postcss-selector-parser": "6.0.10",
-    "fsevents": "2.3.2",
-    "glob-parent": "6.0.2",
-    "lilconfig": "2.1.0",
-    "string-width": "5.1.2",
-    "strip-ansi": "7.1.0",
-    "emoji-regex": "9.2.2",
-    "ansi-regex": "6.0.1",
-    "ansi-styles": "6.2.1"
   }
 }
