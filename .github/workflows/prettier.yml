@@ -14,8 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           version: '20.x'
           cache: 'yarn'
@@ -24,5 +28,5 @@ jobs:
         run: 'yarn install --frozen-lockfile'
 
       - name: Run Prettier
-        run: 'yarn run prettier --check .'
+        run: 'yarn run prettier --check --fail-on-errors .'
 

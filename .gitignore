@@ -1,6 +1,8 @@
 *.gem
 *.key
+*.metafile.json
 .containers.yml
+.yarn
 /.bundle/
 /doc/
 /log/*.log

@@ -118,7 +118,7 @@ if (!self.TurboBoost.Commands) {
   ])
 
   self.TurboBoost.Commands = Commands
-  self.TurboBoost.State = State
+  self.TurboBoost.State = state
 }
 
 export default Commands

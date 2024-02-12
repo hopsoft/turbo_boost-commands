@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 3.0"
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"
-  s.add_dependency "turbo_boost-streams", ">= 0.0.9"
+  s.add_dependency "turbo_boost-streams", ">= 0.1.5"
   s.add_dependency "universalid", ">= 0.1.7"
 
   s.add_development_dependency "capybara"
