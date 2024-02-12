@@ -2,7 +2,8 @@
 *.key
 *.metafile.json
 .containers.yml
-.yarn
+.pnp.*
+.yarn*
 /.bundle/
 /doc/
 /log/*.log
