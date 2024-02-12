@@ -15,9 +15,10 @@ class TurboBoost::Commands::State
     end
   end
 
-  def initialize(store = nil)
+  def initialize(store = nil, parent: nil)
     @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
     @store.cleanup
+    @parent = parent
   end
 
   delegate :to_json, to: :to_h
@@ -36,19 +37,25 @@ class TurboBoost::Commands::State
   end
 
   def now
-    @now ||= self.class.new
+    @now ||= self.class.new(nil, parent: self)
   end
 
   def cache_key
     "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
   end
 
+  def read(...)
+    value = store.read(...)
+    value = parent&.read(...) if value.nil?
+    value
+  end
+
   def [](...)
-    store.read(...)
+    read(...)
   end
 
   def []=(...)
-    store.write(...)
+    write(...)
   end
 
   def to_sgid_param
@@ -58,7 +65,7 @@ class TurboBoost::Commands::State
 
   private
 
-  attr_reader :store
+  attr_reader :store, :parent
 
   def data
     store.instance_variable_get(:@data) || {}
