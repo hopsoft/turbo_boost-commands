@@ -131,10 +131,12 @@ Commands can be tested in isolation as well as with standard Rails controller, i
 
 ## Dependencies
 
-- [rails](https://rubygems.org/gems/rails) `>=6.1`
-- [turbo-rails](https://rubygems.org/gems/turbo-rails) `>=1.1`
-- [@hotwired/turbo-rails](https://yarnpkg.com/package/@hotwired/turbo-rails) `>=7.1`
-- [ruby](https://github.com/ruby/ruby) `>=2.7`
+- [rails](https://rubygems.org/gems/rails) `>= 6.1`
+- [turbo-rails](https://rubygems.org/gems/turbo-rails) `>= 1.1`
+- [@hotwired/turbo-rails](https://www.npmjs.com/package/@hotwired/turbo-rails) `>= 7.2`
+- [alpinejs](https://www.npmjs.com/package/alpinejs) `>= 3.13`
+- [@alpinejs/morph](https://www.npmjs.com/package/@alpinejs/morph) `>= 3.13`
+- [@turbo-boost/streams](https://www.npmjs.com/package/@turbo-boost/streams) `>= 0.1.6`
 
 ## Setup
 
