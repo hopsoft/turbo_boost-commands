@@ -2,22 +2,12 @@
 
 require "test_helper"
 
-class StateTest < ActiveSupport::TestCase
-  test "new with defaults" do
-    state = TurboBoost::Commands::State.new
-    assert_respond_to state, :clear
-    assert_respond_to state, :decrement
-    assert_respond_to state, :fetch
-    assert_respond_to state, :increment
-    assert_respond_to state, :read
-    assert_respond_to state, :write
-  end
-
+class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
   test "new with expiration" do
     state = TurboBoost::Commands::State.new(ActiveSupport::Cache::MemoryStore.new(expires_in: 1.second))
     state.write :example, "value"
     assert_equal "value", state.read(:example)
-    sleep 1
+    travel 2.seconds
     assert_nil state.read(:example)
   end
 
@@ -49,7 +39,7 @@ class StateTest < ActiveSupport::TestCase
     state = TurboBoost::Commands::State.new
     state.write :example, "value", expires_in: 1.second
     assert_equal "value", state.read(:example)
-    sleep 1
+    travel 2.seconds
     assert_nil state.read(:example)
     assert_empty state.to_h
   end

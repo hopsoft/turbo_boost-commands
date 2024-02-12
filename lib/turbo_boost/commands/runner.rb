@@ -53,7 +53,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_params
-    return ActionController::Parameters.new if controller.params[:tbc].nil?
+    return ActionController::Parameters.new if controller.params.keys.none?(/\A(tbc|turbo_boost_command)\z/o)
     @command_params ||= begin
       payload = parsed_command_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
@@ -191,7 +191,7 @@ class TurboBoost::Commands::Runner
   private
 
   def parsed_command_params
-    @parsed_command_params ||= JSON.parse(controller.params[:tbc])
+    @parsed_command_params ||= JSON.parse(controller.params[:tbc] || controller.params[:turbo_boost_command])
   end
 
   def content_sanitizer

@@ -15,10 +15,10 @@ class TurboBoost::Commands::State
     end
   end
 
-  def initialize(store = nil, parent: nil)
+  def initialize(store = nil, provisional: false)
     @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
     @store.cleanup
-    @parent = parent
+    @provisional = provisional
   end
 
   delegate :to_json, to: :to_h
@@ -30,6 +30,12 @@ class TurboBoost::Commands::State
     end
   end
 
+  # Provisional state is for the current request/response and is exposed as `State#now`
+  # Standard state is preserved across multiple requests
+  def provisional?
+    !!@provisional
+  end
+
   # TODO: implement state resolution
   def resolve(client_state)
     # return unless self.class.resolver
@@ -37,7 +43,8 @@ class TurboBoost::Commands::State
   end
 
   def now
-    @now ||= self.class.new(nil, parent: self)
+    return nil if provisional? # provisional state cannot hold child provisional state
+    @now ||= self.class.new(provisional: true)
   end
 
   def cache_key
@@ -45,9 +52,7 @@ class TurboBoost::Commands::State
   end
 
   def read(...)
-    value = store.read(...)
-    value = parent&.read(...) if value.nil?
-    value
+    now&.read(...) || store.read(...)
   end
 
   def [](...)
@@ -65,7 +70,7 @@ class TurboBoost::Commands::State
 
   private
 
-  attr_reader :store, :parent
+  attr_reader :store
 
   def data
     store.instance_variable_get(:@data) || {}
