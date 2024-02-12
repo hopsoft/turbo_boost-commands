@@ -19,12 +19,8 @@ fi
 # ============================================================================================================
 # Dependencies
 # ============================================================================================================
-rm -rfv /app/node_modules
-ln -snv /mnt/external/node_modules /app/node_modules
-npm install -g playwright
-playwright install-deps chromium
-playwright install chromium
-npm install --prefix /mnt/external/node_modules
+npm install
+npx playwright install chromium --with-deps
 bundle install
 
 
