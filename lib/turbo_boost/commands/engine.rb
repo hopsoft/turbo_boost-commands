@@ -26,12 +26,19 @@ module TurboBoost::Commands
     config.turbo_boost_commands[:apply_client_state_overrides] = false
     config.turbo_boost_commands[:apply_server_state_overrides] = false
 
+    # Choose whether we want to run commands before existing `before_action`
+    # callacks
+    config.turbo_boost_commands[:run_commands_before_controller_callbacks] = true
+
     initializer "turbo_boost_commands.configuration" do
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
 
       ActiveSupport.on_load :action_controller_base do
         # `self` is ActionController::Base
-        include TurboBoost::Commands::Controller
+        unless TurboBoost::Commands.config[:run_commands_before_controller_callbacks] == false
+          include TurboBoost::Commands::Controller
+        end
+
         helper TurboBoost::Commands::ApplicationHelper
       end
 
