@@ -2,7 +2,7 @@
 
 require "application_system_test_case"
 
-class TurboBoosSetupTest < ApplicationSystemTestCase
+class TurboBoostSetupTest < ApplicationSystemTestCase
   test "turbo boost commands loaded and configured" do
     page.goto basic_command_url
 
