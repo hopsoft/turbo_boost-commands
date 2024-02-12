@@ -1,3 +1,4 @@
+// TODO: Consider moving State to its own library
 import observable from './observable'
 import { dispatch, commandEvents, stateEvents } from '../events'
 

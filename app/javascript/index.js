@@ -19,7 +19,6 @@ const Commands = {
   confirmation,
   logger,
   schema,
-  state,
   events: commandEvents,
   registerEventDelegate: delegates.register,
   get eventDelegates() {
@@ -34,9 +33,9 @@ function buildCommandPayload(id, element) {
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
     startedAt: Date.now(),
-    token: Commands.token, // authenticity token
+    token: Commands.token, // command token (used for CSRF protection)
     signedState: state.signed, // server side state
-    state: state.changed // client side state (optimistic updates)
+    clientState: state.changed // client side state (optimistic updates)
   }
 }
 
