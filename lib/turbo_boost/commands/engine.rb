@@ -26,6 +26,8 @@ module TurboBoost::Commands
     config.turbo_boost_commands[:apply_client_state_overrides] = false
     config.turbo_boost_commands[:apply_server_state_overrides] = false
 
+    config.turbo_boost_commands.precompile_assets = true
+
     initializer "turbo_boost_commands.configuration" do
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
 
@@ -38,6 +40,14 @@ module TurboBoost::Commands
       ActiveSupport.on_load :action_view do
         # `self` is ActionView::Base
         ActionView::Helpers::TagHelper::TagBuilder.prepend TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
+      end
+    end
+
+    initializer "turbo_boost_commands.asset" do
+      config.after_initialize do |app|
+        if app.config.respond_to?(:assets) && app.config.turbo_boost_commands.precompile_assets
+          app.config.assets.precompile += %w[@turbo-boost/commands.js]
+        end
       end
     end
   end
