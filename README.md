@@ -136,7 +136,7 @@ Commands can be tested in isolation as well as with standard Rails controller, i
 - [@hotwired/turbo-rails](https://www.npmjs.com/package/@hotwired/turbo-rails) `>= 7.2`
 - [alpinejs](https://www.npmjs.com/package/alpinejs) `>= 3.13`
 - [@alpinejs/morph](https://www.npmjs.com/package/@alpinejs/morph) `>= 3.13`
-- [@turbo-boost/streams](https://www.npmjs.com/package/@turbo-boost/streams) `>= 0.1.6`
+- [@turbo-boost/streams](https://www.npmjs.com/package/@turbo-boost/streams) `>= 0.1.7`
 
 ## Setup
 
