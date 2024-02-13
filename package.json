@@ -1,6 +1,6 @@
 {
   "name": "@turbo-boost/commands",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Commands to help you build robust reactive applications with Rails & Hotwire.",
   "keywords": [
     "hotwire",
@@ -9,7 +9,7 @@
     "turbo",
     "turbo-boost"
   ],
-  "main": "commands.js",
+  "main": "app/assets/builds/@turbo-boost/commands.js",
   "files": [
     "app/assets/builds/@turbo-boost/**"
   ],
@@ -19,7 +19,7 @@
   "peerDependencies": {
     "@alpinejs/morph": ">= 3.13.5",
     "@hotwired/turbo-rails": ">= 7.2.0",
-    "@turbo-boost/streams": "^0.1.7",
+    "@turbo-boost/streams": "^0.1.8",
     "alpinejs": ">= 3.13.5"
   },
   "devDependencies": {
