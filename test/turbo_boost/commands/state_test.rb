@@ -58,4 +58,11 @@ class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
     restored = TurboBoost::Commands::State.from_sgid_param(sgid)
     assert_equal "value", restored.read(:example)
   end
+
+  test "state.now cannot have a now" do
+    state = TurboBoost::Commands::State.new
+    assert_instance_of TurboBoost::Commands::State, state
+    assert_instance_of TurboBoost::Commands::State, state.now
+    assert_nil state.now.now
+  end
 end
