@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   def init_current
     session[:forced_load] = true unless session.loaded? # forces session to load (required for automated testing)
-    Current.state ||= turbo_boost.state
+    # Current.state ||= turbo_boost.state
     Current.user ||= User.find_or_create_by(session_id: session.id.to_s)
   end
 

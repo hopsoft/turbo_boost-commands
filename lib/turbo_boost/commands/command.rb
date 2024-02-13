@@ -77,17 +77,15 @@ class TurboBoost::Commands::Command
     end
   end
 
-  attr_reader :controller, :state_manager, :params, :turbo_streams
-
-  alias_method :state, :state_manager
+  attr_reader :controller, :state, :params, :turbo_streams
   alias_method :streams, :turbo_streams
 
   delegate :css_id_selector, to: :"self.class"
   delegate :dom_id, to: :"controller.view_context"
 
-  def initialize(controller, state_manager, params = {})
+  def initialize(controller, state, params = {})
     @controller = controller
-    @state_manager = state_manager
+    @state = state
     @params = params
     @turbo_streams = Set.new
   end

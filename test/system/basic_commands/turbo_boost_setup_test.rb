@@ -2,7 +2,7 @@
 
 require "application_system_test_case"
 
-class TurboBoosSetupTest < ApplicationSystemTestCase
+class TurboBoostSetupTest < ApplicationSystemTestCase
   test "turbo boost commands loaded and configured" do
     page.goto basic_command_url
 
@@ -15,7 +15,7 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
     assert js("Array.isArray(TurboBoost.Commands.eventDelegates.find(e => e.name === 'submit').selectors)")
     assert_equal "function", js("typeof TurboBoost.Commands.registerEventDelegate")
     assert_equal "object", js("typeof TurboBoost.Commands.events")
-    assert_equal "object", js("typeof TurboBoost.state")
+    assert_equal "object", js("typeof TurboBoost.State")
     assert_equal "object", js("typeof TurboBoost.Commands.logger")
     assert_equal "debug", js("TurboBoost.Commands.logger.level")
   end
@@ -23,29 +23,14 @@ class TurboBoosSetupTest < ApplicationSystemTestCase
   test "turbo boost client state" do
     page.goto basic_command_url
 
-    meta_element = page.wait_for_selector("meta#turbo-boost", state: "attached")
-    assert_equal "e30", meta_element["data-state"]
-    assert_equal 0, js("Object.keys(TurboBoost.state).length")
-    assert_equal 0, js("Object.values(TurboBoost.state).length")
+    assert js("TurboBoost.State.signed.length > 0")
+    assert_equal 0, js("Object.keys(TurboBoost.State.current).length")
+    assert_equal 0, js("Object.values(TurboBoost.State.current).length")
 
-    js("TurboBoost.state.test = true")
-    js("TurboBoost.state.example = 'value'")
-    assert js("TurboBoost.state.test")
-    assert_equal "value", js("TurboBoost.state.example")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUifQ==", meta_element["data-state"]
-
-    js("TurboBoost.state.list = [1,2,3]")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUiLCJsaXN0IjpbMSwyLDNdfQ==", meta_element["data-state"]
-
-    js("TurboBoost.state.obj = {a: true, b: false, c: 'value'}")
-    assert_equal "eyJ0ZXN0Ijp0cnVlLCJleGFtcGxlIjoidmFsdWUiLCJsaXN0IjpbMSwyLDNdLCJvYmoiOnsiYSI6dHJ1ZSwiYiI6ZmFsc2UsImMiOiJ2YWx1ZSJ9fQ==", meta_element["data-state"]
-  end
-
-  test "turbo boost cookie" do
-    page.goto basic_command_url
-
-    meta_element = page.wait_for_selector("meta#turbo-boost", state: "attached")
-    assert js("document.cookie").include?("turbo_boost.state")
-    assert_equal "e30", meta_element["data-state"]
+    js("TurboBoost.State.current.test = true")
+    js("TurboBoost.State.current.example = 'value'")
+    assert js("TurboBoost.State.current.test")
+    assert_equal "value", js("TurboBoost.State.current.example")
+    assert_equal "value", js("TurboBoost.State.changed.example")
   end
 end

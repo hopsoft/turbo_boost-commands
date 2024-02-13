@@ -14,15 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           version: '20.x'
-          cache: 'yarn'
+          cache: 'npm'
 
-      - name: Yarn install
-        run: yarn install --frozen-lockfile
+      - name: NPM Install
+        run: 'npm install --legacy-peer-deps'
 
       - name: Run Prettier
-        run: yarn run prettier --check package.json prettier.config.js bin/build.mjs app/javascript/**/*.js test/dummy/app/javascript/**/*.js test/dummy/app/assets/stylesheets/**/*.css test/dummy/app/views/**/*.css
+        run: 'npx prettier --check --fail-on-errors .'
 

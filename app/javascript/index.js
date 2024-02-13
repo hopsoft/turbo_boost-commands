@@ -1,11 +1,10 @@
 import './turbo'
 import schema from './schema'
-import { dispatch, commandEvents, stateEvents } from './events'
+import { dispatch, commandEvents } from './events'
 import activity from './activity'
 import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
-import meta from './meta'
 import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
@@ -13,13 +12,30 @@ import state from './state'
 import urls from './urls'
 import uuids from './uuids'
 
+const TurboBoost = self.TurboBoost || {}
+
+const Commands = {
+  busy: false,
+  confirmation,
+  logger,
+  schema,
+  events: commandEvents,
+  registerEventDelegate: delegates.register,
+  get eventDelegates() {
+    return delegates.events
+  }
+}
+
 function buildCommandPayload(id, element) {
   return {
     id, // uniquely identifies the command
     name: element.getAttribute(schema.commandAttribute),
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
-    startedAt: Date.now()
+    startedAt: Date.now(),
+    token: Commands.token, // command token (used for CSRF protection)
+    signedState: state.signed, // server side state
+    clientState: state.changed // client side state (delta of optimistic updates)
   }
 }
 
@@ -67,8 +83,8 @@ async function invokeCommand(event) {
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
-    meta.busy = true
-    setTimeout(() => (meta.busy = false), 10)
+    Commands.busy = true
+    setTimeout(() => (Commands.busy = false), 10)
 
     switch (driver.name) {
       case 'method':
@@ -87,21 +103,7 @@ async function invokeCommand(event) {
   }
 }
 
-self.TurboBoost = self.TurboBoost || {}
-
-self.TurboBoost = {
-  ...self.TurboBoost,
-
-  stateEvents,
-
-  get state() {
-    return state.current
-  },
-
-  get stateDelta() {
-    return state.delta
-  }
-}
+self.TurboBoost = { ...TurboBoost }
 
 if (!self.TurboBoost.Commands) {
   // wire things up and setup defaults for event delegation
@@ -114,16 +116,8 @@ if (!self.TurboBoost.Commands) {
     `textarea[${schema.commandAttribute}]`
   ])
 
-  self.TurboBoost.Commands = {
-    confirmation,
-    logger,
-    schema,
-    events: commandEvents,
-    registerEventDelegate: delegates.register,
-    get eventDelegates() {
-      return delegates.events
-    }
-  }
+  self.TurboBoost.Commands = Commands
+  self.TurboBoost.State = state
 }
 
-export default self.TurboBoost.Commands
+export default Commands

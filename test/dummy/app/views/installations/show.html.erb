@@ -6,9 +6,9 @@
 <% end %>
 
 <% cache do %>
-  <section class="p-4 my-12 mx-auto max-w-screen-xl">
-    <div class="mx-auto space-y-4 max-w-2xl text-center">
-      <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-gray-900 sm:text-5xl dark:text-white">
+  <section class="p-4 mx-auto my-12 max-w-screen-xl">
+    <div class="max-w-2xl mx-auto text-center space-y-4">
+      <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl dark:text-white">
         Installation and Configuration
       </h2>
       <p class="text-base font-normal text-gray-400 sm:text-xl dark:text-gray-500">
@@ -24,7 +24,7 @@
       <% end %>
 
       <%= render "instructions/instruction", step: 2, heading: "Add the NPM packages to your package.json file" do %>
-        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_yarn_add.sh.erb" %>
+        <%= render "examples/example", language: :sh, path: "$ command line", source_path: "app/views/installations/source_code/_npm_install.sh.erb" %>
         <p class="!mt-6">The command above adds this to package.json.</p>
         <%= render "examples/example", language: :json, erb: true, path: "package.json", source_path: "app/views/installations/source_code/_package.json.erb" %>
 
@@ -37,12 +37,6 @@
       <%= render "instructions/instruction", step: 3, heading: "Configure your JavaScript app" do %>
         <%= render "examples/example", language: :js, path: "app/javascript/application.js", source_path: "app/views/installations/source_code/_application.js.erb" %>
         <%= render "alerts/warning", message: "Be sure to add TurboBoost Commands after the Turbo import." %>
-      <% end %>
-
-      <%= render "instructions/instruction", step: 4, heading: "Configure your Rails app" do %>
-        <%= render "examples/example", language: :erb, path: "app/views/layouts/application.html.erb", source_path: "app/views/installations/source_code/_application.html.erb" %>
-        <%= render "alerts/warning", message: "You may need to configure additional layout files." %>
-        <%= render "examples/example", language: :rb, path: "config/initializers/turbo_boost.rb", source_path: "config/initializers/turbo_boost.rb" %>
       <% end %>
 
       <p class="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">

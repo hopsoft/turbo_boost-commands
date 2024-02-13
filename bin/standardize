@@ -1,7 +1,7 @@
 #!/bin/bash
 
+shopt -s globstar
 bundle exec magic_frozen_string_literal
 bundle exec standardrb --fix
-yarn run prettier --write package.json prettier.config.js bin/build.mjs app/javascript/**/**/**/**/*.js test/dummy/app/javascript/**/**/**/**/*.js test/dummy/app/assets/stylesheets/**/**/**/**/*.css test/dummy/app/views/**/**/**/**/*.css
-
+npx prettier --write .
 cd test/dummy && bin/rails tailwindcss:clobber tailwindcss:build && cd -

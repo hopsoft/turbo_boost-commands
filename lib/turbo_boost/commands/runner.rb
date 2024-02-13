@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "sanitizer"
+require_relative "state"
 
 class TurboBoost::Commands::Runner
   SUPPORTED_MEDIA_TYPES = {
@@ -9,22 +10,18 @@ class TurboBoost::Commands::Runner
     "text/vnd.turbo-stream.html" => true
   }.freeze
 
-  attr_reader :controller, :state_manager
+  attr_reader :controller
 
-  def initialize(controller, state_manager)
+  def initialize(controller)
     @controller = controller
-    @state_manager = state_manager
   end
 
-  def meta_tag
-    masked_token = message_verifier.generate(new_token)
-    options = {
-      id: "turbo-boost",
-      name: "turbo-boost",
-      content: masked_token,
-      data: {busy: false, state: state_manager.payload}
-    }
-    controller.view_context.tag("meta", options).html_safe
+  def state
+    @state ||= begin
+      sgid = command_params[:signed_state]
+      value = TurboBoost::Commands::State.from_sgid_param(sgid) if sgid
+      value || TurboBoost::Commands::State.new
+    end
   end
 
   def command_requested?
@@ -48,15 +45,15 @@ class TurboBoost::Commands::Runner
 
     # validate csrf token
     unless valid_client_token?
-      raise TurboBoost::InvalidTokenError,
-        "CSRF token mismatch! The request header `TurboBoost-Token: #{client_token}` does not match the expected value of `#{server_token}`."
+      raise TurboBoost::Commands::InvalidTokenError,
+        "Token mismatch! The token: #{client_token}` does not match the expected value of `#{server_token}`."
     end
 
     true
   end
 
   def command_params
-    return ActionController::Parameters.new if controller.params[:turbo_boost_command].nil?
+    return ActionController::Parameters.new if controller.params.keys.none?(/\A(tbc|turbo_boost_command)\z/o)
     @command_params ||= begin
       payload = parsed_command_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
@@ -86,7 +83,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, state_manager, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -126,6 +123,7 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
+    state.resolve command_params[:client_state]
     command_instance.perform_with_callbacks command_method_name
   end
 
@@ -148,8 +146,8 @@ class TurboBoost::Commands::Runner
       append_error_to_response error
     end
 
-    append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
+    append_command_token_to_response_body
+    append_command_state_to_response_body
   end
 
   def update_response
@@ -159,8 +157,8 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
 
     append_to_response_headers
-    append_meta_tag_to_response_body # called before `write_cookie` so all state is emitted to the DOM
-    state_manager.write_cookie # truncates state to stay within cookie size limits (4k)
+    append_command_token_to_response_body
+    append_command_state_to_response_body
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
@@ -181,11 +179,6 @@ class TurboBoost::Commands::Runner
     ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
-  # Same implementation as ActionController::Base but with public visibility
-  def cookies
-    controller.request.cookie_jar
-  end
-
   def handle_command_event(*args)
     event = args.shift
     options = args.extract_options!
@@ -198,31 +191,36 @@ class TurboBoost::Commands::Runner
   private
 
   def parsed_command_params
-    @parsed_command_params ||= JSON.parse(controller.params[:turbo_boost_command])
+    @parsed_command_params ||= JSON.parse(controller.params[:tbc] || controller.params[:turbo_boost_command])
   end
 
   def content_sanitizer
     TurboBoost::Commands::Sanitizer.instance
   end
 
+  # TODO: revisit command token validation
   def new_token
-    @new_token ||= SecureRandom.urlsafe_base64(12)
+    @new_token ||= SecureRandom.alphanumeric(13)
   end
 
+  # TODO: revisit command token validation
   def server_token
-    cookies.encrypted["turbo_boost.token"]
+    nil
   end
 
+  # TODO: revisit command token validation
   def client_token
-    (controller.request.headers["TurboBoost-Token"] || command_params[:token]).to_s
+    command_params[:token].to_s
   end
 
+  # TODO: revisit command token validation
   def valid_client_token?
-    return true unless Rails.configuration.turbo_boost_commands.validate_client_token
-    return false unless client_token.present?
-    return false unless message_verifier.valid_message?(client_token)
-    unmasked_client_token = message_verifier.verify(client_token)
-    unmasked_client_token == server_token
+    # return true unless Rails.configuration.turbo_boost_commands.validate_client_token
+    # return false unless client_token.present?
+    # return false unless message_verifier.valid_message?(client_token)
+    # unmasked_client_token = message_verifier.verify(client_token)
+    # unmasked_client_token == server_token
+    true
   end
 
   def should_redirect?
@@ -258,11 +256,16 @@ class TurboBoost::Commands::Runner
     command_instance.turbo_streams.each { |stream| append_to_response_body stream }
   end
 
-  def append_meta_tag_to_response_body
-    cookies.encrypted["turbo_boost.token"] = {value: new_token, path: "/"}
-    append_to_response_body turbo_stream.invoke("morph", args: [meta_tag], selector: "#turbo-boost")
+  def append_command_token_to_response_body
+    append_to_response_body turbo_stream.invoke("TurboBoost.Commands.token=", args: [new_token], camelize: false)
   rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append the meta tag to the response! #{error.message}"
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command token to the response! #{error.message}"
+  end
+
+  def append_command_state_to_response_body
+    append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [state.to_json, state.to_sgid_param], camelize: false)
+  rescue => error
+    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
   end
 
   def append_success_event_to_response_body

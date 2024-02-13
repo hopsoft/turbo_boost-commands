@@ -1,0 +1,4 @@
+*.md
+*.yml
+builds
+test/dummy/vendor

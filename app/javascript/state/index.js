@@ -1,62 +1,44 @@
-import meta from '../meta'
+// TODO: Consider moving State to its own library
 import observable from './observable'
 import { dispatch, commandEvents, stateEvents } from '../events'
 
-let loadedState, currentState, changedState
-let loadStateTimeout
+let initialState, currentState, changedState, signedState
 
-function loadState() {
-  if (!meta.element) return loadStateLater()
-  const json = atob(meta.element.dataset.state)
+function initialize(initial, signed) {
+  const json = JSON.parse(initial)
+  initialState = { ...json }
+  signedState = signed
+  currentState = observable(json)
   changedState = {}
-  currentState = observable(JSON.parse(json))
-  loadedState = { ...currentState }
-  delete meta.element.dataset.clientStateChange
   setTimeout(() =>
-    dispatch(stateEvents.stateLoad, meta.element, {
+    dispatch(stateEvents.stateLoad, document, {
       detail: { state: currentState }
     })
   )
 }
 
-function loadStateLater() {
-  clearTimeout(loadStateTimeout)
-  loadStateTimeout = setTimeout(loadState, 10)
-}
-
-if (!loadedState) loadState()
-
-addEventListener('DOMContentLoaded', loadStateLater)
-addEventListener('load', loadStateLater)
-addEventListener('turbo:load', loadStateLater)
-addEventListener('turbo:frame-load', loadStateLater)
-addEventListener(commandEvents.success, loadStateLater)
-
 addEventListener(stateEvents.stateChange, event => {
-  changedState = {}
   for (const [key, value] of Object.entries(currentState))
-    if (loadedState[key] !== value) changedState[key] = value
-  meta.element.dataset.clientStateChange = true
-  meta.element.dataset.state = btoa(JSON.stringify(currentState))
+    if (initialState[key] !== value) changedState[key] = value
 })
 
 export default {
+  initialize,
   events: stateEvents,
+
+  get initial() {
+    return initialState
+  },
 
   get current() {
     return currentState
   },
 
-  get delta() {
+  get changed() {
     return changedState
   },
 
-  // The UI state changes are split into chunks and sent to the server in an HTTP request header.
-  // Max size for an HTTP header is around 4k or 4,000 bytes.
-  // A Base64 character is an 8-bit-padded ASCII character... or 1 byte
-  //
-  // SEE: lib/state.rb - for info on how `state` is serialized/deserialized
-  get payloadChunks() {
-    return btoa(JSON.stringify(changedState)).match(/.{1,2000}/g)
+  get signed() {
+    return signedState
   }
 }

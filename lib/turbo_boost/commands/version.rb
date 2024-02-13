@@ -2,6 +2,6 @@
 
 module TurboBoost
   module Commands
-    VERSION = "0.0.18"
+    VERSION = "0.1.0"
   end
 end

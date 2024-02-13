@@ -2,9 +2,9 @@
 
 require "turbo-rails"
 require "turbo_boost/streams"
+require "universalid"
 require_relative "version"
 require_relative "http_status_codes"
-require_relative "../errors"
 require_relative "errors"
 require_relative "patches"
 require_relative "command"
@@ -19,12 +19,13 @@ module TurboBoost::Commands
 
   class Engine < ::Rails::Engine
     config.turbo_boost_commands = ActiveSupport::OrderedOptions.new
-    config.turbo_boost_commands[:max_cookie_size] = ActionDispatch::Cookies::MAX_COOKIE_SIZE / 3
     config.turbo_boost_commands[:validate_client_token] = false
 
     # must opt-in to state overrides
     config.turbo_boost_commands[:apply_client_state_overrides] = false
     config.turbo_boost_commands[:apply_server_state_overrides] = false
+
+    config.turbo_boost_commands.precompile_assets = true
 
     initializer "turbo_boost_commands.configuration" do
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
@@ -38,6 +39,14 @@ module TurboBoost::Commands
       ActiveSupport.on_load :action_view do
         # `self` is ActionView::Base
         ActionView::Helpers::TagHelper::TagBuilder.prepend TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
+      end
+    end
+
+    initializer "turbo_boost_commands.asset" do
+      config.after_initialize do |app|
+        if app.config.respond_to?(:assets) && app.config.turbo_boost_commands.precompile_assets
+          app.config.assets.precompile += %w[@turbo-boost/commands.js]
+        end
       end
     end
   end
