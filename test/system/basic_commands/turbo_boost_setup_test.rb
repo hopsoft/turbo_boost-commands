@@ -18,6 +18,7 @@ class TurboBoostSetupTest < ApplicationSystemTestCase
     assert_equal "object", js("typeof TurboBoost.State")
     assert_equal "object", js("typeof TurboBoost.Commands.logger")
     assert_equal "debug", js("TurboBoost.Commands.logger.level")
+    assert_equal TurboBoost::Commands::VERSION, js("TurboBoost.Commands.VERSION")
   end
 
   test "turbo boost client state" do

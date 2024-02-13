@@ -549,8 +549,10 @@ fly deploy
 > Run these commands on the host machine _(i.e. not inside the dev container)_
 
 1. Run `npm update` and `bundle update` to pick up the latest dependencies
-1. Bump version number at `lib/turbo_boost-streams/version.rb`. Pre-release versions use `.preN`
-1. Bump version number at `package.json` _(make sure it matches)_. Pre-release versions use `-preN`
+1. Update the version number consistently in the following files:
+   * `lib/turbo_boost/commands/version.rb` - pre-release versions should use `.preN`
+   * `app/javascript/version.js` - pre-release versions use `-preN`
+   * `package.json` - pre-release versions use `-preN`
 1. Run `bin/standardize`
 1. Run `rake build`
 1. Run `npm run build`

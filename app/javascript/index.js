@@ -11,10 +11,12 @@ import logger from './logger'
 import state from './state'
 import urls from './urls'
 import uuids from './uuids'
+import VERSION from './version'
 
 const TurboBoost = self.TurboBoost || {}
 
 const Commands = {
+  VERSION,
   busy: false,
   confirmation,
   logger,
