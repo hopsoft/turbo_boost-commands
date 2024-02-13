@@ -19,7 +19,7 @@
   "peerDependencies": {
     "@alpinejs/morph": ">= 3.13.5",
     "@hotwired/turbo-rails": ">= 7.2.0",
-    "@turbo-boost/streams": "^0.1.6",
+    "@turbo-boost/streams": "^0.1.7",
     "alpinejs": ">= 3.13.5"
   },
   "devDependencies": {
