@@ -7,6 +7,7 @@ pin "@hotwired/turbo", to: "@hotwired--turbo.js" # @8.0.2
 pin "@hotwired/turbo-rails", to: "@hotwired--turbo-rails.js" # @8.0.2
 pin "@rails/actioncable", to: "@rails--actioncable.js" # @7.1.3
 pin "@rails/actioncable/src", to: "@rails--actioncable--src.js" # @7.1.3
+pin "@turbo-boost/streams", to: "@turbo-boost--streams.js" # @0.1.10
 
 # NOTE: The following libs stop working if we allow Rails to vendor them
 pin "flowbite", to: "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.turbo.min.js"
@@ -18,4 +19,3 @@ FileUtils.ln_s Rails.root.join("../../app/assets/builds/@turbo-boost"), Rails.ro
 pin "@turbo-boost/commands", to: "@turbo-boost/commands.js"
 
 pin "application", preload: true
-pin "@turbo-boost/streams", to: "@turbo-boost--streams.js" # @0.1.10
