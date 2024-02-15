@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency "turbo_boost-streams", ">= 0.1.8"
   s.add_dependency "universalid", ">= 0.1.7"
 
+  # s.add_development_dependency "web-console"
   s.add_development_dependency "capybara"
   s.add_development_dependency "capybara-playwright-driver"
   s.add_development_dependency "foreman"
@@ -39,10 +40,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake"
   s.add_development_dependency "rexml"
   s.add_development_dependency "rouge"
+  s.add_development_dependency "runfile"
   s.add_development_dependency "sprockets-rails"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "standardrb"
   s.add_development_dependency "tailwindcss-rails"
-  # s.add_development_dependency "web-console"
   s.add_development_dependency "webdrivers"
 end
