@@ -11,7 +11,7 @@
   ],
   "main": "app/assets/builds/@turbo-boost/commands.js",
   "files": [
-    "app/assets/builds/@turbo-boost/**"
+    "app/assets/builds/@turbo-boost/*{.js,.map}"
   ],
   "repository": "https://github.com/hopsoft/turbo_boost-commands",
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
