@@ -57,7 +57,7 @@ services:
   esbuild:
     <<: *default_app
     container_name: turbo_boost-commands-esbuild
-    command: /bin/bash -c "npm run build -- --watch"
+    command: /bin/bash -c "npm run build:watch"
     depends_on:
       web:
         condition: service_healthy

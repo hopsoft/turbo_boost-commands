@@ -17,10 +17,8 @@
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@alpinejs/morph": ">= 3.13.5",
     "@hotwired/turbo-rails": ">= 7.2.0",
-    "@turbo-boost/streams": "^0.1.8",
-    "alpinejs": ">= 3.13.5"
+    "@turbo-boost/streams": "^0.1.10"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -34,6 +32,7 @@
     "tailwindcss": "^3.4.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/index.js --bundle --minify --sourcemap --external:alpinejs --external:@alpinejs/morph --external:@hotwired/turbo-rails --external:@turbo-boost/streams --format=esm --target=es2020,chrome79,edge44,firefox71,opera65,safari13 --outfile=app/assets/builds/@turbo-boost/commands.js"
+    "build": "node bin/build.mjs",
+    "build:watch": "node bin/build.mjs --watch"
   }
 }
