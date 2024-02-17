@@ -1,4 +1,4 @@
-import './turbo'
+//import './turbo'
 import schema from './schema'
 import { dispatch, commandEvents } from './events'
 import activity from './activity'
@@ -17,7 +17,7 @@ const TurboBoost = self.TurboBoost || {}
 
 const Commands = {
   VERSION,
-  busy: false,
+  active: false,
   confirmation,
   logger,
   schema,
@@ -25,7 +25,7 @@ const Commands = {
   registerEventDelegate: delegates.register,
   get eventDelegates() {
     return delegates.events
-  }
+  },
 }
 
 function buildCommandPayload(id, element) {
@@ -37,7 +37,7 @@ function buildCommandPayload(id, element) {
     startedAt: Date.now(),
     changedState: state.changed, // changed-state (delta of optimistic updates)
     clientState: state.current, // client-side state
-    signedState: state.signed // server-side state
+    signedState: state.signed, // server-side state
   }
 }
 
@@ -56,20 +56,20 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src
+      src: driver.src,
     }
 
     const startEvent = await dispatch(commandEvents.start, element, {
       cancelable: true,
-      detail: payload
+      detail: payload,
     })
 
     if (startEvent.defaultPrevented || (startEvent.detail.confirmation && event.defaultPrevented))
       return dispatch(commandEvents.abort, element, {
         detail: {
           message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
-          source: startEvent
-        }
+          source: startEvent,
+        },
       })
 
     // the element and thus the driver may have changed based on the start event handler(s)
@@ -78,15 +78,12 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src
+      src: driver.src,
     }
 
     activity.add(payload)
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
-
-    Commands.busy = true
-    setTimeout(() => (Commands.busy = false), 10)
 
     switch (driver.name) {
       case 'method':
@@ -96,11 +93,11 @@ async function invokeCommand(event) {
       case 'frame':
         return driver.invokeCommand(driver.frame, payload)
       case 'window':
-        return driver.invokeCommand(payload)
+        return driver.invokeCommand(self, payload)
     }
   } catch (error) {
     dispatch(commandEvents.clientError, element, {
-      detail: { ...payload, error }
+      detail: { ...payload, error },
     })
   }
 }
@@ -115,7 +112,7 @@ if (!self.TurboBoost.Commands) {
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
-    `textarea[${schema.commandAttribute}]`
+    `textarea[${schema.commandAttribute}]`,
   ])
 
   self.TurboBoost.Commands = Commands

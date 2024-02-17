@@ -164,7 +164,7 @@ class TurboBoost::Commands::Runner
 
   def render_response(html: "", status: nil, headers: {})
     controller.render html: html, layout: false, status: status || response_status
-    append_to_response_headers headers.merge(TurboBoost: :Append)
+    append_to_response_headers headers
   end
 
   def turbo_stream
@@ -183,7 +183,11 @@ class TurboBoost::Commands::Runner
   private
 
   def parsed_command_params
-    @parsed_command_params ||= controller.request.env.fetch("turbo_boost.command", {})
+    @parsed_command_params ||= begin
+      params = controller.request.env["turbo_boost.command"]
+      params ||= controller.params["turbo_boost_command"]
+      params || {}
+    end
   end
 
   def content_sanitizer
