@@ -1,7 +1,6 @@
 import state from '../state'
 import { dispatch } from '../events'
 import lifecycle from '../lifecycle'
-import urls from '../urls'
 import renderer from '../renderer'
 
 function aborted(event) {
@@ -35,19 +34,17 @@ function loaded(event) {
   append ? renderer.append(xhr.responseText) : renderer.replaceDocument(xhr.responseText)
 }
 
-function invokeCommand(payload) {
-  const src = payload.src
-  payload = { ...payload }
-  delete payload.src
-
+function invokeCommand(payload = {}) {
   try {
     const xhr = new XMLHttpRequest()
-    xhr.open('GET', urls.build(src, payload), true)
+    xhr.open('POST', '/turbo-boost/command', true)
     xhr.setRequestHeader('Accept', 'text/vnd.turbo-boost.html, text/html, application/xhtml+xml')
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
     xhr.addEventListener('abort', aborted)
     xhr.addEventListener('error', errored)
     xhr.addEventListener('load', loaded)
-    xhr.send()
+    xhr.send(JSON.stringify(payload))
   } catch (ex) {
     const message = `Unexpected error sending HTTP request! ${ex.message}`
     errored(ex, { detail: { message } })

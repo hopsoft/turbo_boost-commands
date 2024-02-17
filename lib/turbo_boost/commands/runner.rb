@@ -16,8 +16,8 @@ class TurboBoost::Commands::Runner
     @controller = controller
   end
 
-  def state
-    @state ||= begin
+  def command_state
+    @command_state ||= begin
       sgid = command_params[:signed_state]
       value = TurboBoost::Commands::State.from_sgid_param(sgid) if sgid
       value || TurboBoost::Commands::State.new
@@ -25,7 +25,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_requested?
-    command_params.present?
+    controller.request.env.key? "turbo_boost.command"
   end
 
   def command_valid?
@@ -44,16 +44,16 @@ class TurboBoost::Commands::Runner
     end
 
     # validate csrf token
-    unless valid_client_token?
+    unless valid_command_token?
       raise TurboBoost::Commands::InvalidTokenError,
-        "Token mismatch! The token: #{client_token}` does not match the expected value of `#{server_token}`."
+        "Token mismatch! The token: #{client_command_token}` does not match the expected value of `#{server_command_token}`."
     end
 
     true
   end
 
   def command_params
-    return ActionController::Parameters.new if controller.params.keys.none?(/\A(tbc|turbo_boost_command)\z/o)
+    return ActionController::Parameters.new unless command_requested?
     @command_params ||= begin
       payload = parsed_command_params.deep_transform_keys(&:underscore)
       ActionController::Parameters.new(payload).permit!
@@ -83,7 +83,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, command_state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -123,7 +123,7 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
-    state.resolve command_params[:client_state]
+    command_state.resolve command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
   end
 
@@ -146,7 +146,6 @@ class TurboBoost::Commands::Runner
       append_error_to_response error
     end
 
-    append_command_token_to_response_body
     append_command_state_to_response_body
   end
 
@@ -157,7 +156,6 @@ class TurboBoost::Commands::Runner
     return if controller_action_prevented?
 
     append_to_response_headers
-    append_command_token_to_response_body
     append_command_state_to_response_body
     append_success_to_response if command_succeeded?
   rescue => error
@@ -173,12 +171,6 @@ class TurboBoost::Commands::Runner
     @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 
-  def message_verifier
-    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256", url_safe: true
-  rescue
-    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
-  end
-
   def handle_command_event(*args)
     event = args.shift
     options = args.extract_options!
@@ -191,7 +183,7 @@ class TurboBoost::Commands::Runner
   private
 
   def parsed_command_params
-    @parsed_command_params ||= JSON.parse(controller.params[:tbc] || controller.params[:turbo_boost_command])
+    @parsed_command_params ||= controller.request.env.fetch("turbo_boost.command", {})
   end
 
   def content_sanitizer
@@ -203,24 +195,19 @@ class TurboBoost::Commands::Runner
     @new_token ||= SecureRandom.alphanumeric(13)
   end
 
-  # TODO: revisit command token validation
-  def server_token
-    nil
+  def client_command_token
+    command_params.dig(:client_state, :command_token).to_s
   end
 
-  # TODO: revisit command token validation
-  def client_token
-    command_params[:token].to_s
+  def server_command_token
+    command_state[:command_token].to_s
   end
 
-  # TODO: revisit command token validation
-  def valid_client_token?
-    # return true unless Rails.configuration.turbo_boost_commands.validate_client_token
-    # return false unless client_token.present?
-    # return false unless message_verifier.valid_message?(client_token)
-    # unmasked_client_token = message_verifier.verify(client_token)
-    # unmasked_client_token == server_token
-    true
+  def valid_command_token?
+    return true unless Rails.configuration.turbo_boost_commands.protect_from_forgery
+    return false unless client_command_token.present?
+    return false unless server_command_token.present?
+    client_command_token == server_command_token
   end
 
   def should_redirect?
@@ -256,14 +243,9 @@ class TurboBoost::Commands::Runner
     command_instance.turbo_streams.each { |stream| append_to_response_body stream }
   end
 
-  def append_command_token_to_response_body
-    append_to_response_body turbo_stream.invoke("TurboBoost.Commands.token=", args: [new_token], camelize: false)
-  rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command token to the response! #{error.message}"
-  end
-
   def append_command_state_to_response_body
-    append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [state.to_json, state.to_sgid_param], camelize: false)
+    command_state[:command_token] = new_token
+    append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [command_state.to_json, command_state.to_sgid_param], camelize: false)
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
   end

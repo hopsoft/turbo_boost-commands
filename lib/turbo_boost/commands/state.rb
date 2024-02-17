@@ -16,7 +16,7 @@ class TurboBoost::Commands::State
   end
 
   def initialize(store = nil, provisional: false)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
+    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 16.kilobytes)
     @store.cleanup
     @provisional = provisional
   end
@@ -37,7 +37,7 @@ class TurboBoost::Commands::State
   end
 
   # TODO: implement state resolution
-  def resolve(client_state)
+  def resolve(optimistic_updates = {})
     # return unless self.class.resolver
     # self.class.resolver.call self, client_state
   end
