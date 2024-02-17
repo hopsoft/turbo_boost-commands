@@ -9,7 +9,6 @@ import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
 import state from './state'
-import urls from './urls'
 import uuids from './uuids'
 import VERSION from './version'
 
@@ -25,7 +24,7 @@ const Commands = {
   registerEventDelegate: delegates.register,
   get eventDelegates() {
     return delegates.events
-  },
+  }
 }
 
 function buildCommandPayload(id, element) {
@@ -37,7 +36,7 @@ function buildCommandPayload(id, element) {
     startedAt: Date.now(),
     changedState: state.changed, // changed-state (delta of optimistic updates)
     clientState: state.current, // client-side state
-    signedState: state.signed, // server-side state
+    signedState: state.signed // server-side state
   }
 }
 
@@ -56,20 +55,20 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src,
+      src: driver.src
     }
 
     const startEvent = await dispatch(commandEvents.start, element, {
       cancelable: true,
-      detail: payload,
+      detail: payload
     })
 
     if (startEvent.defaultPrevented || (startEvent.detail.confirmation && event.defaultPrevented))
       return dispatch(commandEvents.abort, element, {
         detail: {
           message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
-          source: startEvent,
-        },
+          source: startEvent
+        }
       })
 
     // the element and thus the driver may have changed based on the start event handler(s)
@@ -78,7 +77,7 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src,
+      src: driver.src
     }
 
     activity.add(payload)
@@ -97,7 +96,7 @@ async function invokeCommand(event) {
     }
   } catch (error) {
     dispatch(commandEvents.clientError, element, {
-      detail: { ...payload, error },
+      detail: { ...payload, error }
     })
   }
 }
@@ -112,7 +111,7 @@ if (!self.TurboBoost.Commands) {
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
-    `textarea[${schema.commandAttribute}]`,
+    `textarea[${schema.commandAttribute}]`
   ])
 
   self.TurboBoost.Commands = Commands

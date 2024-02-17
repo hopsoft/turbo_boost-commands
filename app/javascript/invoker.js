@@ -24,7 +24,7 @@ const parseResponse = response => {
 
 const invoke = (payload = {}) => {
   try {
-    fetch(urls.command.href, {
+    fetch(urls.commandInvocationURL.href, {
       method: 'POST',
       headers: headers.prepare({}),
       body: JSON.stringify(payload)
