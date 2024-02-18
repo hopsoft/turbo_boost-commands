@@ -10,7 +10,11 @@ const prepare = (headers = {}) => {
   headers = { ...headers }
 
   // Assign Accept values
-  const accepts = (headers['Accept'] || '').split(',').map(val => val.trim())
+  const accepts = (headers['Accept'] || '')
+    .split(',')
+    .map(val => val.trim())
+    .filter(val => val.length)
+
   accepts.unshift(types.boost, types.stream, types.html, types.xhtml)
   headers['Accept'] = [...new Set(accepts)].join(', ')
 

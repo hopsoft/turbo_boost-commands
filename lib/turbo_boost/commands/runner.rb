@@ -171,6 +171,14 @@ class TurboBoost::Commands::Runner
     @turbo_stream ||= Turbo::Streams::TagBuilder.new(controller.view_context)
   end
 
+  def message_verifier
+    secret = controller.request.session&.id.to_s
+    secret = Rails.application.secret_key_base if secret.blank?
+    ActiveSupport::MessageVerifier.new secret, digest: "SHA256", url_safe: true
+  rescue
+    ActiveSupport::MessageVerifier.new secret digest: "SHA256"
+  end
+
   def handle_command_event(*args)
     event = args.shift
     options = args.extract_options!
@@ -194,24 +202,26 @@ class TurboBoost::Commands::Runner
     TurboBoost::Commands::Sanitizer.instance
   end
 
-  # TODO: revisit command token validation
-  def new_token
-    @new_token ||= SecureRandom.alphanumeric(13)
+  def new_command_token
+    @new_command_token ||= SecureRandom.alphanumeric(13)
   end
 
-  def client_command_token
-    command_params.dig(:client_state, :command_token).to_s
+  def client_command_tokens
+    command_params.dig(:client_state, :tokens) || {}
   end
 
-  def server_command_token
-    command_state[:command_token].to_s
+  def server_command_tokens
+    command_state[:tokens] || {}
   end
 
   def valid_command_token?
     return true unless Rails.configuration.turbo_boost_commands.protect_from_forgery
-    return false unless client_command_token.present?
-    return false unless server_command_token.present?
-    client_command_token == server_command_token
+    return false unless client_command_tokens[:masked].present?
+    return false unless server_command_tokens[:unmasked].present?
+
+    expected = server_command_tokens[:unmasked]
+    actual = message_verifier.verify(client_command_tokens[:masked])
+    expected == actual
   end
 
   def should_redirect?
@@ -248,7 +258,7 @@ class TurboBoost::Commands::Runner
   end
 
   def append_command_state_to_response_body
-    command_state[:command_token] = new_token
+    command_state[:tokens] = {unmasked: new_command_token, masked: message_verifier.generate(new_command_token)}
     append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [command_state.to_json, command_state.to_sgid_param], camelize: false)
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
@@ -326,6 +336,7 @@ class TurboBoost::Commands::Runner
     return unless command_performed?
     headers.each { |key, val| append_response_header key, val }
     append_response_header "TurboBoost-Command", command_name
+    append_response_header "TurboBoost-Command-Strategy", controller_action_prevented? ? "Append" : "Replace"
     append_response_header "TurboBoost-Command-Status", "HTTP #{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}"
   end
 end

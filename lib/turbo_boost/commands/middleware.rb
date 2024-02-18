@@ -15,6 +15,11 @@ class TurboBoost::Commands::Middleware
 
   private
 
+  # Returns the MIME type for TurboBoost Command invocations.
+  def mime_type
+    Mime::Type.lookup_by_extension(:turbo_boost)
+  end
+
   # Indicates whether or not the request is a TurboBoost Command invocation that requires modifications
   # before we hand things over to Rails.
   #
@@ -22,9 +27,9 @@ class TurboBoost::Commands::Middleware
   # @return [Boolean] true if the request is a TurboBoost Command invocation, false otherwise
   def modify?(request)
     return false unless request.post?
-    return false unless request.xhr?
-    return false unless request.content_type&.downcase&.start_with?("application/json")
-    request.path.start_with? PATH
+    return false unless request.path.start_with?(PATH)
+    return false unless mime_type && request.env["HTTP_ACCEPT"]&.include?(mime_type)
+    true
   end
 
   # Modifies the given POST request so Rails sees it as GET.
@@ -54,7 +59,7 @@ class TurboBoost::Commands::Middleware
 
     request.env.tap do |env|
       # Store the command params in the environment
-      env["turbo_boost.command"] = params.except("src")
+      env["turbo_boost.command"] = params
 
       # Change the method from POST to GET
       env["REQUEST_METHOD"] = "GET"

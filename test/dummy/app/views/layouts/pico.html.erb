@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TurboBoost Commands</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "pico", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <main class="container-fluid">
+      <header>
+        <h1>TurboBoost Commands</h1>
+      </header>
+
+      <main>
+        <%= yield %>
+      </main>
+
+      <footer>
+        <small>© 2024 Hopsoft. All rights reserved.</small>
+      </footer>
+    </main>
+  </body>
+</html>

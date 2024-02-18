@@ -12,9 +12,12 @@ const parseError = error => {
 
 const parseResponse = response => {
   const ok = response.status >= 200 && response.status <= 399
+  const strategy = response.headers.get('TurboBoost-Command-Strategy')
+  const append = !!strategy.match(/^append$/i)
 
   // OK: Response status was between 200-399
-  if (ok) return response.text().then(content => renderer.append(content))
+  if (ok)
+    return response.text().then(content => (append ? renderer.append(content) : renderer.replace(content)))
 
   // NOT OK: Response status was outside 200-399
   const error = `Server returned a ${response.status} status code! TurboBoost Commands require 2XX-3XX status codes.`
