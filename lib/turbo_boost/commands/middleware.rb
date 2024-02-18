@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::Middleware
-  PATH = "/turbo-boost/command/invocation"
+  PATH = "/turbo-boost-command-invocation"
 
   def initialize(app)
     @app = app
@@ -37,7 +37,7 @@ class TurboBoost::Commands::Middleware
   # The posted JSON body content holds the TurboBoost Command meta data.
   # The parsed JSON body is stored in the environment under the `turbo_boost.command` key.
   #
-  # @example POST payload for: /turbo-boost/command/invocation
+  # @example POST payload for: /turbo-boost-command-invocation
   #   {
   #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569",                 # unique command invocation id
   #     "name"              => "IncrementCountCommand",                                              # the command being invoked
@@ -45,7 +45,9 @@ class TurboBoost::Commands::Middleware
   #     "elementAttributes" => {"tag"=>"BUTTON", "checked"=>false, "disabled"=>false, "value"=>nil}, # the triggering element's attributes
   #     "startedAt"         => 1708213193567,                                                        # the time the command was invoked
   #     "changedState"      => {},                                                                   # the delta of optimistic state changes made on the client
-  #     "clientState"       => {"command_token"=>"uEsIAGR8byCKj"},                                   # the state as it was on the client
+  #     "clientState"       => {                                                                     # the state as it was on the client
+  #       "command_token" => "IlU0dVVhNElFdkVCZVUi--a878d33d85ed9b9611c155ed1d7bb8785fb..."}         # the command token used for forgery protection
+  #     },
   #     "signedState"       => "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL2R1VuaXZlcnNhbElEOjpFeH...",        # the state as it was on the server at the time of the last command invocation
   #     "driver"            => "frame",                                                              # the driver used to invoke the command
   #     "frameId"           => "basic_command-turbo-frame",                                          # the turbo-frame id (if applicable)

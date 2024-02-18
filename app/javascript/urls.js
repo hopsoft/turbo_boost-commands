@@ -6,6 +6,6 @@ const buildURL = path => {
 
 export default {
   get commandInvocationURL() {
-    return buildURL('/turbo-boost/command/invocation')
+    return buildURL('/turbo-boost-command-invocation')
   }
 }
