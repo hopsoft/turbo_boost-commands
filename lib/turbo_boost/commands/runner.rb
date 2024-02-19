@@ -55,7 +55,8 @@ class TurboBoost::Commands::Runner
   def command_params
     return ActionController::Parameters.new unless command_requested?
     @command_params ||= begin
-      payload = parsed_command_params.deep_transform_keys(&:underscore)
+      payload = parsed_command_params.transform_keys(&:underscore)
+      payload["element_attributes"]&.deep_transform_keys!(&:underscore)
       ActionController::Parameters.new(payload).permit!
     end
   end
@@ -123,7 +124,8 @@ class TurboBoost::Commands::Runner
     return if command_errored?
     return if command_performing?
     return if command_performed?
-    command_state.resolve command_params[:changed_state]
+
+    command_instance.resolve_state command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
   end
 
@@ -155,8 +157,8 @@ class TurboBoost::Commands::Runner
 
     return if controller_action_prevented?
 
-    append_to_response_headers
     append_command_state_to_response_body
+    append_to_response_headers if command_performed?
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"

@@ -34,4 +34,8 @@ module ApplicationHelper
   def element_id(*args)
     args.push(object_id).join("-").parameterize
   end
+
+  def attribute(id, name)
+    turbo_boost.command_state[id][name] if turbo_boost.command_state[id]
+  end
 end

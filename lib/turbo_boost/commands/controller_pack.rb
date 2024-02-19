@@ -8,6 +8,7 @@ class TurboBoost::Commands::ControllerPack
   attr_reader :runner, :command
 
   delegate(
+    :command_state,
     :command_aborted?,
     :command_errored?,
     :command_performed?,
@@ -15,7 +16,6 @@ class TurboBoost::Commands::ControllerPack
     :command_requested?,
     :command_succeeded?,
     :controller,
-    :state,
     to: :runner
   )
 

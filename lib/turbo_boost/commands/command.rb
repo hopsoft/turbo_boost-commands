@@ -90,7 +90,11 @@ class TurboBoost::Commands::Command
     @turbo_streams = Set.new
   end
 
-  # Abstract `perform` method, overridde in subclassed commands
+  # Abstract method to resolve state (default noop), override in subclassed commands
+  def resolve_state(client_state)
+  end
+
+  # Abstract `perform` method, override in subclassed commands
   def perform
     raise NotImplementedError, "#{self.class.name} must implement the `perform` method!"
   end
