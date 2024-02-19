@@ -10,7 +10,7 @@ class DriversWindowTest < ApplicationSystemTestCase
   def test_append_command
     count = 10
     details_element.click
-    assert_equal "Placeholder...", message_element.inner_text
+    assert_equal "...", message_element.inner_text
     count.times do
       append_element.click
       wait_for_detach append_element
@@ -21,7 +21,7 @@ class DriversWindowTest < ApplicationSystemTestCase
   def test_replace_command
     count = 10
     details_element.click
-    assert_equal "Placeholder...", message_element.inner_text
+    assert_equal "...", message_element.inner_text
     count.times do
       replace_element.click
       wait_for_detach replace_element

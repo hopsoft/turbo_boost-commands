@@ -1,21 +1,26 @@
 <%= render "partials/details", id: "drivers-window" do %>
-  <summary>Drivers::Window</summary>
+  <summary>
+    Window
+    <small><code>→ app/javascript/drivers/window.js</code></small>
+  </summary>
 
-  <small data-test="message"><%= @message || "Placeholder..." %></small>
+  <article>
+    <button data-test="append" data-turbo-command="Drivers::Window::AppendCommand">
+      AppendCommand
+    </button>
 
-  <div class="grid">
-    <div>
-      <button type="submit" data-test="append"
-        data-turbo-command="Drivers::Window::AppendCommand">
-        AppendCommand
-      </button>
-    </div>
+    <button data-test="replace" data-turbo-command="Drivers::Window::ReplaceCommand">
+      ReplaceCommand
+    </button>
 
-    <div>
-      <button type="submit" data-test="replace"
-        data-turbo-command="Drivers::Window::ReplaceCommand">
-        ReplaceCommand
-      </button>
-    </div>
-  </div>
+    <footer>
+      <small>
+        <% if @message %>
+          <ins data-test="message"><%= @message %></ins>
+        <% else %>
+          <span data-test="message">...</span>
+        <% end %>
+      </small>
+    </footer>
+  </article>
 <% end %>
