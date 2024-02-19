@@ -45,4 +45,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     super
     playwright_browser&.close
   end
+
+  # If a TurboStream replaces an element in the DOM,
+  # we may need to wait for the element to be detached from the DOM before proceeding.
+  #
+  # NOTE: Playwright's `wait_for_element_state` doesn't accept "detached" as a valid state for some reason.
+  #       Not sure why because `state: "detached"` is valid on `wait_for_selector` | ಠ_ಠ
+  #
+  def wait_for_detach(element)
+    element.wait_for_element_state "hidden"
+  end
 end

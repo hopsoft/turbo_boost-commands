@@ -1,0 +1,21 @@
+<%= render "partials/details", id: "drivers-window" do %>
+  <summary>Drivers::Window</summary>
+
+  <small data-test="message"><%= @message || "Placeholder..." %></small>
+
+  <div class="grid">
+    <div>
+      <button type="submit" data-test="append"
+        data-turbo-command="Drivers::Window::AppendCommand">
+        AppendCommand
+      </button>
+    </div>
+
+    <div>
+      <button type="submit" data-test="replace"
+        data-turbo-command="Drivers::Window::ReplaceCommand">
+        ReplaceCommand
+      </button>
+    </div>
+  </div>
+<% end %>

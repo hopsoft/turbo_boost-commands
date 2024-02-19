@@ -2,6 +2,7 @@ const append = content => {
   document.body.insertAdjacentHTML('beforeend', content)
 }
 
+// TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
 const replace = content => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, 'text/html')

@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   draw :demos
   draw :tests
 
-  root "tests#index"
+  root "features#index"
 end

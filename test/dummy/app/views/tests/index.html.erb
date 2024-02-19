@@ -17,19 +17,5 @@
 
   <hr>
 
-  <%= render "partials/details", id: "details-window-driver" do %>
-    <summary>Window Driver</summary>
-
-    <button data-turbo-command="TestWithActionCommand" data-target="details-window-driver">
-      TestWithActionCommand
-      <br>
-      <small>Replace Strategy</small>
-    </button>
-
-    <button data-turbo-command="TestWithoutActionCommand" data-target="details-window-driver">
-      TestWithoutActionCommand
-      <br>
-      <small>Append Strategy</small>
-    </button>
-  <% end %>
+  <%= render "/tests/drivers/window" %>
 </section>

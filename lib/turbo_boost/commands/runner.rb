@@ -246,8 +246,25 @@ class TurboBoost::Commands::Runner
     :unknown
   end
 
+  # Indicates if a TurboStream template exists for the current action.
+  # Any template with the format of :turbo_boost or :turbo_stream format is considered a match.
+  # @return [Boolean] true if a TurboStream template exists, false otherwise
+  def turbo_stream_template_exists?
+    controller.lookup_context.exists? controller.action_name, controller.lookup_context.prefixes, formats: [:turbo_boost, :turbo_stream]
+  end
+
   def rendering_strategy
-    return "Replace" if controller_action_allowed? && command_params[:driver] == "window"
+    # Use the replace strategy if the follow things are true:
+    #
+    # 1. The command was triggered by the WINDOW driver
+    # 2. After the command finishes, normal Rails mechanics resume (i.e. prevent_controller_action was not called)
+    # 3. There is NO TurboStream template for the current action (i.e. example.turbo_boost.erb, example.turbo_frame.erb)
+    #
+    # TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
+    if command_params[:driver] == "window" && controller_action_allowed?
+      return "Replace" unless turbo_stream_template_exists?
+    end
+
     "Append"
   end
 

@@ -25,8 +25,7 @@ class TurboBoostSetupTest < ApplicationSystemTestCase
     page.goto basic_command_url
 
     assert js("TurboBoost.State.signed.length > 0")
-    assert_equal 0, js("Object.keys(TurboBoost.State.current).length")
-    assert_equal 0, js("Object.values(TurboBoost.State.current).length")
+    assert_not_nil js("TurboBoost.State.current.command_token") # used for forgery protection
 
     js("TurboBoost.State.current.test = true")
     js("TurboBoost.State.current.example = 'value'")

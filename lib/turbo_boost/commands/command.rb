@@ -117,6 +117,7 @@ class TurboBoost::Commands::Command
   end
 
   # Same method signature as ActionView::Rendering#render (i.e. controller.view_context.render)
+  # Great for rendering partials with short-hand syntax sugar → `render "/path/to/partial"`
   def render(options = {}, locals = {}, &block)
     return controller.view_context.render(options, locals, &block) unless options.is_a?(Hash)
 
