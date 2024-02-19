@@ -9,4 +9,9 @@ const replace = content => {
   document.body.innerHTML = doc.body.innerHTML
 }
 
-export default { append, replace }
+export const render = (strategy, content) => {
+  if (strategy.match(/^Append$/i)) return append(content)
+  if (strategy.match(/^Replace$/i)) return replace(content)
+}
+
+export default { render }

@@ -1,3 +1,5 @@
+const RESPONSE_HEADER = 'TurboBoost-Command'
+
 const types = {
   boost: 'text/vnd.turbo-boost.html',
   stream: 'text/vnd.turbo-stream.html',
@@ -6,6 +8,7 @@ const types = {
   json: 'application/json'
 }
 
+// Prepares request headers for TurboBoost Command invocations
 const prepare = (headers = {}) => {
   headers = { ...headers }
 
@@ -27,4 +30,14 @@ const prepare = (headers = {}) => {
   return headers
 }
 
-export default { prepare }
+// Tokenizes the TurboBoost Command response header value
+const tokenize = value => {
+  if (value) {
+    const [status, strategy, name] = value.split(', ')
+    return { status, strategy, name }
+  }
+
+  return {}
+}
+
+export default { prepare, tokenize, RESPONSE_HEADER }

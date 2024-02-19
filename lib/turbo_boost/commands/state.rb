@@ -28,9 +28,7 @@ class TurboBoost::Commands::State
   end
 
   def each
-    data.keys.each do |key|
-      yield key, self[key]
-    end
+    data.keys.each { |key| yield(key, self[key]) }
   end
 
   # Provisional state is for the current request/response and is exposed as `State#now`

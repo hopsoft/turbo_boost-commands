@@ -1,9 +1,9 @@
 import headers from './headers'
 import lifecycle from './lifecycle'
-import renderer from './renderer'
 import state from './state'
 import urls from './urls'
 import { dispatch } from './events'
+import { render } from './renderer'
 
 const parseError = error => {
   const errorMessage = `Unexpected error performing a TurboBoost Command! ${error.message}`
@@ -12,17 +12,15 @@ const parseError = error => {
 
 const parseResponse = response => {
   const ok = response.status >= 200 && response.status <= 399
-  const strategy = response.headers.get('TurboBoost-Command-Strategy')
-  const append = !!strategy.match(/^append$/i)
+  const strategy = headers.tokenize(response.headers.get(headers.RESPONSE_HEADER)).strategy
 
   // OK: Response status was between 200-399
-  if (ok)
-    return response.text().then(content => (append ? renderer.append(content) : renderer.replace(content)))
+  if (ok) return response.text().then(content => render(strategy, content))
 
   // NOT OK: Response status was outside 200-399
   const error = `Server returned a ${response.status} status code! TurboBoost Commands require 2XX-3XX status codes.`
   dispatch(lifecycle.events.clientError, document, { detail: { error, response } }, true)
-  if (append) response.text().then(text => renderer.append(text))
+  response.text().then(content => render(strategy, content))
 }
 
 const invoke = (payload = {}) => {

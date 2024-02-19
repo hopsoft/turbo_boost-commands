@@ -20,13 +20,16 @@
   <%= render "partials/details", id: "details-window-driver" do %>
     <summary>Window Driver</summary>
 
-    <section>
-      <h6>Click Event Delegate</h6>
-      <button data-turbo-command="StateCommand">Click Me</button>
-    </section>
+    <button data-turbo-command="TestWithActionCommand" data-target="details-window-driver">
+      TestWithActionCommand
+      <br>
+      <small>Replace Strategy</small>
+    </button>
 
-    <section>
-      <h6>Change Event Delegate</h6>
-    </section>
+    <button data-turbo-command="TestWithoutActionCommand" data-target="details-window-driver">
+      TestWithoutActionCommand
+      <br>
+      <small>Append Strategy</small>
+    </button>
   <% end %>
 </section>

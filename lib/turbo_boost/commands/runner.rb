@@ -4,6 +4,8 @@ require_relative "sanitizer"
 require_relative "state"
 
 class TurboBoost::Commands::Runner
+  RESPONSE_HEADER = "TurboBoost-Command"
+
   SUPPORTED_MEDIA_TYPES = {
     "text/html" => true,
     "text/vnd.turbo-boost.html" => true,
@@ -109,6 +111,10 @@ class TurboBoost::Commands::Runner
     !!command_instance&.succeeded?
   end
 
+  def controller_action_allowed?
+    !controller_action_prevented?
+  end
+
   def controller_action_prevented?
     !!@controller_action_prevented
   end
@@ -138,13 +144,13 @@ class TurboBoost::Commands::Runner
       render_response status: response_status
       append_success_to_response
     when TurboBoost::Commands::AbortError
-      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
+      render_response status: error.http_status_code, status_header: error.message
       append_streams_to_response_body
     when TurboBoost::Commands::PerformError
-      render_response status: error.http_status_code, headers: {"TurboBoost-Command-Status": error.message}
+      render_response status: error.http_status_code, status_header: error.message
       append_error_to_response error
     else
-      render_response status: :internal_server_error, headers: {"TurboBoost-Command-Status": error.message}
+      render_response status: :internal_server_error, status_header: error.message
       append_error_to_response error
     end
 
@@ -164,9 +170,9 @@ class TurboBoost::Commands::Runner
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
   end
 
-  def render_response(html: "", status: nil, headers: {})
+  def render_response(html: "", status: nil, status_header: nil)
     controller.render html: html, layout: false, status: status || response_status
-    append_to_response_headers headers
+    append_to_response_headers status_header
   end
 
   def turbo_stream
@@ -240,9 +246,8 @@ class TurboBoost::Commands::Runner
     :unknown
   end
 
-  def client_strategy
-    return "Append" if controller_action_prevented?
-    return "Replace" if command_params[:driver] == "window"
+  def rendering_strategy
+    return "Replace" if controller_action_allowed? && command_params[:driver] == "window"
     "Append"
   end
 
@@ -343,11 +348,15 @@ class TurboBoost::Commands::Runner
     controller.response.set_header key.to_s, value.to_s
   end
 
-  def append_to_response_headers(headers = {})
+  def append_to_response_headers(status = nil)
     return unless command_performed?
-    headers.each { |key, val| append_response_header key, val }
-    append_response_header "TurboBoost-Command", command_name
-    append_response_header "TurboBoost-Command-Strategy", client_strategy
-    append_response_header "TurboBoost-Command-Status", "HTTP #{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}"
+
+    values = [
+      status || "#{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}".delete(","),
+      rendering_strategy,
+      command_name
+    ]
+
+    append_response_header RESPONSE_HEADER, values.join(", ")
   end
 end
