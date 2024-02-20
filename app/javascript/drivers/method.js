@@ -1,32 +1,32 @@
-let activeElement, activePayload
+let activeElement
+let activePayload
 
-document.addEventListener(
-  'submit',
-  event => {
-    try {
-      const form = event.target
-      const method = form.getAttribute('method')
-      const action = form.getAttribute('action')
+const reset = () => {
+  activeElement = null
+  activePayload = null
+}
 
-      if (method !== activeElement?.dataset?.turboMethod) return
-      if (action !== activeElement?.href) return
-
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'turbo_boost_command'
-      input.value = JSON.stringify(activePayload)
-      form.appendChild(input)
-    } finally {
-      activeElement = null
-      activePayload = null
-    }
-  },
-  true
-)
-
-function invokeCommand(element, payload = {}) {
+const invokeCommand = (element, payload = {}) => {
   activeElement = element
   activePayload = payload
 }
+
+const ammendForm = form => {
+  try {
+    if (!activeElement) return
+    if (form.getAttribute('method') !== activeElement.dataset.turboMethod) return
+    if (form.getAttribute('action') !== activeElement.href) return
+
+    const input = form.querySelector('input[name="turbo_boost_command"]') || document.createElement('input')
+    input.type = 'hidden'
+    input.name = 'turbo_boost_command'
+    input.value = JSON.stringify(activePayload)
+    if (!form.contains(input)) form.appendChild(input)
+  } finally {
+    reset() // ensure reset
+  }
+}
+
+document.addEventListener('submit', event => ammendForm(event.target), true)
 
 export default { invokeCommand }

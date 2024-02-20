@@ -1,0 +1,30 @@
+<%= turbo_frame_tag "drivers-form", data: { src: test_path(:form) } do %>
+  <%= render "partials/details", id: "drivers-form-details" do %>
+    <summary>
+      Form
+      <small><code>→ app/javascript/drivers/form.js</code></small>
+    </summary>
+
+    <article>
+      <section>
+        <%= form_with url: tests_path, data: { turbo_command: "Drivers::Form::PreventControllerActionCommand" } do |form| %>
+          <button type="submit" data-test="prevent">
+            <article>Click to Invoke → <code>Drivers::Form::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
+            <small>Uses explicit <u>Rails/Hotwire</u> rendering mechanics</small>
+          </button>
+        <% end %>
+      </section>
+
+      <section>
+        <%= form_with url: tests_path, data: { turbo_command: "Drivers::Form::AllowControllerActionCommand" } do |form| %>
+          <button type="submit" data-test="allow">
+            <article>Click to Invoke → <code>Drivers::Form::<ins><u>Allow</u></ins>ControllerActionCommand</code></article>
+            <small>Uses explicit <u>Rails/Hotwire</u> rendering mechanics</small>
+          </button>
+        <% end %>
+      </section>
+
+      <%= render "/tests/drivers/footer" %>
+    </article>
+  <% end %>
+<% end %>

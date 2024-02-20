@@ -47,8 +47,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   # Waits for a promise to resolve on the client
-  def wait_for_promise(wait: 0)
-    page.evaluate("new Promise(resolve => setTimeout(resolve, #{wait}))")
+  def wait_for_promise(delay: 0)
+    page.evaluate("new Promise(resolve => setTimeout(resolve, #{delay}))")
   end
 
   # Waits for the next tick in the JavaScript event loop
@@ -62,8 +62,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # NOTE: Playwright's `wait_for_element_state` doesn't accept "detached" as a valid state for some reason.
   #       Not sure why because `state: "detached"` is valid on `wait_for_selector` | ಠ_ಠ
   #
+  # NOTE: This isn't as reliable as I had hoped
   def wait_for_detach(element)
-    element.wait_for_element_state "hidden"
-    wait_for_next_tick
+    # 1. STRATEGY: Wait for detach/hidden state + next tick
+    # element.wait_for_element_state "hidden"
+    # wait_for_next_tick
+
+    # 2. STRATEGY: Wait for 100ms
+    wait_for_promise delay: 100
   end
 end

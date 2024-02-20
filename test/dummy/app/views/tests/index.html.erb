@@ -2,20 +2,13 @@
   <article>
     <header><h2>Drivers</h2></header>
 
-    <details>
-      <summary>Form</summary>
-    </details>
-
+    <%= turbo_frame_tag "drivers-form", src: test_path(:form) %>
     <hr>
-
     <%= turbo_frame_tag "drivers-frame", src: test_path(:frame) %>
-
     <hr>
-
     <%= turbo_frame_tag "drivers-method", src: test_path(:method) %>
-
     <hr>
-
     <%= render "/tests/drivers/window" %>
+
   </article>
 </section>
