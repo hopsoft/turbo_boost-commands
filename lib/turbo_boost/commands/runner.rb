@@ -184,10 +184,9 @@ class TurboBoost::Commands::Runner
   end
 
   def message_verifier
-    secret = "#{controller.request.session&.id}#{Rails.application.secret_key_base}"
-    ActiveSupport::MessageVerifier.new secret, digest: "SHA256", url_safe: true
+    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256", url_safe: true
   rescue
-    ActiveSupport::MessageVerifier.new secret digest: "SHA256"
+    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256"
   end
 
   def handle_command_event(*args)

@@ -23,4 +23,9 @@ class TurboBoost::Commands::ControllerPack
     @runner = TurboBoost::Commands::Runner.new(controller)
     @command = runner.command_instance
   end
+
+  def state
+    ActiveSupport::Deprecation.warn "The `state` method has been deprecated. Please update to `command_state`."
+    command_state
+  end
 end
