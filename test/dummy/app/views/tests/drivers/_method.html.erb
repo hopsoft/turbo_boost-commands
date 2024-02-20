@@ -7,18 +7,19 @@
 
     <article>
       <section>
-        <a role="button" href="<%= test_path :method %>"
-          data-test="append" data-turbo-method="delete" data-turbo-command="Drivers::Method::PreventControllerActionCommand">
+        <%= link_to test_path(:method), role: "button", style: "width:100%",
+          data: { test: "prevent", turbo_method: "delete", turbo_command: "Drivers::Method::PreventControllerActionCommand" } do %>
           <article>Click to Invoke ➜ <code>Drivers::Method::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
-          <small>Uses the <u>Append</u> rendering strategy</small>
-        </a>
+          <small>Uses explicit <u>Rails/Hotwire</u> rendering mechanics</small>
+        <% end %>
       </section>
 
       <section>
-        <button type="submit" data-test="replace" data-turbo-command="Drivers::Method::AllowControllerActionCommand">
+        <%= link_to test_path(:method), role: "button", style: "width:100%",
+          data: { test: "allow", turbo_method: "delete", turbo_command: "Drivers::Method::AllowControllerActionCommand" } do %>
           <article>Click to Invoke ➜ <code>Drivers::Method::<ins><u>Allow</u></ins>ControllerActionCommand</code></article>
-          <small>Uses the <u>Replace</u> rendering strategy</small>
-        </button>
+          <small>Uses explicit <u>Rails/Hotwire</u> rendering mechanics</small>
+        <% end %>
       </section>
 
       <%= render "/tests/drivers/footer" %>

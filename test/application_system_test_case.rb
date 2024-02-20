@@ -46,6 +46,16 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     playwright_browser&.close
   end
 
+  # Waits for a promise to resolve on the client
+  def wait_for_promise(wait: 0)
+    page.evaluate("new Promise(resolve => setTimeout(resolve, #{wait}))")
+  end
+
+  # Waits for the next tick in the JavaScript event loop
+  def wait_for_next_tick
+    wait_for_promise
+  end
+
   # If a TurboStream replaces an element in the DOM,
   # we may need to wait for the element to be detached from the DOM before proceeding.
   #
@@ -54,5 +64,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #
   def wait_for_detach(element)
     element.wait_for_element_state "hidden"
+    wait_for_next_tick
   end
 end
