@@ -1,0 +1,14 @@
+  <footer>
+    <small>
+      Message →
+      <% if @message %>
+        <ins data-test="message"><%= @message %></ins>
+      <% else %>
+        <span data-test="message">...</span>
+      <% end %>
+      <br>
+      Request Format → <code><%= request.format %></code>
+      <br>
+      View Template → <code><%= Current.template %></code>
+    </small>
+  </footer>

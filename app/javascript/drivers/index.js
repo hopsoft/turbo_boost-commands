@@ -6,7 +6,7 @@ import windowDriver from './window'
 
 function src(element, frame) {
   frame = frame || { dataset: {} }
-  return element.href || frame.src || frame.dataset.turboBoostSrc || location.href
+  return element.href || frame.src || frame.dataset.src || location.href
 }
 
 function find(element) {

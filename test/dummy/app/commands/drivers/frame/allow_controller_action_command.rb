@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Drivers
-  module Window
+  module Frame
     class AllowControllerActionCommand < ApplicationCommand
       after_command -> { transfer_instance_variables controller }
 

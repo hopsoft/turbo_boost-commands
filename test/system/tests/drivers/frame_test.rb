@@ -19,7 +19,6 @@ class DriversFrameTest < ApplicationSystemTestCase
   end
 
   def test_allow_controller_action_command
-    skip
     count = 10
     details_element.click
     assert_equal "...", message_element.inner_text

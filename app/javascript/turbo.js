@@ -5,7 +5,7 @@
 //import urls from './urls'
 //import { dispatch } from './events'
 //
-//const frameSources = {}
+const frameSources = {}
 //
 //const appendHeaders = headers => {}
 
@@ -42,9 +42,10 @@
 //  }
 //})
 //
-//// fires when a frame element is navigated and finishes loading
-//addEventListener('turbo:frame-load', event => {
-//  const frame = event.target.closest('turbo-frame')
-//  frame.dataset.turboBoostSrc = frameSources[frame.id] || frame.src || frame.dataset.turboBoostSrc
-//  delete frameSources[frame.id]
-//})
+
+// fires when a frame element is navigated and finishes loading
+addEventListener('turbo:frame-load', event => {
+  const frame = event.target.closest('turbo-frame')
+  frame.dataset.src = frameSources[frame.id] || frame.src || frame.dataset.src
+  delete frameSources[frame.id]
+})

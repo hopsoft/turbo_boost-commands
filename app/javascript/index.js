@@ -1,4 +1,4 @@
-//import './turbo'
+import './turbo'
 import schema from './schema'
 import { dispatch, commandEvents } from './events'
 import activity from './activity'

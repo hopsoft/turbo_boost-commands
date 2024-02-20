@@ -5,24 +5,20 @@
   </summary>
 
   <article>
-    <button data-test="append" data-turbo-command="Drivers::Window::PreventControllerActionCommand">
-      <article>Click to Invoke ➜ <code>Drivers::Window::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
-      <small>Uses the <u>Append</u> rendering strategy</small>
-    </button>
+    <section>
+      <button type="submit" data-test="append" data-turbo-command="Drivers::Window::PreventControllerActionCommand">
+        <article>Click to Invoke ➜ <code>Drivers::Window::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
+        <small>Uses the <u>Append</u> rendering strategy</small>
+      </button>
+    </section>
 
-    <button data-test="replace" data-turbo-command="Drivers::Window::AllowControllerActionCommand">
-      <article>Click to Invoke ➜ <code>Drivers::Window::<ins><u>Allow</u></ins>ControllerActionCommand</code></article>
-      <small>Uses the <u>Replace</u> rendering strategy</small>
-    </button>
+    <section>
+      <button type="submit" data-test="replace" data-turbo-command="Drivers::Window::AllowControllerActionCommand">
+        <article>Click to Invoke ➜ <code>Drivers::Window::<ins><u>Allow</u></ins>ControllerActionCommand</code></article>
+        <small>Uses the <u>Replace</u> rendering strategy</small>
+      </button>
+    </section>
 
-    <footer>
-      <small>
-        <% if @message %>
-          <ins data-test="message"><%= @message %></ins>
-        <% else %>
-          <span data-test="message">...</span>
-        <% end %>
-      </small>
-    </footer>
+    <%= render "/tests/drivers/footer" %>
   </article>
 <% end %>

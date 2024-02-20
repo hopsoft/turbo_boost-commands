@@ -1,23 +1,33 @@
-<%= render "partials/details", id: "drivers-frame" do %>
-  <summary>
-    Frame
-    <small><code>→ app/javascript/drivers/frame.js</code></small>
-  </summary>
+<%# turbo_frame_tag "drivers-frame", data: { src: test_path(:frame) } do %>
+<%= turbo_frame_tag "drivers-frame", data: { src: test_path(:frame) } do %>
+  <%= render "partials/details", id: "drivers-frame-details" do %>
+    <summary>
+      Frame
+      <small><code>→ app/javascript/drivers/frame.js</code></small>
+    </summary>
 
-  <article>
-    <button data-test="append" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
-      <article>Click to Invoke ➜ <code>Drivers::Frame::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
-      <small>Uses the <u>Append</u> rendering strategy</small>
-    </button>
+    <article>
+      <section>
+        <button type="submit" data-test="append" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
+          <article>Click to Invoke → <code>Drivers::Frame::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
+          <small>Uses the <u>Append</u> rendering strategy</small>
+        </button>
+      </section>
 
-    <footer>
-      <small>
-        <% if @message %>
-          <ins data-test="message"><%= @message %></ins>
-        <% else %>
-          <span data-test="message">...</span>
-        <% end %>
-      </small>
-    </footer>
-  </article>
+      <section>
+        <button type="submit" data-test="replace" data-turbo-command="Drivers::Frame::AllowControllerActionCommand">
+          <article>
+            Click to Invoke → <code>Drivers::Frame::<ins><u>Allow</u></ins>ControllerActionCommand</code>
+            <br>
+            <small>Requires → <code>&lt;turbo-frame <u>data-src</u>="/path/to/template"...</code></small>
+          </article>
+          <small>
+            Uses default <u>Rails/Hotwire</u> rendering mechanics
+          </small>
+        </button>
+      </section>
+
+      <%= render "/tests/drivers/footer" %>
+    </article>
+  <% end %>
 <% end %>
