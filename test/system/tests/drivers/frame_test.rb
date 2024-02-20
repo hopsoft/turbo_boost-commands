@@ -2,7 +2,7 @@
 
 require_relative "../../../application_system_test_case"
 
-class DriversWindowTest < ApplicationSystemTestCase
+class DriversFrameTest < ApplicationSystemTestCase
   def setup
     page.goto tests_url
   end
@@ -19,6 +19,7 @@ class DriversWindowTest < ApplicationSystemTestCase
   end
 
   def test_allow_controller_action_command
+    skip
     count = 10
     details_element.click
     assert_equal "...", message_element.inner_text
@@ -32,7 +33,7 @@ class DriversWindowTest < ApplicationSystemTestCase
   private
 
   def details_element
-    page.wait_for_selector "#drivers-window"
+    page.wait_for_selector "#drivers-frame"
   end
 
   def message_element

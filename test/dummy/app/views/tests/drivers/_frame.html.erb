@@ -1,0 +1,23 @@
+<%= render "partials/details", id: "drivers-frame" do %>
+  <summary>
+    Frame
+    <small><code>→ app/javascript/drivers/frame.js</code></small>
+  </summary>
+
+  <article>
+    <button data-test="append" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
+      <article>Click to Invoke ➜ <code>Drivers::Frame::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
+      <small>Uses the <u>Append</u> rendering strategy</small>
+    </button>
+
+    <footer>
+      <small>
+        <% if @message %>
+          <ins data-test="message"><%= @message %></ins>
+        <% else %>
+          <span data-test="message">...</span>
+        <% end %>
+      </small>
+    </footer>
+  </article>
+<% end %>
