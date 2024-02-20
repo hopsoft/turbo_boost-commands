@@ -27,7 +27,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_requested?
-    controller.request.env.key? "turbo_boost.command"
+    controller.request.env.key?("turbo_boost.command") || controller.params.key?("turbo_boost_command")
   end
 
   def command_valid?
@@ -171,7 +171,7 @@ class TurboBoost::Commands::Runner
   end
 
   def render_response(html: "", status: nil, status_header: nil)
-    controller.render html: html, layout: false, status: status || response_status
+    controller.render html: html, layout: false, status: status || response_status unless controller.performed?
     append_to_response_headers status_header
   end
 
@@ -200,7 +200,7 @@ class TurboBoost::Commands::Runner
   def parsed_command_params
     @parsed_command_params ||= begin
       params = controller.request.env["turbo_boost.command"]
-      params ||= controller.params["turbo_boost_command"]
+      params ||= JSON.parse(controller.params["turbo_boost_command"])
       params || {}
     end
   end

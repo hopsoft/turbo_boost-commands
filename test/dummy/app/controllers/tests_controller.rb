@@ -2,4 +2,7 @@
 
 class TestsController < ApplicationController
   layout "pico"
+
+  def destroy
+  end
 end

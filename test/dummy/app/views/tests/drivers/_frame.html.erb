@@ -1,4 +1,3 @@
-<%# turbo_frame_tag "drivers-frame", data: { src: test_path(:frame) } do %>
 <%= turbo_frame_tag "drivers-frame", data: { src: test_path(:frame) } do %>
   <%= render "partials/details", id: "drivers-frame-details" do %>
     <summary>
@@ -8,14 +7,14 @@
 
     <article>
       <section>
-        <button type="submit" data-test="append" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
+        <button type="submit" data-test="prevent" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
           <article>Click to Invoke → <code>Drivers::Frame::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
           <small>Uses the <u>Append</u> rendering strategy</small>
         </button>
       </section>
 
       <section>
-        <button type="submit" data-test="replace" data-turbo-command="Drivers::Frame::AllowControllerActionCommand">
+        <button type="submit" data-test="allow" data-turbo-command="Drivers::Frame::AllowControllerActionCommand">
           <article>
             Click to Invoke → <code>Drivers::Frame::<ins><u>Allow</u></ins>ControllerActionCommand</code>
             <br>

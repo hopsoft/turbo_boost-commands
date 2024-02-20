@@ -12,8 +12,8 @@ class DriversFrameTest < ApplicationSystemTestCase
     details_element.click
     assert_equal "...", message_element.inner_text
     count.times do
-      append_element.click
-      wait_for_detach append_element
+      prevent_element.click
+      wait_for_detach prevent_element
     end
     assert_equal "PreventControllerActionCommand invoked #{count} times", message_element.inner_text
   end
@@ -23,8 +23,8 @@ class DriversFrameTest < ApplicationSystemTestCase
     details_element.click
     assert_equal "...", message_element.inner_text
     count.times do
-      replace_element.click
-      wait_for_detach replace_element
+      allow_element.click
+      wait_for_detach allow_element
     end
     assert_equal "AllowControllerActionCommand invoked #{count} times", message_element.inner_text
   end
@@ -39,11 +39,11 @@ class DriversFrameTest < ApplicationSystemTestCase
     details_element.wait_for_selector "[data-test=message]"
   end
 
-  def append_element
-    details_element.wait_for_selector "[data-test=append]"
+  def prevent_element
+    details_element.wait_for_selector "[data-test=prevent]"
   end
 
-  def replace_element
-    details_element.wait_for_selector "[data-test=replace]"
+  def allow_element
+    details_element.wait_for_selector "[data-test=allow]"
   end
 end

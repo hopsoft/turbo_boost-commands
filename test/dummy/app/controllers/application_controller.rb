@@ -34,6 +34,8 @@ class ApplicationController < ActionController::Base
       [], # .............................................. keys (locals that would be passed to the template)
       formats: request.accepts.map(&:symbol).compact # ... the template formats accepted by the client
     )&.short_identifier
+  rescue => error
+    Rails.logger.error "Error in ApplicationController#init_current! #{error.message}"
   end
 
   def cleanup
