@@ -30,6 +30,9 @@ class TurboBoost::Commands::Middleware
     return false unless request.path.start_with?(PATH)
     return false unless mime_type && request.env["HTTP_ACCEPT"]&.include?(mime_type)
     true
+  rescue => error
+    puts "#{self.class.name} failed to determine if the request should be modified! #{error.message}"
+    false
   end
 
   # Modifies the given POST request so Rails sees it as GET.
@@ -76,5 +79,7 @@ class TurboBoost::Commands::Middleware
       env["CONTENT_LENGTH"] = "0"
       env.delete("CONTENT_TYPE")
     end
+  rescue => error
+    puts "#{self.class.name} failed to modify the request! #{error.message}"
   end
 end
