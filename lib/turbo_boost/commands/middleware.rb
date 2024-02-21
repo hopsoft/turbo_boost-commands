@@ -35,7 +35,7 @@ class TurboBoost::Commands::Middleware
   # Modifies the given POST request so Rails sees it as GET.
   #
   # The posted JSON body content holds the TurboBoost Command meta data.
-  # The parsed JSON body is stored in the environment under the `turbo_boost.command` key.
+  # The parsed JSON body is stored in the environment under the `turbo_boost_command` key.
   #
   # @example POST payload for: /turbo-boost-command-invocation
   #   {
@@ -61,7 +61,7 @@ class TurboBoost::Commands::Middleware
 
     request.env.tap do |env|
       # Store the command params in the environment
-      env["turbo_boost.command"] = params
+      env["turbo_boost_command"] = params
 
       # Change the method from POST to GET
       env["REQUEST_METHOD"] = "GET"
