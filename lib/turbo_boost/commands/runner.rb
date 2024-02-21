@@ -180,9 +180,9 @@ class TurboBoost::Commands::Runner
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256", url_safe: true
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256", url_safe: true
   rescue
-    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
   def handle_command_event(*args)
@@ -224,7 +224,9 @@ class TurboBoost::Commands::Runner
     return true unless Rails.configuration.turbo_boost_commands.protect_from_forgery
     return false unless client_command_token.present?
     return false unless server_command_token.present?
-    server_command_token == message_verifier.verify(client_command_token)
+    server_command_token == message_verifier.verify(client_command_token, purpose: controller.request.session&.id)
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    false
   end
 
   def should_redirect?
@@ -284,7 +286,7 @@ class TurboBoost::Commands::Runner
 
   def append_command_state_to_response_body
     # use the masked token for the client state
-    command_state[:command_token] = message_verifier.generate(new_command_token)
+    command_state[:command_token] = message_verifier.generate(new_command_token, purpose: controller.request.session&.id)
     client_state = command_state.to_json
 
     # use the unmasked token for the signed (server) state
