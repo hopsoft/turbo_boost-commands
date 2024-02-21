@@ -9,17 +9,23 @@ class CapybaraNullDriver < Capybara::Driver::Base
   end
 end
 
-Capybara.register_driver(:null) { CapybaraNullDriver.new }
-Capybara.default_driver = :null
 Capybara.default_max_wait_time = 8
+Capybara.default_retry_interval = 0.2
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
+
+Capybara.register_driver :playwright do |app|
+  Capybara::Playwright::Driver.new(app, browser_type: :chromium)
+end
+
+Capybara.default_driver = :playwright
+
 Capybara.configure do |config|
-  config.server = :puma, {Silent: true}
+  config.ignore_hidden_elements = false
 end
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :null
+  driven_by :playwright
 
   def self.playwright
     @playwright ||= Playwright.create(playwright_cli_executable_path: Rails.root.join("../../node_modules/.bin/playwright"))
