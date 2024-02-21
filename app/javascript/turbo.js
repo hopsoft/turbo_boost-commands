@@ -1,47 +1,33 @@
-//import headers from './headers'
-//import lifecycle from './lifecycle'
-//import renderer from './renderer'
-//import state from './state'
-//import urls from './urls'
-//import { dispatch } from './events'
-//
-const frameSources = {}
-//
-//const appendHeaders = headers => {}
+import headers from './headers'
+import lifecycle from './lifecycle'
+import { dispatch } from './events'
+import { render } from './renderer'
 
-// fires before making a turbo HTTP request
-//addEventListener('turbo:before-fetch-request', event => {
-//  const frame = event.target.closest('turbo-frame')
-//  if (!frame?.activeTurboBoostCommand) return
-//
-//  event.preventDefault()
-//  const { fetchOptions } = event.detail
-//  fetchOptions.headers = headers.prepare(fetchOptions.headers)
-//  event.detail.url
-//
-//  debugger
-//})
-//
-//// fires after receiving a turbo HTTP response
-//addEventListener('turbo:before-fetch-response', event => {
-//  const frame = event.target.closest('turbo-frame')
-//  const { fetchResponse: response } = event.detail
-//
-//  if (frame) frameSources[frame.id] = frame.src
-//
-//  if (response.header('TurboBoost')) {
-//    if (response.statusCode < 200 || response.statusCode > 399) {
-//      const error = `Server returned a ${response.statusCode} status code! TurboBoost Commands require 2XX-3XX status codes.`
-//      dispatch(lifecycle.events.clientError, document, { detail: { ...event.detail, error } }, true)
-//    }
-//
-//    if (response.header('TurboBoost') === 'Append') {
-//      event.preventDefault()
-//      response.responseText.then(content => renderer.append(content))
-//    }
-//  }
-//})
-//
+const frameSources = {}
+
+// fires after receiving a turbo HTTP response
+addEventListener('turbo:before-fetch-response', event => {
+  const frame = event.target.closest('turbo-frame')
+  if (frame?.id && frame?.src) frameSources[frame.id] = frame.src
+
+  const { fetchResponse: response } = event.detail
+  const header = response.header(headers.RESPONSE_HEADER)
+
+  if (!header) return
+
+  // We'll take it from here Hotwire...
+  event.preventDefault()
+  const { statusCode } = response
+  const { strategy } = headers.tokenize(header)
+
+  // FAIL: Status outside the range of 200-399
+  if (statusCode < 200 || statusCode > 399) {
+    const error = `Server returned a ${status} status code! TurboBoost Commands require 2XX-3XX status codes.`
+    dispatch(lifecycle.events.clientError, document, { detail: { error, response } }, true)
+  }
+
+  response.responseHTML.then(content => render(strategy, content))
+})
 
 // fires when a frame element is navigated and finishes loading
 addEventListener('turbo:frame-load', event => {
