@@ -14,4 +14,8 @@ class ApplicationCommand < TurboBoost::Commands::Command
   rescue_from TurboBoost::Commands::PerformError do |error|
     # do something...
   end
+
+  def resolve_state(changed_state)
+    state.merge! changed_state
+  end
 end

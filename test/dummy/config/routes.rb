@@ -6,4 +6,7 @@ Rails.application.routes.draw do
   draw :marketing
   draw :docs
   draw :demos
+  draw :tests
+
+  root "features#index"
 end

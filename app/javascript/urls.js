@@ -1,9 +1,11 @@
-function build(urlString, payload = {}) {
+const buildURL = path => {
   const a = document.createElement('a')
-  a.href = urlString
-  const url = new URL(a)
-  url.searchParams.set('tbc', JSON.stringify(payload))
-  return url
+  a.href = path
+  return new URL(a)
 }
 
-export default { build }
+export default {
+  get commandInvocationURL() {
+    return buildURL('/turbo-boost-command-invocation')
+  }
+}

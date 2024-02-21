@@ -24,8 +24,18 @@ class ApplicationController < ActionController::Base
 
   def init_current
     session[:forced_load] = true unless session.loaded? # forces session to load (required for automated testing)
-    # Current.state ||= turbo_boost.state
     Current.user ||= User.find_or_create_by(session_id: session.id.to_s)
+
+    # Determine which view template will be rendered
+    Current.template = lookup_context.find_template(
+      action_name, # ..................................... the base name of the template to find
+      self.class._prefixes, # ............................ directories to search for the template
+      false, # ........................................... partial (we are looking for the template not a partial)
+      [], # .............................................. keys (locals that would be passed to the template)
+      formats: request.accepts.map(&:symbol).compact # ... the template formats accepted by the client
+    )&.short_identifier
+  rescue => error
+    Rails.logger.error "Error in ApplicationController#init_current! #{error.message}"
   end
 
   def cleanup

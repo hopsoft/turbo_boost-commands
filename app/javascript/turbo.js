@@ -1,46 +1,37 @@
-import state from './state'
-import renderer from './renderer'
-import { dispatch } from './events'
+import headers from './headers'
 import lifecycle from './lifecycle'
+import { dispatch } from './events'
+import { render } from './renderer'
 
 const frameSources = {}
-
-// fires before making a turbo HTTP request
-addEventListener('turbo:before-fetch-request', event => {
-  const frame = event.target.closest('turbo-frame')
-  const { fetchOptions } = event.detail
-
-  // command invoked and busy
-  if (self.TurboBoost?.Commands?.busy) {
-    let acceptHeaders = ['text/vnd.turbo-boost.html', fetchOptions.headers['Accept']]
-    acceptHeaders = acceptHeaders.filter(entry => entry && entry.trim().length > 0).join(', ')
-    fetchOptions.headers['Accept'] = acceptHeaders
-  }
-})
 
 // fires after receiving a turbo HTTP response
 addEventListener('turbo:before-fetch-response', event => {
   const frame = event.target.closest('turbo-frame')
+  if (frame?.id && frame?.src) frameSources[frame.id] = frame.src
+
   const { fetchResponse: response } = event.detail
+  const header = response.header(headers.RESPONSE_HEADER)
 
-  if (frame) frameSources[frame.id] = frame.src
+  if (!header) return
 
-  if (response.header('TurboBoost')) {
-    if (response.statusCode < 200 || response.statusCode > 399) {
-      const error = `Server returned a ${response.statusCode} status code! TurboBoost Commands require 2XX-3XX status codes.`
-      dispatch(lifecycle.events.clientError, document, { detail: { ...event.detail, error } }, true)
-    }
+  // We'll take it from here Hotwire...
+  event.preventDefault()
+  const { statusCode } = response
+  const { strategy } = headers.tokenize(header)
 
-    if (response.header('TurboBoost') === 'Append') {
-      event.preventDefault()
-      response.responseText.then(content => renderer.append(content))
-    }
+  // FAIL: Status outside the range of 200-399
+  if (statusCode < 200 || statusCode > 399) {
+    const error = `Server returned a ${status} status code! TurboBoost Commands require 2XX-3XX status codes.`
+    dispatch(lifecycle.events.clientError, document, { detail: { error, response } }, true)
   }
+
+  response.responseHTML.then(content => render(strategy, content))
 })
 
 // fires when a frame element is navigated and finishes loading
 addEventListener('turbo:frame-load', event => {
   const frame = event.target.closest('turbo-frame')
-  frame.dataset.turboBoostSrc = frameSources[frame.id] || frame.src || frame.dataset.turboBoostSrc
+  frame.dataset.src = frameSources[frame.id] || frame.src || frame.dataset.src
   delete frameSources[frame.id]
 })

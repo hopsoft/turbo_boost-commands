@@ -9,7 +9,6 @@ import elements from './elements'
 import lifecycle from './lifecycle'
 import logger from './logger'
 import state from './state'
-import urls from './urls'
 import uuids from './uuids'
 import VERSION from './version'
 
@@ -17,7 +16,7 @@ const TurboBoost = self.TurboBoost || {}
 
 const Commands = {
   VERSION,
-  busy: false,
+  active: false,
   confirmation,
   logger,
   schema,
@@ -35,9 +34,9 @@ function buildCommandPayload(id, element) {
     elementId: element.id.length > 0 ? element.id : null,
     elementAttributes: elements.buildAttributePayload(element),
     startedAt: Date.now(),
-    token: Commands.token, // command token (used for CSRF protection)
-    signedState: state.signed, // server side state
-    clientState: state.changed // client side state (delta of optimistic updates)
+    changedState: state.changed, // changed-state (delta of optimistic updates)
+    clientState: state.current, // client-side state
+    signedState: state.signed // server-side state
   }
 }
 
@@ -85,9 +84,6 @@ async function invokeCommand(event) {
 
     if (['frame', 'window'].includes(driver.name)) event.preventDefault()
 
-    Commands.busy = true
-    setTimeout(() => (Commands.busy = false), 10)
-
     switch (driver.name) {
       case 'method':
         return driver.invokeCommand(element, payload)
@@ -96,7 +92,7 @@ async function invokeCommand(event) {
       case 'frame':
         return driver.invokeCommand(driver.frame, payload)
       case 'window':
-        return driver.invokeCommand(payload)
+        return driver.invokeCommand(self, payload)
     }
   } catch (error) {
     dispatch(commandEvents.clientError, element, {

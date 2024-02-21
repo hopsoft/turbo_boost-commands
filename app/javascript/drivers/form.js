@@ -1,9 +1,9 @@
-function invokeCommand(form, payload = {}, event = {}) {
+const invokeCommand = (form, payload = {}) => {
   const input = form.querySelector('input[name="turbo_boost_command"]') || document.createElement('input')
   input.type = 'hidden'
   input.name = 'turbo_boost_command'
   input.value = JSON.stringify(payload)
-  form.appendChild(input)
+  if (!form.contains(input)) form.appendChild(input)
 }
 
 export default { invokeCommand }

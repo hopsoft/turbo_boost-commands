@@ -1,16 +1,18 @@
-function replaceDocument(content) {
-  const head = '<html'
-  const tail = '</html'
-  const headIndex = content.indexOf(head)
-  const tailIndex = content.lastIndexOf(tail)
-  if (headIndex >= 0 && tailIndex >= 0) {
-    const html = content.slice(content.indexOf('>', headIndex) + 1, tailIndex)
-    document.documentElement.innerHTML = html
-  }
-}
-
-function append(content) {
+const append = content => {
   document.body.insertAdjacentHTML('beforeend', content)
 }
 
-export default { append, replaceDocument }
+// TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
+const replace = content => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(content, 'text/html')
+  document.head.innerHTML = doc.head.innerHTML
+  document.body.innerHTML = doc.body.innerHTML
+}
+
+export const render = (strategy, content) => {
+  if (strategy.match(/^Append$/i)) return append(content)
+  if (strategy.match(/^Replace$/i)) return replace(content)
+}
+
+export default { render }

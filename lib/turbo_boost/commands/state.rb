@@ -7,16 +7,10 @@ class TurboBoost::Commands::State
     def from_sgid_param(sgid)
       new URI::UID.from_sgid(sgid, for: name)&.decode
     end
-
-    attr_reader :resolver
-
-    def assign_resolver(&block)
-      @resolver = block
-    end
   end
 
   def initialize(store = nil, provisional: false)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
+    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 16.kilobytes)
     @store.cleanup
     @provisional = provisional
   end
@@ -24,22 +18,23 @@ class TurboBoost::Commands::State
   delegate :to_json, to: :to_h
   delegate_missing_to :store
 
+  def dig(*keys)
+    to_h.with_indifferent_access.dig(*keys)
+  end
+
+  def merge!(hash = {})
+    hash.to_h.each { |key, val| self[key] = val }
+    self
+  end
+
   def each
-    data.keys.each do |key|
-      yield key, self[key]
-    end
+    data.keys.each { |key| yield(key, self[key]) }
   end
 
   # Provisional state is for the current request/response and is exposed as `State#now`
   # Standard state is preserved across multiple requests
   def provisional?
     !!@provisional
-  end
-
-  # TODO: implement state resolution
-  def resolve(client_state)
-    # return unless self.class.resolver
-    # self.class.resolver.call self, client_state
   end
 
   def now

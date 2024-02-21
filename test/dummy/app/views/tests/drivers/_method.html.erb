@@ -1,0 +1,28 @@
+<%= turbo_frame_tag "drivers-method", data: { src: test_path(:method) } do %>
+  <%= render "partials/details", id: "drivers-method" do %>
+    <summary>
+      Method
+      <small><code>→ app/javascript/drivers/method.js</code></small>
+    </summary>
+
+    <article>
+      <section>
+        <%= link_to test_path(:method), role: "button", style: "width:100%",
+          data: { test: "prevent", turbo_method: "delete", turbo_command: "Drivers::Method::PreventControllerActionCommand" } do %>
+          <article>Click to Invoke ➜ <code>Drivers::Method::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
+          <small>Uses the <u>Append</u> rendering strategy</small>
+        <% end %>
+      </section>
+
+      <section>
+        <%= link_to test_path(:method), role: "button", style: "width:100%",
+          data: { test: "allow", turbo_method: "delete", turbo_command: "Drivers::Method::AllowControllerActionCommand" } do %>
+          <article>Click to Invoke ➜ <code>Drivers::Method::<ins><u>Allow</u></ins>ControllerActionCommand</code></article>
+          <small>Uses the <u>Append</u> rendering strategy</small>
+        <% end %>
+      </section>
+
+      <%= render "/tests/drivers/footer" %>
+    </article>
+  <% end %>
+<% end %>

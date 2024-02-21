@@ -1,10 +1,5 @@
-import urls from '../urls'
+import { invoke } from '../invoker'
 
-function invokeCommand(frame, payload) {
-  const src = payload.src
-  payload = { ...payload }
-  delete payload.src
-  frame.src = urls.build(src, payload)
-}
+const invokeCommand = (_, payload) => invoke(payload)
 
 export default { invokeCommand }
