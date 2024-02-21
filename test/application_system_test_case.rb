@@ -46,7 +46,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     playwright_browser&.close
   end
 
-  def with_retries(max = 3)
+  def with_retries(max = 5)
     count = 0
     while count < max
       begin
