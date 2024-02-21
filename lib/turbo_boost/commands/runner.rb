@@ -171,11 +171,7 @@ class TurboBoost::Commands::Runner
   end
 
   def render_response(html: "", status: nil, status_header: nil)
-    if command_instance.rendered_response? && html.blank?
-      html = command_instance.rendered_response
-      status = command_instance.rendered_status
-    end
-    controller.render html: html, layout: false, status: status || response_status unless controller.performed?
+    controller.render html: html, layout: false, status: status || response_status # unless controller.performed?
     append_to_response_headers status_header
   end
 

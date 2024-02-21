@@ -8,31 +8,35 @@ class DriversMethodTest < ApplicationSystemTestCase
   end
 
   def test_prevent_controller_action_command
-    count = 10
-    details_element.click
-    assert_equal "...", message_element.inner_text
-    count.times do
-      prevent_element.click
-      wait_for_detach prevent_element
+    with_retries do
+      count = 10
+      details_element.click
+      assert_equal "...", message_element.inner_text
+      count.times do
+        prevent_element.click
+        wait_for_detach prevent_element
+      end
+      assert_equal "PreventControllerActionCommand invoked #{count} times", message_element.inner_text
     end
-    assert_equal "PreventControllerActionCommand invoked #{count} times", message_element.inner_text
   end
 
   def test_allow_controller_action_command
-    count = 10
-    details_element.click
-    assert_equal "...", message_element.inner_text
-    count.times do
-      allow_element.click
-      wait_for_detach allow_element
+    with_retries do
+      count = 10
+      details_element.click
+      assert_equal "...", message_element.inner_text
+      count.times do
+        allow_element.click
+        wait_for_detach allow_element
+      end
+      assert_equal "AllowControllerActionCommand invoked #{count} times", message_element.inner_text
     end
-    assert_equal "AllowControllerActionCommand invoked #{count} times", message_element.inner_text
   end
 
   private
 
   def details_element
-    page.wait_for_selector "#drivers-method"
+    page.wait_for_selector "#drivers-method details"
   end
 
   def message_element

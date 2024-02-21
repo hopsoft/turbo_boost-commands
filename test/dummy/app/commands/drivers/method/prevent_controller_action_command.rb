@@ -10,9 +10,10 @@ module Drivers
         count = state[self.class.name].to_i + 1
         state[self.class.name] = count
 
-        render_response(
-          html: render(partial: "/tests/drivers/method", assigns: {message: "#{self.class.name.demodulize} invoked #{count} times"}),
-          status: :multiple_choices
+        streams << render(
+          partial: "/tests/drivers/method",
+          formats: [:turbo_stream],
+          assigns: {message: "#{self.class.name.demodulize} invoked #{count} times"}
         )
       end
     end

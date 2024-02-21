@@ -9,6 +9,7 @@ module Drivers
         Current.template = "tests/drivers/frame/_turbo_stream.html.erb"
         count = state[self.class.name].to_i + 1
         state[self.class.name] = count
+
         streams << render(
           partial: "/tests/drivers/frame",
           formats: [:turbo_stream],

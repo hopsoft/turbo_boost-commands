@@ -116,17 +116,6 @@ class TurboBoost::Commands::Command
     css_id_selector dom_id(...)
   end
 
-  def render_response(html:, status:)
-    @rendered_response = html
-    @rendered_status = status
-  end
-
-  attr_reader :rendered_response, :rendered_status
-
-  def rendered_response?
-    rendered_response.present?
-  end
-
   # Same method signature as ActionView::Rendering#render (i.e. controller.view_context.render)
   # Great for rendering partials with short-hand syntax sugar → `render "/path/to/partial"`
   def render(options = {}, locals = {}, &block)

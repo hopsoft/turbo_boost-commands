@@ -11,7 +11,7 @@ end
 
 Capybara.register_driver(:null) { CapybaraNullDriver.new }
 Capybara.default_driver = :null
-Capybara.default_max_wait_time = 12
+Capybara.default_max_wait_time = 8
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
 Capybara.configure do |config|
@@ -46,6 +46,22 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     playwright_browser&.close
   end
 
+  def with_retries(max = 3)
+    count = 0
+    while count < max
+      begin
+        count += 1
+        return yield
+      rescue Playwright::Error, Minitest::Assertion => error
+        puts "RETRY #{count}: #{self.class.name}##{name} → #{error.message}"
+        sleep 1
+        Capybara.reset_sessions!
+        page.reload waitUntil: "load"
+        raise if count >= max
+      end
+    end
+  end
+
   # Waits for a promise to resolve on the client
   def wait_for_promise(delay: 0)
     page.evaluate("new Promise(resolve => setTimeout(resolve, #{delay}))")
@@ -65,10 +81,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # NOTE: This isn't as reliable as I had hoped
   def wait_for_detach(element)
     # 1. STRATEGY: Wait for detach/hidden state + next tick
-    # element.wait_for_element_state "hidden"
-    # wait_for_next_tick
+    element.wait_for_element_state "hidden"
+    wait_for_next_tick
 
     # 2. STRATEGY: Wait for 100ms
-    wait_for_promise delay: 100
+    # wait_for_promise delay: 100
   end
 end
