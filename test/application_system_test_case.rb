@@ -54,8 +54,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
         return yield
       rescue Playwright::Error, Minitest::Assertion => error
         puts "RETRY #{count}: #{self.class.name}##{name} → #{error.message}"
-        sleep 1
-        Capybara.reset_sessions!
+        sleep count * 3
+        # Capybara.reset_sessions!
         page.reload waitUntil: "load"
         raise if count >= max
       end
