@@ -10,7 +10,7 @@ const parseError = error => {
   dispatch(lifecycle.events.clientError, document, { detail: { error: errorMessage } }, true)
 }
 
-const parseResponse = response => {
+const parseAndRenderResponse = response => {
   const { strategy } = headers.tokenize(response.headers.get(headers.RESPONSE_HEADER))
 
   // FAIL: Status outside the range of 200-399
@@ -29,7 +29,7 @@ const invoke = (payload = {}) => {
       headers: headers.prepare({}),
       body: JSON.stringify(payload)
     })
-      .then(parseResponse)
+      .then(parseAndRenderResponse)
       .catch(parseError)
   } catch (error) {
     parseError(error)

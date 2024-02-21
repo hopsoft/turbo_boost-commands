@@ -11,7 +11,7 @@ const invokeCommand = (element, payload = {}) => {
   activePayload = payload
 }
 
-const ammendForm = form => {
+const amendForm = form => {
   try {
     if (!activeElement) return
     if (form.getAttribute('method') !== activeElement.dataset.turboMethod) return
@@ -27,6 +27,6 @@ const ammendForm = form => {
   }
 }
 
-document.addEventListener('submit', event => ammendForm(event.target), true)
+document.addEventListener('submit', event => amendForm(event.target), true)
 
 export default { invokeCommand }
