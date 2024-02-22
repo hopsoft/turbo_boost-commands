@@ -3,51 +3,41 @@
 require_relative "../../../application_system_test_case"
 
 class DriversWindowTest < ApplicationSystemTestCase
-  def setup
-    page.goto tests_url
-  end
+  COUNT = 10
 
   def test_prevent_controller_action_command
-    with_retries do
-      count = 10
-      details_element.click
-      assert_equal "...", message_element.inner_text
-      count.times do
-        prevent_element.click
-        wait_for_detach prevent_element
+    with_playwright_page do |page|
+      page.goto tests_url
+      page.wait_for_selector("#drivers-window").click
+
+      assert_equal "...", page.wait_for_selector("#drivers-window [data-test=message]").inner_text
+
+      COUNT.times do
+        element = page.wait_for_selector("#drivers-window [data-test=prevent]")
+        element.click
+        page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
       end
-      assert_equal "PreventControllerActionCommand invoked #{count} times", message_element.inner_text
+
+      assert_equal "PreventControllerActionCommand invoked #{COUNT} times",
+        page.wait_for_selector("#drivers-window [data-test=message]").inner_text
     end
   end
 
   def test_allow_controller_action_command
-    with_retries do
-      count = 10
-      details_element.click
-      assert_equal "...", message_element.inner_text
-      count.times do
-        allow_element.click
-        wait_for_detach allow_element
+    with_playwright_page do |page|
+      page.goto tests_url
+      page.wait_for_selector("#drivers-window").click
+
+      assert_equal "...", page.wait_for_selector("#drivers-window [data-test=message]").inner_text
+
+      COUNT.times do
+        element = page.wait_for_selector("#drivers-window [data-test=allow]")
+        element.click
+        page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
       end
-      assert_equal "AllowControllerActionCommand invoked #{count} times", message_element.inner_text
+
+      assert_equal "AllowControllerActionCommand invoked #{COUNT} times",
+        page.wait_for_selector("#drivers-window [data-test=message]").inner_text
     end
-  end
-
-  private
-
-  def details_element
-    page.wait_for_selector "#drivers-window"
-  end
-
-  def message_element
-    details_element.wait_for_selector "[data-test=message]"
-  end
-
-  def prevent_element
-    details_element.wait_for_selector "[data-test=prevent]"
-  end
-
-  def allow_element
-    details_element.wait_for_selector "[data-test=allow]"
   end
 end

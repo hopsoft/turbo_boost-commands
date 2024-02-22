@@ -2,10 +2,11 @@
 
 require "application_system_test_case"
 
-class TurboBoostSetupTest < ApplicationSystemTestCase
+class TurboBoostGlobalsTest < ApplicationSystemTestCase
   test "turbo boost commands loaded and configured" do
-    with_retries do
+    with_playwright_page do |page|
       page.goto basic_command_url
+      page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
 
       assert_equal "object", js("typeof TurboBoost")
       assert_equal "object", js("typeof TurboBoost.Commands")
@@ -23,9 +24,10 @@ class TurboBoostSetupTest < ApplicationSystemTestCase
     end
   end
 
-  test "turbo boost client state" do
-    with_retries do
+  test "turbo boost state" do
+    with_playwright_page do |page|
       page.goto basic_command_url
+      page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
 
       assert js("TurboBoost.State.signed.length > 0")
       assert_not_nil js("TurboBoost.State.current.command_token") # used for forgery protection
