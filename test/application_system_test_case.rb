@@ -8,35 +8,66 @@ Capybara.default_retry_interval = 0.2
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
 
+BROWSER = :chromium
+
 Capybara.register_driver :playwright do |app|
-  Capybara::Playwright::Driver.new(app,
-    browser_type: :chromium,
+  Capybara::Playwright::Driver.new(
+    app,
+    browser_type: BROWSER,
     headless: true,
-    playwright_cli_executable_path: Rails.root.join("../../node_modules/.bin/playwright"))
+    playwright_cli_executable_path: "npx playwright"
+  )
 end
 
 Capybara.default_driver = :playwright
 Capybara.javascript_driver = :playwright
 
-Capybara.configure do |config|
-  config.ignore_hidden_elements = false
-end
-
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by :playwright
 
-  alias_method :capybara_page, :page
+  attr_reader :page
 
-  def with_playwright_page
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.set_default_timeout Capybara.default_max_wait_time * 1_000
-      yield page
-    end
+  def before_setup
+    User.destroy_all
+    @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
+    @playwright = @playwright_exec.playwright
+    @browser = @playwright.public_send(BROWSER).launch
+    @context = @browser.new_context # prepare new browser window
+    @page = @context.new_page
+    @page.set_default_timeout Capybara.default_max_wait_time * 1_000
   end
 
+  def after_teardown
+    @browser.close
+    @playwright_exec.stop
+  end
+
+  # Wrapper for Playwright's page.evaluate method which evaluates
+  # JavaScript code in the context of the current page.
   def js(...)
-    with_playwright_page do |page|
-      page.evaluate(...)
+    @page.evaluate(...)
+  end
+
+  # Waits for a specific element to appear on the page.
+  #
+  # @param selector [String] A CSS selector
+  # @return [Playwright::ElementHandle] The element
+  def element(selector)
+    parent = page.wait_for_selector(self.class::PARENT_SELECTOR) if defined?(self.class::PARENT_SELECTOR)
+    parent ||= page
+    parent.wait_for_selector selector
+  end
+
+  # Waits for an element to be detached from the DOM.
+  #
+  # @param element [Playwright::ElementHandle] The element
+  # @param timeout [Integer] The maximum time to wait (default: 2s)
+  # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
+  def wait_for_detach(element, timeout: 2.seconds, interval: 0.1)
+    start = Time.now
+    while page.evaluate("(element) => element.isConnected", arg: element)
+      break if Time.now - start > timeout
+      sleep interval
     end
   end
 end

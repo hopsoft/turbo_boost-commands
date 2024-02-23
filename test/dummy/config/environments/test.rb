@@ -59,4 +59,8 @@ Rails.application.configure do
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
+
+  # logger = ActiveSupport::Logger.new($stdout)
+  # logger.formatter = config.log_formatter
+  # config.logger = ActiveSupport::TaggedLogging.new(logger)
 end

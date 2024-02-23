@@ -230,7 +230,7 @@ class TurboBoost::Commands::Runner
   end
 
   def should_redirect?
-    return false if controller.request.method.match?(/GET/i)
+    return false if controller.request.get?
     controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
@@ -241,9 +241,9 @@ class TurboBoost::Commands::Runner
 
   def response_type
     body = (controller.response_body.try(:join) || controller.response_body.to_s).strip
-    return :body if body.match?(/<\/\s*body/i)
-    return :frame if body.match?(/<\/\s*turbo-frame/i)
-    return :stream if body.match?(/<\/\s*turbo-stream/i)
+    return :body if body.match?(/<\/\s*body/io)
+    return :frame if body.match?(/<\/\s*turbo-frame/io)
+    return :stream if body.match?(/<\/\s*turbo-stream/io)
     :unknown
   end
 
@@ -346,10 +346,10 @@ class TurboBoost::Commands::Runner
 
     html = case response_type
     when :body
-      match = controller.response.body.match(/<\/\s*body/i).to_s
+      match = controller.response.body.match(/<\/\s*body/io).to_s
       controller.response.body.sub match, [sanitized_content, match].join
     when :frame
-      match = controller.response.body.match(/<\/\s*turbo-frame/i).to_s
+      match = controller.response.body.match(/<\/\s*turbo-frame/io).to_s
       controller.response.body.sub match, [sanitized_content, match].join
     else
       [controller.response.body, sanitized_content].join

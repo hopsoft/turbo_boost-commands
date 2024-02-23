@@ -4,38 +4,36 @@ require_relative "../../../application_system_test_case"
 
 class DriversFormTest < ApplicationSystemTestCase
   COUNT = 10
+  PARENT_SELECTOR = "#form-driver-test"
 
   def test_prevent_controller_action_command
-    with_playwright_page do |page|
-      page.goto tests_url
-      page.wait_for_selector("#drivers-form").click
+    page.goto tests_url
+    element("[data-test=form-driver]").click
 
-      assert_equal "...", page.wait_for_selector("#drivers-form [data-test=message]").inner_text
+    assert_equal "...", element("[data-test=message]").inner_text
 
-      COUNT.times do
-        page.wait_for_selector("#drivers-form [data-test=prevent]").click
-        page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
-      end
-
-      assert_equal "PreventControllerActionCommand invoked #{COUNT} times",
-        page.wait_for_selector("#drivers-form [data-test=message]").inner_text
+    COUNT.times do
+      trigger = element("[data-test=prevent]")
+      trigger.click
+      wait_for_detach trigger
     end
+
+    assert_equal "PreventControllerActionCommand invoked #{COUNT} times", element("[data-test=message]").inner_text
   end
 
   def test_allow_controller_action_command
-    with_playwright_page do |page|
-      page.goto tests_url
-      page.wait_for_selector("#drivers-form").click
+    page.goto tests_url
+    element("[data-test=form-driver]").click
+    puts "hello world"
 
-      assert_equal "...", page.wait_for_selector("#drivers-form [data-test=message]").inner_text
+    assert_equal "...", element("[data-test=message]").inner_text
 
-      COUNT.times do
-        page.wait_for_selector("#drivers-form [data-test=allow]").click
-        page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
-      end
-
-      assert_equal "AllowControllerActionCommand invoked #{COUNT} times",
-        page.wait_for_selector("#drivers-form [data-test=message]").inner_text
+    COUNT.times do
+      trigger = element("[data-test=allow]")
+      trigger.click
+      wait_for_detach trigger
     end
+
+    assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element("[data-test=message]").inner_text
   end
 end
