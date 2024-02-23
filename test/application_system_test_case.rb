@@ -28,7 +28,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   attr_reader :page
 
   def before_setup
-    ActiveRecord::MigrationContext.new(Rails.root.join("db/migrate")).migrate
+    ActiveRecord::MigrationContext.new(File.expand_path("./dummy/db/migrate")).migrate
     User.destroy_all
     @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
     @playwright = @playwright_exec.playwright
@@ -63,8 +63,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #
   # @param element [Playwright::ElementHandle] The element
   # @param timeout [Integer] The maximum time to wait (default: 2s)
-  # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
-  def wait_for_detach(element, timeout: 2.seconds, interval: 0.1)
+  # @param interval [Integer] The time interval to sleep between checks (default: 50ms)
+  def wait_for_detach(element, timeout: 2.seconds, interval: 0.05)
     start = Time.now
     while page.evaluate("(element) => element.isConnected", arg: element)
       break if Time.now - start > timeout
