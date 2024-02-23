@@ -28,7 +28,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   attr_reader :page
 
   def before_setup
-    User.destroy_all
+    # User.destroy_all
     @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
     @playwright = @playwright_exec.playwright
     @browser = @playwright.public_send(BROWSER).launch
