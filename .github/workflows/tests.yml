@@ -41,4 +41,4 @@ jobs:
         run: 'cd test/dummy && bundle exec rails db:create db:migrate RAILS_ENV=test'
 
       - name: Run Tests
-        run: 'rake'
+        run: 'bundle exec rails test:all'
