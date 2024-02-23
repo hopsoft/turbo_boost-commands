@@ -41,8 +41,8 @@ jobs:
         env:
           RAILS_ENV: "test"
         run: |
-          cd test/dummy \
-          rm db/test.sqlite3* \
-          bundle exec rails db:setup \
-          cd - \
+          cd test/dummy
+          rm db/test.sqlite3*
+          bundle exec rails db:setup
+          cd -
           bundle exec rails test:all
