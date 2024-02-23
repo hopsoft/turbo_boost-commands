@@ -39,10 +39,10 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          bundle exec rails db:migrate RAILS_ENV=test
+          bundle exec rails db:schema:load RAILS_ENV=test
           bundle exec rails test
 
       - name: Run System Tests
         run: |
-          bundle exec rails db:migrate RAILS_ENV=test
+          bundle exec rails db:schema:load RAILS_ENV=test
           bundle exec rails test:system
