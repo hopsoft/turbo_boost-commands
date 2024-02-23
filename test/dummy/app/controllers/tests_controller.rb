@@ -5,11 +5,11 @@ class TestsController < ApplicationController
 
   def create
     Current.template = "tests/drivers/_form.turbo_stream.erb"
-    render turbo_stream: turbo_stream.replace("form-driver", partial: "tests/drivers/form")
+    render turbo_stream: turbo_stream.replace("form-driver-test", partial: "tests/drivers/form")
   end
 
   def destroy
     Current.template = "tests/drivers/_method.turbo_stream.erb"
-    render turbo_stream: turbo_stream.replace("drivers-method", partial: "tests/drivers/method")
+    render turbo_stream: turbo_stream.replace("method-driver-test", partial: "tests/drivers/method")
   end
 end
