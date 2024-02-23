@@ -37,8 +37,5 @@ jobs:
       - name: Install Playwright Browsers
         run: 'npx playwright install chromium --with-deps'
 
-      - name: Prepare Database
-        run: 'cd test/dummy && bundle exec rails db:create db:migrate RAILS_ENV=test'
-
       - name: Run Tests
-        run: 'bundle exec rails test:all'
+        run: 'RAILS_ENV=test cd test/dummy && bundle exec rails db:create db:migrate && cd - && bundle exec rails test:all'
