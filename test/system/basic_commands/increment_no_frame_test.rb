@@ -7,7 +7,7 @@ class IncrementNoFrameTest < ApplicationSystemTestCase
 
   test "increment once" do
     page.goto basic_command_url
-    user = User.first
+    user = User.last
 
     assert_equal 0, user.count
     assert_equal "0000", element("code[role='counter']").inner_text
@@ -22,7 +22,7 @@ class IncrementNoFrameTest < ApplicationSystemTestCase
 
   test "increment 3 times" do
     page.goto basic_command_url
-    user = User.first
+    user = User.last
 
     assert_equal 0, user.reload.count
     assert_equal "0000", element("code[role='counter']").inner_text

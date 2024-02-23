@@ -28,7 +28,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   attr_reader :page
 
   def before_setup
-    # User.destroy_all
+    migrations_dir = File.expand_path("dummy/db/migrate", __dir__)
+    ActiveRecord::MigrationContext.new(migrations_dir).migrate
     @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
     @playwright = @playwright_exec.playwright
     @browser = @playwright.public_send(BROWSER).launch

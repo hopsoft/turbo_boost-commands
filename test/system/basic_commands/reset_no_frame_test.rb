@@ -8,7 +8,7 @@ class ResetNoFrameTest < ApplicationSystemTestCase
   test "increment once then reset and accept confirm" do
     skip "Playwright dialog handling not working yet"
     page.goto basic_command_url
-    user = User.first
+    user = User.last
 
     assert_equal 0, user.count
     assert_equal "0000", element("code[role='counter']").inner_text
@@ -32,7 +32,7 @@ class ResetNoFrameTest < ApplicationSystemTestCase
   test "increment once then reset and dismiss confirm" do
     skip "Playwright dialog handling not working yet"
     page.goto basic_command_url
-    user = User.first
+    user = User.last
 
     assert_equal 0, user.count
     assert_equal "0000", element("code[role='counter']").inner_text
