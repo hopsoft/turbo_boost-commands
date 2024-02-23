@@ -37,12 +37,8 @@ jobs:
       - name: Install Playwright Browsers
         run: 'npx playwright install chromium --with-deps'
 
-      - name: Run Tests
-        env:
-          RAILS_ENV: "test"
-        run: |
-          cd test/dummy
-          rm -f db/test.sqlite3*
-          bundle exec rails db:create db:migrate
-          cd -
-          bundle exec rails test:all
+      - name: Run Unit Tests
+        run: bundle exec rails test
+
+      - name: Run System Tests
+        run: bundle exec rails test:system

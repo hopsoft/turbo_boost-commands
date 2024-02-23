@@ -24,7 +24,6 @@ class DriversFormTest < ApplicationSystemTestCase
   def test_allow_controller_action_command
     page.goto tests_url
     element("[data-test=form-driver]").click
-    puts "hello world"
 
     assert_equal "...", element("[data-test=message]").inner_text
 
