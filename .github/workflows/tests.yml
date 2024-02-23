@@ -38,4 +38,6 @@ jobs:
         run: 'npx playwright install chromium --with-deps'
 
       - name: Run Tests
-        run: 'RAILS_ENV=test cd test/dummy && bundle exec rails db:create db:migrate && cd - && bundle exec rails test:all'
+        env:
+          RAILS_ENV: "test"
+        run: 'cd test/dummy && bundle exec rails db:create db:migrate && cd - && bundle exec rails test:all'
