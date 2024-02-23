@@ -38,7 +38,11 @@ jobs:
         run: 'npx playwright install chromium --with-deps'
 
       - name: Run Unit Tests
-        run: bundle exec rails test
+        run: |
+          bundle exec rails db:schema:load RAILS_ENV=test
+          bundle exec rails test
 
       - name: Run System Tests
-        run: bundle exec rails test:system
+        run: |
+          bundle exec rails db:schema:load RAILS_ENV=test
+          bundle exec rails test:system
