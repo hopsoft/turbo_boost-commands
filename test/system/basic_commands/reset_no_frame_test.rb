@@ -11,22 +11,22 @@ class ResetNoFrameTest < ApplicationSystemTestCase
     user = User.last
 
     assert_equal 0, user.count
-    assert_equal "0000", element("code[role='counter']").inner_text
+    assert_equal "0000", page.wait_for_selector("code[role='counter']").inner_text
 
-    trigger = element("[data-turbo-command='IncrementCountCommand']")
+    trigger = page.wait_for_selector("[data-turbo-command='IncrementCountCommand']")
     trigger.click
     wait_for_detach trigger
 
     assert_equal 1, user.reload.count
-    assert_equal "0001", element("code[role='counter']").inner_text
+    assert_equal "0001", page.wait_for_selector("code[role='counter']").inner_text
 
     page.on :dialog, ->(dialog) { dialog.accept }
-    trigger = element("[data-turbo-command='ResetCountCommand']")
+    trigger = page.wait_for_selector("[data-turbo-command='ResetCountCommand']")
     trigger.click
     wait_for_detach trigger
 
     assert_equal 2, user.reload.count
-    assert_equal "0002", element("code[role='counter']").inner_text
+    assert_equal "0002", page.wait_for_selector("code[role='counter']").inner_text
   end
 
   test "increment once then reset and dismiss confirm" do
@@ -35,21 +35,21 @@ class ResetNoFrameTest < ApplicationSystemTestCase
     user = User.last
 
     assert_equal 0, user.count
-    assert_equal "0000", element("code[role='counter']").inner_text
+    assert_equal "0000", page.wait_for_selector("code[role='counter']").inner_text
 
-    trigger = element("[data-turbo-command='IncrementCountCommand']")
+    trigger = page.wait_for_selector("[data-turbo-command='IncrementCountCommand']")
     trigger.click
     wait_for_detach trigger
 
     assert_equal 1, user.reload.count
-    assert_equal "0001", element("code[role='counter']").inner_text
+    assert_equal "0001", page.wait_for_selector("code[role='counter']").inner_text
 
     page.on :dialog, ->(dialog) { dialog.accept }
-    trigger = element("[data-turbo-command='ResetCountCommand']")
+    trigger = page.wait_for_selector("[data-turbo-command='ResetCountCommand']")
     trigger.click
     wait_for_detach trigger
 
     assert_equal 1, user.reload.count
-    assert_equal "0001", element("code[role='counter']").inner_text
+    assert_equal "0001", page.wait_for_selector("code[role='counter']").inner_text
   end
 end

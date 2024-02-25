@@ -2,9 +2,9 @@
     <small>
       Message →
       <% if @message %>
-        <ins data-test="message"><%= @message %></ins>
+        <%= tag.ins @message, data: data %>
       <% else %>
-        <span data-test="message">...</span>
+        <%= tag.del "...", data: data %>
       <% end %>
       <br>
       Request Format → <code><%= request.format %></code>

@@ -1,10 +1,9 @@
 <%= tag.details id: id,
   open: turbo_boost.command_state.dig(id, :attributes, :open),
   data: {
-    test: id,
     controller: "state",
     action: "toggle->state#saveAttributes",
     state_attributes_value: ["open"].to_json
-  } do %>
+  }.merge(data) do %>
   <%= yield %>
 <% end %>

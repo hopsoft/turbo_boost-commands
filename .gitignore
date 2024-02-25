@@ -6,7 +6,7 @@
 .yarn*
 /.bundle/
 /doc/
-/log/*.log
+/log/*.log*
 /node_modules/
 /pkg/
 /test/dummy/db/*.sqlite3
@@ -18,3 +18,4 @@
 /tmp/
 Gemfile.lock
 test/dummy/app/javascript/@turbo-boost
+test/dummy/log/*.log*

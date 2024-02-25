@@ -49,26 +49,71 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     @page.evaluate(...)
   end
 
-  # Waits for a specific element to appear on the page.
+  # Returns an element that matches the given testid attribute value.
   #
-  # @param selector [String] A CSS selector
+  # @param testid [String,Symbol] The element's data-testid attribute value
   # @return [Playwright::ElementHandle] The element
-  def element(selector)
-    parent = page.wait_for_selector(self.class::PARENT_SELECTOR) if defined?(self.class::PARENT_SELECTOR)
-    parent ||= page
-    parent.wait_for_selector selector
+  def element(testid)
+    page.get_by_test_id testid.to_s
+  end
+
+  # Waits for an element to be mutated (i.e. have its attributes or children changed).
+  # SEE: test/dummy/app/javascript/tests/index.js
+  #
+  # @param testid [String,Symbol] The element's data-testid attribute value
+  # @param timeout [Integer] The maximum time to wait (default: 2s)
+  # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
+  # @param reset [Boolean] Whether to also wait for the mutation tracking to reset (default: true)
+  def wait_for_mutations(testid, timeout: 2.seconds, interval: 0.1, reset: true)
+    Timeout.timeout timeout.to_i do
+      while js("element => !element.mutations", arg: element(testid).element_handle)
+        sleep interval.to_f
+      end
+    end
+    wait_for_mutations_reset testid if reset
+  end
+
+  # Waits for an element's mutation tracking to reset.
+  # SEE: test/dummy/app/javascript/tests/index.js
+  #
+  # @param testid [String,Symbol] The element's data-testid attribute value
+  # @param timeout [Integer] The maximum time to wait (default: 2s)
+  # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
+  def wait_for_mutations_reset(testid, timeout: 2.seconds, interval: 0.1)
+    Timeout.timeout timeout.to_i do
+      while js("element => element.mutations", arg: element(testid).element_handle)
+        sleep interval.to_f
+      end
+    end
   end
 
   # Waits for an element to be detached from the DOM.
   #
   # @param element [Playwright::ElementHandle] The element
   # @param timeout [Integer] The maximum time to wait (default: 2s)
-  # @param interval [Integer] The time interval to sleep between checks (default: 50ms)
-  def wait_for_detach(element, timeout: 2.seconds, interval: 0.05)
-    start = Time.now
-    while page.evaluate("(element) => element.isConnected", arg: element)
-      break if Time.now - start > timeout
-      sleep interval
+  # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
+  def wait_for_detach(element, timeout: 2.seconds, interval: 0.1)
+    Timeout.timeout timeout.to_i do
+      while page.evaluate("(element) => element.isConnected", arg: element)
+        sleep interval.to_f
+      end
+    end
+  end
+
+  def wait_for_turbo_boost(testid, timeout: 2.seconds, interval: 0.1, reset: true)
+    Timeout.timeout timeout.to_i do
+      while js("element => !element.hasAttribute('data-turbo-boost')", arg: element(testid).element_handle)
+        sleep interval.to_f
+      end
+    end
+    wait_for_turbo_boost_reset testid if reset
+  end
+
+  def wait_for_turbo_boost_reset(testid, timeout: 2.seconds, interval: 0.1)
+    Timeout.timeout timeout.to_i do
+      while js("element => element.hasAttribute('data-turbo-boost')", arg: element(testid).element_handle)
+        sleep interval.to_f
+      end
     end
   end
 end

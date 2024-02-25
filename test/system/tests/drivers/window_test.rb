@@ -3,36 +3,35 @@
 require_relative "../../../application_system_test_case"
 
 class DriversWindowTest < ApplicationSystemTestCase
-  PARENT_SELECTOR = "#window-driver-test"
   COUNT = 10
 
-  def test_prevent_controller_action_command
+  test "command that PREVENTS the rails controller action from performing" do
     page.goto tests_url
-    element("[data-test=window-driver]").click
+    element(:window_driver).click
+    wait_for_mutations_reset :window_driver
 
-    assert_equal "...", element("[data-test=message]").inner_text
+    assert_equal "...", element(:window_driver_message).inner_text
 
     COUNT.times do
-      trigger = element("[data-test=prevent]")
-      trigger.click
-      wait_for_detach trigger
+      element(:window_driver_prevent).click
+      wait_for_turbo_boost :window_driver
     end
 
-    assert_equal "PreventControllerActionCommand invoked #{COUNT} times", element("[data-test=message]").inner_text
+    assert_equal "PreventControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text
   end
 
-  def test_allow_controller_action_command
+  test "command that ALLOWS the rails controller action to perform" do
     page.goto tests_url
-    element("[data-test=window-driver]").click
+    element(:window_driver).click
+    wait_for_mutations_reset :window_driver
 
-    assert_equal "...", element("[data-test=message]").inner_text
+    assert_equal "...", element(:window_driver_message).inner_text
 
     COUNT.times do
-      trigger = element("[data-test=allow]")
-      trigger.click
-      wait_for_detach trigger
+      element(:window_driver_allow).click
+      wait_for_turbo_boost :window_driver
     end
 
-    assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element("[data-test=message]").inner_text
+    assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text
   end
 end

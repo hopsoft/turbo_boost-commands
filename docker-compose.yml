@@ -23,6 +23,7 @@ x-default-app: &default_app
     - primary
   volumes:
     - .:/app
+    - ../turbo_boost-streams:/tbs
     - external:/mnt/external
     - node_modules:/app/node_modules
 
