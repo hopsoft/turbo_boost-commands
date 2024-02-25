@@ -14,7 +14,7 @@ class DriversWindowTest < ApplicationSystemTestCase
 
     COUNT.times do
       element(:window_driver_prevent).click
-      wait_for_turbo_boost :window_driver
+      wait_for_mutations :window_driver_message
     end
 
     assert_equal "PreventControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text
@@ -29,7 +29,7 @@ class DriversWindowTest < ApplicationSystemTestCase
 
     COUNT.times do
       element(:window_driver_allow).click
-      wait_for_turbo_boost :window_driver
+      wait_for_turbo_boost :window_driver # mutation tracking doesn't work when the entire page morphs for some reason
     end
 
     assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text

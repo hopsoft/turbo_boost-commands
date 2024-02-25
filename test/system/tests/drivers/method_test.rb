@@ -14,7 +14,7 @@ class DriversMethodTest < ApplicationSystemTestCase
 
     COUNT.times do
       element(:method_driver_prevent).click
-      wait_for_turbo_boost :method_driver
+      wait_for_mutations :method_driver_message
     end
 
     assert_equal "PreventControllerActionCommand invoked #{COUNT} times", element(:method_driver_message).inner_text
@@ -28,7 +28,7 @@ class DriversMethodTest < ApplicationSystemTestCase
 
     COUNT.times do
       element(:method_driver_allow).click
-      wait_for_turbo_boost :method_driver
+      wait_for_mutations :method_driver_message
     end
 
     assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element(:method_driver_message).inner_text
