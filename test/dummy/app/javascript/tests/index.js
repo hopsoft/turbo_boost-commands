@@ -1,4 +1,4 @@
-const ttl = 150
+const ttl = 100 // milliseconds
 
 // Node monkey patches for tests..............................................................................
 function setMutated(type) {
