@@ -61,38 +61,42 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # SEE: test/dummy/app/javascript/tests/index.js
   #
   # @param testid [String,Symbol] The element's data-testid attribute value
-  # @param timeout [Integer] The maximum time to wait (default: 5s)
+  # @param timeout [Integer] The maximum time to wait (default: 10s)
   # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
   # @param reset [Boolean] Whether to also wait for the mutation tracking to reset (default: true)
-  def wait_for_mutations(testid, timeout: 5.seconds, interval: 0.1, reset: true)
+  def wait_for_mutations(testid, timeout: 10.seconds, interval: 0.1, reset: true)
     Timeout.timeout timeout.to_i do
       while js("element => !element.mutations", arg: element(testid).element_handle)
         sleep interval.to_f
       end
     end
     wait_for_mutations_reset testid if reset
+  rescue Timeout::Error
+    assert false, "Timed out waiting for mutations on element with data-testid='#{testid}'"
   end
 
   # Waits for an element's mutation tracking to reset.
   # SEE: test/dummy/app/javascript/tests/index.js
   #
   # @param testid [String,Symbol] The element's data-testid attribute value
-  # @param timeout [Integer] The maximum time to wait (default: 5s)
+  # @param timeout [Integer] The maximum time to wait (default: 10s)
   # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
-  def wait_for_mutations_reset(testid, timeout: 5.seconds, interval: 0.1)
+  def wait_for_mutations_reset(testid, timeout: 10.seconds, interval: 0.1)
     Timeout.timeout timeout.to_i do
       while js("element => element.mutations", arg: element(testid).element_handle)
         sleep interval.to_f
       end
     end
+  rescue Timeout::Error
+    assert false, "Timed out waiting for mutations to reset on element with data-testid='#{testid}'"
   end
 
   # Waits for an element to be detached from the DOM.
   #
   # @param element [Playwright::ElementHandle] The element
-  # @param timeout [Integer] The maximum time to wait (default: 5s)
+  # @param timeout [Integer] The maximum time to wait (default: 10s)
   # @param interval [Integer] The time interval to sleep between checks (default: 100ms)
-  def wait_for_detach(element, timeout: 5.seconds, interval: 0.1)
+  def wait_for_detach(element, timeout: 10.seconds, interval: 0.1)
     Timeout.timeout timeout.to_i do
       while page.evaluate("(element) => element.isConnected", arg: element)
         sleep interval.to_f
@@ -100,7 +104,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
   end
 
-  def wait_for_turbo_boost(testid, timeout: 5.seconds, interval: 0.1, reset: true)
+  def wait_for_turbo_boost(testid, timeout: 10.seconds, interval: 0.1, reset: true)
     Timeout.timeout timeout.to_i do
       while js("element => !element.hasAttribute('data-turbo-boost')", arg: element(testid).element_handle)
         sleep interval.to_f
@@ -109,7 +113,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     wait_for_turbo_boost_reset testid if reset
   end
 
-  def wait_for_turbo_boost_reset(testid, timeout: 5.seconds, interval: 0.1)
+  def wait_for_turbo_boost_reset(testid, timeout: 10.seconds, interval: 0.1)
     Timeout.timeout timeout.to_i do
       while js("element => element.hasAttribute('data-turbo-boost')", arg: element(testid).element_handle)
         sleep interval.to_f

@@ -29,10 +29,11 @@ class DriversWindowTest < ApplicationSystemTestCase
 
     COUNT.times do
       element(:window_driver_allow).click
-      # NOTE: Mutation tracking doesn't work when the entire page morphs for some reason,
-      #       so we use the less reliable (in CI) wait_for_turbo_boost instead.
-      # wait_for_mutations :window_driver_message
-      wait_for_turbo_boost :window_driver
+      ## NOTE: Mutation tracking doesn't work when the entire page morphs for some reason,
+      ##       so we use the less reliable (in CI) wait_for_turbo_boost instead.
+      ## wait_for_mutations :window_driver_message
+      # wait_for_turbo_boost :window_driver
+      wait_for_mutations :window_driver_message
     end
 
     assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text
