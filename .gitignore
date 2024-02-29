@@ -1,6 +1,7 @@
 *.gem
 *.key
 *.metafile.json
+.byebug_history
 .containers.yml
 .pnp.*
 .yarn*
