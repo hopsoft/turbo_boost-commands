@@ -26,7 +26,7 @@ const append = content => {
 const replace = content => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, 'text/html')
-  TurboBoost.Streams.morph(document.documentElement, doc.documentElement)
+  TurboBoost.Streams.morph.method(document.documentElement, doc.documentElement)
 }
 
 export const render = (strategy, content) => {
