@@ -17,7 +17,8 @@
   "author": "Nate Hopkins (hopsoft) <natehop@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@hotwired/turbo-rails": ">= 7.2.0"
+    "@hotwired/turbo-rails": ">= 7.2.0",
+    "@turbo-boost/streams": ">= 0.1.11"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
