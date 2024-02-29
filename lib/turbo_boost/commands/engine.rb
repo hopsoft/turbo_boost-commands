@@ -21,12 +21,11 @@ module TurboBoost::Commands
   class Engine < ::Rails::Engine
     config.turbo_boost_commands = ActiveSupport::OrderedOptions.new
     config.turbo_boost_commands[:protect_from_forgery] = true
+    config.turbo_boost_commands[:precompile_assets] = true
 
     # must opt-in to state overrides
     config.turbo_boost_commands[:apply_client_state_overrides] = false
     config.turbo_boost_commands[:apply_server_state_overrides] = false
-
-    config.turbo_boost_commands[:precompile_assets] = true
 
     initializer "turbo_boost_commands.configuration" do |app|
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost

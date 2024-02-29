@@ -3,51 +3,43 @@
 require_relative "../../../application_system_test_case"
 
 class DriversFormTest < ApplicationSystemTestCase
-  def setup
+  COUNT = 5
+
+  test "command that PREVENTS the rails controller action from performing" do
     page.goto tests_url
-  end
+    element(:form_driver).click
 
-  def test_prevent_controller_action_command
-    with_retries do
-      count = 10
-      details_element.click
-      assert_equal "...", message_element.inner_text
-      count.times do
-        prevent_element.click
-        wait_for_detach prevent_element
+    wait_for_mutations_finished :form_driver_message do |el|
+      assert_equal "...", el.inner_text
+    end
+
+    COUNT.times do
+      wait_for_mutations :form_driver_message do
+        element(:form_driver_prevent).click
       end
-      assert_equal "PreventControllerActionCommand invoked #{count} times", message_element.inner_text
+    end
+
+    wait_for_mutations :form_driver_message do |el|
+      assert_equal "PreventControllerActionCommand invoked #{COUNT} times", el.inner_text
     end
   end
 
-  def test_allow_controller_action_command
-    with_retries do
-      count = 10
-      details_element.click
-      assert_equal "...", message_element.inner_text
-      count.times do
-        allow_element.click
-        wait_for_detach allow_element
-      end
-      assert_equal "AllowControllerActionCommand invoked #{count} times", message_element.inner_text
+  test "command that ALLOWS the rails controller action to perform" do
+    page.goto tests_url
+    element(:form_driver).click
+
+    wait_for_mutations_finished :form_driver_message do |el|
+      assert_equal "...", el.inner_text
     end
-  end
 
-  private
+    COUNT.times do
+      wait_for_mutations :form_driver_message do
+        element(:form_driver_allow).click
+      end
+    end
 
-  def details_element
-    page.wait_for_selector "#drivers-form details"
-  end
-
-  def message_element
-    details_element.wait_for_selector "[data-test=message]"
-  end
-
-  def prevent_element
-    details_element.wait_for_selector "[data-test=prevent]"
-  end
-
-  def allow_element
-    details_element.wait_for_selector "[data-test=allow]"
+    wait_for_mutations_finished :form_driver_message do |el|
+      assert_equal "AllowControllerActionCommand invoked #{COUNT} times", el.inner_text
+    end
   end
 end

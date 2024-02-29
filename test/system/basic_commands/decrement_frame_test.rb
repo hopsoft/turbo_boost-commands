@@ -3,34 +3,37 @@
 require "application_system_test_case"
 
 class DecrementFrameTest < ApplicationSystemTestCase
-  fixtures :users
-
-  def demo
-    page.wait_for_selector("#basic_command-turbo-frame")
-  end
+  PARENT_SELECTOR = "#basic_command-turbo-frame"
 
   test "decrement once" do
     page.goto basic_command_url
+    user = User.last
 
-    assert_equal 0, User.first.count
-    assert_equal "0000", demo.wait_for_selector("code[role='counter']").inner_text
-    demo.wait_for_selector("[data-turbo-command='DecrementCountCommand']").click
-    sleep 0.1
-    assert_equal(-1, User.first.count)
-    assert_equal "-0001", demo.wait_for_selector("code[role='counter']").inner_text
+    assert_equal 0, user.count
+    assert_equal "0000", page.wait_for_selector("code[role='counter']").inner_text
+
+    trigger = page.wait_for_selector("[data-turbo-command='DecrementCountCommand']")
+    trigger.click
+    wait_for_detach trigger
+
+    assert_equal(-1, user.reload.count)
+    assert_equal "-0001", page.wait_for_selector("code[role='counter']").inner_text
   end
 
   test "decrement 3 times" do
     page.goto basic_command_url
+    user = User.last
 
-    assert_equal 0, User.first.count
-    assert_equal "0000", demo.wait_for_selector("code[role='counter']").inner_text
+    assert_equal 0, user.count
+    assert_equal "0000", page.wait_for_selector("code[role='counter']").inner_text
+
     3.times do
-      demo.wait_for_selector("[data-turbo-command='DecrementCountCommand']").click
-      sleep 0.1
+      trigger = page.wait_for_selector("[data-turbo-command='DecrementCountCommand']")
+      trigger.click
+      wait_for_detach trigger
     end
 
-    assert_equal(-3, User.first.count)
-    assert_equal "-0003", demo.wait_for_selector("code[role='counter']").inner_text
+    assert_equal(-3, user.reload.count)
+    assert_equal "-0003", page.wait_for_selector("code[role='counter']").inner_text
   end
 end

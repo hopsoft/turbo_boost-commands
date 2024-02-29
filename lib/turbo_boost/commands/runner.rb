@@ -180,9 +180,9 @@ class TurboBoost::Commands::Runner
   end
 
   def message_verifier
-    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256", url_safe: true
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256", url_safe: true
   rescue
-    ActiveSupport::MessageVerifier.new "#{controller.request.session&.id}#{Rails.application.secret_key_base}", digest: "SHA256"
+    ActiveSupport::MessageVerifier.new Rails.application.secret_key_base, digest: "SHA256"
   end
 
   def handle_command_event(*args)
@@ -224,11 +224,13 @@ class TurboBoost::Commands::Runner
     return true unless Rails.configuration.turbo_boost_commands.protect_from_forgery
     return false unless client_command_token.present?
     return false unless server_command_token.present?
-    server_command_token == message_verifier.verify(client_command_token)
+    server_command_token == message_verifier.verify(client_command_token, purpose: controller.request.session&.id)
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    false
   end
 
   def should_redirect?
-    return false if controller.request.method.match?(/GET/i)
+    return false if controller.request.get?
     controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
@@ -239,9 +241,9 @@ class TurboBoost::Commands::Runner
 
   def response_type
     body = (controller.response_body.try(:join) || controller.response_body.to_s).strip
-    return :body if body.match?(/<\/\s*body/i)
-    return :frame if body.match?(/<\/\s*turbo-frame/i)
-    return :stream if body.match?(/<\/\s*turbo-stream/i)
+    return :body if body.match?(/<\/\s*body/io)
+    return :frame if body.match?(/<\/\s*turbo-frame/io)
+    return :stream if body.match?(/<\/\s*turbo-stream/io)
     :unknown
   end
 
@@ -284,7 +286,7 @@ class TurboBoost::Commands::Runner
 
   def append_command_state_to_response_body
     # use the masked token for the client state
-    command_state[:command_token] = message_verifier.generate(new_command_token)
+    command_state[:command_token] = message_verifier.generate(new_command_token, purpose: controller.request.session&.id)
     client_state = command_state.to_json
 
     # use the unmasked token for the signed (server) state
@@ -344,10 +346,10 @@ class TurboBoost::Commands::Runner
 
     html = case response_type
     when :body
-      match = controller.response.body.match(/<\/\s*body/i).to_s
+      match = controller.response.body.match(/<\/\s*body/io).to_s
       controller.response.body.sub match, [sanitized_content, match].join
     when :frame
-      match = controller.response.body.match(/<\/\s*turbo-frame/i).to_s
+      match = controller.response.body.match(/<\/\s*turbo-frame/io).to_s
       controller.response.body.sub match, [sanitized_content, match].join
     else
       [controller.response.body, sanitized_content].join

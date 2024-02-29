@@ -1,13 +1,13 @@
+import uuids from './uuids'
+
 const append = content => {
   document.body.insertAdjacentHTML('beforeend', content)
 }
 
-// TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
 const replace = content => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, 'text/html')
-  document.head.innerHTML = doc.head.innerHTML
-  document.body.innerHTML = doc.body.innerHTML
+  TurboBoost.Streams.morph.method(document.documentElement, doc.documentElement)
 }
 
 export const render = (strategy, content) => {

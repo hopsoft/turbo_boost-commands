@@ -1,6 +1,8 @@
 import { allEvents as events } from './events'
 
 let currentLevel = 'unknown'
+let initialized = false
+let history = []
 
 const logLevels = {
   debug: Object.values(events),
@@ -10,14 +12,33 @@ const logLevels = {
   unknown: []
 }
 
-Object.values(events).forEach(name => {
-  addEventListener(name, event => {
-    if (logLevels[currentLevel].includes(event.type)) {
-      const { target, detail } = event
-      console[currentLevel](event.type, { target, detail })
-    }
-  })
-})
+const shouldLogEvent = event => {
+  if (!logLevels[currentLevel].includes(event.type)) return false
+  if (typeof console[currentLevel] !== 'function') return false
+
+  const { detail } = event
+  if (!detail.id) return true
+
+  const key = `${event.type}-${detail.id}`
+  if (history.includes(key)) return false
+
+  if (history.length > 16) history.shift()
+  history.push(key)
+
+  return true
+}
+
+const logEvent = event => {
+  if (shouldLogEvent(event)) {
+    const { target, type, detail } = event
+    console[currentLevel](type, detail.id || '', { target, detail })
+  }
+}
+
+if (!initialized) {
+  initialized = true
+  Object.values(events).forEach(name => addEventListener(name, event => logEvent(event)))
+}
 
 export default {
   get level() {

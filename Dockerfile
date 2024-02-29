@@ -4,6 +4,8 @@ RUN apt-get -y update && \
 apt-get -y --no-install-recommends install \
 build-essential \
 curl \
+git \
+htop \
 libjemalloc2 \
 sqlite3 \
 tzdata

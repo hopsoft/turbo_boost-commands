@@ -1,5 +1,5 @@
-<%= turbo_frame_tag "drivers-frame", data: { src: test_path(:frame) } do %>
-  <%= render "partials/details", id: "drivers-frame-details" do %>
+<%= turbo_frame_tag "frame-driver-test", data: { src: test_path(:frame) } do %>
+  <%= render "partials/details", id: :frame_driver, data: { testid: :frame_driver, turbo_boost: request.format.turbo_boost? } do %>
     <summary>
       Frame
       <small><code>→ app/javascript/drivers/frame.js</code></small>
@@ -7,14 +7,14 @@
 
     <article>
       <section>
-        <button type="submit" data-test="prevent" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
+        <button type="submit" data-testid="frame_driver_prevent" data-turbo-command="Drivers::Frame::PreventControllerActionCommand">
           <article>Click to Invoke → <code>Drivers::Frame::<ins><u>Prevent</u></ins>ControllerActionCommand</code></article>
           <small>Uses the <u>Append</u> rendering strategy</small>
         </button>
       </section>
 
       <section>
-        <button type="submit" data-test="allow" data-turbo-command="Drivers::Frame::AllowControllerActionCommand">
+        <button type="submit" data-testid="frame_driver_allow" data-turbo-command="Drivers::Frame::AllowControllerActionCommand">
           <article>
             Click to Invoke → <code>Drivers::Frame::<ins><u>Allow</u></ins>ControllerActionCommand</code>
             <br>
@@ -24,7 +24,7 @@
         </button>
       </section>
 
-      <%= render "/tests/drivers/footer" %>
+      <%= render "/tests/drivers/footer", data: { testid: :frame_driver_message } %>
     </article>
   <% end %>
 <% end %>
