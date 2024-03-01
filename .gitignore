@@ -20,3 +20,10 @@
 Gemfile.lock
 test/dummy/app/javascript/@turbo-boost
 test/dummy/log/*.log*
+
+
+# AppMap artifacts
+/.appmap
+
+# Vendored Ruby gems
+/vendor
