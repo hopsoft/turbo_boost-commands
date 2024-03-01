@@ -87,6 +87,7 @@ jobs:
       - name: Run Tests
         run: bundle exec rails test:all
 
+      # change to force appmap to run
       - name: Archive AppMaps
         uses: getappmap/archive-action@v1
         with:
