@@ -69,3 +69,20 @@ jobs:
 
       - name: Run Tests
         run: bundle exec rails test:all
+
+      - name: Save AppMaps
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: ./tmp/appmap
+          key: appmaps-${{ github.sha }}-${{ github.run_attempt }}
+
+  appmap-analysis:
+    if: always()
+    needs: [ruby_test]
+    uses: getappmap/analyze-action/.github/workflows/appmap-analysis.yml@v1
+    permissions:
+      actions: read
+      contents: read
+      checks: write
+      pull-requests: write
