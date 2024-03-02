@@ -378,9 +378,10 @@ class TurboBoost::Commands::Runner
   def append_command_response_header(error: nil)
     return unless command_requested?
 
-    command_status = "Abort" if command_aborted?
     command_status = "Error" if command_errored? || error
+    command_status = "Abort" if command_aborted? # NOTE: Abort check must run after error check
     command_status = "OK" if command_succeeded?
+    command_status ||= "Unknown"
 
     values = [command_name, command_status, rendering_strategy]
     append_response_header RESPONSE_HEADER, values.join(", ")
