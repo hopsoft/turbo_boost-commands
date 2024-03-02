@@ -3,7 +3,7 @@ import { dispatch, commandEvents } from './events'
 
 function finish(event) {
   event.detail.endedAt = Date.now()
-  event.detail.milliseconds = event.detail.endedAt - event.detail.startedAt
+  event.detail.ms = event.detail.endedAt - event.detail.startedAt
   setTimeout(() => dispatch(commandEvents.finish, event.target, { detail: event.detail }), 25)
 }
 

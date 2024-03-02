@@ -133,6 +133,8 @@ class TurboBoost::Commands::Runner
 
     command_instance.resolve_state command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
+  rescue => error
+    prevent_controller_action error: error if command_requested?
   end
 
   def prevent_controller_action(error: nil)
@@ -144,35 +146,40 @@ class TurboBoost::Commands::Runner
       render_response status: response_status
       append_success_to_response
     when TurboBoost::Commands::AbortError
-      render_response status: error.http_status_code, status_header: error.message
+      render_response status: error.http_status_code, error: error
       append_streams_to_response_body
     when TurboBoost::Commands::PerformError
-      render_response status: error.http_status_code, status_header: error.message
+      render_response status: error.http_status_code, error: error
       append_error_to_response error
     else
-      render_response status: :internal_server_error, status_header: error.message
+      render_response status: :internal_server_error, error: error
       append_error_to_response error
     end
 
     append_command_state_to_response_body
   end
 
+  # Renders the Rails response (mutually exclusive to #update_response)
+  def render_response(html: "", status: nil, error: nil)
+    controller.render html: html, layout: false, status: status || response_status
+    append_command_response_header error: error
+  end
+
+  # Updates the Rails response (mutually exclusive to #render_response)
   def update_response
     return if @update_response_performed
     @update_response_performed = true
-
     return if controller_action_prevented?
 
     append_command_state_to_response_body
-    append_to_response_headers if command_performed?
+
+    return unless command_requested?
+
+    append_command_response_header
+    append_error_to_response if command_errored?
     append_success_to_response if command_succeeded?
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
-  end
-
-  def render_response(html: "", status: nil, status_header: nil)
-    controller.render html: html, layout: false, status: status || response_status # unless controller.performed?
-    append_to_response_headers status_header
   end
 
   def turbo_stream
@@ -366,15 +373,16 @@ class TurboBoost::Commands::Runner
     controller.response.set_header key.to_s, value.to_s
   end
 
-  def append_to_response_headers(status = nil)
-    return unless command_performed?
+  # Writes the TurboBoost-Command header to the response
+  # NOTE: Invoke after the controller has rendered the response
+  def append_command_response_header(error: nil)
+    return unless command_requested?
 
-    values = [
-      status || "#{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}".delete(","),
-      rendering_strategy,
-      command_name
-    ]
+    command_status = "Abort" if command_aborted?
+    command_status = "Error" if command_errored? || error
+    command_status = "OK" if command_succeeded?
 
+    values = [command_name, command_status, rendering_strategy]
     append_response_header RESPONSE_HEADER, values.join(", ")
   end
 end

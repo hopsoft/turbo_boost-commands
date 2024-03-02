@@ -12,13 +12,6 @@ const parseError = error => {
 
 const parseAndRenderResponse = response => {
   const { strategy } = headers.tokenize(response.headers.get(headers.RESPONSE_HEADER))
-
-  // FAIL: Status outside the range of 200-399
-  if (response.status < 200 || response.status > 399) {
-    const error = `Server returned a ${response.status} status code! TurboBoost Commands require 2XX-3XX status codes.`
-    dispatch(lifecycle.events.serverError, document, { detail: { error, response } }, true)
-  }
-
   response.text().then(content => render(strategy, content))
 }
 

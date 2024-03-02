@@ -31,7 +31,10 @@ const shouldLogEvent = event => {
 const logEvent = event => {
   if (shouldLogEvent(event)) {
     const { target, type, detail } = event
-    console[currentLevel](type, detail.id || '', { target, detail })
+    const payload = {}
+    if (detail.id) payload.id = detail.id
+    if (detail.ms) payload.ms = detail.ms
+    console[currentLevel](type, { ...payload, detail, target })
   }
 }
 

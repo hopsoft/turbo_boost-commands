@@ -17,15 +17,7 @@ addEventListener('turbo:before-fetch-response', event => {
 
   // We'll take it from here Hotwire...
   event.preventDefault()
-  const { statusCode } = response
   const { strategy } = headers.tokenize(header)
-
-  // FAIL: Status outside the range of 200-399
-  if (statusCode < 200 || statusCode > 399) {
-    const error = `Server returned a ${status} status code! TurboBoost Commands require 2XX-3XX status codes.`
-    dispatch(lifecycle.events.clientError, document, { detail: { error, response } }, true)
-  }
-
   response.responseHTML.then(content => render(strategy, content))
 })
 
