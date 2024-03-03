@@ -11,6 +11,7 @@ class TurboBoost::Commands::ExitMiddleware
   end
 
   def call(env)
+    @params = env["turbo_boost_command_params"]
     response = @app.call(env)
     return modify!(env, response) if modify?(env)
     response
@@ -19,13 +20,17 @@ class TurboBoost::Commands::ExitMiddleware
   private
 
   def modify?(env)
-    env["turbo_boost_command"].is_a? TurboBoost::Commands::Responder
+    env["turbo_boost_command_responder"].is_a? TurboBoost::Commands::Responder
   end
 
   def modify!(env, response)
-    responder = env["turbo_boost_command"]
+    responder = env["turbo_boost_command_responder"]
     status, headers, body = response
     new_body = body_to_s(body)
+
+    params = env["turbo_boost_command_params"]
+    path = Rack::Request.new(env).path
+    type = response_type(new_body)
 
     case response_type(new_body)
     when :body
@@ -38,6 +43,7 @@ class TurboBoost::Commands::ExitMiddleware
       new_body << responder.body
     end
 
+    # binding.pry
     [status, headers.merge(responder.headers), [new_body]]
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"

@@ -32,7 +32,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_requested?
-    controller.request.env.key?("turbo_boost_command") || controller.params.key?("turbo_boost_command")
+    controller.request.env.key?("turbo_boost_command_params") || controller.params.key?("turbo_boost_command")
   end
 
   def command_valid?
@@ -55,11 +55,7 @@ class TurboBoost::Commands::Runner
 
   def command_params
     return ActionController::Parameters.new unless command_requested?
-    @command_params ||= begin
-      payload = parsed_command_params.transform_keys(&:underscore)
-      payload["element_attributes"]&.deep_transform_keys!(&:underscore)
-      ActionController::Parameters.new(payload).permit!
-    end
+    @command_params ||= ActionController::Parameters.new(parsed_command_params).permit!
   end
 
   def command_name
@@ -95,7 +91,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_errored?
-    !!command_instance&.errored?
+    @command_errored ||= !!command_instance&.errored?
   end
 
   def command_performing?
@@ -133,6 +129,7 @@ class TurboBoost::Commands::Runner
     command_instance.resolve_state command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
   rescue => error
+    @command_errored = true
     prevent_controller_action error: error if command_requested?
   end
 
@@ -150,7 +147,7 @@ class TurboBoost::Commands::Runner
     respond_with_success if command_succeeded?
 
     # store the responder for use in → TurboBoost::Commands::ExitMiddleware
-    controller.request.env["turbo_boost_command"] = responder
+    controller.request.env["turbo_boost_command_responder"] = responder
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
   end
@@ -201,9 +198,10 @@ class TurboBoost::Commands::Runner
 
   def parsed_command_params
     @parsed_command_params ||= begin
-      params = controller.request.env["turbo_boost_command"]
-      params ||= JSON.parse(controller.params["turbo_boost_command"])
-      params || {}
+      params = controller.request.env["turbo_boost_command_params"]
+      params ||= controller.request.env["turbo_boost_command_params"] = JSON.parse(controller.params["turbo_boost_command"])
+      params.deep_transform_keys!(&:underscore)
+      params
     end
   end
 
@@ -271,15 +269,16 @@ class TurboBoost::Commands::Runner
   end
 
   def add_event(name, detail = {})
+    detail = command_params.to_h.merge(detail).deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
     options = {
       args: [name, {
         bubbles: true,
         cancelable: false,
-        detail: parsed_command_params.merge(detail)
+        detail: detail
       }]
     }
-    options[:selector] = "##{command_instance.element.id}" if command_instance.element&.id
-    add_content turbo_stream.invoke(:dispatch_event, **options.compact)
+    options[:selector] = "##{command_instance.element.id}" if command_instance&.element&.id
+    add_content turbo_stream.invoke(:dispatch_event, **options)
   end
 
   def add_success_event
@@ -309,10 +308,6 @@ class TurboBoost::Commands::Runner
     MSG
 
     add_content turbo_stream.invoke(:alert, args: [message.strip])
-  end
-
-  def add_status(status)
-    responder.status = status
   end
 
   def add_header

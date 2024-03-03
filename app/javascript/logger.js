@@ -31,10 +31,26 @@ const shouldLogEvent = event => {
 const logEvent = event => {
   if (shouldLogEvent(event)) {
     const { target, type, detail } = event
-    const payload = {}
-    if (detail.id) payload.id = detail.id
-    if (detail.ms) payload.ms = detail.ms
-    console[currentLevel](type, { ...payload, detail, target })
+    const id = detail.id || ''
+    const commandName = detail.name || ''
+
+    let duration = ''
+    if (detail.startedAt) duration = `${Date.now() - detail.startedAt}ms `
+
+    const typeParts = type.split(':')
+    const lastPart = typeParts.pop()
+    const eventName = `%c${typeParts.join(':')}:%c${lastPart}`
+    const message = [`%c${commandName}`, `%c${duration}`, eventName, `%c${id}`]
+
+    console.log(
+      message.join(' ').replace(/\s{2,}/g, ' '),
+      'color:deepskyblue',
+      'color:lime',
+      'color:dimgray',
+      eventName.match(/error/i) ? 'color:red' : 'color:cyan',
+      'color:silver',
+      { detail, target }
+    )
   }
 }
 

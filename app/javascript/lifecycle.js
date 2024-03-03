@@ -2,9 +2,7 @@ import activity from './activity'
 import { dispatch, commandEvents } from './events'
 
 function finish(event) {
-  event.detail.endedAt = Date.now()
-  event.detail.ms = event.detail.endedAt - event.detail.startedAt
-  setTimeout(() => dispatch(commandEvents.finish, event.target, { detail: event.detail }), 25)
+  setTimeout(() => dispatch(commandEvents.finish, event.target, { detail: event.detail }))
 }
 
 // TODO: forward source event to finish (error or success)

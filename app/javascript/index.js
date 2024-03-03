@@ -49,7 +49,7 @@ async function invokeCommand(event) {
     if (!element) return
     if (!delegates.isRegisteredForElement(event.type, element)) return
 
-    const commandId = `turbo-command-${uuids.v4()}`
+    const commandId = uuids.v4()
     let driver = drivers.find(element)
     let payload = {
       ...buildCommandPayload(commandId, element),

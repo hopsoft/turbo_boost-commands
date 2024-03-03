@@ -62,7 +62,7 @@ class TurboBoost::Commands::EntryMiddleware
 
     request.env.tap do |env|
       # Store the command params in the environment
-      env["turbo_boost_command"] = params
+      env["turbo_boost_command_params"] = params
 
       # Change the method from POST to GET
       env["REQUEST_METHOD"] = "GET"
