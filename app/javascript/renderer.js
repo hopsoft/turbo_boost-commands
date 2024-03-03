@@ -11,10 +11,10 @@ const replace = content => {
 }
 
 export const render = (strategy, content) => {
-  if (!strategy) return console.warn('TurboBoost::Commands unable to render! (strategy not defined)')
-  if (!content) return console.warn('TurboBoost::Commands unable to render! (content not defined)')
-  if (strategy.match(/^Append$/i)) return append(content)
-  if (strategy.match(/^Replace$/i)) return replace(content)
+  if (strategy && content) {
+    if (strategy.match(/^Append$/i)) return append(content)
+    if (strategy.match(/^Replace$/i)) return replace(content)
+  }
 }
 
 export default { render }

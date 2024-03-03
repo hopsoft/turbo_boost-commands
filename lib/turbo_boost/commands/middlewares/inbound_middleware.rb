@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TurboBoost::Commands::Middleware
+class TurboBoost::Commands::InMiddleware
   PATH = "/turbo-boost-command-invocation"
 
   def initialize(app)

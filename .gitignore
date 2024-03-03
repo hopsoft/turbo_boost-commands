@@ -4,6 +4,7 @@
 .byebug_history
 .containers.yml
 .pnp.*
+.playwright*
 .yarn*
 /.bundle/
 /doc/
