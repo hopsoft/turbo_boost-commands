@@ -277,14 +277,19 @@ class TurboBoost::Commands::Runner
   end
 
   def add_event(name, detail = {})
-    detail = command_params.to_h.merge(detail).deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+    detail = command_params.to_unsafe_hash
+      .except(:state_collection)
+      .merge(detail)
+      .deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+
     options = {
       args: [name, {
         bubbles: true,
         cancelable: false,
-        detail: detail
+        detail: detail.except(:stateCollection)
       }]
     }
+
     options[:selector] = "##{command_instance.element.id}" if command_instance&.element&.id
     add_content turbo_stream.invoke(:dispatch_event, **options)
   end
@@ -315,7 +320,7 @@ class TurboBoost::Commands::Runner
       Finally, check server logs for additional info.
     MSG
 
-    add_content turbo_stream.invoke(:alert, args: [message.strip])
+    add_content turbo_stream.invoke(:alert, args: [message.strip], delay: 100)
   end
 
   def add_header

@@ -16,7 +16,7 @@ module Drivers
       end
 
       def perform_with_error
-        raise NotImplementedError
+        raise NotImplementedError, "Intentional error for testing!"
       end
     end
   end

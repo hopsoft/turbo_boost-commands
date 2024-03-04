@@ -40,7 +40,7 @@ const logEvent = event => {
     const typeParts = type.split(':')
     const lastPart = typeParts.pop()
     const eventName = `%c${typeParts.join(':')}:%c${lastPart}`
-    const message = [`%c${commandName}`, `%c${duration}`, eventName, `%c${id}`]
+    const message = [`%c${commandName}`, `%c${duration}`, eventName]
 
     console.log(
       message.join(' ').replace(/\s{2,}/g, ' '),
@@ -48,8 +48,7 @@ const logEvent = event => {
       'color:lime',
       'color:darkgray',
       eventName.match(/abort|error/i) ? 'color:red' : 'color:deepskyblue',
-      'color:silver',
-      { detail, target }
+      { id, detail, target }
     )
   }
 }
