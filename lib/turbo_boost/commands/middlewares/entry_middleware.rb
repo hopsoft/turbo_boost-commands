@@ -42,17 +42,15 @@ class TurboBoost::Commands::EntryMiddleware
   #
   # @example POST payload for: /turbo-boost-command-invocation
   #   {
-  #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569",    # unique command invocation id
-  #     "name"              => "ExampleCommand#perform",                                # the command name being invoked
-  #     "elementId"         => nil,                                                     # the triggering element's dom id
-  #     "elementAttributes" => {...},                                                   # the triggering element's attributes
-  #     "startedAt"         => 1708213193567,                                           # the time the command was invoked
-  #     "changedState"      => {...},                                                   # the delta of optimistic state changes made on the client
-  #     "clientState"       => {...},                                                   # the state as it was on the client
-  #     "signedState"       => "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL2R1lcnNhbElEOjpFH...", # the state as it was on the server at the time of the last command invocation
-  #     "driver"            => "frame",                                                 # the driver used to invoke the command
-  #     "frameId"           => "...",                                                   # the turbo-frame id (if applicable)
-  #     "src"               => "..."                                                    # the URL to present to Rails (turbo-frame src, window location, etc.)
+  #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569",    # Unique command invocation id
+  #     "name"              => "ExampleCommand#perform",                                # Command name being invoked
+  #     "elementId"         => nil,                                                     # Triggering element's DOM id
+  #     "elementAttributes" => {...},                                                   # Triggering element's attributes
+  #     "startedAt"         => 1708213193567,                                           # Time the command was invoked
+  #     "stateCollection"   => [{...}],                                                 # Collection of state entries relaed to the command
+  #     "driver"            => "frame",                                                 # Driver used to invoke the command
+  #     "frameId"           => "...",                                                   # TurboFrame id (if applicable)
+  #     "src"               => "..."                                                    # URL to present to Rails (turbo-frame src, window location, etc.)
   #   }
   #
   # @param request [Rack::Request] the request to modify
