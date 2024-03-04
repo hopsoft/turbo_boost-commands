@@ -26,13 +26,11 @@ class TurboBoostGlobalsTest < ApplicationSystemTestCase
     page.goto basic_command_url
     page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
 
-    assert js("TurboBoost.State.signed.length > 0")
-    assert_not_nil js("TurboBoost.State.current.command_token") # used for forgery protection
+    assert_equal "object", js("typeof TurboBoost.State.entries")
 
-    js("TurboBoost.State.current.test = true")
-    js("TurboBoost.State.current.example = 'value'")
-    assert js("TurboBoost.State.current.test")
-    assert_equal "value", js("TurboBoost.State.current.example")
-    assert_equal "value", js("TurboBoost.State.changed.example")
+    js("TurboBoost.State.initialize('test', JSON.stringify({ example: 'value' }))")
+
+    assert_equal "value", js("TurboBoost.State.entries.test.initial.example")
+    assert_equal "value", js("TurboBoost.State.entries.test.current.example")
   end
 end

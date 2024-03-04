@@ -5,12 +5,12 @@ class TurboBoost::Commands::State
 
   class << self
     def from_sgid_param(sgid)
-      new URI::UID.from_sgid(sgid, for: name)&.decode
+      new store: URI::UID.from_sgid(sgid, for: name)&.decode
     end
   end
 
-  def initialize(store = nil, provisional: false)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 16.kilobytes)
+  def initialize(store: nil, provisional: false)
+    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
     @store.cleanup
     @provisional = provisional
   end

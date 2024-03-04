@@ -4,7 +4,7 @@ require "test_helper"
 
 class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
   test "new with expiration" do
-    state = TurboBoost::Commands::State.new(ActiveSupport::Cache::MemoryStore.new(expires_in: 1.second))
+    state = TurboBoost::Commands::State.new(store: ActiveSupport::Cache::MemoryStore.new(expires_in: 1.second))
     state.write :example, "value"
     assert_equal "value", state.read(:example)
     travel 2.seconds
@@ -12,7 +12,7 @@ class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
   end
 
   test "new with size" do
-    state = TurboBoost::Commands::State.new(ActiveSupport::Cache::MemoryStore.new(size: 4.kilobytes))
+    state = TurboBoost::Commands::State.new(store: ActiveSupport::Cache::MemoryStore.new(size: 4.kilobytes))
     state.write :example, "0" * 4097.bytes
     assert_nil state.read(:example)
     assert_empty state.to_h

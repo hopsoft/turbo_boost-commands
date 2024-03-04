@@ -28,15 +28,17 @@ const Commands = {
 }
 
 function buildCommandPayload(id, element) {
+  const stateCollection = state
+    .collect(element)
+    .map(({ name, signed, changed }) => ({ name, signed, changed }))
+
   return {
-    id, // uniquely identifies the command
-    name: element.getAttribute(schema.commandAttribute),
-    elementId: element.id.length > 0 ? element.id : null,
-    elementAttributes: elements.buildAttributePayload(element),
-    startedAt: Date.now(),
-    changedState: state.changed, // changed-state (delta of optimistic updates)
-    clientState: state.current, // client-side state
-    signedState: state.signed // server-side state
+    id, //----------------------------------------------------------- Uniquely identifies the command invocation
+    name: element.getAttribute(schema.commandAttribute), //---------- Command name
+    elementId: element.id.length > 0 ? element.id : null, //--------- ID of the element that triggered the command
+    elementAttributes: elements.buildAttributePayload(element), //--- Attributes of the element that triggered the command
+    startedAt: Date.now(), //---------------------------------------- Start time of when the command was invoked
+    stateCollection //---------------------------------------------- All command state for the triggering element and its ancestors
   }
 }
 
@@ -115,7 +117,13 @@ if (!self.TurboBoost.Commands) {
   ])
 
   self.TurboBoost.Commands = Commands
-  self.TurboBoost.State = state
+  self.TurboBoost.State = {
+    initialize: state.initialize,
+    collect: state.collect,
+    get entries() {
+      return JSON.parse(JSON.stringify(state.entries))
+    }
+  }
 }
 
 export default Commands

@@ -1,13 +1,12 @@
 import headers from './headers'
 import lifecycle from './lifecycle'
-import state from './state'
 import urls from './urls'
 import { dispatch } from './events'
 import { render } from './renderer'
 
 const parseError = error => {
-  const errorMessage = `Unexpected error performing a TurboBoost Command! ${error.message}`
-  dispatch(lifecycle.events.clientError, document, { detail: { error: errorMessage } }, true)
+  const message = `Unexpected error performing a TurboBoost Command! ${error.message}`
+  dispatch(lifecycle.events.clientError, document, { detail: { message, error } }, true)
 }
 
 const parseAndRenderResponse = response => {

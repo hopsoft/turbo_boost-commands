@@ -1,44 +1,57 @@
 // TODO: Consider moving State to its own library
+import schema from '../schema'
 import observable from './observable'
+import storage from './storage'
 import { dispatch, commandEvents, stateEvents } from '../events'
 
-let initialState, currentState, changedState, signedState
+let entries = {}
+let observers = {}
 
-function initialize(initial, signed) {
-  const json = JSON.parse(initial)
-  initialState = { ...json }
-  signedState = signed
-  currentState = observable(json)
-  changedState = {}
-  setTimeout(() =>
-    dispatch(stateEvents.stateLoad, document, {
-      detail: { state: currentState }
-    })
-  )
+function observe(name, state) {
+  removeEventListener(stateEvents.stateChange, observers[name])
+  observers[name] = addEventListener(stateEvents.stateChange, event => {
+    for (const [key, value] of Object.entries(state.current)) {
+      if (state.initial[key] !== value) state.changed[key] = value
+    }
+    storage.save(name, JSON.stringify(state))
+  })
 }
 
-addEventListener(stateEvents.stateChange, event => {
-  for (const [key, value] of Object.entries(currentState))
-    if (initialState[key] !== value) changedState[key] = value
-})
+function initialize(name, initial, signed) {
+  const json = JSON.parse(initial)
+  const state = {
+    name,
+    signed,
+    initial: { ...json },
+    current: observable({ ...json }),
+    changed: {}
+  }
+
+  entries[name] = state
+  storage.save(name, state)
+  observe(name, state)
+  setTimeout(() => dispatch(stateEvents.stateLoad, document, { detail: state }))
+}
+
+function find(name) {
+  const stub = { name, initial: {}, current: {}, changed: {} }
+  const stored = storage.find(name)
+  return { ...stub, ...stored }
+}
+
+function collect(element) {
+  const selector = `[${schema.commandAttribute}]`
+  const list = []
+  let context = element.closest(selector)
+  while (context) {
+    list.push(find(context.getAttribute(schema.commandAttribute)))
+    context = context.parentElement.closest(selector)
+  }
+  return list
+}
 
 export default {
   initialize,
-  events: stateEvents,
-
-  get initial() {
-    return initialState
-  },
-
-  get current() {
-    return currentState
-  },
-
-  get changed() {
-    return changedState
-  },
-
-  get signed() {
-    return signedState
-  }
+  collect,
+  entries
 }

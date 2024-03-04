@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "responder"
-require_relative "state"
+require_relative "state_collection"
 
 class TurboBoost::Commands::Runner
   RESPONSE_HEADER = "TurboBoost-Command"
@@ -23,11 +23,17 @@ class TurboBoost::Commands::Runner
     SUPPORTED_MEDIA_TYPES[controller.request.format.to_s]
   end
 
+  def command_state_collection
+    @command_states ||= TurboBoost::Commands::StateCollection.new(command_params.to_unsafe_hash[:state_collection])
+  end
+
   def command_state
-    @command_state ||= begin
-      sgid = command_params[:signed_state]
-      value = TurboBoost::Commands::State.from_sgid_param(sgid) if sgid
-      value || TurboBoost::Commands::State.new
+    @command_state ||= if command_requested?
+      command_state_collection.key?(command_name) ?
+        command_state_collection[command_name] :
+        command_state_collection.push(name: command_name)[command_name]
+    else
+      TurboBoost::Commands::State.new
     end
   end
 
@@ -126,7 +132,7 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    command_instance.resolve_state command_params[:changed_state]
+    # command_instance.resolve_state command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
   rescue => error
     @command_errored = true
@@ -261,9 +267,11 @@ class TurboBoost::Commands::Runner
   end
 
   def add_state
-    client_state = command_state.to_json
-    signed_state = command_state.to_sgid_param
-    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [client_state, signed_state], camelize: false)
+    command_state_collection.each do |name, value|
+      initial = value.to_json
+      signed = value.to_sgid_param
+      add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [name, initial, signed], camelize: false)
+    end
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
   end

@@ -1,5 +1,5 @@
 <%= tag.details id: id,
-  open: turbo_boost.command_state.dig(id, :open),
+  open: turbo_boost["RememberAttributesCommand"].dig(id, :open),
   data: { turbo_command: "RememberAttributesCommand", attributes: [:open] }.merge(data) do %>
   <%= yield %>
 <% end %>

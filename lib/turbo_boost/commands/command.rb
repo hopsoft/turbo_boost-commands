@@ -91,8 +91,8 @@ class TurboBoost::Commands::Command
   end
 
   # Abstract method to resolve state (default noop), override in subclassed commands
-  def resolve_state(client_state)
-  end
+  # def resolve_state(client_state)
+  # end
 
   # Abstract `perform` method, override in subclassed commands
   def perform
