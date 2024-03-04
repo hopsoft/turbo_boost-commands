@@ -46,8 +46,8 @@ const logEvent = event => {
       message.join(' ').replace(/\s{2,}/g, ' '),
       'color:deepskyblue',
       'color:lime',
-      'color:darkkhaki',
-      eventName.match(/error/i) ? 'color:red' : 'color:gold',
+      'color:darkgray',
+      eventName.match(/abort|error/i) ? 'color:red' : 'color:deepskyblue',
       'color:silver',
       { detail, target }
     )

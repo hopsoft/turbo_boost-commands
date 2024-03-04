@@ -24,7 +24,7 @@ const Commands = {
   registerEventDelegate: delegates.register,
   get eventDelegates() {
     return delegates.events
-  },
+  }
 }
 
 function buildCommandPayload(id, element) {
@@ -38,7 +38,7 @@ function buildCommandPayload(id, element) {
     elementId: element.id.length > 0 ? element.id : null, //--------- ID of the element that triggered the command
     elementAttributes: elements.buildAttributePayload(element), //--- Attributes of the element that triggered the command
     startedAt: Date.now(), //---------------------------------------- Start time of when the command was invoked
-    stateCollection, //----------------------------------------------- All command state for the triggering element and its ancestors
+    stateCollection //----------------------------------------------- All command state for the triggering element and its ancestors
   }
 }
 
@@ -57,20 +57,20 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src,
+      src: driver.src
     }
 
     const startEvent = await dispatch(commandEvents.start, element, {
       cancelable: true,
-      detail: payload,
+      detail: payload
     })
 
     if (startEvent.defaultPrevented || (startEvent.detail.confirmation && event.defaultPrevented))
       return dispatch(commandEvents.abort, element, {
         detail: {
           message: `An event handler for '${commandEvents.start}' prevented default behavior and blocked command invocation!`,
-          source: startEvent,
-        },
+          source: startEvent
+        }
       })
 
     // the element and thus the driver may have changed based on the start event handler(s)
@@ -79,7 +79,7 @@ async function invokeCommand(event) {
       ...buildCommandPayload(commandId, element),
       driver: driver.name,
       frameId: driver.frame ? driver.frame.id : null,
-      src: driver.src,
+      src: driver.src
     }
 
     activity.add(payload)
@@ -98,7 +98,7 @@ async function invokeCommand(event) {
     }
   } catch (error) {
     dispatch(commandEvents.clientError, element, {
-      detail: { ...payload, error },
+      detail: { ...payload, error }
     })
   }
 }
@@ -113,7 +113,7 @@ if (!self.TurboBoost.Commands) {
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
-    `textarea[${schema.commandAttribute}]`,
+    `textarea[${schema.commandAttribute}]`
   ])
 
   self.TurboBoost.Commands = Commands
@@ -122,7 +122,7 @@ if (!self.TurboBoost.Commands) {
     collect: state.collect,
     get entries() {
       return JSON.parse(JSON.stringify(state.entries))
-    },
+    }
   }
 }
 

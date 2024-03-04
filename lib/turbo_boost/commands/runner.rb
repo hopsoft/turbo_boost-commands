@@ -248,7 +248,7 @@ class TurboBoost::Commands::Runner
 
   def respond_with_abort
     Rails.logger.error error.message
-    add_abort_event error.message
+    add_abort_event
   end
 
   def respond_with_error
