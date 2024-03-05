@@ -2,6 +2,7 @@
 
 require_relative "responder"
 require_relative "state_collection"
+require_relative "command_validator"
 
 class TurboBoost::Commands::Runner
   RESPONSE_HEADER = "TurboBoost-Command"
@@ -41,24 +42,6 @@ class TurboBoost::Commands::Runner
     controller.request.env.key?("turbo_boost_command_params") || controller.params.key?("turbo_boost_command")
   end
 
-  def command_valid?
-    return false unless command_requested?
-
-    # validate class
-    unless command_instance.is_a?(TurboBoost::Commands::Command)
-      raise TurboBoost::Commands::InvalidClassError,
-        "`#{command_class_name}` is not a subclass of `TurboBoost::Commands::Command`!"
-    end
-
-    # validate method
-    unless command_instance.respond_to?(command_method_name)
-      raise TurboBoost::Commands::InvalidMethodError,
-        "`#{command_class_name}` does not define the public method `#{command_method_name}`!"
-    end
-
-    true
-  end
-
   def command_params
     return ActionController::Parameters.new unless command_requested?
     @command_params ||= ActionController::Parameters.new(parsed_command_params).permit!
@@ -84,6 +67,11 @@ class TurboBoost::Commands::Runner
 
   def command_class
     @command_class ||= command_class_name&.safe_constantize
+  end
+
+  def command_valid?
+    return false unless command_requested?
+    TurboBoost::Commands::CommandValidator.new(command_class, command_method_name).valid?
   end
 
   def command_instance

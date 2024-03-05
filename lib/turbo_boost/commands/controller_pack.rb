@@ -21,7 +21,6 @@ class TurboBoost::Commands::ControllerPack
     :command_performing?,
     :command_requested?,
     :command_succeeded?,
-    :controller,
     to: :runner
   )
 
@@ -31,5 +30,11 @@ class TurboBoost::Commands::ControllerPack
   def state
     ActiveSupport::Deprecation.warn "The `state` method has been deprecated. Please update to `command_state`."
     command_state
+  end
+
+  # DEPRECATED: This method will removed in a future release
+  def controller
+    ActiveSupport::Deprecation.warn "This method will removed in a future release."
+    runner.controller
   end
 end
