@@ -1,4 +1,4 @@
-// TODO: Consider moving State to its own library
+// TODO: Move State to its own library
 import schema from '../schema'
 import observable from './observable'
 import storage from './storage'

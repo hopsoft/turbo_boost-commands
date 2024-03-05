@@ -1,3 +1,4 @@
+// TODO: Move Logger to its own library (i.e. TurboBoost.Logger)
 import { allEvents as events } from './events'
 
 let currentLevel = 'unknown'
