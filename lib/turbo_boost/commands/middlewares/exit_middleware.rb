@@ -28,11 +28,6 @@ class TurboBoost::Commands::ExitMiddleware
     status, headers, body = response
     new_body = body_to_s(body)
 
-    # TODO: remove debug artifacts
-    # params = env["turbo_boost_command_params"]
-    # path = Rack::Request.new(env).path
-    # type = response_type(new_body)
-
     case response_type(new_body)
     when :body
       match = new_body.match(BODY_PATTERN).to_s
@@ -44,8 +39,6 @@ class TurboBoost::Commands::ExitMiddleware
       new_body << responder.body
     end
 
-    # TODO: remove debug artifacts
-    # binding.pry
     [status, headers.merge(responder.headers), [new_body]]
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"

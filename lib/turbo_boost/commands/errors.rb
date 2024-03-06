@@ -1,14 +1,8 @@
 # frozen_string_literal: true
 
 module TurboBoost::Commands
-  class InvalidClassError < StandardError; end
-
-  class InvalidMethodError < StandardError; end
-
-  class InvalidElementError < StandardError; end
-
   class CommandError < StandardError
-    def initialize(*messages, command:, http_status:, cause: nil)
+    def initialize(*messages, command:, http_status: :internal_server_error, cause: nil)
       @cause = cause
       @command = command
       @http_status_code = TurboBoost::Commands.http_status_code(http_status)
@@ -26,6 +20,15 @@ module TurboBoost::Commands
       line = (cause&.backtrace || []).first.to_s
       line.[](/[^\/]+\.rb:\d+/i)
     end
+  end
+
+  class InvalidClassError < CommandError
+  end
+
+  class InvalidMethodError < CommandError
+  end
+
+  class InvalidElementError < CommandError
   end
 
   class AbortError < CommandError

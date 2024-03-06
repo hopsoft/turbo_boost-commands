@@ -20,10 +20,6 @@ class TurboBoost::Commands::Runner
     @responder = TurboBoost::Commands::Responder.new
   end
 
-  def supported_media_type?
-    SUPPORTED_MEDIA_TYPES[controller.request.format.to_s]
-  end
-
   def command_state_collection
     @command_states ||= TurboBoost::Commands::StateCollection.new(command_params.to_unsafe_hash[:state_collection])
   end
@@ -71,7 +67,8 @@ class TurboBoost::Commands::Runner
 
   def command_valid?
     return false unless command_requested?
-    TurboBoost::Commands::CommandValidator.new(command_class, command_method_name).valid?
+    validator = TurboBoost::Commands::CommandValidator.new(command_class_name, command_method_name)
+    raise_on_invalid_command? ? validator.validate! : validator.valid?
   end
 
   def command_instance
@@ -120,7 +117,7 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    # command_instance.resolve_state command_params[:changed_state]
+    command_instance.resolve_state command_params[:changed_state] if resolve_state?
     command_instance.perform_with_callbacks command_method_name
   rescue => error
     @command_errored = true
@@ -199,13 +196,42 @@ class TurboBoost::Commands::Runner
     end
   end
 
-  def should_redirect?
+  def alert_on_abort?
+    return false unless TurboBoost::Commands.config.alert_on_abort
+    return true if TurboBoost::Commands.config.alert_on_abort == true
+    return true if TurboBoost::Commands.config.alert_on_abort.to_s == Rails.env.to_s
+    false
+  end
+
+  def alert_on_error?
+    return false unless TurboBoost::Commands.config.alert_on_error
+    return true if TurboBoost::Commands.config.alert_on_error == true
+    return true if TurboBoost::Commands.config.alert_on_error.to_s == Rails.env.to_s
+    false
+  end
+
+  def raise_on_invalid_command?
+    return false unless TurboBoost::Commands.config.raise_on_invalid_command
+    return true if TurboBoost::Commands.config.raise_on_invalid_command == true
+    return true if TurboBoost::Commands.config.raise_on_invalid_command.to_s == Rails.env.to_s
+    false
+  end
+
+  def resolve_state?
+    TurboBoost::Commands.config.resolve_state
+  end
+
+  def redirect?
     return false if controller.request.get?
     controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
+  def supported_media_type?
+    SUPPORTED_MEDIA_TYPES[controller.request.format.to_s]
+  end
+
   def response_status
-    return :multiple_choices if should_redirect?
+    return :multiple_choices if redirect?
     :ok
   end
 
@@ -225,8 +251,6 @@ class TurboBoost::Commands::Runner
     # 1. The command was triggered by the WINDOW driver
     # 2. After the command finishes, normal Rails mechanics resume (i.e. prevent_controller_action was not called)
     # 3. There is NO TurboStream template for the current action (i.e. example.turbo_boost.erb, example.turbo_frame.erb)
-    #
-    # TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
     if command_params[:driver] == "window" && controller_action_allowed?
       return "Replace" unless turbo_stream_template_exists?
     end
@@ -235,14 +259,15 @@ class TurboBoost::Commands::Runner
   end
 
   def respond_with_abort
-    Rails.logger.error error.message
+    Rails.logger.debug error.message
     add_abort_event
+    add_error_alert if alert_on_abort?
   end
 
   def respond_with_error
     Rails.logger.error error.message
     add_error_event
-    add_error_alert
+    add_error_alert if alert_on_error?
   end
 
   def respond_with_success
@@ -298,8 +323,7 @@ class TurboBoost::Commands::Runner
   end
 
   def add_error_alert
-    return unless Rails.env.development?
-    return unless error && command_errored?
+    return unless error
 
     message = <<~MSG
       #{error.message}\n\n

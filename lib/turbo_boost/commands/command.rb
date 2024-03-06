@@ -2,6 +2,7 @@
 
 require_relative "attribute_set"
 require_relative "command_callbacks"
+require_relative "command_validator"
 
 # TurboBoost::Commands::Command superclass.
 # All command classes should inherit from this class.
@@ -91,8 +92,8 @@ class TurboBoost::Commands::Command
   end
 
   # Abstract method to resolve state (default noop), override in subclassed commands
-  # def resolve_state(client_state)
-  # end
+  def resolve_state(client_state)
+  end
 
   # Abstract `perform` method, override in subclassed commands
   def perform

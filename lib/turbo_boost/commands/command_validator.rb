@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::CommandValidator
-  def initialize(command_class, method_name)
-    @command_class = command_class
-    @method_name = method_name
+  def initialize(class_name, method_name)
+    @class_name = class_name
+    @method_name = method_name.to_sym
+    @command_class = class_name&.safe_constantize
   end
 
-  attr_reader :command_class, :method_name
+  attr_reader :class_name, :method_name, :command_class
 
   def validate
     valid_class? && valid_method?
@@ -14,36 +15,32 @@ class TurboBoost::Commands::CommandValidator
   alias_method :valid?, :validate
 
   def validate!
-    unless valid_class?
-      raise TurboBoost::Commands::InvalidClassError,
-        "`#{command_class.name}` is not a subclass of `#{TurboBoost::Commands::Command.name}`!"
-    end
+    message = "`#{class_name}` is not a subclass of `#{TurboBoost::Commands::Command.name}`!"
+    raise TurboBoost::Commands::InvalidClassError.new(message, command: command_class) unless valid_class?
 
-    unless valid_method?
-      raise TurboBoost::Commands::InvalidMethodError,
-        "`#{command_class.name}` does not define the public method `#{command_method.name}`!"
-    end
+    message = "`#{command_class.name}` does not define the public method `#{method_name}`!"
+    raise TurboBoost::Commands::InvalidMethodError.new(message, command: command_class) unless valid_method?
 
     true
   end
 
   private
 
-  def command_class_ancestors
-    command_class.ancestors & TurboBoost::Commands::Command.descendants
-  end
-
-  def command_method
-    return nil unless valid_class?
-    command_class.public_instance_method method_name
+  def command_ancestors
+    return [] unless command_class
+    head = 0
+    tail = command_class.ancestors.index(TurboBoost::Commands::Command) - 1
+    command_class.ancestors[head..tail]
   end
 
   def valid_class?
-    command_class_ancestors.any?
+    command_class&.ancestors&.include? TurboBoost::Commands::Command
   end
 
   def valid_method?
-    return false unless command_method
-    command_class_ancestors.include? command_method.owner
+    return false unless valid_class?
+    command_ancestors.any? do |ancestor|
+      ancestor.public_instance_methods(false).any? method_name
+    end
   end
 end
