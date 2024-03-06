@@ -53,5 +53,6 @@ function collect(element) {
 export default {
   initialize,
   collect,
-  entries
+  entries,
+  find
 }

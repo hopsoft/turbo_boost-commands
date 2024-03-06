@@ -119,10 +119,8 @@ if (!self.TurboBoost.Commands) {
   self.TurboBoost.Commands = Commands
   self.TurboBoost.State = {
     initialize: state.initialize,
-    collect: state.collect,
-    get entries() {
-      return JSON.parse(JSON.stringify(state.entries))
-    }
+    entries: state.entries,
+    find: state.find
   }
 }
 
