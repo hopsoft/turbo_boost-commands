@@ -13,7 +13,7 @@ function observe(name, state) {
     for (const [key, value] of Object.entries(state.current)) {
       if (state.initial[key] !== value) state.changed[key] = value
     }
-    storage.save(name, JSON.stringify(state))
+    storage.save(name, state)
   })
 }
 
