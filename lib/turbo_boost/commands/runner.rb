@@ -117,7 +117,8 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    command_instance.resolve_state command_params[:changed_state] if resolve_state?
+    # TODO: Convert `state_collection` param to a `TurboBoost::Commands::StateCollection` before resolving?
+    command_instance.resolve_state command_params[:state_collection] if resolve_state?
     command_instance.perform_with_callbacks command_method_name
   rescue => error
     @command_errored = true
