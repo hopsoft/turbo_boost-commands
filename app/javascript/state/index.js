@@ -44,7 +44,8 @@ function collect(element) {
   const list = []
   let context = element.closest(selector)
   while (context) {
-    list.push(find(context.getAttribute(schema.commandAttribute)))
+    const state = find(context.getAttribute(schema.commandAttribute))
+    list.push(state)
     context = context.parentElement.closest(selector)
   }
   return list
