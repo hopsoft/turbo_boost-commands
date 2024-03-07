@@ -42,4 +42,20 @@ class DriversWindowTest < ApplicationSystemTestCase
       assert_equal "AllowControllerActionCommand invoked #{COUNT} times", el.inner_text
     end
   end
+
+  test "command that ALLOWS the rails controller action to perform handles abort" do
+    TurboBoost::Commands.config.alert_on_abort = true
+    page.goto tests_url
+    element(:window_driver).click
+
+    alerted = false
+    page.on "dialog", ->(dialog) { alerted = true }
+
+    assert_console_messages min: 1, type: "warning", pattern: "turbo-boost:command:.*abort" do
+      element(:window_driver_allow_abort).click
+    end
+
+    sleep 0.1 # wait for alert to be shown
+    assert alerted, "Expected alert dialog to be shown"
+  end
 end

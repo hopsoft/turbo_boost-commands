@@ -29,6 +29,14 @@ const shouldLogEvent = event => {
   return true
 }
 
+const logMethod = event => {
+  if (logLevels.error.includes(event.type)) return 'error'
+  if (logLevels.warn.includes(event.type)) return 'warn'
+  if (logLevels.info.includes(event.type)) return 'info'
+  if (logLevels.debug.includes(event.type)) return 'debug'
+  return 'log'
+}
+
 const logEvent = event => {
   if (shouldLogEvent(event)) {
     const { target, type, detail } = event
@@ -43,7 +51,7 @@ const logEvent = event => {
     const eventName = `%c${typeParts.join(':')}:%c${lastPart}`
     const message = [`%c${commandName}`, `%c${duration}`, eventName]
 
-    console.log(
+    console[logMethod(event)](
       message.join(' ').replace(/\s{2,}/g, ' '),
       'color:deepskyblue',
       'color:lime',
