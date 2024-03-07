@@ -141,4 +141,36 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
     assert messages.size >= min, "Expected at least #{min} console message(s), but got #{messages.size}"
   end
+
+  def assert_alert(match: nil, timeout: 5.seconds, interval: 0.1)
+    message = nil
+
+    # suppress invalid playwright warnings about unexpected dialogs
+    suppress_stdout do
+      page.on "dialog", ->(dialog) {
+        message = dialog.message
+        dialog.accept
+      }
+      yield if block_given?
+      begin
+        Timeout.timeout timeout.to_i do
+          sleep interval.to_f until message
+        end
+      rescue Timeout::Error
+        sleep 0.5 # last ditch effort to avoid flakiness
+      end
+    end
+
+    match ?
+      assert_match(match, message, "Expected alert dialog to match #{match.inspect}") :
+      assert(message, "Expected alert dialog to be shown")
+  end
+
+  def suppress_stdout
+    stdout = $stdout
+    $stdout = StringIO.new
+    yield
+  ensure
+    $stdout = stdout
+  end
 end

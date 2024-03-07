@@ -47,15 +47,21 @@ class DriversWindowTest < ApplicationSystemTestCase
     TurboBoost::Commands.config.alert_on_abort = true
     page.goto tests_url
     element(:window_driver).click
-
-    alerted = false
-    page.on "dialog", ->(dialog) { alerted = true }
-
-    assert_console_messages min: 1, type: "warning", pattern: "turbo-boost:command:.*abort" do
-      element(:window_driver_allow_abort).click
+    assert_alert match: /HTTP 285 Abort/i do
+      assert_console_messages min: 1, type: "warning", pattern: "turbo-boost:command:.*abort" do
+        element(:window_driver_allow_with_abort).click
+      end
     end
+  end
 
-    sleep 0.1 # wait for alert to be shown
-    assert alerted, "Expected alert dialog to be shown"
+  test "command that ALLOWS the rails controller action to perform handles error" do
+    TurboBoost::Commands.config.alert_on_error = true
+    page.goto tests_url
+    element(:window_driver).click
+    assert_alert match: /HTTP 500 Internal Server Error/i do
+      assert_console_messages min: 1, type: "error", pattern: "turbo-boost:command:.*error" do
+        element(:window_driver_allow_with_error).click
+      end
+    end
   end
 end
