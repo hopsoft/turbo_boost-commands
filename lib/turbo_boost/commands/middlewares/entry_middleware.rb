@@ -42,15 +42,19 @@ class TurboBoost::Commands::EntryMiddleware
   #
   # @example POST payload for: /turbo-boost-command-invocation
   #   {
-  #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569",    # Unique command invocation id
-  #     "name"              => "ExampleCommand#perform",                                # Command name being invoked
-  #     "elementId"         => nil,                                                     # Triggering element's DOM id
-  #     "elementAttributes" => {...},                                                   # Triggering element's attributes
-  #     "startedAt"         => 1708213193567,                                           # Time the command was invoked
-  #     "stateCollection"   => [{...}],                                                 # Collection of state entries relaed to the command
-  #     "driver"            => "frame",                                                 # Driver used to invoke the command
-  #     "frameId"           => "...",                                                   # TurboFrame id (if applicable)
-  #     "src"               => "..."                                                    # URL to present to Rails (turbo-frame src, window location, etc.)
+  #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569", # Unique ID for the command invocation
+  #     "name"              => "ExampleCommand#perform",                             # Name of command being invoked
+  #     "elementId"         => nil,                                                  # Triggering element's DOM id
+  #     "elementAttributes" => {...},                                                # Triggering element's attributes
+  #     "startedAt"         => 1708213193567,                                        # Time the command was invoked
+  #     "elementCache"      => {...},                                                # Cache of ALL tracked element attributes (optimistic changes)
+  #     "state"             => {                                                     # State entries associated with the command
+  #       "optimistic"      => {...},                                                # - client-side state changes (optimistic, untrusted)
+  #       "signed"          => {...}                                                 # - server-side state from last render (signed, trusted)
+  #     },
+  #     "driver"            => "frame",                                              # Driver used to invoke the command
+  #     "frameId"           => "...",                                                # TurboFrame id (if applicable)
+  #     "src"               => "..."                                                 # URL to present to Rails (turbo-frame src, window location, etc.)
   #   }
   #
   # @param request [Rack::Request] the request to modify

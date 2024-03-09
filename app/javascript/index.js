@@ -28,9 +28,9 @@ const Commands = {
 }
 
 function buildCommandPayload(id, element) {
-  const stateCollection = state
-    .collect(element)
-    .map(({ name, signed, changed }) => ({ name, signed, changed }))
+  const commandName = element.getAttribute(schema.commandAttribute)
+  const commandState = state.find(commandName)
+  const elementCache = state.buildElementCache()
 
   return {
     id, //----------------------------------------------------------- Uniquely identifies the command invocation
@@ -38,7 +38,11 @@ function buildCommandPayload(id, element) {
     elementId: element.id.length > 0 ? element.id : null, //--------- ID of the element that triggered the command
     elementAttributes: elements.buildAttributePayload(element), //--- Attributes of the element that triggered the command
     startedAt: Date.now(), //---------------------------------------- Start time of when the command was invoked
-    stateCollection //----------------------------------------------- All command state for the triggering element and its ancestors
+    elementCache: elementCache.optimistic, //------------------------ Current state of the element cache
+    state: {
+      optimistic: commandState.optimistic,
+      signed: commandState.signed
+    }
   }
 }
 
@@ -110,6 +114,7 @@ if (!self.TurboBoost.Commands) {
   delegates.handler = invokeCommand
   delegates.register('click', [`[${schema.commandAttribute}]`])
   delegates.register('submit', [`form[${schema.commandAttribute}]`])
+  delegates.register('toggle', [`details[${schema.commandAttribute}]`])
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
@@ -118,9 +123,9 @@ if (!self.TurboBoost.Commands) {
 
   self.TurboBoost.Commands = Commands
   self.TurboBoost.State = {
-    initialize: state.initialize,
     entries: state.entries,
-    find: state.find
+    find: state.find,
+    initialize: state.initialize
   }
 }
 

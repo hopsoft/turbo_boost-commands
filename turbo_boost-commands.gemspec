@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "universalid", ">= 0.1.7"
 
   # s.add_development_dependency "web-console"
+  s.add_development_dependency "amazing_print"
   s.add_development_dependency "capybara"
   s.add_development_dependency "capybara-playwright-driver"
   s.add_development_dependency "foreman"

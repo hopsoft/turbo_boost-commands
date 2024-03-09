@@ -7,8 +7,8 @@ module Drivers
 
       def perform
         Current.template = "tests/drivers/window/_turbo_stream.html.erb"
-        count = state[self.class.name].to_i + 1
-        state[self.class.name] = count
+        count = state[:count].to_i + 1
+        state[:count] = count
         streams << render(partial: "/tests/drivers/window", formats: [:turbo_stream],
           assigns: {message: "#{self.class.name.demodulize} invoked #{count} times"})
       end

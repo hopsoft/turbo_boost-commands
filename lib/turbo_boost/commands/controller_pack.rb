@@ -13,7 +13,6 @@ class TurboBoost::Commands::ControllerPack
   attr_reader :runner, :command
 
   delegate(
-    :command_state_collection,
     :command_state,
     :command_aborted?,
     :command_errored?,
@@ -21,16 +20,11 @@ class TurboBoost::Commands::ControllerPack
     :command_performing?,
     :command_requested?,
     :command_succeeded?,
+    :element_cache,
     to: :runner
   )
 
-  delegate :[], to: :command_state_collection
-
-  # DEPRECATED: Use `command_state` instead
-  def state
-    ActiveSupport::Deprecation.warn "The `state` method has been deprecated. Please update to `command_state`."
-    command_state
-  end
+  alias_method :state, :command_state
 
   # DEPRECATED: This method will removed in a future release
   def controller

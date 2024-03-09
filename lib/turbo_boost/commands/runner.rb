@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "responder"
-require_relative "state_collection"
+require_relative "state"
 require_relative "command_validator"
 
 class TurboBoost::Commands::Runner
@@ -20,18 +20,16 @@ class TurboBoost::Commands::Runner
     @responder = TurboBoost::Commands::Responder.new
   end
 
-  def command_state_collection
-    @command_states ||= TurboBoost::Commands::StateCollection.new(command_params.to_unsafe_hash[:state_collection])
+  def element_cache
+    @element_cache ||= TurboBoost::Commands::State.new.tap do |cache|
+      cache.merge! command_params.dig(:element_cache) || {} if command_requested?
+    end
   end
 
   def command_state
-    @command_state ||= if command_requested?
-      command_state_collection.key?(command_name) ?
-        command_state_collection[command_name] :
-        command_state_collection.push(name: command_name)[command_name]
-    else
+    @command_state ||= command_requested? ?
+      TurboBoost::Commands::State.from_sgid_param(command_params.dig(:state, :signed)) :
       TurboBoost::Commands::State.new
-    end
   end
 
   def command_requested?
@@ -117,9 +115,9 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    # TODO: Convert `state_collection` param to a `TurboBoost::Commands::StateCollection` before resolving?
-    command_instance.resolve_state command_params[:state_collection] if resolve_state?
+    command_instance.resolve_state command_params.dig(:state, :optimistic) if resolve_state?
     command_instance.perform_with_callbacks command_method_name
+    # command_instance.update_element_attribute_cache if cache_element_attributes?
   rescue => error
     @command_errored = true
     prevent_controller_action error: error if command_requested?
@@ -218,6 +216,10 @@ class TurboBoost::Commands::Runner
     false
   end
 
+  def cache_element_attributes?
+    TurboBoost::Commands.config.cache_element_attributes && command_succeeded?
+  end
+
   def resolve_state?
     TurboBoost::Commands.config.resolve_state
   end
@@ -281,26 +283,28 @@ class TurboBoost::Commands::Runner
   end
 
   def add_state
-    command_state_collection.each do |name, value|
-      initial = value.to_json
-      signed = value.to_sgid_param
-      add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [name, initial, signed], camelize: false)
-    end
+    # Initialize Command state
+    key = command_name
+    initial = command_state.to_json
+    signed = command_state.to_sgid_param
+    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [key, initial, signed], camelize: false)
+
+    # Initialize element cache state
+    key = "TurboBoost::Commands::ElementCache"
+    initial = element_cache.to_json
+    signed = element_cache.to_sgid_param
+    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [key, initial, signed], camelize: false)
   rescue => error
     Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
   end
 
   def add_event(name, detail = {})
-    detail = command_params.to_unsafe_hash
-      .except(:state_collection)
-      .merge(detail)
-      .deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
-
     options = {
       args: [name, {
         bubbles: true,
         cancelable: false,
-        detail: detail.except(:stateCollection)
+        detail: command_params.to_unsafe_hash.except(:state)
+          .merge(detail).deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
       }]
     }
 
@@ -350,7 +354,7 @@ class TurboBoost::Commands::Runner
   end
 
   def add_content(content)
-    return unless command_requested?
+    return unless command_performed?
     return unless supported_media_type?
 
     responder.add_content content

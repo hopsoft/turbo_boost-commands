@@ -91,11 +91,15 @@ class TurboBoost::Commands::Command
     @turbo_streams = Set.new
   end
 
-  # Abstract method to resolve state (default noop), override in subclassed commands
-  def resolve_state(state_collection)
+  # Abstract method to resolve state (default: noop)
+  # Override in subclassed commands
+  # @param optimistic_state [Hash] The delta of optimistic state changes from the client/browser
+  def resolve_state(optimistic_state = {})
   end
 
-  # Abstract `perform` method, override in subclassed commands
+  # Abstract `perform` method
+  # Override in subclassed commands
+  # @raise [NotImplementedError]
   def perform
     raise NotImplementedError, "#{self.class.name} must implement the `perform` method!"
   end

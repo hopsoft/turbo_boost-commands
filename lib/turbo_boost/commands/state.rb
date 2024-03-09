@@ -60,7 +60,7 @@ class TurboBoost::Commands::State
 
   def to_sgid_param
     store.cleanup
-    URI::UID.build(store, include_blank: false).to_sgid_param for: self.class.name, expires_in: 1.week
+    URI::UID.build(store, include_blank: false).to_sgid_param for: self.class.name, expires_in: 2.day
   end
 
   private

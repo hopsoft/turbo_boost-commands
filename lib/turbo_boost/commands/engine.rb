@@ -24,6 +24,7 @@ module TurboBoost::Commands
     config.turbo_boost_commands = ActiveSupport::OrderedOptions.new
     config.turbo_boost_commands[:alert_on_abort] = false # (true, false, "development", "test", "production")
     config.turbo_boost_commands[:alert_on_error] = false # (true, false, "development", "test", "production")
+    config.turbo_boost_commands[:cache_element_attributes] = true # (true, false)
     config.turbo_boost_commands[:precompile_assets] = true # (true, false)
     config.turbo_boost_commands[:raise_on_invalid_command] = "development" # (true, false, "development", "test", "production")
     config.turbo_boost_commands[:resolve_state] = false # (true, false)

@@ -27,10 +27,8 @@ class TurboBoost::Commands::CommandValidator
   private
 
   def command_ancestors
-    return [] unless command_class
-    head = 0
-    tail = command_class.ancestors.index(TurboBoost::Commands::Command) - 1
-    command_class.ancestors[head..tail]
+    range = 0..(command_class&.ancestors&.index(TurboBoost::Commands::Command).to_i - 1)
+    command_class&.ancestors&.[](range) || []
   end
 
   def valid_class?
@@ -39,8 +37,9 @@ class TurboBoost::Commands::CommandValidator
 
   def valid_method?
     return false unless valid_class?
-    command_ancestors.any? do |ancestor|
-      ancestor.public_instance_methods(false).any? method_name
-    end
+    return false unless command_ancestors.any? { |a| a.public_instance_methods(false).any? method_name }
+
+    method = command_class.public_instance_method(method_name)
+    method&.parameters&.none?
   end
 end

@@ -8,7 +8,7 @@ export const commandEvents = {
 }
 
 export const stateEvents = {
-  stateLoad: 'turbo-boost:state:load',
+  stateInitialize: 'turbo-boost:state:initialize',
   stateChange: 'turbo-boost:state:change'
 }
 

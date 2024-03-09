@@ -17,7 +17,7 @@ class TurboBoost::Commands::Responder
   end
 
   def add_content(content)
-    @body << sanitizer.sanitize(content.to_s).html_safe
+    @body << "#{sanitizer.sanitize(content.to_s).html_safe}\n"
   end
 
   private

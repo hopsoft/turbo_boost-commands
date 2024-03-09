@@ -44,6 +44,9 @@ class TurboBoost::Commands::CommandValidatorTest < ActiveSupport::TestCase
     def perform
     end
 
+    def perform_with_args(arg, *args, **kwargs, &block)
+    end
+
     protected def perform_protected
     end
 
@@ -117,6 +120,20 @@ class TurboBoost::Commands::CommandValidatorTest < ActiveSupport::TestCase
     assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform).validate
     assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform).validate
     assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform).validate
+  end
+
+  test "validate! with public methods that accept arguments" do
+    assert_raises TurboBoost::Commands::InvalidMethodError do
+      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).validate!
+    end
+  end
+
+  test "validate with public methods that accept arguments" do
+    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).validate
+  end
+
+  test "valid? with public methods that accept arguments" do
+    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).valid?
   end
 
   test "validate with protected methods" do
