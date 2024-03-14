@@ -40,7 +40,8 @@ class TurboBoost::Commands::Runner
     end
 
     # validate method
-    unless command_instance.respond_to?(command_method_name)
+    ancestors = command_class.ancestors[0..command_class.ancestors.index(TurboBoost::Commands::Command) - 1]
+    unless ancestors.any? { |a| a.public_instance_methods(false).any? command_method_name.to_sym }
       raise TurboBoost::Commands::InvalidMethodError,
         "`#{command_class_name}` does not define the public method `#{command_method_name}`!"
     end
