@@ -20,15 +20,9 @@ class TurboBoost::Commands::Runner
     @responder = TurboBoost::Commands::Responder.new
   end
 
-  def element_cache
-    @element_cache ||= TurboBoost::Commands::State.new.tap do |cache|
-      cache.merge! command_params.dig(:element_cache) || {} if command_requested?
-    end
-  end
-
-  def command_state
-    @command_state ||= command_requested? ?
-      TurboBoost::Commands::State.from_sgid_param(command_params.dig(:state, :signed)) :
+  def state
+    @state ||= command_requested? ?
+      TurboBoost::Commands::State.new(command_params.dig(:state)) :
       TurboBoost::Commands::State.new
   end
 
@@ -70,7 +64,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_instance
-    @command_instance ||= command_class&.new(controller, command_state, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -115,7 +109,6 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    command_instance.resolve_state command_params.dig(:state, :optimistic) if resolve_state?
     command_instance.perform_with_callbacks command_method_name
     # command_instance.update_element_attribute_cache if cache_element_attributes?
   rescue => error
@@ -220,10 +213,6 @@ class TurboBoost::Commands::Runner
     TurboBoost::Commands.config.cache_element_attributes && command_succeeded?
   end
 
-  def resolve_state?
-    TurboBoost::Commands.config.resolve_state
-  end
-
   def redirect?
     return false if controller.request.get?
     controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
@@ -283,19 +272,10 @@ class TurboBoost::Commands::Runner
   end
 
   def add_state
-    # Initialize Command state
-    key = command_name
-    initial = command_state.to_json
-    signed = command_state.to_sgid_param
-    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [key, initial, signed], camelize: false)
-
-    # Initialize element cache state
-    key = "TurboBoost::Commands::ElementCache"
-    initial = element_cache.to_json
-    signed = element_cache.to_sgid_param
-    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [key, initial, signed], camelize: false)
+    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [state.to_json], camelize: false)
   rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
+    message = "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
+    Rails.logger.error message
   end
 
   def add_event(name, detail = {})

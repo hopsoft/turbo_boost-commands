@@ -6,7 +6,7 @@ import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
 import elements from './elements'
-import lifecycle from './lifecycle'
+import './lifecycle'
 import logger from './logger'
 import state from './state'
 import uuids from './uuids'
@@ -29,8 +29,6 @@ const Commands = {
 
 function buildCommandPayload(id, element) {
   const commandName = element.getAttribute(schema.commandAttribute)
-  const commandState = state.find(commandName)
-  const elementCache = state.buildElementCache()
 
   return {
     id, //----------------------------------------------------------- Uniquely identifies the command invocation
@@ -38,10 +36,10 @@ function buildCommandPayload(id, element) {
     elementId: element.id.length > 0 ? element.id : null, //--------- ID of the element that triggered the command
     elementAttributes: elements.buildAttributePayload(element), //--- Attributes of the element that triggered the command
     startedAt: Date.now(), //---------------------------------------- Start time of when the command was invoked
-    elementCache: elementCache.optimistic, //------------------------ Current state of the element cache
     state: {
-      optimistic: commandState.optimistic,
-      signed: commandState.signed
+      page: state.buildPageState(),
+      signed: state.signed,
+      unsigned: state.unsigned
     }
   }
 }
@@ -123,9 +121,10 @@ if (!self.TurboBoost.Commands) {
 
   self.TurboBoost.Commands = Commands
   self.TurboBoost.State = {
-    entries: state.entries,
-    find: state.find,
-    initialize: state.initialize
+    initialize: state.initialize,
+    get current() {
+      return state.unsigned
+    }
   }
 }
 

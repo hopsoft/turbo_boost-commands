@@ -1,5 +1,3 @@
-import uuids from './uuids'
-
 const append = content => {
   document.body.insertAdjacentHTML('beforeend', content)
 }

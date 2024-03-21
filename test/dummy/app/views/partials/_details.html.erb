@@ -1,5 +1,5 @@
 <%= tag.details id: id,
-  open: turbo_boost.element_cache.dig(id, :open),
-  data: { element_cache: [:open] }.merge(data) do %>
+  open: turbo_boost.recall(id, :open),
+  data: { retain: [:open] }.merge(data) do %>
   <%= yield %>
 <% end %>

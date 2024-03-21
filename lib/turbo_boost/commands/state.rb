@@ -1,73 +1,43 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::State
-  include Enumerable
+  def initialize(payload = {})
+    payload = payload.to_h
+    @store ||= (payload[:unsigned] || {}).with_indifferent_access
 
-  class << self
-    def from_sgid_param(sgid)
-      new store: URI::UID.from_sgid(sgid, for: name)&.decode
+    store[:_now] ||= {}
+    store[:_page] = payload[:page] || {}
+    store[:_signed] = if payload[:signed].present?
+      URI::UID.from_sgid(payload[:signed], for: self.class.name)&.decode
     end
+    store[:_signed] ||= {}
   end
 
-  def initialize(store: nil, provisional: false)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 2.kilobytes)
-    @store.cleanup
-    @provisional = provisional
-  end
-
-  delegate :to_json, to: :to_h
   delegate_missing_to :store
 
-  def dig(*keys)
-    to_h.with_indifferent_access.dig(*keys)
-  end
-
-  def merge!(hash = {})
-    hash.to_h.each { |key, val| self[key] = val }
-    self
-  end
-
-  def each
-    data.keys.each { |key| yield(key, self[key]) }
-  end
-
-  # Provisional state is for the current request/response and is exposed as `State#now`
-  # Standard state is preserved across multiple requests
-  def provisional?
-    !!@provisional
-  end
-
   def now
-    return nil if provisional? # provisional state cannot hold child provisional state
-    @now ||= self.class.new(provisional: true)
+    store[:_now]
+  end
+
+  def page
+    store[:_page]
+  end
+
+  def signed
+    store[:_signed]
   end
 
   def cache_key
-    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
+    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_s)}"
   end
 
-  def read(...)
-    now&.read(...) || store.read(...)
-  end
-
-  def [](...)
-    read(...)
-  end
-
-  def []=(...)
-    write(...)
-  end
-
-  def to_sgid_param
-    store.cleanup
-    URI::UID.build(store, include_blank: false).to_sgid_param for: self.class.name, expires_in: 2.day
+  def to_json
+    uid = URI::UID.build(signed, include_blank: false)
+    sgid = uid.to_sgid_param(for: self.class.name, expires_in: 2.day)
+    {signed: sgid, unsigned: signed}.to_json
   end
 
   private
 
   attr_reader :store
-
-  def data
-    store.instance_variable_get(:@data) || {}
-  end
 end

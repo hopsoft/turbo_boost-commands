@@ -89,12 +89,12 @@ class TurboBoost::Commands::Command
     @state = state
     @params = params
     @turbo_streams = Set.new
+    resove_state if TurboBoost::Commands.config.resolve_state
   end
 
   # Abstract method to resolve state (default: noop)
   # Override in subclassed commands
-  # @param optimistic_state [Hash] The delta of optimistic state changes from the client/browser
-  def resolve_state(optimistic_state = {})
+  def resolve_state
   end
 
   # Abstract `perform` method

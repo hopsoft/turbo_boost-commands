@@ -4,7 +4,7 @@ const schema = {
   methodAttribute: 'data-turbo-method',
   commandAttribute: 'data-turbo-command',
   confirmAttribute: 'data-turbo-confirm',
-  elementCacheAttribute: 'data-element-cache'
+  pageStateAttribute: 'data-retain'
 }
 
 export default { ...schema }

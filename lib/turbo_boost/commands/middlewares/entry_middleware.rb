@@ -48,9 +48,9 @@ class TurboBoost::Commands::EntryMiddleware
   #     "elementAttributes" => {...},                                                # Triggering element's attributes
   #     "startedAt"         => 1708213193567,                                        # Time the command was invoked
   #     "elementCache"      => {...},                                                # Cache of ALL tracked element attributes (optimistic changes)
-  #     "state"             => {                                                     # State entries associated with the command
-  #       "optimistic"      => {...},                                                # - client-side state changes (optimistic, untrusted)
-  #       "signed"          => {...}                                                 # - server-side state from last render (signed, trusted)
+  #     "state"             => {                                                     # State ... TODO: HOPSOFT
+  #       "signed"          => "",                                                   # - ...
+  #       "unsigned"        => {...}                                                 # - ...
   #     },
   #     "driver"            => "frame",                                              # Driver used to invoke the command
   #     "frameId"           => "...",                                                # TurboFrame id (if applicable)

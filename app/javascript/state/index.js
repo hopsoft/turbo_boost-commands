@@ -1,81 +1,62 @@
 // TODO: Move State to its own library
-import schema from '../schema'
 import observable from './observable'
+import page from './page'
 import storage from './storage'
-import { dispatch, commandEvents, stateEvents } from '../events'
+import { dispatch, stateEvents } from '../events'
 
-let entries = {}
-let observers = {}
+const storageKey = 'TurboBoost::State'
 
-function observe(key, state) {
-  removeEventListener(stateEvents.stateChange, observers[key])
-  observers[key] = addEventListener(stateEvents.stateChange, event => {
-    for (const [key, value] of Object.entries(state.current)) {
-      if (state.initial[key] !== value) state.optimistic[key] = value
-    }
-    storage.save(key, state)
+let signedState = null // string
+let unsignedState = {}
+let pageStateRestoreListener
+let pageStateChangeListener
+
+if (!pageStateRestoreListener) {
+  //const storedPageState = storage.find(storageKey)['pageState']
+  const storedPageState = {}
+  pageStateRestoreListener = addEventListener('DOMContentLoaded', () => {
+    page.restoreState(storedPageState)
   })
 }
 
-function buildState(value = {}) {
-  const stub = {
-    key: null,
-    initial: {},
-    current: {},
-    optimistic: {},
-    signed: null
+if (!pageStateChangeListener) pageStateChangeListener = addEventListener(stateEvents.pageChange, saveState)
+
+const saveState = () => {
+  const payload = {
+    pageState: page.buildState(),
+    signedState,
+    ...unsignedState
   }
-  const state = { ...stub, ...value }
-  const { key } = state
-  if (key) {
-    state.current = observable({ ...state.initial })
-    observe(key, state)
-    entries[key] = state
-    storage.save(key, state)
-  }
-  return state
+
+  console.log('saveState', stateEvents, payload)
+  storage.save(storageKey, payload)
 }
 
-function initialize(key, initial, signed) {
-  const state = buildState({ key, initial: JSON.parse(initial), signed })
-  setTimeout(() => dispatch(stateEvents.stateInitialize, document, { detail: state }))
-  return state
+function initialize(json) {
+  removeEventListener(stateEvents.stateChange, saveState)
+  const payload = JSON.parse(json)
+  const { signed, unsigned } = payload
+
+  signedState = signed
+  unsignedState = observable(unsigned || {})
+
+  addEventListener(stateEvents.stateChange, saveState)
+  saveState()
+
+  setTimeout(() => dispatch(stateEvents.stateInitialize, document, { detail: unsigned }))
 }
 
-function find(key) {
-  return buildState({ key, ...storage.find(key) })
-}
-
-// NOTE: We use State to manage the element cache
-function buildElementCache() {
-  const elementCacheKey = 'TurboBoost::Commands::ElementCache'
-  const cache = find(elementCacheKey)
-  document.querySelectorAll(`[${schema.elementCacheAttribute}]`).forEach(element => {
-    const key = element.getAttribute('id')
-    if (key) {
-      try {
-        const attributeNames = JSON.parse(element.getAttribute(schema.elementCacheAttribute))
-        const value = attributeNames.reduce((memo, name) => {
-          if (element.hasAttribute(name)) memo[name] = element.getAttribute(name) || element[name]
-          return memo
-        }, {})
-        if (Object.entries(value).length > 0) cache.current[key] = value
-      } catch (e) {
-        const message = `Elements configured for TurboBoost caching must have a valid JSON string as the value of the ${schema.elementCacheAttribute} attribute!`
-        dispatch(commandEvents.clientError, element, { detail: { message } })
-      }
-    } else {
-      const message = 'Elements configured for TurboBoost caching must have an id attribute!'
-      dispatch(commandEvents.clientError, element, { detail: { message } })
-    }
-  })
-  storage.save(elementCacheKey, cache)
-  return cache
-}
+//function find(key) {
+//return buildState({ key, ...storage.find(key) })
+//}
 
 export default {
   initialize,
-  buildElementCache,
-  entries,
-  find
+  buildPageState: page.buildState,
+  get signed() {
+    return signedState
+  },
+  get unsigned() {
+    return unsignedState
+  }
 }

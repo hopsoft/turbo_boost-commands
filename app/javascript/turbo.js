@@ -1,6 +1,4 @@
 import headers from './headers'
-import lifecycle from './lifecycle'
-import { dispatch } from './events'
 import { render } from './renderer'
 
 const frameSources = {}

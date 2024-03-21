@@ -13,18 +13,19 @@ class TurboBoost::Commands::ControllerPack
   attr_reader :runner, :command
 
   delegate(
-    :command_state,
     :command_aborted?,
     :command_errored?,
     :command_performed?,
     :command_performing?,
     :command_requested?,
     :command_succeeded?,
-    :element_cache,
+    :state,
     to: :runner
   )
 
-  alias_method :state, :command_state
+  def recall(*keys)
+    state.page.dig(*keys)
+  end
 
   # DEPRECATED: This method will removed in a future release
   def controller

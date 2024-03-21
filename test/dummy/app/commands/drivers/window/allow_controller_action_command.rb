@@ -3,12 +3,15 @@
 module Drivers
   module Window
     class AllowControllerActionCommand < ApplicationCommand
+      before_command -> { throw :abort }, only: :perform_with_abort
       after_command -> { transfer_instance_variables controller }
 
       def perform
-        count = state[:count].to_i + 1
-        state[:count] = count
-        @message = "#{self.class.name.demodulize} invoked #{count} times"
+        # store count in the state
+        key = "#{self.class.name}/count"
+        state.signed[key] = state.signed[key].to_i + 1
+
+        @message = "#{self.class.name.demodulize} invoked #{state.signed[key]} times"
       end
 
       before_command -> { throw :abort }, only: :perform_with_abort
