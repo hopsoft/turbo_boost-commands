@@ -13,6 +13,11 @@ export const stateEvents = {
   stateInitialize: 'turbo-boost:state:initialize'
 }
 
+export const turboEvents = {
+  load: 'turbo:load',
+  frameLoad: 'turbo:frame-load'
+}
+
 export const allEvents = { ...commandEvents, ...stateEvents }
 
 export function dispatch(name, target, options = {}) {

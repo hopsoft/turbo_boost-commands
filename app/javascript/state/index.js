@@ -2,53 +2,62 @@
 import observable from './observable'
 import page from './page'
 import storage from './storage'
-import { dispatch, stateEvents } from '../events'
+import { dispatch, stateEvents, turboEvents } from '../events'
 
 const storageKey = 'TurboBoost::State'
+const stub = { pageState: {}, signedState: null, unsignedState: {} }
 
 let signedState = null // string
 let unsignedState = {}
-let pageStateRestoreListener
-let pageStateChangeListener
+let pageStateRestoreListeners
+let pageStateChangeListeners
+let stateChangeListeners
 
-if (!pageStateRestoreListener) {
-  //const storedPageState = storage.find(storageKey)['pageState']
-  const storedPageState = {}
-  pageStateRestoreListener = addEventListener('DOMContentLoaded', () => {
-    page.restoreState(storedPageState)
-  })
-}
-
-if (!pageStateChangeListener) pageStateChangeListener = addEventListener(stateEvents.pageChange, saveState)
+const findState = () => ({ ...stub, ...storage.find(storageKey) })
 
 const saveState = () => {
+  const storedState = findState()
+
   const payload = {
-    pageState: page.buildState(),
-    signedState,
-    ...unsignedState
+    pageState: { ...storedState.pageState, ...page.buildState() },
+    signedState: { ...storedState.signedState, ...signedState },
+    unsignedState: { ...storedState.unsignedState, ...unsignedState }
   }
 
-  console.log('saveState', stateEvents, payload)
   storage.save(storageKey, payload)
 }
 
+function registerListeners() {
+  if (!pageStateRestoreListeners) {
+    const { pageState, signedState: signed, unsignedState: unsigned } = findState()
+    const handler = () => {
+      signedState = signed
+      unsignedState = observable(unsigned || {})
+      page.restoreState(pageState)
+    }
+    pageStateRestoreListeners = [
+      addEventListener('DOMContentLoaded', handler),
+      addEventListener(turboEvents.load, handler),
+      addEventListener(turboEvents.frameLoad, handler)
+    ]
+  }
+
+  if (!pageStateChangeListeners)
+    pageStateChangeListeners = [addEventListener(stateEvents.pageChange, saveState)]
+
+  if (!stateChangeListeners) stateChangeListeners = [addEventListener(stateEvents.stateChange, saveState)]
+}
+
 function initialize(json) {
-  removeEventListener(stateEvents.stateChange, saveState)
   const payload = JSON.parse(json)
   const { signed, unsigned } = payload
-
   signedState = signed
   unsignedState = observable(unsigned || {})
-
-  addEventListener(stateEvents.stateChange, saveState)
   saveState()
-
   setTimeout(() => dispatch(stateEvents.stateInitialize, document, { detail: unsigned }))
 }
 
-//function find(key) {
-//return buildState({ key, ...storage.find(key) })
-//}
+registerListeners()
 
 export default {
   initialize,

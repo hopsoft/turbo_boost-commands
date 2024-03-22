@@ -6,24 +6,27 @@ function callback(mutations, _observer) {
   mutations.forEach(mutation => {
     if (mutation.type === 'attributes') {
       if (mutation.target.hasAttribute(schema.pageStateAttribute)) {
-        console.log('attribute changed', mutation.attributeName, mutation)
         const value = mutation.target.getAttribute(schema.pageStateAttribute)
         const attributes = JSON.parse(value)
-        if (attributes.includes(mutation.attributeName)) dispatch(stateEvents.pageChange, mutation.target)
+        if (attributes.includes(mutation.attributeName))
+          dispatch(stateEvents.pageChange, mutation.target, { detail: mutation })
       }
     }
   })
 }
+
 new MutationObserver(callback).observe(document.documentElement, {
-  //attributeFilter: [schema.pageStateAttribute], // TODO: only observe the page state registered attributes
   attributeOldValue: false,
   attributes: true,
   childList: true,
-  subtree: true,
+  subtree: true
 })
 
 function restoreState(state = {}) {
-  console.log('restoreState', state)
+  for (const [id, attributes] of Object.entries(state)) {
+    for (const [name, value] of Object.entries(attributes))
+      document.getElementById(id)?.setAttribute(name, value)
+  }
 }
 
 function buildState() {

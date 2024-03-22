@@ -26,11 +26,10 @@ class TurboBoostGlobalsTest < ApplicationSystemTestCase
     page.goto basic_command_url
     page.wait_for_timeout 100 # TODO: change to page.expect_event("turbo-boost:command:success")
 
-    assert_equal "object", js("typeof TurboBoost.State.entries")
+    assert_equal "object", js("typeof TurboBoost.State.current")
+    assert_equal "function", js("typeof TurboBoost.State.initialize")
+    js("TurboBoost.State.initialize(JSON.stringify({ unsigned: { example: 'value' }}))")
 
-    js("TurboBoost.State.initialize('test', JSON.stringify({ example: 'value' }))")
-
-    assert_equal "value", js("TurboBoost.State.entries.test.initial.example")
-    assert_equal "value", js("TurboBoost.State.entries.test.current.example")
+    assert_equal "value", js("TurboBoost.State.current.example")
   end
 end
