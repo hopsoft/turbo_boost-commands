@@ -1,3 +1,3 @@
-<%= tag.details id: id, turbo_boost: { remember: [:open] } do %>
+<%= tag.details id: id, data: { testid: id }, turbo_boost: { remember: [:open] } do %>
   <%= yield %>
 <% end %>
