@@ -4,68 +4,67 @@ import page from './page'
 import storage from './storage'
 import { dispatch, stateEvents, turboEvents } from '../events'
 
-const storageKey = 'TurboBoost::State'
-const stub = { pageState: {}, signedState: null, unsignedState: {} }
+const key = 'TurboBoost::State'
+const stub = { page: {}, signed: null, unsigned: {} }
 
-let signedState = null // string
-let unsignedState = {}
-let pageStateRestoreListeners
-let pageStateChangeListeners
-let stateChangeListeners
+// variables that hold the state
+let signed = null // string
+let unsigned = {} // object
+let restored = null // null, object during state restoration
 
-const findState = () => ({ ...stub, ...storage.find(storageKey) })
+// timeout used to debounce finalizing state restoration
+let finalizeRestoreTimeout
 
-const saveState = () => {
-  const storedState = findState()
-
-  const payload = {
-    pageState: { ...storedState.pageState, ...page.buildState() },
-    signedState: { ...storedState.signedState, ...signedState },
-    unsignedState: { ...storedState.unsignedState, ...unsignedState }
-  }
-
-  storage.save(storageKey, payload)
+const finalizeRestore = () => {
+  clearTimeout(finalizeRestoreTimeout)
+  finalizeRestoreTimeout = setTimeout(() => (restored = null), 1000)
 }
 
-function registerListeners() {
-  if (!pageStateRestoreListeners) {
-    const { pageState, signedState: signed, unsignedState: unsigned } = findState()
-    const handler = () => {
-      signedState = signed
-      unsignedState = observable(unsigned || {})
-      page.restoreState(pageState)
-    }
-    pageStateRestoreListeners = [
-      addEventListener('DOMContentLoaded', handler),
-      addEventListener(turboEvents.load, handler),
-      addEventListener(turboEvents.frameLoad, handler)
-    ]
-  }
-
-  if (!pageStateChangeListeners)
-    pageStateChangeListeners = [addEventListener(stateEvents.pageChange, saveState)]
-
-  if (!stateChangeListeners) stateChangeListeners = [addEventListener(stateEvents.stateChange, saveState)]
+const initiateRestore = () => {
+  clearTimeout(finalizeRestoreTimeout)
+  restored = restored || { ...stub, ...storage.find(key) }
+  page.restoreState(restored.page)
+  finalizeRestore()
 }
 
-function initialize(json) {
-  const payload = JSON.parse(json)
-  const { signed, unsigned } = payload
-  signedState = signed
-  unsignedState = observable(unsigned || {})
-  saveState()
+const initiateRestoreTriggers = [turboEvents.frameLoad, turboEvents.load, 'DOMContentLoaded']
+initiateRestoreTriggers.forEach(name => addEventListener(name, initiateRestore))
+
+const save = () => {
+  if (restored) return // restored state is present, do not save
+
+  const saved = { ...stub, ...storage.find(key) }
+  const fresh = {
+    signed: signed || saved.signed,
+    unsigned: { ...saved.unsigned, ...unsigned },
+    page: { ...saved.page, ...page.buildState() }
+  }
+
+  storage.save(key, fresh)
+}
+
+const initialize = json => {
+  const state = JSON.parse(json)
+  signed = state.signed
+  unsigned = observable(state.unsigned || {})
+  save()
   setTimeout(() => dispatch(stateEvents.stateInitialize, document, { detail: unsigned }))
 }
 
-registerListeners()
+// saves state after DOM mutations
+new MutationObserver(save).observe(document, {
+  attributes: true,
+  childList: true,
+  subtree: true
+})
 
 export default {
   initialize,
   buildPageState: page.buildState,
   get signed() {
-    return signedState
+    return signed
   },
   get unsigned() {
-    return unsignedState
+    return unsigned
   }
 }

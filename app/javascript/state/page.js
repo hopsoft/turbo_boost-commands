@@ -1,35 +1,10 @@
 import schema from '../schema.js'
 import { dispatch, commandEvents, stateEvents } from '../events.js'
 
-// MutationObserver to track mutations for page state...........................
-function callback(mutations, _observer) {
-  mutations.forEach(mutation => {
-    if (mutation.type === 'attributes') {
-      if (mutation.target.hasAttribute(schema.pageStateAttribute)) {
-        const value = mutation.target.getAttribute(schema.pageStateAttribute)
-        const attributes = JSON.parse(value)
-        if (attributes.includes(mutation.attributeName))
-          dispatch(stateEvents.pageChange, mutation.target, { detail: mutation })
-      }
-    }
-  })
-}
+let restoring = false
+let timeout
 
-new MutationObserver(callback).observe(document.documentElement, {
-  attributeOldValue: false,
-  attributes: true,
-  childList: true,
-  subtree: true
-})
-
-function restoreState(state = {}) {
-  for (const [id, attributes] of Object.entries(state)) {
-    for (const [name, value] of Object.entries(attributes))
-      document.getElementById(id)?.setAttribute(name, value)
-  }
-}
-
-function buildState() {
+const buildState = () => {
   const elements = Array.from(document.querySelectorAll(`[id][${schema.pageStateAttribute}]`))
   return elements.reduce((memo, element) => {
     try {
@@ -54,4 +29,27 @@ function buildState() {
   }, {})
 }
 
-export default { buildState, restoreState }
+const restoreState = (state = {}) => {
+  if (restoring) return
+  restoring = true
+
+  console.log('restoreState', state)
+
+  try {
+    for (const [id, attributes] of Object.entries(state)) {
+      for (const [name, value] of Object.entries(attributes)) {
+        document.getElementById(id)?.setAttribute(name, value)
+      }
+    }
+  } finally {
+    restoring = false
+  }
+}
+
+export default {
+  buildState,
+  restoreState,
+  get restoring() {
+    return restoring
+  }
+}

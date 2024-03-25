@@ -5,7 +5,12 @@ const append = content => {
 const replace = content => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, 'text/html')
-  TurboBoost.Streams.morph.method(document.documentElement, doc.documentElement)
+  const head = document.querySelector('head')
+  const body = document.querySelector('body')
+  const newHead = doc.querySelector('head')
+  const newBody = doc.querySelector('body')
+  if (head && newHead) TurboBoost?.Streams?.morph?.method(head, newHead)
+  if (body && newBody) TurboBoost?.Streams?.morph?.method(body, newBody)
 }
 
 export const render = (strategy, content) => {

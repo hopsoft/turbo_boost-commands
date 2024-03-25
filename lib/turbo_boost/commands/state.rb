@@ -34,7 +34,7 @@ class TurboBoost::Commands::State
   def to_json
     uid = URI::UID.build(signed, include_blank: false)
     sgid = uid.to_sgid_param(for: self.class.name, expires_in: 2.day)
-    {signed: sgid, unsigned: signed}.to_json
+    {signed: sgid, unsigned: signed}.to_json(camelize: false)
   end
 
   private
