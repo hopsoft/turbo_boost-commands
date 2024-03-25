@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module TurboBoost::Commands
+  class StateError < StandardError
+  end
+
   class CommandError < StandardError
     def initialize(*messages, command:, http_status: :internal_server_error, cause: nil)
       @cause = cause

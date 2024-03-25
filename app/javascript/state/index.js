@@ -7,32 +7,16 @@ import { dispatch, stateEvents, turboEvents } from '../events'
 const key = 'TurboBoost::State'
 const stub = { page: {}, signed: null, unsigned: {} }
 
-// variables that hold the state
-let signed = null // string
-let unsigned = {} // object
-let restored = null // null, object during state restoration
+let signed = null // signed state <string>
+let unsigned = {} // unsigned state (optimistic) <object>
+let restored = null // restored state <null, object> - used when restoring state
 
-// timeout used to debounce finalizing state restoration
-let finalizeRestoreTimeout
-
-const finalizeRestore = () => {
-  clearTimeout(finalizeRestoreTimeout)
-  finalizeRestoreTimeout = setTimeout(() => (restored = null), 1000)
+const restore = () => {
+  const saved = { ...stub, ...storage.find(key) }
+  page.restoreState(saved.page)
 }
-
-const initiateRestore = () => {
-  clearTimeout(finalizeRestoreTimeout)
-  restored = restored || { ...stub, ...storage.find(key) }
-  page.restoreState(restored.page)
-  finalizeRestore()
-}
-
-const initiateRestoreTriggers = [turboEvents.frameLoad, turboEvents.load, 'DOMContentLoaded']
-initiateRestoreTriggers.forEach(name => addEventListener(name, initiateRestore))
 
 const save = () => {
-  if (restored) return // restored state is present, do not save
-
   const saved = { ...stub, ...storage.find(key) }
   const fresh = {
     signed: signed || saved.signed,
@@ -40,6 +24,7 @@ const save = () => {
     page: { ...saved.page, ...page.buildState() }
   }
 
+  console.log('save state', fresh)
   storage.save(key, fresh)
 }
 
@@ -48,15 +33,15 @@ const initialize = json => {
   signed = state.signed
   unsigned = observable(state.unsigned || {})
   save()
-  setTimeout(() => dispatch(stateEvents.stateInitialize, document, { detail: unsigned }))
+  dispatch(stateEvents.stateInitialize, document, { detail: unsigned })
 }
 
-// saves state after DOM mutations
-new MutationObserver(save).observe(document, {
-  attributes: true,
-  childList: true,
-  subtree: true
-})
+// setup
+addEventListener('DOMContentLoaded', restore)
+addEventListener('turbo:morph', restore)
+addEventListener('turbo:render', restore)
+addEventListener('turbo:before-fetch-request', save)
+window.addEventListener('beforeunload', save)
 
 export default {
   initialize,

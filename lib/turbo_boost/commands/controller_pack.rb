@@ -23,10 +23,6 @@ class TurboBoost::Commands::ControllerPack
     to: :runner
   )
 
-  def recall(*keys)
-    state.page.dig(*keys)
-  end
-
   # DEPRECATED: This method will removed in a future release
   def controller
     ActiveSupport::Deprecation.warn "This method will removed in a future release."

@@ -37,6 +37,46 @@ class TurboBoost::Commands::State
     {signed: sgid, unsigned: signed}.to_json(camelize: false)
   end
 
+  def tag_options(options)
+    return options unless options.is_a?(Hash)
+
+    options = options.deep_symbolize_keys
+    return options unless options.key?(:turbo_boost)
+
+    config = options.delete(:turbo_boost)
+    return options unless config.is_a?(Hash)
+
+    attributes = config[:remember]
+    return options if attributes.blank?
+
+    attributes = begin
+      attributes.is_a?(Array) ? attributes : JSON.parse(attributes.to_s)
+    rescue
+      raise TurboBoost::Commands::StateError, "Invalid `turbo_boost` options! `attributes` must be an Array of attributes to remember!"
+    end
+    attributes ||= []
+    attributes.uniq!
+    return options if attributes.blank?
+
+    raise TurboBoost::Commands::StateError, "An `id` attribute is required for remembering state!" if options[:id].blank?
+
+    options[:aria] ||= {}
+    options[:data] ||= {}
+    options[:data][:turbo_boost_state_attributes] = attributes.to_json
+
+    attributes.each do |name|
+      if name.start_with?("aria")
+        options[:aria][name.to_sym] = page.dig(options[:id], name.to_s.delete_prefix("aria-"))
+      elsif name.start_with?("data")
+        options[:data][name.to_sym] = page.dig(options[:id], name.to_s.delete_prefix("data-"))
+      else
+        options[name.to_sym] = page.dig(options[:id], name)
+      end
+    end
+
+    options
+  end
+
   private
 
   attr_reader :store

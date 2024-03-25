@@ -13,6 +13,7 @@ const replace = content => {
   if (body && newBody) TurboBoost?.Streams?.morph?.method(body, newBody)
 }
 
+// TODO: dispatch events after append/replace so we can apply page state
 export const render = (strategy, content) => {
   if (strategy && content) {
     if (strategy.match(/^Append$/i)) return append(content)
