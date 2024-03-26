@@ -1,44 +1,55 @@
-// TODO: Consider moving State to its own library
+// TODO: Move State to its own library
 import observable from './observable'
-import { dispatch, commandEvents, stateEvents } from '../events'
+import page from './page'
+import storage from './storage'
+import { dispatch, stateEvents, turboEvents } from '../events'
 
-let initialState, currentState, changedState, signedState
+const key = 'TurboBoost::State'
+const stub = { page: {}, signed: null, unsigned: {} }
 
-function initialize(initial, signed) {
-  const json = JSON.parse(initial)
-  initialState = { ...json }
-  signedState = signed
-  currentState = observable(json)
-  changedState = {}
-  setTimeout(() =>
-    dispatch(stateEvents.stateLoad, document, {
-      detail: { state: currentState }
-    })
-  )
+let signed = null // signed state <string>
+let unsigned = {} // unsigned state (optimistic) <object>
+let restored = null // restored state <null, object> - used when restoring state
+
+const restore = () => {
+  const saved = { ...stub, ...storage.find(key) }
+  page.restoreState(saved.page)
 }
 
-addEventListener(stateEvents.stateChange, event => {
-  for (const [key, value] of Object.entries(currentState))
-    if (initialState[key] !== value) changedState[key] = value
-})
+const save = () => {
+  const saved = { ...stub, ...storage.find(key) }
+  const fresh = {
+    signed: signed || saved.signed,
+    unsigned: { ...saved.unsigned, ...unsigned },
+    page: { ...saved.page, ...page.buildState() }
+  }
+
+  console.log('save state', fresh)
+  storage.save(key, fresh)
+}
+
+const initialize = json => {
+  const state = JSON.parse(json)
+  signed = state.signed
+  unsigned = observable(state.unsigned || {})
+  save()
+  dispatch(stateEvents.stateInitialize, document, { detail: unsigned })
+}
+
+// setup
+addEventListener('DOMContentLoaded', restore)
+addEventListener('turbo:morph', restore)
+addEventListener('turbo:render', restore)
+addEventListener('turbo:before-fetch-request', save)
+window.addEventListener('beforeunload', save)
 
 export default {
   initialize,
-  events: stateEvents,
-
-  get initial() {
-    return initialState
-  },
-
-  get current() {
-    return currentState
-  },
-
-  get changed() {
-    return changedState
-  },
-
+  buildPageState: page.buildState,
   get signed() {
-    return signedState
+    return signed
+  },
+  get unsigned() {
+    return unsigned
   }
 }

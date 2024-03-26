@@ -36,6 +36,14 @@ class TurboBoost::Commands::AttributeSet
     end
   end
 
+  def include?(key)
+    instance_variable_defined?(:"@#{key}")
+  end
+
+  alias_method :has_key?, :include?
+  alias_method :key?, :include?
+  alias_method :member?, :include?
+
   def to_h
     instance_variables.each_with_object({}.with_indifferent_access) do |name, memo|
       value = instance_variable_get(name)

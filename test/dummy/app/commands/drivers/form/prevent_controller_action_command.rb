@@ -7,12 +7,15 @@ module Drivers
 
       def perform
         Current.template = "tests/drivers/_form.turbo_stream.erb"
-        count = state[self.class.name].to_i + 1
-        state[self.class.name] = count
+
+        # store count in the state
+        key = "#{self.class.name}/count"
+        state.signed[key] = state.signed[key].to_i + 1
+
         streams << render(
           partial: "/tests/drivers/form",
           formats: [:turbo_stream],
-          assigns: {message: "#{self.class.name.demodulize} invoked #{count} times"}
+          assigns: {message: "#{self.class.name.demodulize} invoked #{state.signed[key]} times"}
         )
       end
     end

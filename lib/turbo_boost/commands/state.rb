@@ -1,73 +1,83 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::State
-  include Enumerable
+  def initialize(payload = {})
+    payload = payload.to_h
+    @store ||= (payload[:unsigned] || {}).with_indifferent_access
 
-  class << self
-    def from_sgid_param(sgid)
-      new URI::UID.from_sgid(sgid, for: name)&.decode
+    store[:_now] ||= {}
+    store[:_page] = payload[:page] || {}
+    store[:_signed] = if payload[:signed].present?
+      URI::UID.from_sgid(payload[:signed], for: self.class.name)&.decode
     end
+    store[:_signed] ||= {}
   end
 
-  def initialize(store = nil, provisional: false)
-    @store = store || ActiveSupport::Cache::MemoryStore.new(expires_in: 1.day, size: 16.kilobytes)
-    @store.cleanup
-    @provisional = provisional
-  end
-
-  delegate :to_json, to: :to_h
   delegate_missing_to :store
 
-  def dig(*keys)
-    to_h.with_indifferent_access.dig(*keys)
-  end
-
-  def merge!(hash = {})
-    hash.to_h.each { |key, val| self[key] = val }
-    self
-  end
-
-  def each
-    data.keys.each { |key| yield(key, self[key]) }
-  end
-
-  # Provisional state is for the current request/response and is exposed as `State#now`
-  # Standard state is preserved across multiple requests
-  def provisional?
-    !!@provisional
-  end
-
   def now
-    return nil if provisional? # provisional state cannot hold child provisional state
-    @now ||= self.class.new(provisional: true)
+    store[:_now]
+  end
+
+  def page
+    store[:_page]
+  end
+
+  def signed
+    store[:_signed]
   end
 
   def cache_key
-    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_json)}"
+    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_s)}"
   end
 
-  def read(...)
-    now&.read(...) || store.read(...)
+  def to_json
+    uid = URI::UID.build(signed, include_blank: false)
+    sgid = uid.to_sgid_param(for: self.class.name, expires_in: 2.day)
+    {signed: sgid, unsigned: signed}.to_json(camelize: false)
   end
 
-  def [](...)
-    read(...)
-  end
+  def tag_options(options)
+    return options unless options.is_a?(Hash)
 
-  def []=(...)
-    write(...)
-  end
+    options = options.deep_symbolize_keys
+    return options unless options.key?(:turbo_boost)
 
-  def to_sgid_param
-    store.cleanup
-    URI::UID.build(store, include_blank: false).to_sgid_param for: self.class.name, expires_in: 1.week
+    config = options.delete(:turbo_boost)
+    return options unless config.is_a?(Hash)
+
+    attributes = config[:remember]
+    return options if attributes.blank?
+
+    attributes = begin
+      attributes.is_a?(Array) ? attributes : JSON.parse(attributes.to_s)
+    rescue
+      raise TurboBoost::Commands::StateError, "Invalid `turbo_boost` options! `attributes` must be an Array of attributes to remember!"
+    end
+    attributes ||= []
+    attributes.uniq!
+    return options if attributes.blank?
+
+    raise TurboBoost::Commands::StateError, "An `id` attribute is required for remembering state!" if options[:id].blank?
+
+    options[:aria] ||= {}
+    options[:data] ||= {}
+    options[:data][:turbo_boost_state_attributes] = attributes.to_json
+
+    attributes.each do |name|
+      if name.start_with?("aria")
+        options[:aria][name.to_sym] = page.dig(options[:id], name.to_s.delete_prefix("aria-"))
+      elsif name.start_with?("data")
+        options[:data][name.to_sym] = page.dig(options[:id], name.to_s.delete_prefix("data-"))
+      else
+        options[name.to_sym] = page.dig(options[:id], name)
+      end
+    end
+
+    options
   end
 
   private
 
   attr_reader :store
-
-  def data
-    store.instance_variable_get(:@data) || {}
-  end
 end

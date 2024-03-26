@@ -30,9 +30,11 @@ if (watch) {
       console.error('Build failed!❗️')
       conosle.error(ex)
     } else {
+      const fileSize = fs.statSync('app/assets/builds/@turbo-boost/commands.js').size
+      const fileSizeInKB = Math.round(fileSize / 1024)
       const message = [
         'Build succeeded! 🚀',
-        `|- Metafile saved to ... → ${metafile}`,
+        `|- Metafile saved to ... → ${metafile} (${fileSizeInKB}KB)`,
         '|- Analyze the bundle at → https://esbuild.github.io/analyze/'
       ]
       console.log(message.join('\n'))

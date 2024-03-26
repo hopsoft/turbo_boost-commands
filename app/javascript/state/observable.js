@@ -12,7 +12,7 @@ function observable(object, parent = null) {
       return true
     },
 
-    set(target, key, value, receiver) {
+    set(target, key, value, _receiver) {
       target[key] = observable(value, this)
       dispatch(events.stateChange, document, { detail: { state: head } })
       return true

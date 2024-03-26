@@ -33,8 +33,8 @@ const prepare = (headers = {}) => {
 // Tokenizes the 'TurboBoost-Command' HTTP response header value
 const tokenize = value => {
   if (value) {
-    const [status, strategy, name] = value.split(', ')
-    return { status, strategy, name }
+    const [name, status, strategy] = value.split(', ')
+    return { name, status, strategy }
   }
 
   return {}

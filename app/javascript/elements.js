@@ -1,5 +1,4 @@
 import schema from './schema'
-import lifecycle from './lifecycle'
 
 function findClosestCommand(element) {
   return element.closest(`[${schema.commandAttribute}]`)
