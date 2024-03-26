@@ -33,7 +33,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
     @playwright = @playwright_exec.playwright
     @browser = @playwright.public_send(BROWSER).launch
-    @context = @browser.new_context # prepare new browser window
+    @context = @browser.new_context(
+      bypassCSP: true,
+      ignoreHTTPSErrors: true
+    )
     @page = @context.new_page
     @page.set_default_timeout Capybara.default_max_wait_time * 1_000
   end
@@ -75,10 +78,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # @param interval [Integer] The time interval to wait between checks (default: 20ms)
   def wait_for_mutations(testid, timeout: 5.seconds, interval: 0.02)
     wait_for_mutations_finished testid, timeout: timeout, interval: interval
-    yield element(testid).element_handle if block_given?
+    sleep 0.1 # TODO: figure out why this is needed
     Timeout.timeout timeout.to_i do
       sleep interval.to_f until element_mutated?(testid)
     end
+    yield element(testid).element_handle if block_given?
   rescue Timeout::Error
     sleep 0.5 # last ditch effort to avoid flakiness
     yield element(testid).element_handle if block_given?
@@ -91,6 +95,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # @param timeout [Integer] The maximum time to wait (default: 5s)
   # @param interval [Integer] The time interval to wait between checks (default: 20ms)
   def wait_for_mutations_finished(testid, timeout: 5.seconds, interval: 0.02)
+    sleep 0.1 # TODO: figure out why this is needed
     Timeout.timeout timeout.to_i do
       sleep interval.to_f while element_mutated?(testid)
     end
