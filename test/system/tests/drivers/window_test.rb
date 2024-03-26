@@ -33,14 +33,16 @@ class DriversWindowTest < ApplicationSystemTestCase
     end
 
     COUNT.times do
-      wait_for_mutations :window_driver_message do
-        element(:window_driver_allow).click
-      end
+      # wait_for_mutations :window_driver_message do
+      element(:window_driver_allow).click
+      sleep 0.1 # TODO: Figure out why this is needed for the window driver/allow rails mechanics
+      # end
     end
 
-    wait_for_mutations_finished :window_driver_message do |el|
-      assert_equal "AllowControllerActionCommand invoked #{COUNT} times", el.inner_text
-    end
+    # wait_for_mutations_finished :window_driver_message do |el|
+    # assert_equal "AllowControllerActionCommand invoked #{COUNT} times", el.inner_text
+    assert_equal "AllowControllerActionCommand invoked #{COUNT} times", element(:window_driver_message).inner_text
+    # end
   end
 
   test "command that ALLOWS the rails controller action to perform handles abort" do
