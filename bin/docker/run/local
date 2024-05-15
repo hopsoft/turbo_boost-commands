@@ -21,7 +21,7 @@ fi
 # ============================================================================================================
 npm install
 if [ ! -f "/mnt/external/.playwright" ]; then
-  npx playwright@latest install chromium --with-deps
+  yes | npx playwright@latest install chromium --with-deps
   touch /mnt/external/.playwright
 fi
 bundle install

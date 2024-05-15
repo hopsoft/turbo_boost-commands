@@ -59,29 +59,30 @@
 
 ## Table of Contents
 
-- [Why TurboBoost Commands?](#why-turboboost-commands)
-- [Sponsors](#sponsors)
-- [Dependencies](#dependencies)
-- [Setup](#setup)
-- [Usage](#usage)
-  - [Event Delegates](#event-delegates)
-  - [Lifecycle Events](#lifecycle-events)
-  - [Targeting Frames](#targeting-frames)
-  - [Working with Forms](#working-with-forms)
-  - [Server Side Commands](#server-side-commands)
-  - [Appending Turbo Streams](#appending-turbo-streams)
-  - [Setting Instance Variables](#setting-instance-variables)
-  - [Prevent Controller Action](#prevent-controller-action)
-  - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-- [Community](#community)
-- [Developing](#developing)
-  - [Notable Files](#notable-files)
-- [Deploying](#deploying)
-  - [Notable Files](#notable-files-1)
-  - [How to Deploy](#how-to-deploy)
-- [Releasing](#releasing)
-- [About TurboBoost](#about-turboboost)
-- [License](#license)
+  - [Why TurboBoost Commands?](#why-turboboost-commands)
+  - [Sponsors](#sponsors)
+  - [Dependencies](#dependencies)
+  - [Setup](#setup)
+  - [Usage](#usage)
+    - [Event Delegates](#event-delegates)
+    - [Lifecycle Events](#lifecycle-events)
+    - [Targeting Frames](#targeting-frames)
+    - [Working with Forms](#working-with-forms)
+    - [Server Side Commands](#server-side-commands)
+    - [Appending Turbo Streams](#appending-turbo-streams)
+    - [Setting Instance Variables](#setting-instance-variables)
+    - [Prevent Controller Action](#prevent-controller-action)
+    - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
+    - [Tracking Page State](#tracking-page-state)
+  - [Community](#community)
+  - [Developing](#developing)
+      - [Notable Files](#notable-files)
+  - [Deploying](#deploying)
+      - [Notable Files](#notable-files-1)
+      - [How to Deploy](#how-to-deploy)
+  - [Releasing](#releasing)
+  - [About TurboBoost](#about-turboboost)
+  - [License](#license)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
@@ -381,7 +382,8 @@ end
 
 _This proves especially powerful when paired with [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams)._
 
-> 📘 **NOTE:** `turbo_stream.invoke` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#usage) feature.
+> [!NOTE]
+> `turbo_stream.invoke` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#usage) feature.
 
 ### Setting Instance Variables
 
@@ -476,7 +478,42 @@ end
 _Learn more about Turbo Stream broadcasting by reading through the
 [hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code._
 
-> 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
+> [!NOTE]
+> `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
+
+### Tracking Page State
+
+You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
+element attribute values between requests.
+
+```erb
+<%= tag.details id: "page-state-example", turbo_boost: { remember: [:open] } do %>
+  <summary>Page State Example</summary>
+  Content...
+<% end %>
+```
+
+The code above will be expanded to this HTML.
+
+```html
+<details id="form_driver" data-turbo-boost-state-attributes="['open']">
+  <summary>Page State Example</summary>
+  Content...
+</details>
+```
+
+Several things happen when you use `turbo_boost[:remember]` to track page state.
+
+1. A command is dispatched whenever the value of a registered attribute changes.
+1. The server updates tracked state and notifies the client.
+1. Subsequent requests forward the current state to the server with each request.
+1. Server side rendering reflects the current page state.
+1. After a DOM update, the client verifies the page state and will restore attribute values _(if necessary)_.
+
+This feature works with all attributes, including aria, data, and custom attributes.
+
+> [!WARNING]
+> Elements must have an `id` assigned to participate in page state tracking.
 
 ## Community
 
