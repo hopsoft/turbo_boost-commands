@@ -506,8 +506,8 @@ Several things happen when you use `turbo_boost[:remember]` to track page state.
 
 1. A command is dispatched whenever the value of a registered attribute changes.
 1. The server updates tracked state and notifies the client.
-1. Subsequent requests forward the current state to the server with each request.
-1. Server side rendering reflects the current page state.
+1. Subsequent requests forward the current state to the server.
+1. Server side rendering honors and reflects the current page state.
 1. After a DOM update, the client verifies the page state and will restore attribute values _(if necessary)_.
 
 This feature works with all attributes, including aria, data, and custom attributes.
