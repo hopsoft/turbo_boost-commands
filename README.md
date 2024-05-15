@@ -512,8 +512,8 @@ Several things happen when you use `turbo_boost[:remember]` to track page state.
 
 This feature works with all attributes, including aria, data, and custom attributes.
 
-> [!WARNING]
-> Elements must have an `id` assigned to participate in page state tracking.
+> [!NOTE]
+> Elements must have a unique `id` assigned to participate in page state tracking.
 
 ## Community
 
