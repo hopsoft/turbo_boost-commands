@@ -487,7 +487,7 @@ You can opt-in to remember transient page state when using Rails tag helpers wit
 element attribute values between requests.
 
 ```erb
-<%= tag.details id: "page-state-example", turbo_boost: { remember: [:open] } do %>
+<%= tag.details id: "page-state-example", open: "open", turbo_boost: { remember: [:open] } do %>
   <summary>Page State Example</summary>
   Content...
 <% end %>
@@ -496,7 +496,7 @@ element attribute values between requests.
 The code above will be expanded to this HTML.
 
 ```html
-<details id="form_driver" data-turbo-boost-state-attributes="['open']">
+<details id="page-state-example" open="open" data-turbo-boost-state-attributes="['open']">
   <summary>Page State Example</summary>
   Content...
 </details>
