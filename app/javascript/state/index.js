@@ -2,18 +2,20 @@
 import observable from './observable'
 import page from './page'
 import storage from './storage'
-import { dispatch, stateEvents, turboEvents } from '../events'
+import { dispatch, stateEvents } from '../events'
 
 const key = 'TurboBoost::State'
 const stub = { page: {}, signed: null, unsigned: {} }
 
 let signed = null // signed state <string>
 let unsigned = {} // unsigned state (optimistic) <object>
-let restored = null // restored state <null, object> - used when restoring state
 
 const restore = () => {
   const saved = { ...stub, ...storage.find(key) }
-  page.restoreState(saved.page)
+  const path = window.location.pathname
+  saved.page[path] = saved.page[path] || {}
+  console.log('state.restore', saved)
+  page.restoreState(saved.page[path])
 }
 
 const save = () => {
@@ -21,10 +23,13 @@ const save = () => {
   const fresh = {
     signed: signed || saved.signed,
     unsigned: { ...saved.unsigned, ...unsigned },
-    page: { ...saved.page, ...page.buildState() }
+    page: { ...saved.page }
   }
 
-  console.log('save state', fresh)
+  const path = window.location.pathname
+  fresh.page[path] = { ...fresh.page[path], ...page.buildState() }
+
+  console.log('state.save', fresh)
   storage.save(key, fresh)
 }
 

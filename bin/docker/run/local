@@ -20,6 +20,7 @@ fi
 # Dependencies
 # ============================================================================================================
 npm install
+rm /mnt/external/.playwright
 if [ ! -f "/mnt/external/.playwright" ]; then
   yes | npx playwright@latest install chromium --with-deps
   touch /mnt/external/.playwright

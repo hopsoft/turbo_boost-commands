@@ -1,7 +1,4 @@
 import schema from '../schema.js'
-import { dispatch, commandEvents, stateEvents } from '../events.js'
-
-let timeout
 
 const updateElement = (id, attribute, value, attempts = 1) => {
   if (attempts > 20) return
@@ -25,7 +22,6 @@ const buildState = () => {
 }
 
 const restoreState = (state = {}) => {
-  console.log('restoreState', state)
   for (const [id, attributes] of Object.entries(state)) {
     for (const [attribute, value] of Object.entries(attributes)) updateElement(id, attribute, value)
   }

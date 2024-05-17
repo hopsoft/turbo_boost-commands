@@ -28,14 +28,12 @@ const Commands = {
 }
 
 function buildCommandPayload(id, element) {
-  const commandName = element.getAttribute(schema.commandAttribute)
-
   return {
-    id, //----------------------------------------------------------- Uniquely identifies the command invocation
-    name: element.getAttribute(schema.commandAttribute), //---------- Command name
-    elementId: element.id.length > 0 ? element.id : null, //--------- ID of the element that triggered the command
-    elementAttributes: elements.buildAttributePayload(element), //--- Attributes of the element that triggered the command
-    startedAt: Date.now(), //---------------------------------------- Start time of when the command was invoked
+    id, //---------------------------------------------------------- Uniquely identifies the command invocation
+    name: element.getAttribute(schema.commandAttribute), //--------- Command name
+    elementId: element.id.length > 0 ? element.id : null, //-------- ID of the element that triggered the command
+    elementAttributes: elements.buildAttributePayload(element), //-- Attributes of the element that triggered the command
+    startedAt: Date.now(), //--------------------------------------- Start time of when the command was invoked
     state: {
       page: state.buildPageState(),
       signed: state.signed,
