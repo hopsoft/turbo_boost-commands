@@ -12,7 +12,6 @@ require "turbo_boost/streams"
 # Options:
 # - alert_on_abort, opt-(in/out) of alerting on abort (true, *false, "development", "test", "production")
 # - alert_on_error, opt-(in/out) of alerting on error (true, *false, "development", "test", "production")
-# - cache_element_attributes, opt-(in/out) of caching element attributes (*true, false)
 # - precompile_assets, opt-(in/out) of precompiling assets (*true, false)
 # - raise_on_invalid_command, opt-(in/out) of raising an error if invalid command requested (true, false, *"development", "test", "production")
 # - resolve_state, opt-(in/out) of state resolution (true, *false)

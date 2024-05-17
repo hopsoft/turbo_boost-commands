@@ -110,7 +110,6 @@ class TurboBoost::Commands::Runner
     return if command_performed?
 
     command_instance.perform_with_callbacks command_method_name
-    # command_instance.update_element_attribute_cache if cache_element_attributes?
   rescue => error
     @command_errored = true
     prevent_controller_action error: error if command_requested?
@@ -207,10 +206,6 @@ class TurboBoost::Commands::Runner
     return true if TurboBoost::Commands.config.raise_on_invalid_command == true
     return true if TurboBoost::Commands.config.raise_on_invalid_command.to_s == Rails.env.to_s
     false
-  end
-
-  def cache_element_attributes?
-    TurboBoost::Commands.config.cache_element_attributes && command_succeeded?
   end
 
   def redirect?
