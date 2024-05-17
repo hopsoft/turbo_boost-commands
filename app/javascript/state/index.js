@@ -14,7 +14,6 @@ const restore = () => {
   const saved = { ...stub, ...storage.find(key) }
   const path = window.location.pathname
   saved.page[path] = saved.page[path] || {}
-  console.log('state.restore', saved)
   page.restoreState(saved.page[path])
 }
 
@@ -28,8 +27,6 @@ const save = () => {
 
   const path = window.location.pathname
   fresh.page[path] = { ...fresh.page[path], ...page.buildState() }
-
-  console.log('state.save', fresh)
   storage.save(key, fresh)
 }
 
