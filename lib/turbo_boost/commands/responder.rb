@@ -9,7 +9,7 @@ class TurboBoost::Commands::Responder
   end
 
   def body
-    @body.join
+    @body.join.html_safe
   end
 
   def add_header(key, value)
@@ -17,7 +17,7 @@ class TurboBoost::Commands::Responder
   end
 
   def add_content(content)
-    @body << "#{sanitizer.sanitize(content.to_s).html_safe}\n"
+    @body << sanitizer.sanitize(content) + "\n"
   end
 
   private

@@ -26,7 +26,7 @@ class TurboBoost::Commands::ExitMiddleware
   def modify!(env, response)
     responder = env["turbo_boost_command_responder"]
     status, headers, body = response
-    new_body = body_to_s(body)
+    new_body = body_to_a(body).join
 
     case response_type(new_body)
     when :body
@@ -45,10 +45,13 @@ class TurboBoost::Commands::ExitMiddleware
     [status, headers, body]
   end
 
-  def body_to_s(body)
-    return body.join if body.respond_to?(:join)
-    return body.to_ary.join if body.respond_to?(:to_ary)
-    body.to_s
+  def body_to_a(body)
+    return [] if body.nil?
+    return body if body.is_a?(Array)
+    return [body] if body.is_a?(String)
+    return body.to_ary if body.respond_to?(:to_ary)
+    return body.each.to_a if body.respond_to?(:each)
+    [body.to_s]
   end
 
   def response_type(body)

@@ -13,7 +13,11 @@ class TurboBoost::Commands::State
     store[:_signed] ||= {}
   end
 
-  delegate_missing_to :store
+  def current
+    signed.merge now
+  end
+
+  delegate_missing_to :current
 
   def now
     store[:_now]
@@ -28,7 +32,7 @@ class TurboBoost::Commands::State
   end
 
   def cache_key
-    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(to_s)}"
+    "TurboBoost::Commands::State/#{Digest::SHA2.base64digest(current.to_s)}"
   end
 
   def to_json
