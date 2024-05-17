@@ -5,16 +5,15 @@ import storage from './storage'
 import { dispatch, stateEvents } from '../events'
 
 const key = 'TurboBoost::State'
-const stub = { page: {}, signed: null, unsigned: {} }
+const stub = { pages: {}, signed: null, unsigned: {} }
 
 let signed = null // signed state <string>
 let unsigned = {} // unsigned state (optimistic) <object>
 
 const restore = () => {
   const saved = { ...stub, ...storage.find(key) }
-  const path = window.location.pathname
-  saved.page[path] = saved.page[path] || {}
-  page.restoreState(saved.page[path])
+  saved.pages[location.pathname] = saved.pages[location.pathname] || {}
+  page.restoreState(saved.pages[location.pathname])
 }
 
 const save = () => {
@@ -22,11 +21,10 @@ const save = () => {
   const fresh = {
     signed: signed || saved.signed,
     unsigned: { ...saved.unsigned, ...unsigned },
-    page: { ...saved.page }
+    pages: { ...saved.pages }
   }
 
-  const path = window.location.pathname
-  fresh.page[path] = { ...fresh.page[path], ...page.buildState() }
+  fresh.pages[location.pathname] = { ...fresh.pages[location.pathname], ...page.buildState() }
   storage.save(key, fresh)
 }
 
@@ -43,7 +41,7 @@ addEventListener('DOMContentLoaded', restore)
 addEventListener('turbo:morph', restore)
 addEventListener('turbo:render', restore)
 addEventListener('turbo:before-fetch-request', save)
-window.addEventListener('beforeunload', save)
+addEventListener('beforeunload', save)
 
 export default {
   initialize,

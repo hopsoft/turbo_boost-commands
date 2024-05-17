@@ -33,7 +33,7 @@ export default class extends Controller {
 
   get defaultMode() {
     let mode = 'light'
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) mode = 'dark'
+    if (matchMedia('(prefers-color-scheme: dark)').matches) mode = 'dark'
     return mode
   }
 }
