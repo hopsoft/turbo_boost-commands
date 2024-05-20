@@ -89,11 +89,11 @@ class TurboBoost::Commands::Command
     @state = state
     @params = params
     @turbo_streams = Set.new
-    resove_state if TurboBoost::Commands.config.resolve_state
+    resolve_state if TurboBoost::Commands.config.resolve_state
   end
 
   # Abstract method to resolve state (default: noop)
-  # Override in subclassed commands
+  # Override in subclassed commands to resolve unsigned/optimistic client state with signed/server state
   def resolve_state
   end
 

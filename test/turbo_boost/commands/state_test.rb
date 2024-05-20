@@ -47,12 +47,12 @@ class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
     assert_equal 2, state.signed[:b]
   end
 
-  test "all with values" do
+  test "current with values" do
     state = TurboBoost::Commands::State.new
     state[:a] = 1
     state.now[:b] = 2
-    assert_equal 1, state.all[:a]
-    assert_equal 2, state.all[:b]
+    assert_equal 1, state.current[:a]
+    assert_equal 2, state.current[:b]
   end
 
   test "cache_key" do
@@ -67,12 +67,21 @@ class TurboBoost::Commands::StateTest < ActiveSupport::TestCase
     assert_equal "TurboBoost::Commands::State/8tCoYhaQyQn3uuW/t6+R1g==", state.cache_key
   end
 
-  test "cache_key with values and now values" do
+  test "cache_key with now values" do
     state = TurboBoost::Commands::State.new
     state[:a] = "foo"
     state[:b] = "bar"
     state.now[:c] = "baz"
     assert_equal "TurboBoost::Commands::State/MQtKVwc4zxFndIIVpzDcsQ==", state.cache_key
+  end
+
+  test "cache_key with page values" do
+    state = TurboBoost::Commands::State.new
+    state[:a] = "foo"
+    state[:b] = "bar"
+    state.now[:c] = "baz"
+    state.page[:dom_id] = {a: 1, b: 2, "aria-test": "foo", "data-test": "bar"}
+    assert_equal "TurboBoost::Commands::State/MOSYI9EFo6uN5FHq0+kU5w==", state.cache_key
   end
 
   test "to_json" do
