@@ -3,14 +3,28 @@
 class TurboBoost::Commands::StateStore < ActiveSupport::Cache::MemoryStore
   include Enumerable
 
+  class NoCoder
+    def dump(value)
+      value
+    end
+
+    def load(value)
+      value
+    end
+  end
+
   SGID_PURPOSE = name.dup.freeze
 
   def initialize(payload = {})
-    super(expires_in: 1.day, size: 16.kilobytes)
+    super(coder: NoCoder.new, compress: false, expires_in: 1.day, size: 16.kilobytes)
 
     begin
-      payload = URI::UID.from_sgid(payload, for: SGID_PURPOSE)&.decode if payload.is_a?(String)
-      payload ||= URI::UID.from_gid(payload, for: SGID_PURPOSE)&.decode if payload.is_a?(String)
+      payload = case payload
+      when SignedGlobalID then URI::UID.from_sgid(payload, for: SGID_PURPOSE)&.decode
+      when GlobalID then URI::UID.from_gid(payload)&.decode
+      when String then URI::UID.from_sgid(payload, for: SGID_PURPOSE)&.decode || URI::UID.from_gid(payload, for: SGID_PURPOSE)&.decode
+      else payload
+      end
     rescue => error
       Rails.logger.error "Failed to decode URI::UID when creating a TurboBoost::Commands::StateStore! #{error.message}"
       payload = {}
@@ -23,12 +37,12 @@ class TurboBoost::Commands::StateStore < ActiveSupport::Cache::MemoryStore
   alias_method :[]=, :write
 
   def to_h
-    (@data || {}).each_with_object({}) do |(key, entry), memo|
-      memo[key] = entry.value
-    end
+    @data
+      .each_with_object({}) { |(key, entry), memo| memo[key] = entry.value }
+      .with_indifferent_access
   end
 
-  delegate :each, :dig, to: :to_h
+  delegate :dig, :each, to: :to_h
 
   def merge!(other = {})
     other.to_h.each { |key, val| write key, val }

@@ -21,9 +21,7 @@ class TurboBoost::Commands::Runner
   end
 
   def state
-    @state ||= command_requested? ?
-      TurboBoost::Commands::State.new(command_params.dig(:state)) :
-      TurboBoost::Commands::State.new
+    @state ||= TurboBoost::Commands::State.new(command_params.fetch(:state, {}))
   end
 
   def command_requested?
@@ -31,7 +29,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_params
-    return ActionController::Parameters.new unless command_requested?
+    return ActionController::Parameters.new.permit! unless command_requested?
     @command_params ||= ActionController::Parameters.new(parsed_command_params).permit!
   end
 

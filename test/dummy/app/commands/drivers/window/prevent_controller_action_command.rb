@@ -10,10 +10,10 @@ module Drivers
 
         # store count in the state
         key = "#{self.class.name}/count"
-        state.signed[key] = state.signed[key].to_i + 1
+        state[key] = state[key].to_i + 1
 
         streams << render(partial: "/tests/drivers/window", formats: [:turbo_stream],
-          assigns: {message: "#{self.class.name.demodulize} invoked #{state.signed[key]} times"})
+          assigns: {message: "#{self.class.name.demodulize} invoked #{state[key]} times"})
       end
     end
   end
