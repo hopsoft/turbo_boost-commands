@@ -12,6 +12,8 @@ let unsigned = {} // unsigned state (optimistic) <object>
 
 const restore = () => {
   const saved = { ...stub, ...storage.find(key) }
+  signed = saved.signed
+  unsigned = observable(saved.unsigned)
   saved.pages[location.pathname] = saved.pages[location.pathname] || {}
   page.restoreState(saved.pages[location.pathname])
 }
@@ -29,9 +31,9 @@ const save = () => {
 }
 
 const initialize = json => {
-  const state = JSON.parse(json)
+  const state = { ...stub, ...JSON.parse(json) }
   signed = state.signed
-  unsigned = observable(state.unsigned || {})
+  unsigned = observable(state.unsigned)
   save()
   dispatch(stateEvents.stateInitialize, document, { detail: unsigned })
 }

@@ -1,10 +1,10 @@
 function save(name, value) {
   if (typeof value !== 'object') value = {}
-  return sessionStorage.setItem(String(name), JSON.stringify(value))
+  return localStorage.setItem(String(name), JSON.stringify(value))
 }
 
 function find(name) {
-  const stored = sessionStorage.getItem(String(name))
+  const stored = localStorage.getItem(String(name))
   return stored ? JSON.parse(stored) : {}
 }
 
