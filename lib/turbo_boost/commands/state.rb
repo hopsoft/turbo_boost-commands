@@ -1,34 +1,34 @@
 # frozen_string_literal: true
 
+require_relative "state_store"
+
 class TurboBoost::Commands::State
   def initialize(payload = {})
-    payload = payload.to_h
-    @store ||= (payload[:unsigned] || {}).with_indifferent_access
+    payload = payload.to_h.with_indifferent_access
 
-    store[:_now] ||= {}
-    store[:_page] = payload[:page] || {}
-    store[:_signed] = if payload[:signed].present?
-      URI::UID.from_sgid(payload[:signed], for: self.class.name)&.decode
-    end
-    store[:_signed] ||= {}
+    @store = HashWithIndifferentAccess.new
+    @store[:_now] = {}.with_indifferent_access
+    @store[:_page] = payload.fetch(:page, {}).with_indifferent_access
+    @store[:_unsigned] = payload.fetch(:unsigned, {}).with_indifferent_access
+    @store[:_signed] = TurboBoost::Commands::StateStore.new(payload.fetch(:signed, {}))
   end
 
   def current
-    signed.merge now
+    signed.to_h.merge now
   end
 
   delegate_missing_to :current
 
   def now
-    store[:_now]
+    @store[:_now]
   end
 
   def page
-    store[:_page]
+    @store[:_page]
   end
 
   def signed
-    store[:_signed]
+    @store[:_signed]
   end
 
   def cache_key
@@ -36,9 +36,7 @@ class TurboBoost::Commands::State
   end
 
   def to_json
-    uid = URI::UID.build(signed, include_blank: false)
-    sgid = uid.to_sgid_param(for: self.class.name, expires_in: 2.day)
-    {signed: sgid, unsigned: signed}.to_json(camelize: false)
+    {signed: signed.to_sgid_param, unsigned: signed.to_h}.to_json(camelize: false)
   end
 
   def tag_options(options)
@@ -80,8 +78,4 @@ class TurboBoost::Commands::State
 
     options
   end
-
-  private
-
-  attr_reader :store
 end
