@@ -295,7 +295,7 @@ class TurboBoost::Commands::Runner
   end
 
   def add_abort_event
-    return unless error
+    return unless error && command_aborted?
     add_event "turbo-boost:command:abort", message: error.message
   end
 
