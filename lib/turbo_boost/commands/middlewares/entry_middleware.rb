@@ -35,6 +35,11 @@ class TurboBoost::Commands::EntryMiddleware
     false
   end
 
+  def convert_to_get_request?(driver)
+    return true if driver == "frame" || driver == "window"
+    false
+  end
+
   # Modifies the given POST request so Rails sees it as GET.
   #
   # The posted JSON body content holds the TurboBoost Command meta data.
@@ -42,6 +47,7 @@ class TurboBoost::Commands::EntryMiddleware
   #
   # @example POST payload for: /turbo-boost-command-invocation
   #   {
+  #     "csrfToken"         => "..."                                                 # Rails' CSRF token
   #     "id"                => "turbo-command-f824ded1-a86e-4a36-9442-ea2165a64569", # Unique ID for the command invocation
   #     "name"              => "ExampleCommand#perform",                             # Name of command being invoked
   #     "elementId"         => nil,                                                  # Triggering element's DOM id
@@ -67,18 +73,20 @@ class TurboBoost::Commands::EntryMiddleware
       # Store the command params in the environment
       env["turbo_boost_command_params"] = params
 
-      # Change the method from POST to GET
-      env["REQUEST_METHOD"] = "GET"
-
       # Update the URI, PATH_INFO, and QUERY_STRING
       env["REQUEST_URI"] = uri.to_s if env.key?("REQUEST_URI")
       env["PATH_INFO"] = uri.path
       env["QUERY_STRING"] = uri.query.to_s
 
-      # Clear the body and related headers so the appears and behaves like a GET
-      env["rack.input"] = StringIO.new
-      env["CONTENT_LENGTH"] = "0"
-      env.delete("CONTENT_TYPE")
+      # Change the method from POST to GET
+      if convert_to_get_request?(params["driver"])
+        env["REQUEST_METHOD"] = "GET"
+
+        # Clear the body and related headers so the appears and behaves like a GET
+        env["rack.input"] = StringIO.new
+        env["CONTENT_LENGTH"] = "0"
+        env.delete("CONTENT_TYPE")
+      end
     end
   rescue => error
     puts "#{self.class.name} failed to modify the request! #{error.message}"
