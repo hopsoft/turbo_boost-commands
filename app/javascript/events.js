@@ -8,11 +8,14 @@ export const commandEvents = {
 }
 
 export const stateEvents = {
-  stateLoad: 'turbo-boost:state:load',
-  stateChange: 'turbo-boost:state:change'
+  stateChange: 'turbo-boost:state:change',
+  stateInitialize: 'turbo-boost:state:initialize'
 }
 
-export const allEvents = { ...commandEvents, ...stateEvents }
+export const turboEvents = {
+  frameLoad: 'turbo:frame-load',
+  load: 'turbo:load'
+}
 
 export function dispatch(name, target, options = {}) {
   return new Promise(resolve => {

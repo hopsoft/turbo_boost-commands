@@ -6,7 +6,7 @@ import confirmation from './confirmation'
 import delegates from './delegates'
 import drivers from './drivers'
 import elements from './elements'
-import lifecycle from './lifecycle'
+import './lifecycle'
 import logger from './logger'
 import state from './state'
 import uuids from './uuids'
@@ -29,14 +29,16 @@ const Commands = {
 
 function buildCommandPayload(id, element) {
   return {
-    id, // uniquely identifies the command
-    name: element.getAttribute(schema.commandAttribute),
-    elementId: element.id.length > 0 ? element.id : null,
-    elementAttributes: elements.buildAttributePayload(element),
-    startedAt: Date.now(),
-    changedState: state.changed, // changed-state (delta of optimistic updates)
-    clientState: state.current, // client-side state
-    signedState: state.signed // server-side state
+    id, //---------------------------------------------------------- Uniquely identifies the command invocation
+    name: element.getAttribute(schema.commandAttribute), //--------- Command name
+    elementId: element.id.length > 0 ? element.id : null, //-------- ID of the element that triggered the command
+    elementAttributes: elements.buildAttributePayload(element), //-- Attributes of the element that triggered the command
+    startedAt: Date.now(), //--------------------------------------- Start time of when the command was invoked
+    state: {
+      page: state.buildPageState(),
+      signed: state.signed,
+      unsigned: state.unsigned
+    }
   }
 }
 
@@ -49,7 +51,7 @@ async function invokeCommand(event) {
     if (!element) return
     if (!delegates.isRegisteredForElement(event.type, element)) return
 
-    const commandId = `turbo-command-${uuids.v4()}`
+    const commandId = uuids.v4()
     let driver = drivers.find(element)
     let payload = {
       ...buildCommandPayload(commandId, element),
@@ -108,6 +110,7 @@ if (!self.TurboBoost.Commands) {
   delegates.handler = invokeCommand
   delegates.register('click', [`[${schema.commandAttribute}]`])
   delegates.register('submit', [`form[${schema.commandAttribute}]`])
+  delegates.register('toggle', [`details[${schema.commandAttribute}]`])
   delegates.register('change', [
     `input[${schema.commandAttribute}]`,
     `select[${schema.commandAttribute}]`,
@@ -115,7 +118,12 @@ if (!self.TurboBoost.Commands) {
   ])
 
   self.TurboBoost.Commands = Commands
-  self.TurboBoost.State = state
+  self.TurboBoost.State = {
+    initialize: state.initialize,
+    get current() {
+      return state.unsigned
+    }
+  }
 }
 
 export default Commands

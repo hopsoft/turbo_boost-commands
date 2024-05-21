@@ -33,7 +33,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
     @playwright = @playwright_exec.playwright
     @browser = @playwright.public_send(BROWSER).launch
-    @context = @browser.new_context # prepare new browser window
+    @context = @browser.new_context
     @page = @context.new_page
     @page.set_default_timeout Capybara.default_max_wait_time * 1_000
   end
@@ -66,8 +66,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     js "element => !!element.mutations", arg: element(testid).element_handle
   end
 
-  # Waits for an element's mutation tracking to reset, then yields the element handle,
-  # and finally waits for the element to be mutated again.
+  # Waits for an element's mutation tracking to reset, then yields the element handle
+  # and waits fo the element to be mutated again.
   # SEE: test/dummy/app/javascript/tests/index.js
   #
   # @param testid [String,Symbol] The element's data-testid attribute value
@@ -82,6 +82,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   rescue Timeout::Error
     sleep 0.5 # last ditch effort to avoid flakiness
     yield element(testid).element_handle if block_given?
+  ensure
+    wait_for_mutations_finished testid, timeout: timeout, interval: interval
   end
 
   # Waits for an element's mutation tracking to reset, then yields the element handle.
@@ -112,5 +114,65 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
   rescue Timeout::Error
     sleep 0.5 # last ditch effort to avoid flakiness
+  end
+
+  # Asserts that a certain number of console messages are logged within a specified timeout period.
+  #
+  # @param min [Integer] The minimum number of console messages expected (default: 1)
+  # @param type [String, nil] The type expected messages (log, debug, info, warning, error, default: nil)
+  # @param pattern [Regexp, nil] A regular expression pattern that the console messages should match (default: nil)
+  # @param timeout [ActiveSupport::Duration] The maximum amount of time to wait (default: 5s)
+  # @param interval [Integer] The time interval to wait between checks (default: 20ms)
+  # @yield Code to execute that triggers the console messages
+  # @raise [Minitest::Assertion] The failed assertion if the conditions aren't satisfied
+  def assert_console_messages(min: 1, type: nil, pattern: nil, timeout: 5.seconds, interval: 0.02)
+    js "TurboBoost.Commands.logger.level = 'debug'"
+    messages = []
+    page.on "console", ->(msg) do
+      msg = nil unless type.nil? || msg&.type == type
+      msg = nil unless pattern.nil? || msg&.text&.match?(pattern)
+      messages << msg.text if msg
+    end
+    yield if block_given?
+    begin
+      Timeout.timeout timeout.to_i do
+        sleep interval.to_f while messages.size < min
+      end
+    rescue Timeout::Error
+      sleep 0.5 # last ditch effort to avoid flakiness
+    end
+    assert messages.size >= min, "Expected at least #{min} console message(s), but got #{messages.size}"
+  end
+
+  def assert_alert(match: nil, timeout: 5.seconds, interval: 0.1)
+    message = nil
+
+    # suppress invalid playwright warnings about unexpected dialogs
+    suppress_stdout do
+      page.on "dialog", ->(dialog) {
+        message = dialog.message
+        dialog.accept
+      }
+      yield if block_given?
+      begin
+        Timeout.timeout timeout.to_i do
+          sleep interval.to_f until message
+        end
+      rescue Timeout::Error
+        sleep 0.5 # last ditch effort to avoid flakiness
+      end
+    end
+
+    match ?
+      assert_match(match, message, "Expected alert dialog to match #{match.inspect}") :
+      assert(message, "Expected alert dialog to be shown")
+  end
+
+  def suppress_stdout
+    stdout = $stdout
+    $stdout = StringIO.new
+    yield
+  ensure
+    $stdout = stdout
   end
 end

@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1450-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1689-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_boost-commands/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -59,29 +59,30 @@
 
 ## Table of Contents
 
-- [Why TurboBoost Commands?](#why-turboboost-commands)
-- [Sponsors](#sponsors)
-- [Dependencies](#dependencies)
-- [Setup](#setup)
-- [Usage](#usage)
-  - [Event Delegates](#event-delegates)
-  - [Lifecycle Events](#lifecycle-events)
-  - [Targeting Frames](#targeting-frames)
-  - [Working with Forms](#working-with-forms)
-  - [Server Side Commands](#server-side-commands)
-  - [Appending Turbo Streams](#appending-turbo-streams)
-  - [Setting Instance Variables](#setting-instance-variables)
-  - [Prevent Controller Action](#prevent-controller-action)
-  - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-- [Community](#community)
-- [Developing](#developing)
-  - [Notable Files](#notable-files)
-- [Deploying](#deploying)
-  - [Notable Files](#notable-files-1)
-  - [How to Deploy](#how-to-deploy)
-- [Releasing](#releasing)
-- [About TurboBoost](#about-turboboost)
-- [License](#license)
+  - [Why TurboBoost Commands?](#why-turboboost-commands)
+  - [Sponsors](#sponsors)
+  - [Dependencies](#dependencies)
+  - [Setup](#setup)
+  - [Usage](#usage)
+    - [Event Delegates](#event-delegates)
+    - [Lifecycle Events](#lifecycle-events)
+    - [Targeting Frames](#targeting-frames)
+    - [Working with Forms](#working-with-forms)
+    - [Server Side Commands](#server-side-commands)
+    - [Appending Turbo Streams](#appending-turbo-streams)
+    - [Setting Instance Variables](#setting-instance-variables)
+    - [Prevent Controller Action](#prevent-controller-action)
+    - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
+    - [Tracking Page State](#tracking-page-state)
+  - [Community](#community)
+  - [Developing](#developing)
+      - [Notable Files](#notable-files)
+  - [Deploying](#deploying)
+      - [Notable Files](#notable-files-1)
+      - [How to Deploy](#how-to-deploy)
+  - [Releasing](#releasing)
+  - [About TurboBoost](#about-turboboost)
+  - [License](#license)
 
 <!-- Tocer[finish]: Auto-generated, don't remove. -->
 
@@ -381,7 +382,8 @@ end
 
 _This proves especially powerful when paired with [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams)._
 
-> 📘 **NOTE:** `turbo_stream.invoke` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#usage) feature.
+> [!NOTE]
+> `turbo_stream.invoke` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#usage) feature.
 
 ### Setting Instance Variables
 
@@ -476,7 +478,40 @@ end
 _Learn more about Turbo Stream broadcasting by reading through the
 [hotwired/turbo-rails](https://github.com/hotwired/turbo-rails/blob/main/app/models/concerns/turbo/broadcastable.rb) source code._
 
-> 📘 **NOTE:** `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
+> [!NOTE]
+> `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
+
+### Tracking Page State
+
+You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
+element attribute values between requests.
+
+```erb
+<%= tag.details id: "page-state-example", open: "open", turbo_boost: { remember: [:open] } do %>
+  <summary>Page State Example</summary>
+  Content...
+<% end %>
+```
+
+The code above will be expanded to this HTML.
+
+```html
+<details id="page-state-example" open="open" data-turbo-boost-state-attributes="['open']">
+  <summary>Page State Example</summary>
+  Content...
+</details>
+```
+
+Several things happen when you use `turbo_boost[:remember]` to track page state.
+
+1. The client builds the current page state before emitting requests to the server.
+1. The server uses the page state when rendering the response.
+1. The client client verifies the page state and restores attribute values _(if necessary)_ after the DOM updates.
+
+This feature works with all attributes, including aria, data, and custom attributes.
+
+> [!NOTE]
+> Elements must have a unique `id` assigned to participate in page state tracking.
 
 ## Community
 
@@ -558,7 +593,7 @@ fly deploy
 1. Commit and push any changes to GitHub
 1. Run `rake release`
 1. Run `npm publish --access public`
-1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases)) and generate the changelog for the stable release for it
+1. Create a new release on GitHub ([here](https://github.com/hopsoft/turbo_boost-commands/releases))
 
 ## About TurboBoost
 

@@ -1,4 +1,5 @@
-import { allEvents as events } from './events'
+// TODO: Move Logger to its own library (i.e. TurboBoost.Logger)
+import { commandEvents as events } from './events'
 
 let currentLevel = 'unknown'
 let initialized = false
@@ -28,10 +29,36 @@ const shouldLogEvent = event => {
   return true
 }
 
+const logMethod = event => {
+  if (logLevels.error.includes(event.type)) return 'error'
+  if (logLevels.warn.includes(event.type)) return 'warn'
+  if (logLevels.info.includes(event.type)) return 'info'
+  if (logLevels.debug.includes(event.type)) return 'debug'
+  return 'log'
+}
+
 const logEvent = event => {
   if (shouldLogEvent(event)) {
     const { target, type, detail } = event
-    console[currentLevel](type, detail.id || '', { target, detail })
+    const id = detail.id || ''
+    const commandName = detail.name || ''
+
+    let duration = ''
+    if (detail.startedAt) duration = `${Date.now() - detail.startedAt}ms `
+
+    const typeParts = type.split(':')
+    const lastPart = typeParts.pop()
+    const eventName = `%c${typeParts.join(':')}:%c${lastPart}`
+    const message = [`%c${commandName}`, `%c${duration}`, eventName]
+
+    console[logMethod(event)](
+      message.join(' ').replace(/\s{2,}/g, ' '),
+      'color:deepskyblue',
+      'color:lime',
+      'color:darkgray',
+      eventName.match(/abort|error/i) ? 'color:red' : 'color:deepskyblue',
+      { id, detail, target }
+    )
   }
 }
 

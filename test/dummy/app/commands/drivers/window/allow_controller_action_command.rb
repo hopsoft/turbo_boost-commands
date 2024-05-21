@@ -3,12 +3,23 @@
 module Drivers
   module Window
     class AllowControllerActionCommand < ApplicationCommand
+      before_command -> { throw :abort }, only: :perform_with_abort
       after_command -> { transfer_instance_variables controller }
 
       def perform
-        count = state[self.class.name].to_i + 1
-        state[self.class.name] = count
-        @message = "#{self.class.name.demodulize} invoked #{count} times"
+        # store count in the state
+        key = "#{self.class.name}/count"
+        state[key] = state[key].to_i + 1
+
+        @message = "#{self.class.name.demodulize} invoked #{state[key]} times"
+      end
+
+      before_command -> { throw :abort }, only: :perform_with_abort
+      def perform_with_abort
+      end
+
+      def perform_with_error
+        raise NotImplementedError, "Intentional error for testing!"
       end
     end
   end

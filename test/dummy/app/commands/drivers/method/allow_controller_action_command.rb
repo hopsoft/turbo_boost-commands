@@ -6,9 +6,11 @@ module Drivers
       after_command -> { transfer_instance_variables controller }
 
       def perform
-        count = state[self.class.name].to_i + 1
-        state[self.class.name] = count
-        @message = "#{self.class.name.demodulize} invoked #{count} times"
+        # store count in the state
+        key = "#{self.class.name}/count"
+        state[key] = state[key].to_i + 1
+
+        @message = "#{self.class.name.demodulize} invoked #{state[key]} times"
       end
     end
   end

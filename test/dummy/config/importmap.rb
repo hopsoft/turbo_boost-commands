@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-# Pin npm packages by running ./bin/importmap
-
 pin "@hotwired/stimulus", to: "@hotwired--stimulus.js" # @3.2.2
-pin "@hotwired/turbo", to: "@hotwired--turbo.js" # @8.0.3
-pin "@hotwired/turbo-rails", to: "@hotwired--turbo-rails.js" # @8.0.3
+pin "@hotwired/turbo", to: "@hotwired--turbo.js" # @8.0.4
+pin "@hotwired/turbo-rails", to: "@hotwired--turbo-rails.js" # @8.0.4
 pin "@rails/actioncable", to: "@rails--actioncable.js" # @7.1.3
+pin "@rails/actioncable/src", to: "@rails--actioncable--src.js" # @7.1.3
 pin "@turbo-boost/streams", to: "@turbo-boost--streams.js" # @0.1.11
 
 # NOTE: The following libs stop working if we allow Rails to vendor them

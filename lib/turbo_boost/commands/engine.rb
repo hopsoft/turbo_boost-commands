@@ -7,7 +7,9 @@ require_relative "version"
 require_relative "http_status_codes"
 require_relative "errors"
 require_relative "patches"
-require_relative "middleware"
+require_relative "sanitizer"
+require_relative "middlewares/entry_middleware"
+require_relative "middlewares/exit_middleware"
 require_relative "command"
 require_relative "controller_pack"
 require_relative "../../../app/controllers/concerns/turbo_boost/commands/controller"
@@ -20,16 +22,17 @@ module TurboBoost::Commands
 
   class Engine < ::Rails::Engine
     config.turbo_boost_commands = ActiveSupport::OrderedOptions.new
-    config.turbo_boost_commands[:protect_from_forgery] = true
-    config.turbo_boost_commands[:precompile_assets] = true
+    config.turbo_boost_commands[:alert_on_abort] = false # (true, false, "development", "test", "production")
+    config.turbo_boost_commands[:alert_on_error] = false # (true, false, "development", "test", "production")
+    config.turbo_boost_commands[:precompile_assets] = true # (true, false)
+    config.turbo_boost_commands[:raise_on_invalid_command] = "development" # (true, false, "development", "test", "production")
+    config.turbo_boost_commands[:resolve_state] = false # (true, false)
 
-    # must opt-in to state overrides
-    config.turbo_boost_commands[:apply_client_state_overrides] = false
-    config.turbo_boost_commands[:apply_server_state_overrides] = false
-
-    initializer "turbo_boost_commands.configuration" do |app|
+    initializer "turbo_boost_commands.configuration", before: :build_middleware_stack do |app|
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost
-      app.middleware.insert 0, TurboBoost::Commands::Middleware
+
+      app.middleware.insert 0, TurboBoost::Commands::EntryMiddleware
+      app.middleware.use TurboBoost::Commands::ExitMiddleware
 
       ActiveSupport.on_load :action_controller_base do
         # `self` is ActionController::Base

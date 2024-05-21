@@ -2,6 +2,7 @@
 
 require_relative "attribute_set"
 require_relative "command_callbacks"
+require_relative "command_validator"
 
 # TurboBoost::Commands::Command superclass.
 # All command classes should inherit from this class.
@@ -88,13 +89,17 @@ class TurboBoost::Commands::Command
     @state = state
     @params = params
     @turbo_streams = Set.new
+    resolve_state if TurboBoost::Commands.config.resolve_state
   end
 
-  # Abstract method to resolve state (default noop), override in subclassed commands
-  def resolve_state(client_state)
+  # Abstract method to resolve state (default: noop)
+  # Override in subclassed commands to resolve unsigned/optimistic client state with signed/server state
+  def resolve_state
   end
 
-  # Abstract `perform` method, override in subclassed commands
+  # Abstract `perform` method
+  # Override in subclassed commands
+  # @raise [NotImplementedError]
   def perform
     raise NotImplementedError, "#{self.class.name} must implement the `perform` method!"
   end

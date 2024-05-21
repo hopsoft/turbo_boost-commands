@@ -5,7 +5,7 @@ module TurboBoost::Commands::Controller
 
   included do
     before_action -> { turbo_boost.runner.run }
-    after_action -> { turbo_boost.runner.update_response }
+    after_action -> { turbo_boost.runner.flush }
     helper_method :turbo_boost
   end
 

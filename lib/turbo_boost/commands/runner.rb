@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "sanitizer"
+require_relative "responder"
 require_relative "state"
+require_relative "command_validator"
 
 class TurboBoost::Commands::Runner
   RESPONSE_HEADER = "TurboBoost-Command"
@@ -12,56 +13,24 @@ class TurboBoost::Commands::Runner
     "text/vnd.turbo-stream.html" => true
   }.freeze
 
-  attr_reader :controller
+  attr_reader :controller, :error, :responder
 
   def initialize(controller)
     @controller = controller
+    @responder = TurboBoost::Commands::Responder.new
   end
 
-  def command_state
-    @command_state ||= begin
-      sgid = command_params[:signed_state]
-      value = TurboBoost::Commands::State.from_sgid_param(sgid) if sgid
-      value || TurboBoost::Commands::State.new
-    end
+  def state
+    @state ||= TurboBoost::Commands::State.new(command_params.fetch(:state, {}))
   end
 
   def command_requested?
-    controller.request.env.key?("turbo_boost_command") || controller.params.key?("turbo_boost_command")
-  end
-
-  def command_valid?
-    return false unless command_requested?
-
-    # validate class
-    unless command_instance.is_a?(TurboBoost::Commands::Command)
-      raise TurboBoost::Commands::InvalidClassError,
-        "`#{command_class_name}` is not a subclass of `TurboBoost::Commands::Command`!"
-    end
-
-    # validate method
-    ancestors = command_class.ancestors[0..command_class.ancestors.index(TurboBoost::Commands::Command) - 1]
-    unless ancestors.any? { |a| a.public_instance_methods(false).any? command_method_name.to_sym }
-      raise TurboBoost::Commands::InvalidMethodError,
-        "`#{command_class_name}` does not define the public method `#{command_method_name}`!"
-    end
-
-    # validate csrf token
-    unless valid_command_token?
-      raise TurboBoost::Commands::InvalidTokenError,
-        "Token mismatch! The token: #{client_command_token}` does not match the expected value of `#{server_command_token}`."
-    end
-
-    true
+    controller.request.env.key?("turbo_boost_command_params") || controller.params.key?("turbo_boost_command")
   end
 
   def command_params
-    return ActionController::Parameters.new unless command_requested?
-    @command_params ||= begin
-      payload = parsed_command_params.transform_keys(&:underscore)
-      payload["element_attributes"]&.deep_transform_keys!(&:underscore)
-      ActionController::Parameters.new(payload).permit!
-    end
+    return ActionController::Parameters.new.permit! unless command_requested?
+    @command_params ||= ActionController::Parameters.new(parsed_command_params).permit!
   end
 
   def command_name
@@ -86,8 +55,14 @@ class TurboBoost::Commands::Runner
     @command_class ||= command_class_name&.safe_constantize
   end
 
+  def command_valid?
+    return false unless command_requested?
+    validator = TurboBoost::Commands::CommandValidator.new(command_class_name, command_method_name)
+    raise_on_invalid_command? ? validator.validate! : validator.valid?
+  end
+
   def command_instance
-    @command_instance ||= command_class&.new(controller, command_state, command_params).tap do |instance|
+    @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
   end
@@ -97,7 +72,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_errored?
-    !!command_instance&.errored?
+    @command_errored ||= !!command_instance&.errored?
   end
 
   def command_performing?
@@ -132,48 +107,52 @@ class TurboBoost::Commands::Runner
     return if command_performing?
     return if command_performed?
 
-    command_instance.resolve_state command_params[:changed_state]
     command_instance.perform_with_callbacks command_method_name
+  rescue => error
+    @command_errored = true
+    prevent_controller_action error: error if command_requested?
+  end
+
+  # Always runs after the controller action has been performed
+  def flush
+    return unless command_requested? # not a command request
+
+    # global response components
+    add_header
+    add_state
+
+    # mutually exclusive responses
+    respond_with_abort if command_aborted?
+    respond_with_error if command_errored?
+    respond_with_success if command_succeeded?
+
+    # store the responder for use in → TurboBoost::Commands::ExitMiddleware
+    controller.request.env["turbo_boost_command_responder"] = responder
+  rescue => error
+    Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
   end
 
   def prevent_controller_action(error: nil)
     return if controller_action_prevented?
     @controller_action_prevented = true
+    @error = error
 
-    case error
-    when nil
-      render_response status: response_status
-      append_success_to_response
-    when TurboBoost::Commands::AbortError
-      render_response status: error.http_status_code, status_header: error.message
-      append_streams_to_response_body
-    when TurboBoost::Commands::PerformError
-      render_response status: error.http_status_code, status_header: error.message
-      append_error_to_response error
-    else
-      render_response status: :internal_server_error, status_header: error.message
-      append_error_to_response error
+    status = case error
+    when nil then response_status
+    when TurboBoost::Commands::AbortError, TurboBoost::Commands::PerformError then error.http_status_code
+    else :internal_server_error
     end
 
-    append_command_state_to_response_body
+    flush
+    render_response status: status
   end
 
-  def update_response
-    return if @update_response_performed
-    @update_response_performed = true
-
-    return if controller_action_prevented?
-
-    append_command_state_to_response_body
-    append_to_response_headers if command_performed?
-    append_success_to_response if command_succeeded?
-  rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to update the response! #{error.message}"
-  end
-
-  def render_response(html: "", status: nil, status_header: nil)
-    controller.render html: html, layout: false, status: status || response_status # unless controller.performed?
-    append_to_response_headers status_header
+  # Renders the response body instead of the controller action.
+  # Invoked by: `prevent_controller_action`
+  # NOTE: Halts the Rails controller callback chain
+  def render_response(html: "", status: nil)
+    return if controller.performed?
+    controller.render html: html, layout: false, status: status || response_status
   end
 
   def turbo_stream
@@ -199,53 +178,46 @@ class TurboBoost::Commands::Runner
 
   def parsed_command_params
     @parsed_command_params ||= begin
-      params = controller.request.env["turbo_boost_command"]
-      params ||= JSON.parse(controller.params["turbo_boost_command"])
-      params || {}
+      params = controller.request.env["turbo_boost_command_params"]
+      params ||= controller.request.env["turbo_boost_command_params"] = JSON.parse(controller.params["turbo_boost_command"])
+      params.deep_transform_keys!(&:underscore)
+      params
     end
   end
 
-  def content_sanitizer
-    TurboBoost::Commands::Sanitizer.instance
-  end
-
-  def new_command_token
-    @new_command_token ||= SecureRandom.alphanumeric(13)
-  end
-
-  def client_command_token
-    command_params.dig(:client_state, :command_token)
-  end
-
-  def server_command_token
-    command_state[:command_token]
-  end
-
-  def valid_command_token?
-    return true unless Rails.configuration.turbo_boost_commands.protect_from_forgery
-    return false unless client_command_token.present?
-    return false unless server_command_token.present?
-    server_command_token == message_verifier.verify(client_command_token, purpose: controller.request.session&.id)
-  rescue ActiveSupport::MessageVerifier::InvalidSignature
+  def alert_on_abort?
+    return false unless TurboBoost::Commands.config.alert_on_abort
+    return true if TurboBoost::Commands.config.alert_on_abort == true
+    return true if TurboBoost::Commands.config.alert_on_abort.to_s == Rails.env.to_s
     false
   end
 
-  def should_redirect?
+  def alert_on_error?
+    return false unless TurboBoost::Commands.config.alert_on_error
+    return true if TurboBoost::Commands.config.alert_on_error == true
+    return true if TurboBoost::Commands.config.alert_on_error.to_s == Rails.env.to_s
+    false
+  end
+
+  def raise_on_invalid_command?
+    return false unless TurboBoost::Commands.config.raise_on_invalid_command
+    return true if TurboBoost::Commands.config.raise_on_invalid_command == true
+    return true if TurboBoost::Commands.config.raise_on_invalid_command.to_s == Rails.env.to_s
+    false
+  end
+
+  def redirect?
     return false if controller.request.get?
     controller.request.accepts.include? Mime::Type.lookup_by_extension(:turbo_stream)
   end
 
-  def response_status
-    return :multiple_choices if should_redirect?
-    :ok
+  def supported_media_type?
+    SUPPORTED_MEDIA_TYPES[controller.request.format.to_s]
   end
 
-  def response_type
-    body = (controller.response_body.try(:join) || controller.response_body.to_s).strip
-    return :body if body.match?(/<\/\s*body/io)
-    return :frame if body.match?(/<\/\s*turbo-frame/io)
-    return :stream if body.match?(/<\/\s*turbo-stream/io)
-    :unknown
+  def response_status
+    return :multiple_choices if redirect?
+    :ok
   end
 
   # Indicates if a TurboStream template exists for the current action.
@@ -255,14 +227,15 @@ class TurboBoost::Commands::Runner
     controller.lookup_context.exists? controller.action_name, controller.lookup_context.prefixes, formats: [:turbo_boost, :turbo_stream]
   end
 
-  def rendering_strategy
+  # Commands support the following redering strategies on the client.
+  # 1. Replace: The entire page (head, body) is replaced with the new content via morph
+  # 2. Append: The new content is appended to the body
+  def client_render_strategy
     # Use the replace strategy if the follow things are true:
     #
     # 1. The command was triggered by the WINDOW driver
     # 2. After the command finishes, normal Rails mechanics resume (i.e. prevent_controller_action was not called)
     # 3. There is NO TurboStream template for the current action (i.e. example.turbo_boost.erb, example.turbo_frame.erb)
-    #
-    # TODO: Revisit the "Replace" strategy after morph ships with Turbo 8
     if command_params[:driver] == "window" && controller_action_allowed?
       return "Replace" unless turbo_stream_template_exists?
     end
@@ -270,112 +243,93 @@ class TurboBoost::Commands::Runner
     "Append"
   end
 
-  def append_success_to_response
-    append_success_event_to_response_body
-    append_streams_to_response_body
+  def respond_with_abort
+    Rails.logger.debug error.message
+    add_abort_event
+    add_error_alert if alert_on_abort?
   end
 
-  def append_error_to_response(error)
+  def respond_with_error
     Rails.logger.error error.message
-    append_error_event_to_response_body error.message
-    append_error_alert_to_response_body error.message
+    add_error_event
+    add_error_alert if alert_on_error?
   end
 
-  def append_streams_to_response_body
-    command_instance.turbo_streams.each { |stream| append_to_response_body stream }
+  def respond_with_success
+    add_success_event
+    add_turbo_streams
   end
 
-  def append_command_state_to_response_body
-    # use the masked token for the client state
-    command_state[:command_token] = message_verifier.generate(new_command_token, purpose: controller.request.session&.id)
-    client_state = command_state.to_json
+  def add_turbo_streams
+    command_instance.turbo_streams.each { |stream| add_content stream }
+  end
 
-    # use the unmasked token for the signed (server) state
-    command_state[:command_token] = new_command_token
-    signed_state = command_state.to_sgid_param
-
-    append_to_response_body turbo_stream.invoke("TurboBoost.State.initialize", args: [client_state, signed_state], camelize: false)
+  def add_state
+    add_content turbo_stream.invoke("TurboBoost.State.initialize", args: [state.to_json], camelize: false)
   rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
+    message = "TurboBoost::Commands::Runner failed to append the Command state to the response! #{error.message}"
+    Rails.logger.error message
   end
 
-  def append_success_event_to_response_body
-    args = ["turbo-boost:command:success", {bubbles: true, cancelable: false, detail: parsed_command_params}]
-    event = if command_instance&.element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
-    else
-      turbo_stream.invoke :dispatch_event, args: args
-    end
-    append_to_response_body event
+  def add_event(name, detail = {})
+    options = {
+      args: [name, {
+        bubbles: true,
+        cancelable: false,
+        detail: command_params.to_unsafe_hash.except(:state)
+          .merge(detail).deep_transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+      }]
+    }
+
+    options[:selector] = "##{command_instance.element.id}" if command_instance&.element&.id
+    add_content turbo_stream.invoke(:dispatch_event, **options)
   end
 
-  def append_error_alert_to_response_body(message)
-    return unless Rails.env.development?
+  def add_success_event
+    return unless command_succeeded?
+    add_event "turbo-boost:command:success"
+  end
+
+  def add_abort_event
+    return unless error && command_aborted?
+    add_event "turbo-boost:command:abort", message: error.message
+  end
+
+  def add_error_event
+    return unless error && command_errored?
+    add_event "turbo-boost:command:server-error", message: error.message
+  end
+
+  def add_error_alert
+    return unless error
+
     message = <<~MSG
-      #{message}
-
-      See the HTTP header: `TurboBoost-Command-Status`
-
-      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.
-
+      #{error.message}\n\n
+      See the HTTP header: `TurboBoost-Command`\n
+      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.\n
       Finally, check server logs for additional info.
     MSG
-    append_to_response_body turbo_stream.invoke(:alert, args: [message])
+
+    add_content turbo_stream.invoke(:alert, args: [message.strip], delay: 100)
   end
 
-  def append_error_event_to_response_body(message)
-    args = ["turbo-boost:command:server-error", {bubbles: true, cancelable: false, detail: parsed_command_params.merge(error: message)}]
-    event = if command_instance&.element.try(:id).present?
-      turbo_stream.invoke :dispatch_event, args: args, selector: "##{command_instance.element.id}"
-    else
-      turbo_stream.invoke :dispatch_event, args: args
-    end
-    append_to_response_body event
+  def add_header
+    return unless command_requested?
+    return unless supported_media_type?
+
+    command_status = "Abort" if command_aborted?
+    command_status = "Error" if command_errored?
+    command_status = "OK" if command_succeeded?
+    command_status ||= "Unknown"
+
+    values = [command_name, command_status, client_render_strategy]
+    responder.add_header RESPONSE_HEADER, values.join(", ")
   end
 
-  def appended_content
-    @appended_content ||= {}
-  end
-
-  def append_to_response_body(content)
-    return unless SUPPORTED_MEDIA_TYPES[controller.response.media_type]
-    sanitized_content = content_sanitizer.sanitize(content.to_s).html_safe
-    return if sanitized_content.blank?
-
-    return if appended_content[sanitized_content]
-    appended_content[sanitized_content] = true
-
-    html = case response_type
-    when :body
-      match = controller.response.body.match(/<\/\s*body/io).to_s
-      controller.response.body.sub match, [sanitized_content, match].join
-    when :frame
-      match = controller.response.body.match(/<\/\s*turbo-frame/io).to_s
-      controller.response.body.sub match, [sanitized_content, match].join
-    else
-      [controller.response.body, sanitized_content].join
-    end
-
-    controller.response.body = html
-  rescue => error
-    Rails.logger.error "TurboBoost::Commands::Runner failed to append to the response! #{error.message}"
-  end
-
-  # Writes new header... will not overwrite existing header
-  def append_response_header(key, value)
-    return if controller.response.get_header key.to_s
-    controller.response.set_header key.to_s, value.to_s
-  end
-
-  def append_to_response_headers(status = nil)
+  def add_content(content)
     return unless command_performed?
+    return unless supported_media_type?
 
-    values = [
-      status || "#{controller.response.status} #{TurboBoost::Commands::HTTP_STATUS_CODES[controller.response.status]}".delete(","),
-      rendering_strategy,
-      command_name
-    ]
-
-    append_response_header RESPONSE_HEADER, values.join(", ")
+    responder.add_content content
   end
 end

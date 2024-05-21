@@ -86,15 +86,28 @@ module TurboBoost::Commands::CommandCallbacks
   end
 
   def perform_with_callbacks(method_name)
+    # Setup a temporary `rescue_from` handler on the controller to trap command errors because commands are
+    # run in a controller `before_action` callback. This allows us to properly handle command errors here
+    # instead of letting Rails return the normal 500 error page.
+    command = self
+    controller.class.rescue_from Exception, with: ->(error) { command.send :internal_error_handler, error }
+
     @performing_method_name = method_name
-    run_callbacks NAME do
-      public_send method_name
-      performed!
+    begin
+      run_callbacks NAME do
+        public_send method_name
+        performed!
+      end
+    ensure
+      @performing_method_name = nil
+    end
+
+    # Tear down the temporary `rescue_from` handler
+    controller.rescue_handlers.reject! do |handler|
+      handler.to_s.include? "turbo_boost/commands/command_callbacks.rb"
     end
   rescue => error
-    errored! TurboBoost::Commands::PerformError.new(command: self, cause: error)
-  ensure
-    @performing_method_name = nil
+    internal_error_handler error
   end
 
   def aborted?
@@ -146,5 +159,9 @@ module TurboBoost::Commands::CommandCallbacks
     return if performed?
     changed @performed = true
     notify_observers :performed
+  end
+
+  def internal_error_handler(error)
+    errored! TurboBoost::Commands::PerformError.new(command: self, cause: error)
   end
 end
