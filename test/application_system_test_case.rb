@@ -25,22 +25,39 @@ Capybara.javascript_driver = :playwright
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by :playwright
 
+  class << self
+    def start_playwright
+      @playwright_execution ||= Playwright.create(playwright_cli_executable_path: "npx playwright")
+    end
+
+    def stop_playwright
+      @playwright_execution&.stop
+    end
+
+    def playwright
+      @playwright_execution.playwright
+    end
+  end
+
+  Minitest.after_run { ApplicationSystemTestCase.stop_playwright }
+
   attr_reader :page
 
   def before_setup
+    super
+    ApplicationSystemTestCase.start_playwright
     # migrations_dir = File.expand_path("dummy/db/migrate", __dir__)
     # ActiveRecord::MigrationContext.new(migrations_dir).migrate
-    @playwright_exec = Playwright.create(playwright_cli_executable_path: "npx playwright")
-    @playwright = @playwright_exec.playwright
-    @browser = @playwright.public_send(BROWSER).launch
-    @context = @browser.new_context
-    @page = @context.new_page
+
+    @browser = ApplicationSystemTestCase.playwright.public_send(BROWSER).launch
+    @page = @browser.new_page
     @page.set_default_timeout Capybara.default_max_wait_time * 1_000
   end
 
   def after_teardown
-    @browser.close
-    @playwright_exec.stop
+    super
+    @page&.close
+    @browser&.close
   end
 
   # Wrapper for Playwright's page.evaluate method which evaluates

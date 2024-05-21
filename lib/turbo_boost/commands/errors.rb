@@ -25,6 +25,9 @@ module TurboBoost::Commands
     end
   end
 
+  class InvalidTokenError < CommandError
+  end
+
   class InvalidClassError < CommandError
   end
 
