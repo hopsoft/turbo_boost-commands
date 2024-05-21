@@ -3,6 +3,7 @@
 require_relative "responder"
 require_relative "state"
 require_relative "command_validator"
+require_relative "token_validator"
 
 class TurboBoost::Commands::Runner
   RESPONSE_HEADER = "TurboBoost-Command"
@@ -55,16 +56,20 @@ class TurboBoost::Commands::Runner
     @command_class ||= command_class_name&.safe_constantize
   end
 
-  def command_valid?
-    return false unless command_requested?
-    validator = TurboBoost::Commands::CommandValidator.new(command_class_name, command_method_name)
-    raise_on_invalid_command? ? validator.validate! : validator.valid?
-  end
-
   def command_instance
     @command_instance ||= command_class&.new(controller, state, command_params).tap do |instance|
       instance&.add_observer self, :handle_command_event
     end
+  end
+
+  def command_valid?
+    return false unless command_requested?
+
+    validator = TurboBoost::Commands::CommandValidator.new(command_class_name, command_method_name)
+    raise_on_invalid_command? ? validator.validate! : validator.valid?
+
+    validator = TurboBoost::Commands::TokenValidator.new(command_instance, command_method_name)
+    raise_on_invalid_command? ? validator.validate! : validator.valid?
   end
 
   def command_aborted?
@@ -72,7 +77,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_errored?
-    @command_errored ||= !!command_instance&.errored?
+    !!(command_instance&.errored? || error)
   end
 
   def command_performing?
@@ -80,7 +85,7 @@ class TurboBoost::Commands::Runner
   end
 
   def command_performed?
-    !!command_instance&.performed?
+    command_instance&.performed? || command_errored?
   end
 
   def command_succeeded?
@@ -109,7 +114,6 @@ class TurboBoost::Commands::Runner
 
     command_instance.perform_with_callbacks command_method_name
   rescue => error
-    @command_errored = true
     prevent_controller_action error: error if command_requested?
   end
 
@@ -296,7 +300,7 @@ class TurboBoost::Commands::Runner
   end
 
   def add_error_event
-    return unless error && command_errored?
+    return unless error
     add_event "turbo-boost:command:server-error", message: error.message
   end
 
@@ -304,9 +308,14 @@ class TurboBoost::Commands::Runner
     return unless error
 
     message = <<~MSG
-      #{error.message}\n\n
-      See the HTTP header: `TurboBoost-Command`\n
-      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.\n
+      #{error.message}
+
+      ---
+
+      See the HTTP header: `TurboBoost-Command`
+
+      Also check the JavaScript console if `TurboBoost.Commands.logger.level` has been set.
+
       Finally, check server logs for additional info.
     MSG
 

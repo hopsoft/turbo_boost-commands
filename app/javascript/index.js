@@ -29,11 +29,12 @@ const Commands = {
 
 function buildCommandPayload(id, element) {
   return {
-    id, //---------------------------------------------------------- Uniquely identifies the command invocation
-    name: element.getAttribute(schema.commandAttribute), //--------- Command name
-    elementId: element.id.length > 0 ? element.id : null, //-------- ID of the element that triggered the command
-    elementAttributes: elements.buildAttributePayload(element), //-- Attributes of the element that triggered the command
-    startedAt: Date.now(), //--------------------------------------- Start time of when the command was invoked
+    csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'), // -- Rails CSRF token
+    id, //-------------------------------------------------------------------------------------- Uniquely identifies the command invocation
+    name: element.getAttribute(schema.commandAttribute), //------------------------------------- Command name
+    elementId: element.id.length > 0 ? element.id : null, //------------------------------------ ID of the element that triggered the command
+    elementAttributes: elements.buildAttributePayload(element), //------------------------------ Attributes of the element that triggered the command
+    startedAt: Date.now(), //------------------------------------------------------------------- Start time of when the command was invoked
     state: {
       page: state.buildPageState(),
       signed: state.signed,
