@@ -185,7 +185,7 @@ TurboBoost::Commands.config.tap do |config|
   # opt-[in/out] of alerting on error (true, *false, "development", "test", "production")
   config.alert_on_error = false
 
-  # opt-[in/out] of including precompiling TurboBoost assets (*true, false)
+  # opt-[in/out] of precompiling TurboBoost assets (*true, false)
   config.precompile_assets = true
 
   # opt-[in/out] of forgery protection (true, *false)
