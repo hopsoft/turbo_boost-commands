@@ -180,10 +180,10 @@ TurboBoost Commands can be configured via Rails initializer.
 # config/initializers/turbo_boost_commands.rb
 TurboBoost::Commands.config.tap do |config|
   # opt-[in/out] of alerting on abort (true, *false, "development", "test", "production")
-  config.alert_on_abort = false
+  config.alert_on_abort = "development"
 
   # opt-[in/out] of alerting on error (true, *false, "development", "test", "production")
-  config.alert_on_error = false
+  config.alert_on_error = "development"
 
   # opt-[in/out] of precompiling TurboBoost assets (*true, false)
   config.precompile_assets = true
@@ -195,7 +195,7 @@ TurboBoost::Commands.config.tap do |config|
   config.raise_on_invalid_command = "development"
 
   # opt-[in/out] of state resolution (true, *false)
-  config.resolve_state = false
+  config.resolve_state = true
 end
 ```
 
