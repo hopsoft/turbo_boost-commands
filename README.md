@@ -174,7 +174,7 @@ rails app:template LOCATION='https://railsbytes.com/script/xkjsbB'
 
 ## Configuration
 
-TurboBoost Commands should be configured via a Rails initializer.
+TurboBoost Commands can be configured via Rails initializer.
 
 ```ruby
 # config/initializers/turbo_boost_commands.rb
