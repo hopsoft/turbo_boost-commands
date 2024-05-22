@@ -530,6 +530,10 @@ The code above will be expanded to this HTML.
 </details>
 ```
 
+If the user closes the details element and invokes a command or performs a request,
+the server will pre-render the markup with the current page state preserving the `open` attribute value.
+_The client also ensures that remembered attributes are restored after DOM mutations._
+
 Several things happen when you use `turbo_boost[:remember]` to track page state.
 
 1. The client builds the current page state before emitting requests to the server.
