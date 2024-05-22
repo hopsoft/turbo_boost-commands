@@ -31,8 +31,8 @@
     <a href="https://bundlephobia.com/package/@turbo-boost/commands@">
       <img alt="NPM Bundle Size" src="https://img.shields.io/bundlephobia/minzip/@turbo-boost/commands?label=bundle%20size&logo=npm&color=47d299">
     </a>
-    <a href="https://github.com/sheerun/prettier-standard">
-      <img alt="JavaScript Style" src="https://img.shields.io/badge/style-prettier--standard-168AFE?logo=javascript&logoColor=f4e137" />
+    <a href="https://github.com/prettier/prettier">
+      <img alt="JavaScript Style" src="https://img.shields.io/badge/style-prettier-ff69b4?logo=javascript&logoColor=f4e137" />
     </a>
     <a href="https://github.com/hopsoft/turbo_boost-commands/actions/workflows/tests.yml">
       <img alt="Tests" src="https://github.com/hopsoft/turbo_boost-commands/actions/workflows/tests.yml/badge.svg" />
