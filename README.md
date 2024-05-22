@@ -8,7 +8,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1689-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1735-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_boost-commands/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -63,6 +63,7 @@
   - [Sponsors](#sponsors)
   - [Dependencies](#dependencies)
   - [Setup](#setup)
+  - [Configuration](#configuration)
   - [Usage](#usage)
     - [Event Delegates](#event-delegates)
     - [Lifecycle Events](#lifecycle-events)
@@ -170,6 +171,33 @@ rails app:template LOCATION='https://railsbytes.com/script/xkjsbB'
    import '@hotwired/turbo-rails'
    +import '@turbo-boost/commands'
    ```
+
+## Configuration
+
+TurboBoost Commands should be configured via a Rails initializer.
+
+```ruby
+# config/initializers/turbo_boost_commands.rb
+TurboBoost::Commands.config.tap do |config|
+  # opt-[in/out] of alerting on abort (true, *false, "development", "test", "production")
+  config.alert_on_abort = false
+
+  # opt-[in/out] of alerting on error (true, *false, "development", "test", "production")
+  config.alert_on_error = false
+
+  # opt-[in/out] of including precompiling TurboBoost assets (*true, false)
+  config.precompile_assets = true
+
+  # opt-[in/out] of forgery protection (true, *false)
+  config.protect_from_forgery = true
+
+  # opt-[in/out] of raising an error when an invalid command is invoked (true, false, *"development", "test", "production")
+  config.raise_on_invalid_command = "development"
+
+  # opt-[in/out] of state resolution (true, *false)
+  config.resolve_state = false
+end
+```
 
 ## Usage
 
