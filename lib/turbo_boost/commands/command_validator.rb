@@ -26,12 +26,12 @@ class TurboBoost::Commands::CommandValidator
   private
 
   def command_ancestors
-    range = 0..(command.class&.ancestors&.index(TurboBoost::Commands::Command).to_i - 1)
-    command.class&.ancestors&.[](range) || []
+    range = 0..(command.class.ancestors.index(TurboBoost::Commands::Command).to_i - 1)
+    command.class.ancestors.[](range) || []
   end
 
   def valid_class?
-    command.class&.ancestors&.include? TurboBoost::Commands::Command
+    command.class.ancestors.include? TurboBoost::Commands::Command
   end
 
   def valid_method?
