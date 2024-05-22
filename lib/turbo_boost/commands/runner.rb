@@ -65,7 +65,7 @@ class TurboBoost::Commands::Runner
   def command_valid?
     return false unless command_requested?
 
-    validator = TurboBoost::Commands::CommandValidator.new(command_class_name, command_method_name)
+    validator = TurboBoost::Commands::CommandValidator.new(command_instance, command_method_name)
     raise_on_invalid_command? ? validator.validate! : validator.valid?
 
     validator = TurboBoost::Commands::TokenValidator.new(command_instance, command_method_name)

@@ -59,162 +59,169 @@ class TurboBoost::Commands::CommandValidatorTest < ActiveSupport::TestCase
     end
   end
 
+  setup do
+    controller = TestsController.new
+    state = TurboBoost::Commands::State.new
+    @command = TurboBoost::Commands::CommandValidatorTest::TestCommand.new(controller, state)
+    @invalid_command = TurboBoost::Commands::CommandValidatorTest::InvalidTestCommand.new
+  end
+
   test "valid? with missing class" do
-    refute TurboBoost::Commands::CommandValidator.new("MissingCommand", :perform).valid?
+    refute TurboBoost::Commands::CommandValidator.new(nil, :perform).valid?
   end
 
   test "validate with missing class" do
-    refute TurboBoost::Commands::CommandValidator.new("MissingCommand", :perform).validate
+    refute TurboBoost::Commands::CommandValidator.new(nil, :perform).validate
   end
 
   test "validate! with missing class" do
     assert_raises TurboBoost::Commands::InvalidClassError do
-      TurboBoost::Commands::CommandValidator.new("MissingCommand", :perform).validate!
+      TurboBoost::Commands::CommandValidator.new(nil, :perform).validate!
     end
   end
 
   test "valid? with invalid class" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::InvalidTestCommand", :perform).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@invalid_command, :perform).valid?
   end
 
   test "validate with invalid class" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::InvalidTestCommand", :perform).validate
+    refute TurboBoost::Commands::CommandValidator.new(@invalid_command, :perform).validate
   end
 
   test "validate! with invalid class" do
     assert_raises TurboBoost::Commands::InvalidClassError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::InvalidTestCommand", :perform).validate!
+      TurboBoost::Commands::CommandValidator.new(@invalid_command, :perform).validate!
     end
   end
 
   test "valid? with public methods" do
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform).valid?
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform).valid?
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform).valid?
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform).valid?
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform).valid?
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform).valid?
+    assert TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform).valid?
+    assert TurboBoost::Commands::CommandValidator.new(@command, :perform).valid?
   end
 
   test "valid? with protected methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_protected).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_protected).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_protected).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_protected).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_protected).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_protected).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_protected).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_protected).valid?
   end
 
   test "valid? with private methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_private).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_private).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_private).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_private).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_private).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_private).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_private).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_private).valid?
   end
 
   test "valid? with inherited methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).valid?
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).valid?
   end
 
   test "validate with public methods" do
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform).validate
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform).validate
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform).validate
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform).validate
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform).validate
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform).validate
+    assert TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform).validate
+    assert TurboBoost::Commands::CommandValidator.new(@command, :perform).validate
   end
 
   test "validate! with public methods that accept arguments" do
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :perform_with_args).validate!
     end
   end
 
   test "validate with public methods that accept arguments" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_with_args).validate
   end
 
   test "valid? with public methods that accept arguments" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_with_args).valid?
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_with_args).valid?
   end
 
   test "validate with protected methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_protected).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_protected).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_protected).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_protected).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_protected).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_protected).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_protected).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_protected).validate
   end
 
   test "validate with private methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_private).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_private).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_private).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_private).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_private).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_private).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_private).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :perform_private).validate
   end
 
   test "validate with inherited methods" do
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate
-    refute TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate
+    refute TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate
   end
 
   test "validate! with public methods" do
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform).validate!
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform).validate!
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform).validate!
-    assert TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform).validate!
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform).validate!
+    assert TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform).validate!
+    assert TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform).validate!
+    assert TurboBoost::Commands::CommandValidator.new(@command, :perform).validate!
   end
 
   test "validate! with protected methods" do
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_protected).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_protected).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_protected).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_protected).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_protected).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_protected).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_protected).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :perform_protected).validate!
     end
   end
 
   test "validate! with private methods" do
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_mixin_perform_private).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :superclass_mixin_perform_private).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :superclass_perform_private).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :superclass_perform_private).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :mixin_perform_private).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :mixin_perform_private).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :perform_private).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :perform_private).validate!
     end
   end
 
   test "validate! with inherited methods" do
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate!
     end
 
     assert_raises TurboBoost::Commands::InvalidMethodError do
-      TurboBoost::Commands::CommandValidator.new("TurboBoost::Commands::CommandValidatorTest::TestCommand", :inspect).validate!
+      TurboBoost::Commands::CommandValidator.new(@command, :inspect).validate!
     end
   end
 end
