@@ -77,7 +77,8 @@ class TurboBoost::Commands::Runner
   end
 
   def command_errored?
-    !!(command_instance&.errored? || error)
+    return false if command_aborted?
+    command_instance&.errored? || error.present?
   end
 
   def command_performing?
