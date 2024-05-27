@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rouge"
   s.add_development_dependency "runfile"
   s.add_development_dependency "sprockets-rails"
-  s.add_development_dependency "sqlite3", "~> 1.4"
+  s.add_development_dependency "sqlite3", "~> 1.7" # NOTE: ActiveRecord pins sqlite3 to "~> 1.4"
   s.add_development_dependency "standardrb"
   s.add_development_dependency "tailwindcss-rails"
   s.add_development_dependency "webdrivers"
