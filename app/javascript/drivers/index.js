@@ -23,7 +23,7 @@ function find(element) {
       invokeCommand: formDriver.invokeCommand
     }
 
-  if (turboMethod && turboMethod.length)
+  if (turboMethod?.length)
     return {
       name: 'method',
       reason: 'Element defines data-turbo-method.',
