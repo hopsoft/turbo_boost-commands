@@ -26,7 +26,11 @@ const save = () => {
     pages: { ...saved.pages }
   }
 
-  fresh.pages[location.pathname] = { ...fresh.pages[location.pathname], ...page.buildState() }
+  // update the current page's state entry
+  const pageKey = location.pathname
+  const pageState = page.buildState()
+  Object.values(pageState).length ? (fresh.pages[pageKey] = pageState) : delete fresh.pages[pageKey]
+
   storage.save(key, fresh)
 }
 

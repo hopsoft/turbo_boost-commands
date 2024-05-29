@@ -12,10 +12,11 @@ const buildState = () => {
   return elements.reduce((memo, element) => {
     const attributes = JSON.parse(element.getAttribute(schema.stateAttributesAttribute))
     if (element.id) {
-      memo[element.id] = attributes.reduce((acc, name) => {
+      const stateAttributes = attributes.reduce((acc, name) => {
         if (element.hasAttribute(name)) acc[name] = element.getAttribute(name) || name
         return acc
       }, {})
+      if (Object.values(stateAttributes).length) memo[element.id] = stateAttributes
     }
     return memo
   }, {})
