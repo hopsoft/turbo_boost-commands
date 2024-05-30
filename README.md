@@ -129,8 +129,8 @@ Please consider a **one-time donation** to ensure the continued growth and maint
 Your contribution will help drive the evolution of **TurboBoost**, enabling new features, enhancements, and bug fixes that benefit the entire community.
 
 > [!TIP]
-> Every contribution makes a difference, _no matter the amount._
-> <sup>You will receive a formal receipt for your financial records and accounting purposes.</sup>
+> Every contribution makes a difference, _no matter the amount._<br>
+> <sub>You will receive a receipt for your financial records and accounting purposes.</sub>
 
 <p>
   <a href="https://donate.stripe.com/fZe9EjfhZbZRdeE9AA?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
