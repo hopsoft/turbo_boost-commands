@@ -3,7 +3,7 @@
     <source media="(prefers-color-scheme: dark)" srcset="https://ik.imagekit.io/hopsoft/turbo-boost-logo-dark-bg_o_f0bVskz.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1671722004391">
     <img height="60" src="https://ik.imagekit.io/hopsoft/turbo-boost-logo_zHiiimlvT.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1671722004342" />
   </picture>
-  <br>
+  <br />
   <h1 align="center">
     Welcome to TurboBoost Commands 👋
   </h1>
@@ -44,7 +44,7 @@
     <a href="https://github.com/sponsors/hopsoft">
       <img alt="Sponsors" src="https://img.shields.io/github/sponsors/hopsoft?color=eb4aaa&logo=GitHub%20Sponsors" />
     </a>
-    <br>
+    <br />
     <a href="https://ruby.social/@hopsoft">
       <img alt="Ruby.Social Follow" src="https://img.shields.io/mastodon/follow/000008274?domain=https%3A%2F%2Fruby.social&label=%40hopsoft&style=social">
     </a>
@@ -129,15 +129,15 @@ Please consider a **one-time donation** to ensure the continued growth and maint
 Your contribution will help drive the evolution of **TurboBoost**, enabling new features, enhancements, and bug fixes that benefit the entire community.
 
 > [!TIP]
-> Every contribution makes a difference, _no matter the amount._<br>
+> Every contribution makes a difference, _no matter the amount._<br />
 > <sub>You will receive a receipt for your financial records and accounting purposes.</sub>
 
 <p>
   <a href="https://donate.stripe.com/fZe9EjfhZbZRdeE9AA?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
-    <img src="https://img.shields.io/badge/Donate_with_Stripe-635bff?style=flat&labelColor=c4b8ff&logo=Stripe&logoColor=635bff&logoSize=auto" alt="Make a one-time Stripe donation" height="32">
+    <img src="https://img.shields.io/badge/Donate_with_Stripe-635bff?style=flat&labelColor=c4b8ff&logo=Stripe&logoColor=635bff&logoSize=auto" alt="Make a one-time Stripe donation" height="32" />
   </a>
   <a href="https://commerce.coinbase.com/checkout/0a6079bf-5c7a-4a93-a943-401bba8981a0?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
-    <img src="https://img.shields.io/badge/Donate_with_Coinbase-0052ff.svg?style=flat&logoSize=30&labelColor=a3c4ff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgZmlsbD0iIzAwNTJmZiIgcng9IjUxMiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik01MTIuMTQ3IDY5MmMtOTkuNDUgMC0xODAtODAuNTUtMTgwLTE4MHM4MC41NS0xODAgMTgwLTE4MGM4OS4xIDAgMTYzLjA1IDY0Ljk1IDE3Ny4zIDE1MGgxODEuMzVjLTE1LjMtMTg0LjgtMTcwLTMzMC0zNTguNjUtMzMwLTE5OC43NSAwLTM2MCAxNjEuMjUtMzYwIDM2MHMxNjEuMjUgMzYwIDM2MCAzNjBjMTg4LjY1IDAgMzQzLjM1LTE0NS4yIDM1OC42NS0zMzBoLTE4MS41Yy0xNC4yNSA4NS4wNS04OC4yNSAxNTAtMTc3LjE1IDE1MHoiLz48L3N2Zz4=" alt="Make a one-time Coinbase donation" height="32">
+    <img src="https://img.shields.io/badge/Donate_with_Coinbase-0052ff.svg?style=flat&logoSize=30&labelColor=a3c4ff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgZmlsbD0iIzAwNTJmZiIgcng9IjUxMiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik01MTIuMTQ3IDY5MmMtOTkuNDUgMC0xODAtODAuNTUtMTgwLTE4MHM4MC41NS0xODAgMTgwLTE4MGM4OS4xIDAgMTYzLjA1IDY0Ljk1IDE3Ny4zIDE1MGgxODEuMzVjLTE1LjMtMTg0LjgtMTcwLTMzMC0zNTguNjUtMzMwLTE5OC43NSAwLTM2MCAxNjEuMjUtMzYwIDM2MHMxNjEuMjUgMzYwIDM2MCAzNjBjMTg4LjY1IDAgMzQzLjM1LTE0NS4yIDM1OC42NS0zMzBoLTE4MS41Yy0xNC4yNSA4NS4wNS04OC4yNSAxNTAtMTc3LjE1IDE1MHoiLz48L3N2Zz4=" alt="Make a one-time Coinbase donation" height="32" />
   </a>
 </p>
 
@@ -146,7 +146,7 @@ Your contribution will help drive the evolution of **TurboBoost**, enabling new 
 <sub>Proudly sponsored by</sub>
 
 <a href="https://www.clickfunnels.com?utm_source=hopsoft&utm_medium=open-source&utm_campaign=turbo_boost-commands">
-<img src="https://images.clickfunnel.com/uploads/digital_asset/file/176632/clickfunnels-dark-logo.svg" width="575" />
+  <img src="https://images.clickfunnel.com/uploads/digital_asset/file/176632/clickfunnels-dark-logo.svg" width="575" />
 </a>
 
 ## Dependencies
