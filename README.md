@@ -135,8 +135,7 @@ Your contribution will help drive the evolution of **TurboBoost**, enabling new 
 <p>
   <a href="https://donate.stripe.com/fZe9EjfhZbZRdeE9AA?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
     <img src="https://img.shields.io/badge/Donate_with_Stripe-635bff?style=flat&labelColor=c4b8ff&logo=Stripe&logoColor=635bff&logoSize=auto" alt="Make a one-time Stripe donation" height="32">
-  </a>
-  <a href="https://commerce.coinbase.com/checkout/0a6079bf-5c7a-4a93-a943-401bba8981a0?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
+  </a><a href="https://commerce.coinbase.com/checkout/0a6079bf-5c7a-4a93-a943-401bba8981a0?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
     <img src="https://img.shields.io/badge/Donate_with_Coinbase-0052ff.svg?style=flat&logoSize=30&labelColor=a3c4ff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgZmlsbD0iIzAwNTJmZiIgcng9IjUxMiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik01MTIuMTQ3IDY5MmMtOTkuNDUgMC0xODAtODAuNTUtMTgwLTE4MHM4MC41NS0xODAgMTgwLTE4MGM4OS4xIDAgMTYzLjA1IDY0Ljk1IDE3Ny4zIDE1MGgxODEuMzVjLTE1LjMtMTg0LjgtMTcwLTMzMC0zNTguNjUtMzMwLTE5OC43NSAwLTM2MCAxNjEuMjUtMzYwIDM2MHMxNjEuMjUgMzYwIDM2MCAzNjBjMTg4LjY1IDAgMzQzLjM1LTE0NS4yIDM1OC42NS0zMzBoLTE4MS41Yy0xNC4yNSA4NS4wNS04OC4yNSAxNTAtMTc3LjE1IDE1MHoiLz48L3N2Zz4=" alt="Make a one-time Coinbase donation" height="32">
   </a>
 </p>
