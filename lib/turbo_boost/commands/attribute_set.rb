@@ -21,8 +21,8 @@ class TurboBoost::Commands::AttributeSet
       name.delete_prefix!("#{prefix}_") unless prefix.blank?
 
       # type casting
-      value = value.to_i if value.is_a?(String) && value.match?(/\A-?\d+\z/)
-      value = value == "true" if value.is_a?(String) && value.match?(/\A(true|false)\z/i)
+      value = value.to_i if cast_to_integer?(value)
+      value = value == "true" if cast_to_boolean?(value)
 
       begin
         next if instance_variable_defined?(:"@#{name}")
@@ -74,5 +74,19 @@ class TurboBoost::Commands::AttributeSet
   def method_missing(name, *args)
     return false if name.end_with?("?")
     nil
+  end
+
+  private
+
+  def cast_to_integer?(value)
+    return false unless value.is_a?(String)
+    return false unless value.match?(/\A-?\d+\z/)
+    return false if value.size > 1 && value.start_with?("0")
+    true
+  end
+
+  def cast_to_boolean?(value)
+    return false unless value.is_a?(String)
+    value.match?(/\A(true|false)\z/i)
   end
 end
