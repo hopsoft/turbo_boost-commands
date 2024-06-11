@@ -36,6 +36,14 @@ class AttributeSetTest < ActiveSupport::TestCase
     assert_equal 54872, attrs.a
   end
 
+  test "type coercion with number containg a leading 0 remains a string" do
+    attributes = {test: "00000"}
+    attrs = TurboBoost::Commands::AttributeSet.new(attributes)
+    assert attrs.test?
+    assert attrs.test.is_a? String
+    assert_equal "00000", attrs.test
+  end
+
   test "implicit hydration" do
     attributes = {test_a: "value", data: {locals: {user: User.first}}}.with_indifferent_access
     dehydrated = dehydrate(attributes)
