@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require "test_helper"
 require "capybara-playwright-driver"
+require "timeout"
+require "test_helper"
 
-Capybara.default_max_wait_time = 8
-Capybara.default_retry_interval = 0.2
+Capybara.default_max_wait_time = 10
+Capybara.default_retry_interval = 2
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
 
@@ -41,7 +42,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   Minitest.after_run { ApplicationSystemTestCase.stop_playwright }
 
-  attr_reader :page
+  attr_reader :browser, :page
 
   def before_setup
     super
@@ -191,5 +192,19 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     yield
   ensure
     $stdout = stdout
+  end
+
+  def invalid_user_agents
+    @invalid_user_agents ||= begin
+      spec = Gem::Specification.find_by_name("device_detector")
+      path = File.join(spec.full_gem_path, "regexes", "bots.yml")
+      YAML.safe_load_file(path)
+        .reject { |entry| /[#{Regexp.escape "?*[]\\"}]/.match? entry["regex"] }
+        .map { |entry| entry["regex"] }
+    end
+  end
+
+  def invalid_user_agent
+    invalid_user_agents.sample
   end
 end

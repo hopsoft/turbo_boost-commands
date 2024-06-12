@@ -19,12 +19,14 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,lib}/**/*", "MIT-LICENSE", "README.md"]
 
   s.required_ruby_version = ">= 3.0"
+
+  s.add_dependency "device_detector", ">= 1.0"
+  s.add_dependency "observer"
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "turbo-rails", ">= 1.1"
   s.add_dependency "turbo_boost-streams", ">= 0.1.11"
   s.add_dependency "universalid", ">= 0.1.7"
 
-  # s.add_development_dependency "web-console"
   s.add_development_dependency "amazing_print"
   s.add_development_dependency "capybara"
   s.add_development_dependency "capybara-playwright-driver"
@@ -48,5 +50,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sqlite3", "~> 1.7" # NOTE: ActiveRecord pins sqlite3 to "~> 1.4"
   s.add_development_dependency "standardrb"
   s.add_development_dependency "tailwindcss-rails"
-  s.add_development_dependency "webdrivers"
 end

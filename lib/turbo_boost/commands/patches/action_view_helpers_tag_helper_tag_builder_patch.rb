@@ -6,7 +6,7 @@ module TurboBoost::Commands::Patches::ActionViewHelpersTagHelperTagBuilderPatch
   def tag_options(options, ...)
     options = turbo_boost&.state&.tag_options(options) || options
     options = TurboBoost::Commands::AttributeHydration.dehydrate(options)
-    super(options, ...)
+    super
   end
 
   private
