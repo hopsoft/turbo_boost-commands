@@ -121,7 +121,7 @@ class TurboBoost::Commands::EntryMiddleware
       # Store the command params in the environment
       env["turbo_boost_command_params"] = params
 
-      # Change Rack headers
+      # Change URI and path
       env["REQUEST_URI"] = uri.to_s if env.key?("REQUEST_URI")
       env["REQUEST_PATH"] = uri.path
       env["PATH_INFO"] = begin
@@ -130,7 +130,7 @@ class TurboBoost::Commands::EntryMiddleware
         path_info.empty? ? "/" : path_info
       end
 
-      # Change path and query string
+      # Change query string
       env["QUERY_STRING"] = uri.query.to_s
       env.delete("rack.request.query_hash")
 
@@ -147,7 +147,7 @@ class TurboBoost::Commands::EntryMiddleware
       env.delete("CONTENT_TYPE")
       env.delete("content-type")
 
-      # Change the method from POST to GET
+      # Change the method to GET
       env["REQUEST_METHOD"] = "GET"
     end
   rescue => error

@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "turbo-rails", ">= 1.1"
   s.add_dependency "turbo_boost-streams", ">= 0.1.11"
   s.add_dependency "universalid", ">= 0.1.7"
+  s.add_dependency "observer"
 
   s.add_development_dependency "amazing_print"
   s.add_development_dependency "capybara"
