@@ -36,9 +36,8 @@ class TurboBoost::Commands::TokenValidator
   def tokens
     list = Set.new.tap do |set|
       set.add command.params[:csrf_token]
-
-      # TODO: Update to use Rails' public API
-      set.merge controller.send(:request_authenticity_tokens)
+      set.add controller.request.x_csrf_token
+      set.add controller.params[controller.class.request_forgery_protection_token]
     end
 
     list.select(&:present?).to_a
@@ -47,5 +46,10 @@ class TurboBoost::Commands::TokenValidator
   def valid_token?(token)
     # TODO: Update to use Rails' public API
     controller.send :valid_authenticity_token?, session, token
+  end
+
+  def token_name
+    Rails.application.config.action_controller.request_forgery_protection_token ||
+      ActionController::RequestForgeryProtection::CSRF_TOKEN
   end
 end

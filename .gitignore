@@ -3,8 +3,8 @@
 *.metafile.json
 .byebug_history
 .containers.yml
-.pnp.*
 .playwright*
+.pnp.*
 .yarn*
 /.bundle/
 /doc/
@@ -18,13 +18,7 @@
 /test/dummy/storage/
 /test/dummy/tmp/
 /tmp/
+/vendor
 Gemfile.lock
 test/dummy/app/javascript/@turbo-boost
 test/dummy/log/*.log*
-
-
-# AppMap artifacts
-/.appmap
-
-# Vendored Ruby gems
-/vendor
