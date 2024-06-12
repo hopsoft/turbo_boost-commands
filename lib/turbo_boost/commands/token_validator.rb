@@ -47,9 +47,4 @@ class TurboBoost::Commands::TokenValidator
     # TODO: Update to use Rails' public API
     controller.send :valid_authenticity_token?, session, token
   end
-
-  def token_name
-    Rails.application.config.action_controller.request_forgery_protection_token ||
-      ActionController::RequestForgeryProtection::CSRF_TOKEN
-  end
 end

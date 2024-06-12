@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
+require "capybara-playwright-driver"
 require "timeout"
 require "test_helper"
-require "capybara-playwright-driver"
 
-Capybara.default_max_wait_time = 60
-Capybara.default_retry_interval = 10
+Capybara.default_max_wait_time = 10
+Capybara.default_retry_interval = 2
 Capybara.default_normalize_ws = true
 Capybara.save_path = "tmp/capybara"
 
