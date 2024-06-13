@@ -76,7 +76,8 @@
     - [Setting Instance Variables](#setting-instance-variables)
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-    - [Tracking Page State](#tracking-page-state)
+  - [State](#state)
+    - [Ephemeral Page State](#ephemeral-page-state)
   - [Community](#community)
   - [Developing](#developing)
       - [Notable Files](#notable-files)
@@ -526,7 +527,11 @@ _Learn more about Turbo Stream broadcasting by reading through the
 > [!NOTE]
 > `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
 
-### Tracking Page State
+## State
+
+TODO: Document state tracking
+
+### Ephemeral Page State
 
 You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
 element attribute values between requests.
