@@ -9,7 +9,7 @@
   </h1>
   <p align="center">
     <a href="http://blog.codinghorror.com/the-best-code-is-no-code-at-all/">
-      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1736-47d299.svg" />
+      <img alt="Lines of Code" src="https://img.shields.io/badge/loc-1783-47d299.svg" />
     </a>
     <a href="https://codeclimate.com/github/hopsoft/turbo_boost-commands/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/fe1162a742fe83a4fdfd/maintainability" />
@@ -62,6 +62,7 @@
 
   - [Why TurboBoost Commands?](#why-turboboost-commands)
   - [Sponsors](#sponsors)
+    - [Open Source projects like TurboBoost rely on your support](#open-source-projects-like-turboboost-rely-on-your-support)
   - [Dependencies](#dependencies)
   - [Setup](#setup)
   - [Configuration](#configuration)
@@ -75,7 +76,8 @@
     - [Setting Instance Variables](#setting-instance-variables)
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
-    - [Tracking Page State](#tracking-page-state)
+  - [State](#state)
+    - [Ephemeral Page State](#ephemeral-page-state)
   - [Community](#community)
   - [Developing](#developing)
       - [Notable Files](#notable-files)
@@ -113,8 +115,6 @@ Namely,
 3. **(Re)render to reflect the new state**
 4. _repeat..._
 
-_The primary distinction being that **state is wholly managed by the server**._
-
 Commands are executed via a Rails `before_action` which means that reactivity runs over HTTP.
 _**Web sockets are NOT used for the reactive critical path!** 🎉_
 This also means that standard Rails mechanics drive their behavior.
@@ -134,10 +134,10 @@ Your contribution will help drive the evolution of **TurboBoost**, enabling new 
 
 <p>
   <a href="https://donate.stripe.com/fZe9EjfhZbZRdeE9AA?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
-    <img src="https://img.shields.io/badge/Donate_with_Stripe-635bff?style=flat&labelColor=c4b8ff&logo=Stripe&logoColor=635bff&logoSize=auto" alt="Make a one-time Stripe donation" height="32" />
+    <img src="https://img.shields.io/badge/Donate_with_Stripe-635bff?style=flat&labelColor=c4b8ff&logo=Stripe&logoColor=635bff&logoSize=auto" alt="Make a one-time Stripe donation" height="28" />
   </a>
   <a href="https://commerce.coinbase.com/checkout/0a6079bf-5c7a-4a93-a943-401bba8981a0?utm_source=github&utm_medium=readme&utm_campaign=hopsoft&utm_content=turbo_boost-commands">
-    <img src="https://img.shields.io/badge/Donate_with_Coinbase-0052ff.svg?style=flat&logoSize=30&labelColor=a3c4ff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgZmlsbD0iIzAwNTJmZiIgcng9IjUxMiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik01MTIuMTQ3IDY5MmMtOTkuNDUgMC0xODAtODAuNTUtMTgwLTE4MHM4MC41NS0xODAgMTgwLTE4MGM4OS4xIDAgMTYzLjA1IDY0Ljk1IDE3Ny4zIDE1MGgxODEuMzVjLTE1LjMtMTg0LjgtMTcwLTMzMC0zNTguNjUtMzMwLTE5OC43NSAwLTM2MCAxNjEuMjUtMzYwIDM2MHMxNjEuMjUgMzYwIDM2MCAzNjBjMTg4LjY1IDAgMzQzLjM1LTE0NS4yIDM1OC42NS0zMzBoLTE4MS41Yy0xNC4yNSA4NS4wNS04OC4yNSAxNTAtMTc3LjE1IDE1MHoiLz48L3N2Zz4=" alt="Make a one-time Coinbase donation" height="32" />
+    <img src="https://img.shields.io/badge/Donate_with_Coinbase-0052ff.svg?style=flat&logoSize=30&labelColor=a3c4ff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgZmlsbD0iIzAwNTJmZiIgcng9IjUxMiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik01MTIuMTQ3IDY5MmMtOTkuNDUgMC0xODAtODAuNTUtMTgwLTE4MHM4MC41NS0xODAgMTgwLTE4MGM4OS4xIDAgMTYzLjA1IDY0Ljk1IDE3Ny4zIDE1MGgxODEuMzVjLTE1LjMtMTg0LjgtMTcwLTMzMC0zNTguNjUtMzMwLTE5OC43NSAwLTM2MCAxNjEuMjUtMzYwIDM2MHMxNjEuMjUgMzYwIDM2MCAzNjBjMTg4LjY1IDAgMzQzLjM1LTE0NS4yIDM1OC42NS0zMzBoLTE4MS41Yy0xNC4yNSA4NS4wNS04OC4yNSAxNTAtMTc3LjE1IDE1MHoiLz48L3N2Zz4=" alt="Make a one-time Coinbase donation" height="28" />
   </a>
 </p>
 
@@ -527,7 +527,11 @@ _Learn more about Turbo Stream broadcasting by reading through the
 > [!NOTE]
 > `broadcast_invoke_later_to` is a [TurboBoost Streams](https://github.com/hopsoft/turbo_boost-streams#broadcasting) feature.
 
-### Tracking Page State
+## State
+
+TODO: Document state tracking
+
+### Ephemeral Page State
 
 You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
 element attribute values between requests.
