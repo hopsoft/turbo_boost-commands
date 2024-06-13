@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class TurboBoost::Commands::ExitMiddleware
-  BODY_PATTERN = /<\/\s*body/io
-  TURBO_FRAME_PATTERN = /<\/\s*turbo-frame/io
-  TURBO_STREAM_PATTERN = /<\/\s*turbo-stream/io
-  TAIL_PATTERN = /\z/io
+  BODY_PATTERN = /<\/\s*body/i
+  TURBO_FRAME_PATTERN = /<\/\s*turbo-frame/i
+  TURBO_STREAM_PATTERN = /<\/\s*turbo-stream/i
+  TAIL_PATTERN = /\z/i
 
   def initialize(app)
     @app = app
