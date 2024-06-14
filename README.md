@@ -77,11 +77,11 @@
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [State](#state)
-    - [Server State](#server-state)
-    - [Now State](#now-state)
-    - [Client State](#client-state)
+    - [Server-State](#server-state)
+    - [Now-State](#now-state)
+    - [Client-State](#client-state)
+    - [Page-State](#page-state)
     - [State Resolution](#state-resolution)
-    - [Page State](#page-state)
   - [Community](#community)
   - [Developing](#developing)
       - [Notable Files](#notable-files)
@@ -540,18 +540,18 @@ TurboBoost manages various forms of state to provide a terrific reactive user ex
 
 Here’s a breakdown of each type:
 
-### Server State
+### Server-State
 
-Server state is the persistent state that the server used for the most recent render.
+Server-State is the persistent state that the server used for the most recent render.
 This state is signed, ensuring data integrity and security.
 
 The client includes this signed state along with its own optimistic changes whenever a Command is invoked.
-The server can then compute the difference between the client state and the server state,
+The server can then compute the difference between the Client-State and the Server-State,
 allowing you to accept or reject the client's optimistic changes.
 
 This ensures the server remains the single source of truth.
 
-Server state can be accessed within Commands like so.
+Server-State can be accessed within Commands like so.
 
 ```ruby
 state[:key] = "value"
@@ -559,7 +559,7 @@ state[:key]
 #=> "value"
 ```
 
-Server state is also accessible in controllers and views.
+Server-State is also accessible in controllers and views.
 
 ```ruby
 # controller
@@ -576,14 +576,14 @@ turbo_boost.state[:key]
 %>
 ```
 
-### Now State
+### Now-State
 
-Now state is ephemeral server-side state that only exists for the current render cycle.
+Now-State is ephemeral server side state that only exists for the current render cycle.
 Similar to `flash.now` in Rails, this state is discarded after rendering.
 
 It’s useful for managing temporary data that doesn’t need to persist beyond the current request.
 
-Now state can be accessed within Commands like so.
+Now-State can be accessed within Commands like so.
 
 ```ruby
 state.now[:key] = "value"
@@ -591,7 +591,7 @@ state.now[:key]
 #=> "value"
 ```
 
-Server state is also accessible in controllers and views.
+Now-State is also accessible in controllers and views.
 
 ```ruby
 # controller
@@ -608,14 +608,15 @@ turbo_boost.state.now[:key]
 %>
 ```
 
-### Client State
+### Client-State
 
-Client state is a mutable version of the signed server state, wrapped in an observable JavaScript proxy.
-This allows for sophisticated techniques like data binding with custom JavaScript, Stimulus controllers, and web components.
+Client-State is a mutable version of the signed Server-State, wrapped in an observable JavaScript proxy.
+This allows for sophisticated techniques like data binding via custom JavaScript, Stimulus controllers, or web components.
 
-Client-side state enables immediate UI updates, providing a fast and smooth user experience while the server resolves state differences whenever commands are invoked.
+Client-side state enables immediate UI updates, providing a fast and smooth user experience while the server
+[resolves state](#state-resolution) differences whenever Commands are invoked.
 
-Client state can be accessed on the client like so.
+Client-State can be accessed on the client like so.
 
 ```js
 TurboBoost.State.current['key'] = 'value'
@@ -623,20 +624,46 @@ TurboBoost.State.current['key']
 //=> 'value'
 ```
 
+### Page-State
+
+Page-State is managed by the client and used to remember element attribute values between server renders.
+It’s best for tracking transient user interactions, like which elements are visible, open/closed, their position, etc.
+
+This enhances the user experience by maintaining the state of UI elements between renders.
+When invoking commands, the client sends the Page-State to the server, allowing it to preserve element attributes when rendering.
+_The client also checks and restores Page-State whenever the DOM changes if needed._
+
+You can opt-in to remember Page-State with Rails tag helpers via the `turbo_boost[:remember]` option.
+
+```erb
+<%= tag.details id: "page-state-example", open: "open", turbo_boost: { remember: [:open] } do %>
+  <summary>Page-State Example</summary>
+  Content...
+<% end %>
+```
+
+_This remembers whether the `details` element is open or closed._
+
+__That's it!__ You're done.
+
+> [!NOTE]
+> Page-State tracking works with all element attributes, including `aria` and `data`,
+> but elements must have a unique `id` to participate in Page-State tracking.
+
 ### State Resolution
 
 Commands can perform state resolution by implementing the `resolve_state` method.
 
 The Command has access to all forms of state, so you should use explicit access during resolution.
 
-You can access both the signed server state and the optimistc client state from within the Command like so.
+You can access both the signed Server-State and the optimistc Client-State from within the Command like so.
 
 ```ruby
 class ExampleCommand < TurboBoost::Commands::Command
 
   def resolve_state
-    state.signed #=> the server state (from the last render)
-    state.unsigned #=> the client optimistc state
+    state.signed #=> the Server-State (from the last render)
+    state.unsigned #=> the optimistic Client-State
     # compare and resolve the delta
   end
 end
@@ -653,32 +680,6 @@ TurboBoost::Commands.config.tap do |config|
   config.resolve_state = true
 end
 ```
-
-### Page State
-
-Page State is managed by the client and used to remember element attribute values between server renders.
-It’s best for tracking transient user interactions, like which elements are visible, open/closed, their position, etc.
-
-This enhances the user experience by maintaining the state of UI elements between renders.
-When invoking commands, the client sends the page state to the server, allowing it to preserve element attributes when rendering.
-_The client also checks and restores page state whenever the DOM changes if needed._
-
-You can opt-in to remember page state with Rails tag helpers via the `turbo_boost[:remember]` option.
-
-```erb
-<%= tag.details id: "page-state-example", open: "open", turbo_boost: { remember: [:open] } do %>
-  <summary>Page State Example</summary>
-  Content...
-<% end %>
-```
-
-_This remembers whether the `details` element is open or closed._
-
-__That's it!__ You're done.
-
-> [!NOTE]
-> Page state tracking works with all element attributes, including `aria` and `data`,
-> but elements must have a unique `id` to participate in page state tracking.
 
 ## Community
 
