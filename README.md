@@ -78,7 +78,7 @@
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [State](#state)
     - [Server Side State](#server-side-state)
-    - [Optimistic Client Side State](#optimistic-client-side-state)
+    - [Client Side State](#client-side-state)
     - [Data Binding](#data-binding)
     - [State Resolution](#state-resolution)
     - [Page State](#page-state)
@@ -540,7 +540,7 @@ _Learn more about Turbo Stream broadcasting by reading through the
 
 TODO
 
-### Optimistic Client Side State
+### Client Side State
 
 TODO
 
