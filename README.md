@@ -538,9 +538,6 @@ _Learn more about Turbo Stream broadcasting by reading through the
 
 TurboBoost manages various forms of state to provide a terrific reactive user experience.
 
-> [!TIP]
-> TurboBoost State can also be used independent of Commands with standard Hotwire techniques.
-
 Here’s a breakdown of each type:
 
 ### Server-State
@@ -685,6 +682,9 @@ TurboBoost::Commands.config.tap do |config|
   config.resolve_state = true
 end
 ```
+
+> [!TIP]
+> TurboBoost State mechanics can also be used independent of Commands with standard Hotwire techniques.
 
 ## Community
 
