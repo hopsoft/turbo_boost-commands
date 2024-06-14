@@ -573,6 +573,7 @@ turbo_boost.state[:key]
 
 ```erb
 <%
+  # view
   turbo_boost.state[:key] = "value"
   turbo_boost.state[:key]
   #=> "value"
@@ -605,6 +606,7 @@ turbo_boost.state.now[:key]
 
 ```erb
 <%
+  # view
   turbo_boost.state.now[:key] = "value"
   turbo_boost.state.now[:key]
   #=> "value"
@@ -616,7 +618,7 @@ turbo_boost.state.now[:key]
 Client-State is a mutable version of the signed Server-State, wrapped in an observable JavaScript proxy.
 This allows for sophisticated techniques like data binding via custom JavaScript, Stimulus controllers, or web components.
 
-Client-side state enables immediate UI updates, providing a fast and smooth user experience while the server
+Client-State enables immediate UI updates, providing a fast and smooth user experience while the server
 [resolves state](#state-resolution) differences whenever Commands are invoked.
 
 Client-State can be accessed on the client like so.
@@ -630,7 +632,7 @@ TurboBoost.State.current['key']
 ### Page-State
 
 Page-State is managed by the client and used to remember element attribute values between server renders.
-It’s best for tracking transient user interactions, like which elements are visible, open/closed, their position, etc.
+It’s best for tracking transient user interactions, such as - which elements are visible, open/closed, their position, etc.
 
 This enhances the user experience by maintaining the state of UI elements between renders.
 When invoking commands, the client sends the Page-State to the server, allowing it to preserve element attributes when rendering.
@@ -645,13 +647,13 @@ You can opt-in to remember Page-State with Rails tag helpers via the `turbo_boos
 <% end %>
 ```
 
-_This remembers whether the `details` element is open or closed._
+This will remember whether the `details` element is open or closed.
 
 __That's it!__ You're done.
 
 > [!NOTE]
-> Page-State tracking works with all element attributes, including `aria` and `data`,
-> but elements must have a unique `id` to participate in Page-State tracking.
+> Page-State tracking works with all element attributes, including `aria`, `data`, and even custom attributes.
+> Elements must have a unique `id` to participate in Page-State tracking.
 
 ### State Resolution
 
