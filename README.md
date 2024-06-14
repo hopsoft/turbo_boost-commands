@@ -77,7 +77,11 @@
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [State](#state)
-    - [Ephemeral Page State](#ephemeral-page-state)
+    - [Server Side State](#server-side-state)
+    - [Client Side State](#client-side-state)
+    - [Data Binding](#data-binding)
+    - [State Resolution](#state-resolution)
+    - [Page State](#page-state)
   - [Community](#community)
   - [Developing](#developing)
       - [Notable Files](#notable-files)
@@ -206,7 +210,7 @@ TurboBoost::Commands.config.tap do |config|
   # opt-[in/out] of precompiling TurboBoost assets (*true, false)
   config.precompile_assets = true
 
-  # opt-[in/out] of forgery protection (true, *false)
+  # opt-[in/out] of forgery protection (*true, false)
   config.protect_from_forgery = true
 
   # opt-[in/out] of raising an error when an invalid command is invoked (true, false, *"development", "test", "production")
@@ -214,6 +218,9 @@ TurboBoost::Commands.config.tap do |config|
 
   # opt-[in/out] of state resolution (true, *false)
   config.resolve_state = true
+
+  # opt-[in/out] of verifying the client browser (*true, false)
+  config.verify_client = true
 end
 ```
 
@@ -529,9 +536,23 @@ _Learn more about Turbo Stream broadcasting by reading through the
 
 ## State
 
-TODO: Document state tracking
+### Server Side State
 
-### Ephemeral Page State
+TODO
+
+### Client Side State
+
+TODO
+
+### Data Binding
+
+TODO
+
+### State Resolution
+
+TODO
+
+### Page State
 
 You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
 element attribute values between requests.
