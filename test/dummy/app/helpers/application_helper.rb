@@ -36,6 +36,6 @@ module ApplicationHelper
   end
 
   def attribute(id, name)
-    turbo_boost.command_state[id][name] if turbo_boost.command_state[id]
+    turbo_boost.state[id][name] if turbo_boost.state[id]
   end
 end

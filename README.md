@@ -77,9 +77,9 @@
     - [Prevent Controller Action](#prevent-controller-action)
     - [Broadcasting Turbo Streams](#broadcasting-turbo-streams)
   - [State](#state)
-    - [Server Side State](#server-side-state)
-    - [Client Side State](#client-side-state)
-    - [Data Binding](#data-binding)
+    - [Server State](#server-state)
+    - [Now State](#now-state)
+    - [Client State](#client-state)
     - [State Resolution](#state-resolution)
     - [Page State](#page-state)
   - [Community](#community)
@@ -536,26 +536,129 @@ _Learn more about Turbo Stream broadcasting by reading through the
 
 ## State
 
-### Server Side State
+TurboBoost Commands manage various forms of state to provide a terrific reactive user experience.
 
-TODO: document...
+Here’s a breakdown of each type:
 
-### Client Side State
+### Server State
 
-TODO: document...
+Server state is the persistent state that the server used for the most recent render.
+This state is signed, ensuring data integrity and security.
 
-### Data Binding
+The client includes this signed state along with its own optimistic changes whenever a Command is invoked.
+The server can then compute the difference between the client-side state and the signed state,
+allowing you to accept or reject the client's optimistic changes.
 
-TODO: document...
+This ensures the server remains the single source of truth.
+
+Server state can be accessed within your Commands like so.
+
+```ruby
+state[:key] = "value"
+state[:key]
+#=> "value"
+```
+
+Server state is also accessible your controllers and views.
+
+```ruby
+# controller
+turbo_boost.state[:key] = "value"
+turbo_boost.state[:key] #=> "value"
+```
+
+```erb
+<%
+  turbo_boost.state[:key] = "value"
+  turbo_boost.state[:key] #=> "value"
+%>
+```
+
+### Now State
+
+Now state is ephemeral server-side state that only exists for the current render cycle.
+Similar to `flash.now` in Rails, this state is discarded after rendering.
+
+It’s useful for managing temporary data that doesn’t need to persist beyond the current request.
+
+Now state can be accessed within your Commands like so.
+
+```ruby
+state.now[:key] = "value"
+state.now[:key]
+#=> "value"
+```
+
+Server state is also accessible your controllers and views.
+
+```ruby
+# controller
+turbo_boost.state.now[:key] = "value"
+turbo_boost.state.now[:key] #=> "value"
+```
+
+```erb
+<%
+  turbo_boost.state.now[:key] = "value"
+  turbo_boost.state.now[:key] #=> "value"
+%>
+```
+
+### Client State
+
+Client state is a mutable version of the signed server state, wrapped in an observable JavaScript proxy.
+This allows for sophisticated techniques like data binding with custom JavaScript, Stimulus controllers, and web components.
+
+Client-side state enables immediate UI updates, providing a fast and smooth user experience while the server resolves state differences whenever commands are invoked.
+
+Client state can be accessed on the client like so.
+
+```js
+TurboBoost.State.current['key'] = 'value'
+TurboBoost.State.current['key'] //=> 'value'
+```
 
 ### State Resolution
 
-TODO: document...
+Commands can perform state resolution by implementing the `resolve_state` method.
+
+The Command has access to all forms of state, so you should use explicit access during resolution.
+
+You can access both the signed state and the optimistc client state from within the Command like so.
+
+```ruby
+class ExampleCommand < TurboBoost::Commands::Command
+
+  def resolve_state
+    state.signed #=> the server state used to perform the last render
+    state.unsigned #=> the client optimistc state
+    # compare and resolve the delta
+  end
+end
+```
+
+> [!TIP]
+> State resolution can involve data lookups, updates to persistent data stores, interactions with third-party APIs, etc.
+
+You can opt-in to state resolution with the following config option.
+
+```ruby
+# config/initializers/turbo_boost.rb
+TurboBoost::Commands.config.tap do |config|
+  config.resolve_state = true
+end
+```
 
 ### Page State
 
-You can opt-in to remember transient page state when using Rails tag helpers with `turbo_boost[:remember]` to track
-element attribute values between requests.
+Page State is managed by the client and used to remember element attribute values between server renders.
+It’s best used to track transient user interactions, like which elements are open or closed, visible, or their positions.
+
+This enhances the user experience by maintaining the state of UI elements between renders.
+When invoking commands, the client sends the page state to the server, allowing it to preserve element attributes during rendering.
+_The client also checks and restores page state whenever the DOM changes if needed._
+
+You can opt-in to remember transient page state with Rails tag helpers with the `turbo_boost[:remember]` option.
 
 ```erb
 <%= tag.details id: "page-state-example", open: "open", turbo_boost: { remember: [:open] } do %>
@@ -564,29 +667,11 @@ element attribute values between requests.
 <% end %>
 ```
 
-The code above will be expanded to this HTML.
-
-```html
-<details id="page-state-example" open="open" data-turbo-boost-state-attributes="['open']">
-  <summary>Page State Example</summary>
-  Content...
-</details>
-```
-
-If the user closes the details element and invokes a command or performs a request,
-the server will pre-render the markup with the current page state preserving the `open` attribute value.
-_The client also ensures that remembered attributes are restored after DOM mutations._
-
-Several things happen when you use `turbo_boost[:remember]` to track page state.
-
-1. The client builds the current page state before emitting requests to the server.
-1. The server uses the page state when rendering the response.
-1. The client client verifies the page state and restores attribute values _(if necessary)_ after the DOM updates.
-
-This feature works with all attributes, including aria, data, and custom attributes.
+__That's it!__ You're done.
 
 > [!NOTE]
-> Elements must have a unique `id` assigned to participate in page state tracking.
+> This feature works with all attributes, including `aria`, `data`, and custom attributes,
+> but elements must have a unique `id` to participate in page state tracking.
 
 ## Community
 
