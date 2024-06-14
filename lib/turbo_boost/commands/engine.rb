@@ -25,9 +25,10 @@ module TurboBoost::Commands
     config.turbo_boost_commands[:alert_on_abort] = false # (true, false, "development", "test", "production")
     config.turbo_boost_commands[:alert_on_error] = false # (true, false, "development", "test", "production")
     config.turbo_boost_commands[:precompile_assets] = true # (true, false)
-    config.turbo_boost_commands[:protect_from_forgery] = false # (true, false) TODO: Support override in Commands
+    config.turbo_boost_commands[:protect_from_forgery] = true # (true, false)
     config.turbo_boost_commands[:raise_on_invalid_command] = "development" # (true, false, "development", "test", "production")
     config.turbo_boost_commands[:resolve_state] = false # (true, false)
+    config.turbo_boost_commands[:verify_client] = true # (true, false)
 
     initializer "turbo_boost_commands.configuration", before: :build_middleware_stack do |app|
       Mime::Type.register "text/vnd.turbo-boost.html", :turbo_boost

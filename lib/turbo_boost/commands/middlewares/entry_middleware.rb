@@ -33,6 +33,7 @@ class TurboBoost::Commands::EntryMiddleware
   # @param request [Rack::Request] the request to check
   # @return [Boolean]
   def trusted_client?(request)
+    return true unless TurboBoost::Commands.config.verify_client
     client = DeviceDetector.new(request.env["HTTP_USER_AGENT"])
     return false unless client.known?
     return false if client.bot?
