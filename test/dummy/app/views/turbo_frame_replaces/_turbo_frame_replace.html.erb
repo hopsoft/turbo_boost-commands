@@ -1,0 +1,37 @@
+<!-- content... -->
+
+<%= turbo_frame_tag "basic_command-turbo-frame-replace" do %>
+  <h3>Counter</h3>
+
+  <p>
+    In this demo, the counter value or "state" is managed by the User model.
+    It is persisted to the database and used when rendering the page. But this data:
+  </p>
+    <code class="mb-3" role="state"><%= @extra_data %></code>
+  <p>
+    is outside of the frame and although it is updated in the returned HTML, it is not updated on the screen.
+  </p>
+
+  <%= turbo_frame_tag :replace_this do %>
+    <code role="counter"><%= padded_number Current.user.count %></code>
+
+    <% cache do %>
+      <div>
+        <button data-turbo-command="IncrementCountCommand">
+          <%= render "icons/heroicons/plus", solid: true %> Increment
+        </button>
+
+        <button data-turbo-command="DecrementCountCommand">
+          <%= render "icons/heroicons/minus", solid: true %> Decrement
+        </button>
+
+        <button data-turbo-command="ResetCountCommand" data-turbo-confirm="Are you sure?">
+          <%= render "icons/heroicons/arrow_path", solid: true %> Reset
+        </button>
+      </div>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+<!-- content... -->

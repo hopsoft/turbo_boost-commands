@@ -235,6 +235,7 @@ class TurboBoost::Commands::Runner
   # Commands support the following redering strategies on the client.
   # 1. Replace: The entire page (head, body) is replaced with the new content via morph
   # 2. Append: The new content is appended to the body
+  # 3. FrameReplace: Replace the turbo frame specified in the command with the frame in the content. The content can contain more( e.g. whole content)
   def client_render_strategy
     # Use the replace strategy if the follow things are true:
     #
@@ -243,6 +244,9 @@ class TurboBoost::Commands::Runner
     # 3. There is NO TurboStream template for the current action (i.e. example.turbo_boost.erb, example.turbo_frame.erb)
     if command_params[:driver] == "window" && controller_action_allowed?
       return "Replace" unless turbo_stream_template_exists?
+    end
+    if command_params[:driver] == "frame" && controller_action_allowed?
+      return "FrameReplace" unless turbo_stream_template_exists?
     end
 
     "Append"

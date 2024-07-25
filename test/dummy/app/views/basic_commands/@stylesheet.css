@@ -1,11 +1,23 @@
 @layer components {
   #basic_command-no-frame,
+  #basic_command-turbo-frame-replace,
   #basic_command-turbo-frame {
     @apply relative mx-auto block max-w-screen-xl rounded-lg border;
   }
+
   #basic_command-no-frame {
     @apply border-sky-500 p-4 dark:border-sky-800;
   }
+
+  #basic_command-turbo-frame-replace {
+    @apply border-blue-500 p-4 dark:border-blue-800;
+  }
+
+  #basic_command-turbo-frame-replace::before {
+    content: '<turbo-frame with replace>';
+    @apply absolute -top-4 left-4 inline-block rounded-t bg-blue-500 px-2 font-mono text-xs text-white dark:bg-blue-800 dark:text-blue-200;
+  }
+
   #basic_command-no-frame::before {
     content: '<partial>';
     @apply absolute -top-4 left-4 inline-block rounded-t bg-sky-500 px-2 font-mono text-xs text-white dark:bg-sky-800 dark:text-sky-200;
@@ -17,39 +29,52 @@
     content: '<turbo-frame>';
     @apply absolute -top-4 left-4 inline-block rounded-t bg-rose-500 px-2 font-mono text-xs text-white dark:bg-rose-800 dark:text-rose-200;
   }
+
   #basic_command-no-frame > h3,
+  #basic_command-turbo-frame-replace > h3,
   #basic_command-turbo-frame > h3 {
     @apply text-2xl font-semibold text-gray-500 dark:text-white md:text-2xl;
   }
+
   #basic_command-no-frame > p,
+  #basic_command-turbo-frame-replace > p,
   #basic_command-turbo-frame > p {
     @apply mb-4 font-light text-gray-500 dark:text-gray-400;
   }
+
   #basic_command-no-frame > code,
+  #replace_this code,
   #basic_command-turbo-frame > code {
     @apply px-3 py-1 text-3xl font-bold text-red-500 md:text-4xl;
   }
   #basic_command-no-frame > div,
+  #basic_command-turbo-frame-replace > div,
   #basic_command-turbo-frame > div {
     @apply flex rounded-md shadow-sm;
   }
   #basic_command-no-frame > div:last-child,
+  #replace_this > div:last-child,
   #basic_command-turbo-frame > div:last-child {
     @apply mt-5;
   }
+
   #basic_command-no-frame > div > button,
+  #replace_this > div > button,
   #basic_command-turbo-frame > div > button {
     @apply inline-flex items-center border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white dark:focus:text-white dark:focus:ring-blue-500;
   }
   #basic_command-no-frame > div > button:first-child,
+  #replace_this > div > button:first-child,
   #basic_command-turbo-frame > div > button:first-child {
     @apply rounded-l-lg;
   }
   #basic_command-no-frame > div > button:last-child,
+  #replace_this > div > button:last-child,
   #basic_command-turbo-frame > div > button:last-child {
     @apply rounded-r-md;
   }
   #basic_command-no-frame > div > button > svg,
+  #replace_this > div > button > svg,
   #basic_command-turbo-frame > div > button > svg {
     @apply mr-1 h-3 w-3;
   }

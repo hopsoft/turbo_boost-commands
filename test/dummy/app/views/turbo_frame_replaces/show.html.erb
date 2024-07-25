@@ -1,0 +1,22 @@
+<% content_for :breadcrumbs do %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Demos" %>
+  <%= render "breadcrumbs/divider" %>
+  <%= render "breadcrumbs/breadcrumb", label: "Basic Command", active: true %>
+<% end %>
+
+<% cache do %>
+  <section class="p-4 my-12 mx-auto max-w-screen-xl">
+    <h1 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+      Basic Command
+    </h1>
+    <p class="text-xl text-gray-500 dark:text-gray-400">
+      Let's create a basic Command that inrements and decrements a number.
+      It's simple and contrived but will demonstrate some high level concepts.
+    </p>
+    <%= render "alerts/info", message: "Be sure to open the browser's network tab and watch HTTP activity as you increment and decrement the number." %>
+  </section>
+
+  <%= render "turbo_frame_replaces/with_turbo_frame_replace" %>
+  <%= render "cards/sponsor" %>
+<% end %>

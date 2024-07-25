@@ -25,5 +25,5 @@ jobs:
         run: 'npm install --legacy-peer-deps'
 
       - name: Run Prettier
-        run: 'npx prettier --check --fail-on-errors .'
+        run: 'npx prettier --check .'
 

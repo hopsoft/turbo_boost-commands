@@ -23,6 +23,7 @@
 
       <%= render "sidebars/button", value: "Demos", heroicon: :play_circle, active: demos_controller? do %>
         <%= render "sidebars/link", label: "Basic Command", href: basic_command_path, icon: :command_line, active: controller_action?("basic_commands#show") %>
+        <%= render "sidebars/link", label: "Turbo Frame Replace", href: turbo_frame_replace_path, icon: :command_line, active: controller_action?("/turbo_frame_replace#show_more") %>
         <%= render "sidebars/link", label: "Tables", href: todos_path(demo: "tables"), icon: :command_line, active: params[:demo] == "tables" %>
         <%= render "sidebars/link", label: "Simple Form", href: todos_path(demo: "simple-form"), icon: :command_line, active: params[:demo] == "simple-form" %>
         <%= render "sidebars/link", label: "Complex Form", href: todos_path(demo: "complex-form"), icon: :command_line, active: params[:demo] == "complex-form" %>

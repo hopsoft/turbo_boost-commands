@@ -1,3 +1,18 @@
+import elements from './elements'
+
+const getElementByIdFromHTMLString = (htmlString, id) => {
+  var parser = new DOMParser()
+  var doc = parser.parseFromString(htmlString, 'text/html')
+  var element = doc.getElementById(id)
+  return element.outerHTML
+}
+
+const frameReplace = (content, frameId) => {
+  const newFrame = getElementByIdFromHTMLString(content, frameId)
+  const frame = document.querySelector(`#${frameId}`)
+  if (frame && newFrame) TurboBoost?.Streams?.morph?.method(frame, newFrame)
+}
+
 const append = content => {
   document.body.insertAdjacentHTML('beforeend', content)
 }
@@ -14,10 +29,11 @@ const replace = content => {
 }
 
 // TODO: dispatch events after append/replace so we can apply page state
-export const render = (strategy, content) => {
+export const render = (strategy, content, frameId) => {
   if (strategy && content) {
     if (strategy.match(/^Append$/i)) return append(content)
     if (strategy.match(/^Replace$/i)) return replace(content)
+    if (strategy.match(/^FrameReplace$/i)) return frameReplace(content, frameId)
   }
 }
 

@@ -9,9 +9,9 @@ const parseError = error => {
   dispatch(lifecycle.events.clientError, document, { detail: { message, error } }, true)
 }
 
-const parseAndRenderResponse = response => {
+const parseAndRenderResponse = frameId => response => {
   const { strategy } = headers.tokenize(response.headers.get(headers.RESPONSE_HEADER))
-  response.text().then(content => render(strategy, content))
+  response.text().then(content => render(strategy, content, frameId))
 }
 
 const invoke = (payload = {}) => {
@@ -21,7 +21,7 @@ const invoke = (payload = {}) => {
       headers: headers.prepare({}),
       body: JSON.stringify(payload)
     })
-      .then(parseAndRenderResponse)
+      .then(parseAndRenderResponse(payload.frameId))
       .catch(parseError)
   } catch (error) {
     parseError(error)
